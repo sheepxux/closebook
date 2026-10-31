@@ -64,7 +64,7 @@ After all points: **synthesis** (Feynman explanation if any point is conceptual 
 ## Choosing methods and interactions
 
 - Per knowledge point: baseline (retrieval practice, spaced repetition, error review when there are errors) **plus at most 2 optional methods**. Fewer is better. Rules and the full matrix: `references/method-fit.md`; each method's procedure: `references/methods/`.
-- Then choose at most 1–2 interaction forms per point, only if they beat plain text Q&A: `references/interaction-fit.md`. Plain text is always legal and often best.
+- Then choose at most 1–2 interaction forms per point, only if they beat plain text Q&A: `references/interaction-fit.md` (including subject starting points, e.g. code tracing for programming, numbers and graphs for maths). Plain text is always legal and often best.
 - Structure, flow or state change (architecture, pipelines, lifecycles) → a **predict-first diagram**, even in plain text: numbered steps or ASCII arrows with `?` blanks for the learner to fill; show the complete diagram only after they answer.
 - Say in one sentence which method you're using and why *now*. If you skip a standard step, say what and why. Never add a method just to look thorough.
 - The user can switch with one sentence ("only Feynman", "just quiz me today"). Comply and tell them which records that affects.

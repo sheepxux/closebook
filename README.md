@@ -47,7 +47,7 @@ At the end you get a short synthesis (explain the topic in your own words, or li
 - **Plain Talk Mode (小白模式).** Say "plain talk", "ELI5" or "说人话" for an everyday-language version: a conclusion, an analogy *and where it breaks*, an example and a pitfall, followed by a closed-book recall. Precise definitions get no analogy.
 - **Respects you.** Ask only for a summary and it offers active learning once, in one sentence, then does what you chose. If you insist on a method it thinks fits badly, it explains once, then complies and notes it in your progress.
 - **Scenario modes** for exam prep, coding, language learning and conceptual understanding.
-- **Optional HTML practice page.** A self-contained page with fill-in diagrams, multiple choice with an explanation for every option, flashcards, comparison tables, confidence ratings and an export you can merge back into your progress.
+- **Optional HTML practice page.** A self-contained page with fill-in diagrams, multiple choice with an explanation for every option, flashcards, comparison tables, confidence ratings and an export you can merge back into your progress. It also has forms for particular subjects: code tracing and a simulated terminal for programming, number answers and adjustable graphs for maths and science, parameter labs, ordering tasks and cloze passages.
 
 ## Install
 
@@ -90,7 +90,26 @@ In chat-only apps you get a compact JSON block at the end of each session. Paste
 
 When the environment can produce a file, the skill writes the lesson data and [`build_lesson.py`](skills/closebook/scripts/build_lesson.py) embeds it into a [template](skills/closebook/assets/lesson-template.html). The result is a single offline HTML file with no network requests, light and dark themes, keyboard support and a mobile layout. Open [`examples/http-cache-lesson.html`](examples/http-cache-lesson.html) to try one. Without file support, the same questions run in plain text.
 
-The page checks multiple choice and fill-in blanks itself; flashcards and written answers start as self-checks. Written answers can go through the coach: export "my answers", paste them into the chat, and paste the grading block you get back into the page. Each answer then shows the coach's verdict and feedback, and the mistakes list and review schedule follow it. It's a copy-and-paste round trip rather than live grading, so the page stays offline and needs no API key.
+The page checks anything with an answer key itself (multiple choice, blanks, numbers, orders, commands, graph targets); flashcards and written answers start as self-checks. Written answers can go through the coach: export "my answers", paste them into the chat, and paste the grading block you get back into the page. Each answer then shows the coach's verdict and feedback, and the mistakes list and review schedule follow it. It's a copy-and-paste round trip rather than live grading, so the page stays offline and needs no API key.
+
+### Forms for particular subjects
+
+<p align="center"><img src="docs/images/subject-widgets.jpg" alt="Two practice forms: matching a parabola with sliders, and stepping through a Python loop after predicting its output" width="720"></p>
+
+The knowledge type still picks the method; the subject suggests which form to try first. Each form asks you to produce or predict something before it shows the answer:
+
+| Subject | Form | What you do |
+|---|---|---|
+| Programming | `code_trace` | Predict what the code prints, then step through it line by line with the variables shown |
+| Programming | `order_steps` (Parsons) | Put code lines in order; some lines don't belong |
+| Command line, git | `terminal` | Type each command into a simulated terminal (it only knows the expected commands and runs nothing) |
+| Maths, physics, finance | `numeric` | Type a number or an expression like `3/4`; see the worked solution |
+| Maths, physics, economics | `graph` | Set the sliders to reproduce a target curve (your curve appears only after you check), or predict what a change will do, then explore |
+| Science mechanisms | `simulation` | Predict first; then the sliders, readouts and graph unlock |
+| Biology, law, languages | `cloze_passage` | Fill several blanks in a passage, with an optional word bank |
+| Languages, history, procedures | `order_steps` | Build a sentence from word tiles, or put events or steps in order |
+
+Open [`examples/subject-widgets-lesson.html`](examples/subject-widgets-lesson.html) for one of each. The research behind each choice, and how every form falls back to plain text, are in [`interaction-fit.md`](skills/closebook/references/interaction-fit.md).
 
 ## Repository layout
 
@@ -105,7 +124,7 @@ skills/closebook/        the skill (this folder is what gets installed)
   evals/                 22 behaviour evals (not shipped in the ZIPs)
 adapters/                per-platform install and capability notes
 docs/                    design decisions, platform verification log, validation report, eval results
-examples/                a built practice page
+examples/                built practice pages
 tests/                   unit, packaging and browser tests
 tools/package_skill.py   builds the upload ZIPs
 ```

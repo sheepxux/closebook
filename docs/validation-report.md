@@ -7,8 +7,8 @@
 
 | Area | Result |
 |---|---|
-| Automated tests | 93 / 93 pass (unit, packaging and browser tests) |
-| Practice page in a real browser | All spec §13 checks pass: load, answer, explanations, confidence, self-check, export, import-merge; the coach-grading round trip works end to end |
+| Automated tests | 105 / 105 pass (unit, packaging and browser tests) |
+| Practice page in a real browser | All spec §13 checks pass: load, answer, explanations, confidence, self-check, export, import-merge; the coach-grading round trip works end to end; every subject-specific form (numbers, ordering, cloze, code tracing, terminal, graphs, parameter lab) is played through and its export validates |
 | Packaging | Both ZIPs build reproducibly with no development files or macOS junk |
 | Behaviour evals (22 evals, 102 expectations) | First run 89 / 102 (87%), full rerun after fixes 99 / 102 (97%); later targeted reruns all pass |
 | Trigger check (proxy) | 18 / 18 queries routed as expected |
@@ -23,14 +23,14 @@ python3 -m unittest discover -s tests
 | File | Tests | Covers |
 |---|---|---|
 | `test_progress_tool.py` | 57 | Schema validation, Leitner scheduling (first attempt per day, fuzzy/fail, diagnostics never count, exam-date cap), replay from history, priority flags, due order, statistics and calibration, merge and import of session exports (idempotent), applying the coach's grading (replaces self-checks, fixes error entries, idempotent, unknown ids reported), compact export, CLI exit codes |
-| `test_build_lesson.py` | 17 | Lesson-data rules (one correct MCQ option, table and diagram blanks, analogy limits, Plain Talk length), fit warnings, `--strict`, `</script>` escaping, the example page matches a fresh build, and the template has no external requests or `innerHTML` |
+| `test_build_lesson.py` | 28 | Lesson-data rules (one correct MCQ option, table and diagram blanks, analogy limits, Plain Talk length), rules for the subject forms (tolerances, distinct order items, cloze blanks, trace lines inside the code, graph targets inside the slider range, one task per graph, a prediction before every parameter lab), the expression grammar (accepts arithmetic and listed functions, rejects everything else), fit warnings, `--strict`, `</script>` escaping, the example page matches a fresh build, and the template has no external requests or `innerHTML` |
 | `test_skill_structure.py` | 7 | Frontmatter keys, `name` = folder, description, `SKILL.md` stays lean, every referenced file exists, all 12 methods and 4 modes present, no junk files in the skill folder |
 | `test_package_skill.py` | 5 | ZIP root is `closebook/`, runtime files present, no evals or junk, the Gemini ZIP differs only by `agents/openai.yaml`, byte-identical rebuilds |
-| `test_lesson_page_e2e.py` | 7 | Browser tests of the practice page, detailed in section 2 below |
+| `test_lesson_page_e2e.py` | 8 | Browser tests of the practice page, detailed in section 2 below |
 
 ## 2. Practice page (HTML)
 
-The browser tests open [`examples/http-cache-lesson.html`](../examples/http-cache-lesson.html) and a fixture page in headless Chromium and use them like a learner would:
+The browser tests open [`examples/http-cache-lesson.html`](../examples/http-cache-lesson.html), [`examples/subject-widgets-lesson.html`](../examples/subject-widgets-lesson.html) and a fixture page in headless Chromium and use them like a learner would:
 
 - **Full Chinese session.** Fill in a flow diagram (partly right) and pick a mistake cause. Answer a multiple-choice question wrong with confidence 3 and get per-option explanations. Answer a typed question wrong, then mark it "I was actually right". Answer "don't know". Complete a comparison table. Pass the teach-then-hide gate. Self-check a free-text answer against key points (partial). Do free recall and Plain Talk recall, then group and select mistakes.
 - **Export and import.**
@@ -39,6 +39,15 @@ The browser tests open [`examples/http-cache-lesson.html`](../examples/http-cach
   - A fresh page import restores 7 / 7 answered.
   - State survives a reload.
 - **Coach grading round trip.** The exported answers carry an ID per answer (filled blanks included) and ask the coach for a `closebook-grading` block. Pasting the block, even inside a Markdown code fence, applies it: each graded answer shows the coach's verdict and feedback instead of "self-checked", "I was actually right" disappears, and the mistakes list, the progress export and a reload all keep the coach's results. The export still validates and merges. Re-pasting changes nothing; unknown ids and other lessons are reported.
+- **Subject forms.**
+  - Numbers: `50/2 m` reads as 25 m and is right; `1,100` against 1102.5 is wrong with confidence 3, flagged, and the worked solution appears.
+  - Parsons problem: lines are tapped into place, an arrow fixes the order and keyboard focus follows the moved line; distractors stay in the pool. Word tiles with a distractor score partial and show the right order.
+  - Cloze: a word-bank tap fills the next blank and keeps focus; `H₂O` is accepted for 水; 3 of 4 is partial.
+  - Code tracing: the trace stays hidden until the predictions are checked; stepping highlights the current line, marks the changed variable and builds the output.
+  - Terminal: the scripted output appears, focus stays in the prompt, a wrong command is rejected with an honest message, a hint and "show the command" work, and the result is partial with hint level 3.
+  - Graphs: the learner's curve is hidden until the first check; a near miss then a match scores partial. In predict mode the sliders unlock only after the prediction, and moving one redraws the curve.
+  - Parameter lab: no graph before the prediction (it would give the answer away); readouts follow the sliders (2.01 s → 4.01 s for L = 1 → 4 m).
+  - The export validates and carries the new interaction ids; "my answers" lists the typed number, the tile order, the commands (revealed ones marked), the trace predictions, the blanks and the slider values.
 - **Edge cases.**
   - A retry produces two attempts.
   - Keyboard-only answering works.
@@ -48,7 +57,7 @@ The browser tests open [`examples/http-cache-lesson.html`](../examples/http-cach
   - Blocked `localStorage` still works, with a copy/paste export.
   - Broken lesson data shows a readable error.
 
-**Manual checks:** screenshots in light mode, dark mode, at 390 px mobile width, and of every tab and interaction type (diagram, table, timeline, flashcard, multiple choice answered wrong, the mini-lesson gate, Plain Talk, Save & load), all reviewed by eye ([example](images/lesson-page.jpg)).
+**Manual checks:** screenshots in light mode, dark mode, at 390 px mobile width, and of every tab and interaction type (diagram, table, timeline, flashcard, multiple choice answered wrong, the mini-lesson gate, Plain Talk, Save & load, and each subject form before and after answering), all reviewed by eye ([example](images/lesson-page.jpg), [subject forms](images/subject-widgets.jpg)).
 
 **Not possible:** the Cursor IDE browser cancels scripted clicks, so all interaction testing used Playwright.
 
@@ -58,8 +67,8 @@ The browser tests open [`examples/http-cache-lesson.html`](../examples/http-cach
 
 | ZIP | Files | Size |
 |---|---|---|
-| `dist/closebook.zip` | 39 | 110.9 KB |
-| `dist/closebook-gemini.zip` | 38 (no `agents/`) | 110.7 KB |
+| `dist/closebook.zip` | 42 | 141.0 KB |
+| `dist/closebook-gemini.zip` | 41 (no `agents/`) | 140.7 KB |
 
 Two consecutive builds had identical SHA-256 hashes. No `._*`, `.DS_Store` or `__pycache__` files are present in the repository or the ZIPs.
 
@@ -189,3 +198,5 @@ Observations:
 - **The official skill-creator tooling:** not available here. The evals use its file format, but its runner and viewer were not used.
 - **Other models.** Eval runners and graders were agents in this environment, and other models may behave differently. Running the suite on each target platform's own model is the most valuable next check.
 - **Python versions:** the code avoids post-3.8 features, but only 3.9.6 was run.
+- **Subject forms with real learners and models.** The forms were tested with hand-written lesson data. No model has yet been asked to author a lesson that uses them (for example a correct `trace` for a learner's code, or every valid spelling of a command), and their learning effect wasn't measured here; the research cited in `interaction-fit.md` is about the general technique, not about this page.
+- **Not built:** image hotspots (anatomy, maps, circuit diagrams) and audio (pronunciation), because the page loads no external images and has no audio input.

@@ -15,7 +15,8 @@
 :root {
   --bg: #f8f7f4; --surface: #ffffff; --surface-2: #f1f0ec; --text: #1d1d1b; --muted: #64625c;
   --rule: #e5e3dc; --rule-strong: #cfccc3; --ink: #1d1d1b; --ink-text: #ffffff; --accent: #2456a6;
-  --mark: #ffeb8a; --mark-soft: #fffbe3; --mark-ring: #e8b931;
+  --mark: #b8f2fe; --mark-soft: #ecfbff; --mark-ring: #2fb3d6; --plot: #1786a8;
+  --term-bg: #16181b; --term-text: #e6e6e3; --term-dim: #9a9a96; --term-ps1: #8be0f5;
   --ok: #1d6a39; --ok-bg: #e9f4ec; --mid: #845600; --mid-bg: #fbf2dc; --bad: #a3281e; --bad-bg: #fbecea;
   --radius: 12px;
   font-family: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
@@ -25,14 +26,14 @@
 :root[data-theme="dark"] {
   --bg: #18181a; --surface: #202023; --surface-2: #29292c; --text: #e8e7e3; --muted: #a9a7a0;
   --rule: #323235; --rule-strong: #48484c; --ink: #e8e7e3; --ink-text: #18181a; --accent: #8fb4f2;
-  --mark: rgba(255, 220, 90, .30); --mark-soft: rgba(255, 220, 90, .08); --mark-ring: #d9b44a;
+  --mark: rgba(120, 222, 248, .28); --mark-soft: rgba(120, 222, 248, .08); --mark-ring: #6fd3ee; --plot: #78def8; --term-bg: #0f1012;
   --ok: #8dd3a4; --ok-bg: #17301f; --mid: #efc46e; --mid-bg: #33290f; --bad: #ff9f95; --bad-bg: #3a1815;
 }
 @media (prefers-color-scheme: dark) {
   :root[data-theme="auto"] {
     --bg: #18181a; --surface: #202023; --surface-2: #29292c; --text: #e8e7e3; --muted: #a9a7a0;
     --rule: #323235; --rule-strong: #48484c; --ink: #e8e7e3; --ink-text: #18181a; --accent: #8fb4f2;
-    --mark: rgba(255, 220, 90, .30); --mark-soft: rgba(255, 220, 90, .08); --mark-ring: #d9b44a;
+    --mark: rgba(120, 222, 248, .28); --mark-soft: rgba(120, 222, 248, .08); --mark-ring: #6fd3ee; --plot: #78def8; --term-bg: #0f1012;
     --ok: #8dd3a4; --ok-bg: #17301f; --mid: #efc46e; --mid-bg: #33290f; --bad: #ff9f95; --bad-bg: #3a1815;
   }
 }
@@ -126,7 +127,7 @@ button.btn:disabled { background: var(--rule); border-color: var(--rule); color:
 .chip:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
 @media (hover: hover) and (pointer: fine) { .chip:not([aria-pressed="true"]):not(:has(input:checked)):hover { background: var(--surface-2); } }
 
-/* text entry; blanks get the highlighter */
+/* text entry; blanks get the logo blue */
 textarea, input[type="text"] { font: inherit; width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--rule-strong); background: var(--surface); color: var(--text); transition: border-color .12s ease, box-shadow .12s ease; }
 textarea { min-height: 104px; resize: vertical; line-height: 1.6; }
 textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px var(--mark); }
@@ -175,6 +176,103 @@ table.fill input[type="text"] { padding: 6px 8px; }
 .flashcard { display: flex; align-items: center; justify-content: center; min-height: 132px; padding: 28px 24px; border: 1px solid var(--rule-strong); border-radius: var(--radius); background: var(--surface-2); text-align: center; font-size: 1.25rem; font-weight: 600; line-height: 1.5; }
 .flashcard.back { background: var(--mark-soft); border-color: var(--ink); margin-top: 12px; }
 
+/* numeric answers */
+.num-row { display: flex; gap: 10px; align-items: center; }
+.num-row .unit { color: var(--muted); white-space: nowrap; }
+.reads { min-height: 1.5em; margin: 6px 0 0; font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* putting things in order */
+.order-list { list-style: none; padding: 0; margin: 12px 0; }
+.order-list li { display: flex; align-items: center; gap: 10px; border: 1px solid var(--rule-strong); border-radius: 10px; padding: 4px 6px 4px 12px; margin: 6px 0; background: var(--surface); min-height: 46px; }
+.order-list .n { flex: none; width: 1.4em; color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+.order-list .txt { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.order-list li.ok { border-color: var(--ok); background: var(--ok-bg); }
+.order-list li.bad { border-color: var(--bad); background: var(--bad-bg); }
+.order-list .mark { flex: none; padding-right: 8px; font-weight: 600; }
+.order-list li.ok .mark { color: var(--ok); }
+.order-list li.bad .mark { color: var(--bad); }
+.order-list.tiles { display: flex; flex-wrap: wrap; gap: 8px; }
+.order-list.tiles li { margin: 0; padding: 2px 4px 2px 10px; }
+.order-list.tiles .n { display: none; }
+.tools { flex: none; display: flex; }
+.icon-btn { width: 40px; height: 40px; border: 0; border-radius: 8px; background: none; color: var(--muted); font: inherit; font-size: 1.05rem; cursor: pointer; }
+.icon-btn:disabled { opacity: .3; cursor: default; }
+@media (hover: hover) and (pointer: fine) { .icon-btn:not(:disabled):hover { background: var(--surface-2); color: var(--text); } }
+.pool { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.pool > p { flex-basis: 100%; margin: 0; }
+.pool-item { font: inherit; text-align: left; min-height: 44px; padding: 8px 14px; border: 1px dashed var(--mark-ring); border-radius: 10px; background: var(--mark-soft); color: var(--text); cursor: pointer; overflow-wrap: anywhere; }
+.pool-item:disabled { opacity: .45; cursor: default; }
+.pool:not(.tiles) .pool-item { flex-basis: 100%; }
+@media (hover: hover) and (pointer: fine) { .pool-item:not(:disabled):hover { background: var(--mark); } }
+.mono, .mono .txt, .mono .pool-item { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .88rem; white-space: pre-wrap; }
+
+/* cloze passages */
+.cloze { line-height: 2.3; }
+.cloze input[type="text"] { width: auto; max-width: 100%; display: inline-block; padding: 1px 8px; margin: 0 2px; background: var(--mark-soft); border-style: dashed; line-height: 1.6; }
+.cloze .blank-done { border-radius: 6px; padding: 2px 6px; }
+.cloze .expected { display: inline; margin-left: 6px; }
+.cloze .blank-done label { margin-left: 6px; white-space: nowrap; }
+code.keep-space { white-space: pre; }
+.bank { margin: 8px 0 4px; }
+.bank > p { margin: 0 0 6px; }
+
+/* code tracing */
+.code-wrap { position: relative; }
+.code-wrap .lang { position: absolute; right: 10px; top: 6px; font-size: .72rem; color: var(--muted); letter-spacing: .03em; }
+pre.code-lines { padding: 12px 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; }
+.code-lines .ln { display: block; position: relative; padding: 0 14px 0 3.2em; white-space: pre; }
+.code-lines .ln::before { content: attr(data-n); position: absolute; left: 0; width: 2.3em; text-align: right; color: var(--muted); user-select: none; }
+.code-lines .ln.cur { background: var(--mark); box-shadow: inset 3px 0 0 var(--mark-ring); }
+.trace { border: 1px solid var(--rule-strong); border-radius: 10px; padding: 14px 16px; margin: 12px 0; }
+.trace-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.trace-head h3 { margin: 0; }
+.trace-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.trace-label { margin: 8px 0 4px; font-size: .8rem; font-weight: 600; color: var(--muted); }
+.trace table.vars { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .85rem; }
+.trace table.vars th { color: var(--text); font-size: .85rem; width: 40%; }
+.trace table.vars tr.changed td, .trace table.vars tr.changed th { background: var(--mark-soft); font-weight: 600; }
+.trace pre.out { margin: 0; min-height: 2.4em; font-size: .85rem; }
+.trace .row { margin-top: 12px; }
+.trace-qs { padding-left: 1.3em; }
+.trace-qs li { padding: 6px 8px; border-radius: 8px; margin: 4px 0; }
+.trace-qs .q { display: block; margin-bottom: 6px; }
+
+/* simulated terminal */
+.term { background: var(--term-bg); color: var(--term-text); border-radius: 10px; padding: 12px 14px; margin: 12px 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.55; }
+.term:focus-within { box-shadow: 0 0 0 3px var(--mark-ring); }
+.term pre { background: none; padding: 0; margin: 0; border-radius: 0; white-space: pre-wrap; overflow-wrap: anywhere; color: inherit; }
+.term .ps1 { color: var(--term-ps1); }
+.term .note { color: var(--term-dim); }
+.term .err { color: #ff9f95; }
+.term-line label { display: flex; gap: 8px; align-items: center; }
+.term input.term-in { flex: 1; min-width: 0; padding: 2px 0; border: 0; border-radius: 0; background: transparent; color: var(--term-text); font: inherit; caret-color: var(--term-ps1); }
+.term input.term-in:focus { box-shadow: none; }
+.term-task { margin: 12px 0 0; }
+
+/* graphs and parameter labs */
+svg.plot { display: block; width: 100%; height: auto; margin: 12px 0 4px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; }
+.plot .grid line { stroke: var(--rule); stroke-width: 1; }
+.plot .axis { stroke: var(--muted); stroke-width: 1.2; }
+.plot text { fill: var(--muted); font-size: 12px; font-family: inherit; font-variant-numeric: tabular-nums; }
+.plot .axis-label { fill: var(--text); font-weight: 600; }
+.plot path { fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.plot .curve { stroke: var(--plot); stroke-width: 3; }
+.plot .target { stroke: var(--text); stroke-width: 2; stroke-dasharray: 7 6; opacity: .5; }
+.plot .pt { fill: var(--text); }
+.plot .pt-label { fill: var(--text); }
+.legend { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 0; }
+.legend .key { display: inline-block; width: 22px; height: 0; border-top: 3px solid var(--plot); margin-left: 8px; }
+.legend .key:first-child { margin-left: 0; }
+.legend .key.target { border-top: 2px dashed var(--muted); }
+.sliders { margin: 12px 0; }
+.slider { display: grid; grid-template-columns: minmax(72px, auto) 1fr minmax(64px, auto); gap: 12px; align-items: center; min-height: 44px; }
+.slider .name { font-size: .92rem; }
+.slider input[type="range"] { width: 100%; accent-color: var(--plot); }
+.slider .val { font-variant-numeric: tabular-nums; text-align: right; font-size: .92rem; }
+.readouts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 8px 0 12px; }
+.readout { display: flex; flex-direction: column; }
+.readout b { font-size: 1.2rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+
 /* lists of past answers */
 .badges { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 8px; }
 .badge { font-size: .78rem; border: 1px solid var(--rule-strong); border-radius: 99px; padding: 1px 9px; color: var(--muted); }
@@ -191,6 +289,9 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   header.top h1 { font-size: 1.4rem; }
   .card { padding: 18px 16px; }
   [role="tab"] { padding: 10px 9px; }
+  .trace-grid { grid-template-columns: 1fr; gap: 4px; }
+  .slider { grid-template-columns: 1fr auto; gap: 0 12px; }
+  .slider input[type="range"] { grid-column: 1 / -1; grid-row: 2; }
 }
 </style>
 </head>
@@ -312,6 +413,24 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       fillFirst: 'Fill in the blanks first, then check.', countRight: 'count as right', expected: 'Expected: ', confirmMarks: 'Confirm',
       predictFirst: 'Predict the missing steps first; the full version appears after you check.',
       simNotice: 'This page has no interactive simulation, so the question is shown as text.',
+      numPlaceholder: 'A number or expression, e.g. 0.75, 3/4, 2*pi', numReads: 'Reads as {v}', numBad: 'Can\'t read this as a number yet',
+      numAnswerIs: 'Answer: ', numTol: '(accepted within ±{t})', solution: 'Worked solution',
+      orderHelp: 'Tap the items in the order they belong; fix mistakes with the arrows.', orderDistract: 'Some items don\'t belong at all.',
+      orderCount: '{n} of {total} placed', orderAnswer: 'Your order', orderPool: 'Items to place', orderCorrect: 'Correct order',
+      orderNotUsed: 'Didn\'t belong: ', moveEarlier: 'Move earlier', moveLater: 'Move later', removeItem: 'Take out',
+      wordBank: 'Word bank: tap a word to put it in the next empty blank', blankN: 'Blank {n}',
+      tracePredict: 'Work it out in your head, without running it. The step-by-step run appears after you check.',
+      traceAfter: 'Step through the run and compare it with your predictions.',
+      traceTitle: 'Step through the run', traceStep: 'Step {n} of {total} · line {line}', traceVars: 'Variables', traceOut: 'Output',
+      tracePrev: 'Previous step', traceNext: 'Next step',
+      termNotice: 'Simulated terminal: it only recognises the commands this exercise expects and runs nothing on your computer.',
+      termTask: 'Step {n} of {total}:', termUnknown: 'Not what this step needs. (This simulator only knows the expected commands.)',
+      termReveal: 'Show the command', termRevealed: '(shown)', termInput: 'Command', termLabel: 'Simulated terminal',
+      plotLabel: 'Graph of {expr}', targetCurve: 'target', yourCurve: 'your curve',
+      graphMatch: 'Set the sliders to the values you think draw the dashed target. Your own curve appears only after you check.',
+      graphAdjust: 'Now you can see your curve. Adjust the sliders until it lies on the target.',
+      graphMiss: 'Not on the target yet. Watch what each slider does to your curve.', graphShow: 'Show the target values', targetWas: 'Target: ',
+      predictLocked: 'Answer the prediction first; the sliders unlock afterwards.', labLocked: 'Answer the prediction first; the sliders and the graph unlock afterwards.', explore: 'Now move the sliders and test your prediction.',
       unknownNotice: 'This question format isn\'t supported here, so it\'s shown as a plain question.',
       cannotRender: 'This question can\'t be displayed. Ask your coach to resend it in the chat.',
       alsoEdges: 'Other path: ', listSep: '; ', when: 'When', what: 'What',
@@ -369,6 +488,24 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       fillFirst: '先填空，再核对。', countRight: '算对', expected: '应为：', confirmMarks: '确认',
       predictFirst: '先预测空缺的步骤；核对后才显示完整版。',
       simNotice: '本页面没有交互模拟，这道题以文字形式出现。',
+      numPlaceholder: '数字或算式，如 0.75、3/4、2*pi', numReads: '识别为 {v}', numBad: '还无法识别为数字',
+      numAnswerIs: '答案：', numTol: '（误差 ±{t} 内都算对）', solution: '解题步骤',
+      orderHelp: '按正确顺序依次点选；放错了用箭头调整。', orderDistract: '有些条目根本不属于这里。',
+      orderCount: '已放入 {n} / {total}', orderAnswer: '你的顺序', orderPool: '待放入的条目', orderCorrect: '正确顺序',
+      orderNotUsed: '不属于这里的：', moveEarlier: '前移', moveLater: '后移', removeItem: '移出',
+      wordBank: '词库：点一个词，填进下一个空', blankN: '第 {n} 空',
+      tracePredict: '先别运行，在脑子里推一遍。核对后会出现逐行执行过程。',
+      traceAfter: '逐步查看执行过程，和你的预测对照。',
+      traceTitle: '逐步查看执行', traceStep: '第 {n} / {total} 步 · 第 {line} 行', traceVars: '变量', traceOut: '输出',
+      tracePrev: '上一步', traceNext: '下一步',
+      termNotice: '模拟终端：只认本题预设的命令，不会在你的电脑上执行任何东西。',
+      termTask: '第 {n} / {total} 步：', termUnknown: '这一步要的不是这条命令。（模拟终端只认预设答案。）',
+      termReveal: '看答案', termRevealed: '（看了答案）', termInput: '命令', termLabel: '模拟终端',
+      plotLabel: '{expr} 的图像', targetCurve: '目标', yourCurve: '你的曲线',
+      graphMatch: '看虚线目标，把滑块调到你认为能画出它的数值。提交后才会显示你的曲线。',
+      graphAdjust: '现在能看到你的曲线了。继续调滑块，直到它和目标重合。',
+      graphMiss: '还没对上。留意每个滑块让你的曲线怎么变。', graphShow: '显示目标数值', targetWas: '目标：',
+      predictLocked: '先回答预测题，滑块随后解锁。', labLocked: '先回答预测题，滑块和图像随后解锁。', explore: '现在拖动滑块，验证你的预测。',
       unknownNotice: '本页面不支持这种题型，已改为普通问答。',
       cannotRender: '这道题无法显示，请让教练在对话里重新出题。',
       alsoEdges: '另一条路径：', listSep: '；', when: '时间', what: '事件',
@@ -396,7 +533,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     }
   };
 
-  var TYPES = ['mcq', 'flashcard', 'free_text', 'diagram_fill', 'simulation', 'timeline_fill', 'compare_table_fill', 'plain_qa'];
+  var TYPES = ['mcq', 'flashcard', 'free_text', 'diagram_fill', 'simulation', 'timeline_fill', 'compare_table_fill', 'plain_qa',
+    'numeric', 'order_steps', 'cloze_passage', 'code_trace', 'terminal', 'graph'];
   var METHODS = ['retrieval', 'spaced_repetition', 'error_review', 'feynman', 'interleaving', 'elaborative_interrogation',
     'self_explanation', 'predict_verify', 'calibration', 'chunking_mnemonics', 'difficulty_tuning', 'mini_project'];
   var FORMATS = ['free_recall', 'cloze', 'short_answer', 'mcq', 'flashcard', 'explain', 'explain_steps', 'why', 'predict', 'produce', 'apply', 'compare', 'project', 'other'];
@@ -601,41 +739,50 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     var key = keyOf(kp, item), ui = uiOf(key);
     if (!ui.done && !ui.openedAt) ui.openedAt = Date.now();
     var type = TYPES.indexOf(kp.interaction_type) >= 0 ? kp.interaction_type : 'unknown';
-    var card = h('section', { class: 'card' + (ui.done ? '' : ' open'), 'aria-label': String(item.question || item.prompt || item.front || kp.title).replace(/`/g, '') });
+    var card = h('section', { class: 'card' + (ui.done ? '' : ' open'), 'data-key': key, 'aria-label': strip(item.question || item.prompt || item.front || kp.title) });
+    var own = function (focusItem) { state.focusKey = key; rerender(focusItem); };
     if (ui.done && ui.restored) {
       card.appendChild(h('p', null, rich(item.question || item.prompt || item.front || (item.fallback && item.fallback.question) || '')));
       card.appendChild(resultBanner(ui.result, ui.conf, h('p', { class: 'small' }, fmt(T.answeredAs, { result: T[ui.result] || ui.result }))));
-      card.appendChild(h('div', { class: 'row' }, retryButton(ui, rerender)));
+      card.appendChild(h('div', { class: 'row' }, retryButton(ui, own)));
       return withCoach(card, findAttempt(ui.attemptId));
     }
     var body;
     switch (type) {
-      case 'mcq': body = renderMcq(kp, item, ui, rerender); break;
-      case 'flashcard': body = renderFlashcard(kp, item, ui, rerender); break;
-      case 'free_text': body = renderFreeText(kp, item, ui, rerender); break;
-      case 'plain_qa': body = renderPlainQa(kp, item, item, ui, rerender, 'plain_qa'); break;
-      case 'compare_table_fill': body = renderTable(kp, item, ui, rerender, compareModel(item), 'compare', 'compare_table_fill'); break;
-      case 'timeline_fill': body = renderTable(kp, item, ui, rerender, timelineModel(item), 'other', 'timeline_fill'); break;
-      case 'diagram_fill': body = renderDiagram(kp, item, ui, rerender); break;
+      case 'mcq': body = renderMcq(kp, item, ui, own); break;
+      case 'flashcard': body = renderFlashcard(kp, item, ui, own); break;
+      case 'free_text': body = renderFreeText(kp, item, ui, own); break;
+      case 'plain_qa': body = renderPlainQa(kp, item, item, ui, own, 'plain_qa'); break;
+      case 'compare_table_fill': body = renderTable(kp, item, ui, own, compareModel(item), 'compare', 'compare_table_fill'); break;
+      case 'timeline_fill': body = renderTable(kp, item, ui, own, timelineModel(item), 'other', 'timeline_fill'); break;
+      case 'diagram_fill': body = renderDiagram(kp, item, ui, own); break;
+      case 'numeric': body = renderNumeric(kp, item, ui, own); break;
+      case 'order_steps': body = renderOrder(kp, item, ui, own); break;
+      case 'cloze_passage': body = renderCloze(kp, item, ui, own); break;
+      case 'code_trace': body = renderTrace(kp, item, ui, own); break;
+      case 'terminal': body = renderTerminal(kp, item, ui, own); break;
+      case 'graph': body = renderGraph(kp, item, ui, own); break;
       case 'simulation':
-        body = item.fallback ? [h('p', { class: 'notice' }, T.simNotice), renderPlainQa(kp, item, item.fallback, ui, rerender, 'plain_qa')]
+        if (item.params && item.params.length && item.predict) body = renderLab(kp, item, ui, own);
+        else body = item.fallback ? [h('p', { class: 'notice' }, T.simNotice), renderPlainQa(kp, item, item.fallback, ui, own, 'plain_qa')]
           : h('p', { class: 'notice' }, T.cannotRender);
         break;
       default:
         var source = (item.question && item.answer) ? item : item.fallback;
-        body = source ? [h('p', { class: 'notice' }, T.unknownNotice), renderPlainQa(kp, item, source, ui, rerender, 'plain_qa')]
+        body = source ? [h('p', { class: 'notice' }, T.unknownNotice), renderPlainQa(kp, item, source, ui, own, 'plain_qa')]
           : h('p', { class: 'notice' }, T.cannotRender);
     }
     append(card, body);
     return ui.done ? withCoach(card, findAttempt(ui.attemptId)) : card;
   }
 
-  function renderMcq(kp, item, ui, rerender) {
+  function renderMcq(kp, item, ui, rerender, src, interaction, format) {
+    src = src || item;
     var out = [];
     var name = nextId('mcq');
     var submit;
     function ready() { if (submit) submit.disabled = !(ui.choice !== undefined && ui.conf); }
-    var opts = item.options.map(function (opt, i) {
+    var opts = src.options.map(function (opt, i) {
       var letter = String.fromCharCode(65 + i);
       var cls = 'option';
       if (ui.done) cls += opt.correct ? ' right' : (ui.choice === i ? ' wrong' : '');
@@ -648,14 +795,15 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     var form = h('form', { onsubmit: function (e) {
       e.preventDefault();
       if (ui.choice === undefined || !ui.conf || ui.done) return;
-      var correct = !!item.options[ui.choice].correct;
+      var correct = !!src.options[ui.choice].correct;
       var a = addAttempt(kp, item.id, { phase: undefined, result: correct ? 'correct' : 'incorrect', confidence: ui.conf,
-        hint_level: ui.hintUsed ? 1 : 0, question: item.question, question_format: formatOf(item, 'mcq'),
-        interaction: 'mcq', duration_sec: durationSince(ui) });
+        hint_level: ui.hintUsed ? 1 : 0, question: src.question, question_format: formatOf(item, format || 'mcq'),
+        interaction: interaction || 'mcq', duration_sec: durationSince(ui) });
       ui.done = true; ui.result = a.result; ui.attemptId = a.id;
+      ui.answerText = String.fromCharCode(65 + ui.choice) + '. ' + strip(src.options[ui.choice].text);
       rerender();
     } },
-      h('fieldset', null, h('legend', null, rich(item.question)), codeBlock(item.code), opts),
+      h('fieldset', null, h('legend', null, rich(src.question)), codeBlock(src.code), opts),
       ui.done ? null : confidenceField(ui, ready),
       ui.done ? null : h('div', { class: 'row' }, hintBlock(item, ui, rerender),
         submit = h('button', { type: 'submit', class: 'btn', disabled: !(ui.choice !== undefined && ui.conf) }, T.check)));
@@ -937,6 +1085,628 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       if (ui.result !== 'correct' && ui.result !== 'coherent') out.push(h('div', { class: 'row' }, retryButton(ui, rerender)));
     }
     if (item.explanation && ui.done) out.push(h('p', { class: 'small' }, rich(item.explanation)));
+  }
+
+  // ---------- expressions: same grammar as compile_expr in scripts/build_lesson.py ----------
+  var FUNCS = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan, sqrt: Math.sqrt,
+    abs: Math.abs, exp: Math.exp, ln: Math.log, log: Math.log10, floor: Math.floor, ceil: Math.ceil, round: Math.round,
+    min: Math.min, max: Math.max, pow: Math.pow };
+  var CONSTS = { pi: Math.PI, e: Math.E };
+  var OP_ALIASES = { '**': '^', '×': '*', '÷': '/', '−': '-', '·': '*' };
+  function has(obj, k) { return Object.prototype.hasOwnProperty.call(obj, k); }
+  function compileExpr(src, names) {
+    var re = /^\s*(?:(\d+\.?\d*(?:[eE][+-]?\d+)?|\.\d+(?:[eE][+-]?\d+)?)|([A-Za-z_][A-Za-z0-9_]*)|(\*\*|[-+*\/^(),×÷−·]))/;
+    var tokens = [], rest = String(src == null ? '' : src), i = 0;
+    while (rest.trim()) {
+      var m = re.exec(rest);
+      if (!m) throw new Error('unexpected ' + rest.trim().slice(0, 10));
+      if (m[1] !== undefined) tokens.push({ k: 'n', v: parseFloat(m[1]) });
+      else if (m[2] !== undefined) tokens.push({ k: 'id', v: m[2] });
+      else tokens.push({ k: 'op', v: OP_ALIASES[m[3]] || m[3] });
+      rest = rest.slice(m[0].length);
+    }
+    function isOp(v) { return i < tokens.length && tokens[i].k === 'op' && tokens[i].v === v; }
+    function expect(v) { if (!isOp(v)) throw new Error('expected ' + v); i++; }
+    function startsFactor() { return i < tokens.length && (tokens[i].k !== 'op' || tokens[i].v === '('); }
+    function bin(op, a, b) {
+      if (op === '+') return function (env) { return a(env) + b(env); };
+      if (op === '-') return function (env) { return a(env) - b(env); };
+      if (op === '*') return function (env) { return a(env) * b(env); };
+      if (op === '/') return function (env) { return a(env) / b(env); };
+      return function (env) { return Math.pow(a(env), b(env)); };
+    }
+    function expr() {
+      var left = term();
+      while (isOp('+') || isOp('-')) { var op = tokens[i++].v; left = bin(op, left, term()); }
+      return left;
+    }
+    function term() {
+      var left = unary();
+      for (;;) {
+        if (isOp('*') || isOp('/')) { var op = tokens[i++].v; left = bin(op, left, unary()); }
+        else if (startsFactor()) left = bin('*', left, power());
+        else return left;
+      }
+    }
+    function unary() {
+      if (isOp('-')) { i++; var a = unary(); return function (env) { return -a(env); }; }
+      if (isOp('+')) { i++; return unary(); }
+      return power();
+    }
+    function power() {
+      var base = atom();
+      if (isOp('^')) { i++; return bin('^', base, unary()); }
+      return base;
+    }
+    function atom() {
+      if (i >= tokens.length) throw new Error('unexpected end');
+      var t = tokens[i++];
+      if (t.k === 'n') return function () { return t.v; };
+      if (t.k === 'op' && t.v === '(') { var inner = expr(); expect(')'); return inner; }
+      if (t.k === 'id') {
+        if (has(FUNCS, t.v) && isOp('(')) {
+          i++;
+          var args = [expr()];
+          while (isOp(',')) { i++; args.push(expr()); }
+          expect(')');
+          return function (env) { return FUNCS[t.v].apply(null, args.map(function (a) { return a(env); })); };
+        }
+        if (has(CONSTS, t.v)) return function () { return CONSTS[t.v]; };
+        if (names.indexOf(t.v) >= 0) return function (env) { return env[t.v]; };
+        throw new Error('unknown name ' + t.v);
+      }
+      throw new Error('unexpected ' + t.v);
+    }
+    var fn = expr();
+    if (i !== tokens.length) throw new Error('unexpected ' + tokens[i].v);
+    return fn;
+  }
+  function evalAt(fn, env) {
+    try { var v = fn(env); return typeof v === 'number' && isFinite(v) ? v : NaN; } catch (e) { return NaN; }
+  }
+  function formatNum(v, digits) {
+    if (typeof v !== 'number' || !isFinite(v)) return '—';
+    if (digits !== undefined) return v.toFixed(digits);
+    var a = Math.abs(v);
+    if (a !== 0 && (a >= 1e6 || a < 1e-3)) return v.toExponential(2);
+    return String(Number(v.toPrecision(4)));
+  }
+  function parseNumberInput(raw, unit) {
+    var s = String(raw == null ? '' : raw).trim().replace(/，/g, ',').replace(/（/g, '(').replace(/）/g, ')').replace(/。/g, '.');
+    if (unit && s.slice(-unit.length) === unit) s = s.slice(0, -unit.length).trim();
+    s = s.replace(/(\d),(?=\d{3}(?!\d))/g, '$1');
+    var pct = /%$/.test(s);
+    if (pct) s = s.slice(0, -1);
+    if (!s.trim()) return NaN;
+    try { var v = evalAt(compileExpr(s, []), {}); return pct ? v / 100 : v; } catch (e) { return NaN; }
+  }
+
+  // ---------- seeded order: the same lesson shows the same shuffle after a reload ----------
+  function rng(seed) {
+    var a = 2166136261;
+    for (var i = 0; i < seed.length; i++) { a ^= seed.charCodeAt(i); a = Math.imul(a, 16777619); }
+    return function () {
+      a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function shuffled(n, seed) {
+    var idx = [], r = rng(seed);
+    for (var i = 0; i < n; i++) idx.push(i);
+    for (var j = n - 1; j > 0; j--) { var k = Math.floor(r() * (j + 1)), t = idx[j]; idx[j] = idx[k]; idx[k] = t; }
+    return idx;
+  }
+  function scrambled(n, nSteps, seed) {
+    for (var t = 0; t < 20; t++) {
+      var idx = shuffled(n, seed + '#' + t);
+      if (idx.filter(function (v) { return v < nSteps; }).some(function (v, i) { return v !== i; })) return idx;
+    }
+    return shuffled(n, seed).reverse();
+  }
+  function lcs(a, b) {
+    var prev = b.map(function () { return 0; }).concat(0);
+    a.forEach(function (x) {
+      var cur = [0];
+      b.forEach(function (y, j) { cur.push(x === y ? prev[j] + 1 : Math.max(prev[j + 1], cur[j])); });
+      prev = cur;
+    });
+    return prev[b.length];
+  }
+  function strip(text) { return String(text == null ? '' : text).replace(/`/g, ''); }
+  function dontKnowButton(kp, item, ui, rerender, question, format, interaction) {
+    return h('button', { type: 'button', class: 'btn quiet', onclick: function () {
+      var a = addAttempt(kp, item.id, { result: 'dont_know', hint_level: ui.hintUsed ? 1 : 0, question: question,
+        question_format: formatOf(item, format), interaction: interaction, duration_sec: durationSince(ui) });
+      ui.done = true; ui.result = 'dont_know'; ui.attemptId = a.id;
+      rerender();
+    } }, T.dontKnow);
+  }
+  function finishedTail(out, ui, rerender) {
+    out.push(errorChooser(ui.attemptId));
+    if (ui.result !== 'correct' && ui.result !== 'coherent') out.push(h('div', { class: 'row' }, retryButton(ui, rerender)));
+  }
+
+  // ---------- numeric answer (maths, physics, chemistry, finance) ----------
+  function numericTolerance(item) {
+    var v = Math.abs(item.value);
+    return Math.max(item.tolerance || 0, v * (item.tolerance_pct || 0) / 100, 1e-9 * Math.max(1, v));
+  }
+  function renderNumeric(kp, item, ui, rerender) {
+    var unit = item.unit || '';
+    var out = [h('p', null, h('strong', null, rich(item.question))), codeBlock(item.code)];
+    if (!ui.done) {
+      var submit, reads;
+      var ready = function () {
+        var v = parseNumberInput(ui.draft, unit);
+        reads.textContent = norm(ui.draft) ? (isNaN(v) ? T.numBad : fmt(T.numReads, { v: formatNum(v) + (unit ? ' ' + unit : '') })) : '';
+        submit.disabled = !(!isNaN(v) && ui.conf);
+      };
+      out.push(h('p', { class: 'small muted' }, T.closedBook));
+      out.push(h('form', { onsubmit: function (e) {
+        e.preventDefault();
+        var v = parseNumberInput(ui.draft, unit);
+        if (isNaN(v) || !ui.conf) return;
+        var typed = String(ui.draft).trim();
+        ui.answerText = typed + (formatNum(v) !== typed ? ' (= ' + formatNum(v) + (unit ? ' ' + unit : '') + ')' : (unit && typed.slice(-unit.length) !== unit ? ' ' + unit : ''));
+        var a = addAttempt(kp, item.id, { result: Math.abs(v - item.value) <= numericTolerance(item) ? 'correct' : 'incorrect', confidence: ui.conf,
+          hint_level: ui.hintUsed ? 1 : 0, question: item.question, question_format: formatOf(item, 'apply'), interaction: 'numeric',
+          duration_sec: durationSince(ui) });
+        ui.done = true; ui.result = a.result; ui.attemptId = a.id;
+        rerender();
+      } },
+        h('label', { class: 'num-row' }, h('span', { class: 'sr-only' }, T.yourAnswer),
+          h('input', { type: 'text', autocomplete: 'off', spellcheck: 'false', placeholder: T.numPlaceholder, value: ui.draft || '',
+            oninput: function () { ui.draft = this.value; ready(); } }),
+          unit ? h('span', { class: 'unit' }, unit) : null),
+        reads = h('p', { class: 'reads', 'aria-live': 'polite' }),
+        confidenceField(ui, function () { ready(); }),
+        h('div', { class: 'row' }, hintBlock(item, ui, rerender), dontKnowButton(kp, item, ui, rerender, item.question, 'apply', 'numeric'),
+          submit = h('button', { type: 'submit', class: 'btn', disabled: true }, T.check))));
+      ready();
+      return out;
+    }
+    if (ui.answerText) out.push(h('p', null, h('strong', null, T.yourAnswer + T.colon), ui.answerText));
+    var tol = Math.max(item.tolerance || 0, Math.abs(item.value) * (item.tolerance_pct || 0) / 100);
+    out.push(h('div', { class: 'teach' },
+      h('p', null, h('strong', null, T.numAnswerIs), String(item.value) + (unit ? ' ' + unit : ''),
+        tol ? h('span', { class: 'muted small' }, ' ' + fmt(T.numTol, { t: formatNum(tol) + (unit ? ' ' + unit : '') })) : null),
+      item.solution && item.solution.length ? [h('h3', null, T.solution), h('ol', null, item.solution.map(function (s) { return h('li', null, rich(s)); }))] : null,
+      item.explanation ? h('p', { class: 'small' }, rich(item.explanation)) : null));
+    out.push(resultBanner(ui.result, ui.conf));
+    finishedTail(out, ui, rerender);
+    return out;
+  }
+
+  // ---------- put in order (procedures, history, Parsons problems, sentence building) ----------
+  function renderOrder(kp, item, ui, rerender) {
+    var steps = item.steps || [], pool = steps.concat(item.distractors || []);
+    var tiles = item.layout === 'tiles';
+    if (!ui.pool || ui.pool.length !== pool.length) { ui.pool = scrambled(pool.length, steps.length, data.lesson_id + '/' + keyOf(kp, item)); ui.order = []; }
+    var want = ui.focus;
+    delete ui.focus;
+    var focusAttr = function (id) { return want === id ? '1' : null; };
+    var mono = item.monospace ? ' mono' : '';
+    var full = ui.order.length === steps.length;
+    var out = [h('p', null, h('strong', null, rich(item.prompt))), codeBlock(item.code)];
+    if (!ui.done) out.push(h('p', { class: 'small muted' }, T.orderHelp + (item.distractors && item.distractors.length ? ' ' + T.orderDistract : '')));
+
+    var move = function (k, to, focus) {
+      var t = ui.order[k]; ui.order[k] = ui.order[to]; ui.order[to] = t;
+      ui.focus = focus; rerender();
+    };
+    var list = h('ol', { class: 'order-list' + (tiles ? ' tiles' : '') + mono, 'aria-label': T.orderAnswer });
+    ui.order.forEach(function (pi, k) {
+      var last = k === ui.order.length - 1;
+      var li = h('li', { class: ui.done ? (ui.marks[k] ? 'ok' : 'bad') : null },
+        h('span', { class: 'n', 'aria-hidden': 'true' }, String(k + 1)), h('span', { class: 'txt' }, rich(pool[pi])));
+      if (ui.done) {
+        li.appendChild(h('span', { class: 'mark' }, h('span', { 'aria-hidden': 'true' }, ui.marks[k] ? '✓' : '✗'),
+          h('span', { class: 'sr-only' }, ui.marks[k] ? T.correct : T.incorrect)));
+      } else {
+        var name = strip(pool[pi]).trim();
+        li.appendChild(h('span', { class: 'tools' },
+          h('button', { type: 'button', class: 'icon-btn', 'aria-label': T.moveEarlier + T.colon + name, title: T.moveEarlier, disabled: k === 0,
+            'data-focus': focusAttr('up' + k), onclick: function () { move(k, k - 1, k - 1 === 0 ? 'down0' : 'up' + (k - 1)); } }, tiles ? '←' : '↑'),
+          h('button', { type: 'button', class: 'icon-btn', 'aria-label': T.moveLater + T.colon + name, title: T.moveLater, disabled: last,
+            'data-focus': focusAttr('down' + k), onclick: function () { move(k, k + 1, k + 1 === ui.order.length - 1 ? 'up' + (k + 1) : 'down' + (k + 1)); } }, tiles ? '→' : '↓'),
+          h('button', { type: 'button', class: 'icon-btn', 'aria-label': T.removeItem + T.colon + name, title: T.removeItem,
+            'data-focus': focusAttr('rm' + k), onclick: function () {
+              ui.order.splice(k, 1);
+              ui.focus = ui.order.length > k ? 'rm' + k : (ui.order.length ? 'rm' + (ui.order.length - 1) : 'pool0');
+              rerender();
+            } }, '×')));
+      }
+      list.appendChild(li);
+    });
+
+    if (!ui.done) {
+      var submit;
+      out.push(h('p', { class: 'small muted', 'aria-live': 'polite' }, fmt(T.orderCount, { n: ui.order.length, total: steps.length })));
+      if (ui.order.length) out.push(list);
+      var avail = ui.pool.filter(function (pi) { return ui.order.indexOf(pi) < 0; });
+      if (avail.length) {
+        out.push(h('div', { class: 'pool' + (tiles ? ' tiles' : '') + mono, role: 'group', 'aria-label': T.orderPool },
+          h('p', { class: 'small muted' }, T.orderPool),
+          avail.map(function (pi, j) {
+            return h('button', { type: 'button', class: 'pool-item', disabled: full, 'data-focus': focusAttr('pool' + j), onclick: function () {
+              ui.order.push(pi);
+              ui.focus = ui.order.length === steps.length ? 'check' : (j < avail.length - 1 ? 'pool' + j : (j > 0 ? 'pool' + (j - 1) : 'check'));
+              rerender();
+            } }, rich(pool[pi]));
+          })));
+      }
+      out.push(confidenceField(ui, function () { submit.disabled = !(full && ui.conf); }));
+      out.push(h('div', { class: 'row' }, hintBlock(item, ui, rerender), dontKnowButton(kp, item, ui, rerender, item.prompt, 'explain_steps', 'order_steps'),
+        submit = h('button', { type: 'button', class: 'btn', disabled: !(full && ui.conf), 'data-focus': focusAttr('check'), onclick: function () {
+          var answer = ui.order.map(function (pi) { return pool[pi]; });
+          var refs = [steps].concat(item.alternatives || []), best = 0, score = -1;
+          refs.forEach(function (ref, r) { var s = lcs(answer, ref); if (s > score) { score = s; best = r; } });
+          var ref = refs[best];
+          ui.marks = answer.map(function (x, k) { return x === ref[k]; });
+          ui.ref = best;
+          var exact = ui.marks.every(Boolean) && answer.length === ref.length;
+          ui.answerText = answer.map(strip).join(tiles ? ' ' : ' → ');
+          var a = addAttempt(kp, item.id, { result: exact ? 'correct' : (score / steps.length >= 0.5 ? 'partial' : 'incorrect'), confidence: ui.conf,
+            hint_level: ui.hintUsed ? 1 : 0, question: item.prompt, question_format: formatOf(item, 'explain_steps'), interaction: 'order_steps',
+            duration_sec: durationSince(ui) });
+          ui.done = true; ui.result = a.result; ui.attemptId = a.id;
+          rerender();
+        } }, T.check)));
+      return out;
+    }
+    if (ui.order.length) out.push(list);
+    var refOrder = [steps].concat(item.alternatives || [])[ui.ref || 0] || steps;
+    if (ui.result !== 'correct') {
+      out.push(h('div', { class: 'teach' }, h('h3', null, T.orderCorrect),
+        h('ol', { class: mono ? 'mono' : null }, refOrder.map(function (s) { return h('li', null, rich(s)); })),
+        item.distractors && item.distractors.length ? h('p', { class: 'small' }, T.orderNotUsed, item.distractors.map(function (d, i) {
+          return [i ? T.listSep : '', mono ? h('code', { class: 'keep-space' }, d) : rich(d)];
+        })) : null));
+    }
+    if (item.explanation) out.push(h('p', { class: 'small' }, rich(item.explanation)));
+    out.push(resultBanner(ui.result, ui.conf));
+    finishedTail(out, ui, rerender);
+    return out;
+  }
+
+  // ---------- cloze passage (languages, law, definitions, equations) ----------
+  function clozeModel(text) {
+    var parts = [], cells = [], re = /\[\[(.*?)\]\]/g, last = 0, m;
+    while ((m = re.exec(text))) {
+      if (m.index > last) parts.push(text.slice(last, m.index));
+      var variants = m[1].split('|').map(function (s) { return s.trim(); }).filter(Boolean);
+      parts.push({ blank: cells.length });
+      cells.push({ text: variants[0] || '', accept: variants });
+      last = re.lastIndex;
+    }
+    parts.push(text.slice(last));
+    return { parts: parts, cells: cells };
+  }
+  function renderCloze(kp, item, ui, rerender) {
+    var model = clozeModel(String(item.text || '')), cells = model.cells;
+    if (!ui.vals || ui.vals.length !== cells.length) ui.vals = cells.map(function () { return ''; });
+    var want = ui.focus;
+    delete ui.focus;
+    var out = [h('p', null, h('strong', null, rich(item.prompt))), h('p', { class: 'small muted' }, T.fillFirst)];
+    if (item.bank && !ui.checked) {
+      var words = cells.map(function (c) { return c.text; }).concat(item.bank_extra || []);
+      out.push(h('div', { class: 'bank', role: 'group', 'aria-label': T.wordBank }, h('p', { class: 'small muted' }, T.wordBank),
+        h('div', { class: 'chips' }, shuffled(words.length, data.lesson_id + '/' + keyOf(kp, item)).map(function (wi, j) {
+          return h('button', { type: 'button', class: 'chip', 'data-focus': want === 'bank' + j ? '1' : null, onclick: function () {
+            var k = ui.vals.map(function (v) { return norm(v); }).indexOf('');
+            if (k < 0) return;
+            ui.vals[k] = words[wi];
+            ui.focus = 'bank' + j;
+            rerender();
+          } }, words[wi]);
+        }))));
+    }
+    var size = Math.max(5, Math.min(24, Math.max.apply(null, [0].concat(cells.map(function (c) { return c.text.length; }))) + 2));
+    var p = h('p', { class: 'cloze' });
+    model.parts.forEach(function (part) {
+      if (typeof part === 'string') { p.appendChild(rich(part)); return; }
+      var k = part.blank, el = blankCell(ui, cells[k], k, fmt(T.blankN, { n: k + 1 }));
+      if (!ui.checked) { el.size = size; if (want === 'blank' + k) el.setAttribute('data-focus', '1'); }
+      p.appendChild(ui.checked ? h('span', { class: 'blank-done ' + (ui.marks[k] ? 'cell-ok' : 'cell-bad') }, el) : el);
+    });
+    out.push(p);
+    appendBlankControls(out, kp, item, ui, rerender, cells, 'cloze', 'cloze_passage');
+    return out;
+  }
+
+  // ---------- code tracing (programming) ----------
+  function codeLines(code, language, cur) {
+    var pre = h('pre', { class: 'code-lines' });
+    String(code || '').split('\n').forEach(function (line, i) {
+      pre.appendChild(h('span', { class: 'ln' + (i + 1 === cur ? ' cur' : ''), 'data-n': String(i + 1), 'aria-current': i + 1 === cur ? 'step' : null }, line || ' '));
+    });
+    return h('div', { class: 'code-wrap' }, language ? h('span', { class: 'lang' }, language) : null, pre);
+  }
+  function showValue(v) { return typeof v === 'string' ? v : JSON.stringify(v); }
+  function tracePlayer(item, ui, rerender, want) {
+    var trace = item.trace || [], step = Math.max(0, Math.min(ui.step || 0, trace.length - 1));
+    var names = [], vals = {}, before = {}, printed = [];
+    for (var s = 0; s <= step; s++) {
+      if (s === step) before = Object.assign({}, vals);
+      var vars = trace[s].vars || {};
+      Object.keys(vars).forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); vals[n] = vars[n]; });
+      if (trace[s].out !== undefined) printed.push(trace[s].out);
+    }
+    var go = function (to) {
+      ui.step = to;
+      ui.focus = to === 0 ? 'next' : (to === trace.length - 1 ? 'prev' : (to > step ? 'next' : 'prev'));
+      announce(fmt(T.traceStep, { n: to + 1, total: trace.length, line: trace[to].line }));
+      rerender();
+    };
+    return h('div', { class: 'trace' },
+      h('div', { class: 'trace-head' }, h('h3', null, T.traceTitle),
+        h('span', { class: 'small muted' }, fmt(T.traceStep, { n: step + 1, total: trace.length, line: trace[step].line }))),
+      trace[step].note ? h('p', { class: 'small' }, rich(trace[step].note)) : null,
+      h('div', { class: 'trace-grid' },
+        h('div', null, h('p', { class: 'trace-label' }, T.traceVars),
+          names.length ? h('table', { class: 'fill vars' }, h('tbody', null, names.map(function (n) {
+            var changed = has(trace[step].vars || {}, n) && showValue(before[n]) !== showValue(vals[n]);
+            return h('tr', { class: changed ? 'changed' : null }, h('th', { scope: 'row' }, n), h('td', null, showValue(vals[n])));
+          }))) : h('p', { class: 'small muted' }, '—')),
+        h('div', null, h('p', { class: 'trace-label' }, T.traceOut), h('pre', { class: 'out' }, printed.join('\n') || ' '))),
+      h('div', { class: 'row' },
+        h('button', { type: 'button', class: 'btn secondary', disabled: step === 0, 'data-focus': want === 'prev' ? '1' : null, onclick: function () { go(step - 1); } }, T.tracePrev),
+        h('button', { type: 'button', class: 'btn secondary', disabled: step >= trace.length - 1, 'data-focus': want === 'next' ? '1' : null, onclick: function () { go(step + 1); } }, T.traceNext)));
+  }
+  function renderTrace(kp, item, ui, rerender) {
+    var qs = item.questions || [];
+    var cells = qs.map(function (q) { return { text: q.answer, accept: [q.answer].concat(q.accept || []) }; });
+    if (!ui.vals || ui.vals.length !== cells.length) ui.vals = cells.map(function () { return ''; });
+    var want = ui.focus;
+    delete ui.focus;
+    var trace = item.trace || [];
+    var cur = ui.checked && trace.length ? trace[Math.max(0, Math.min(ui.step || 0, trace.length - 1))].line : 0;
+    var out = [h('p', null, h('strong', null, rich(item.prompt))), h('p', { class: 'small muted' }, ui.checked ? T.traceAfter : T.tracePredict),
+      codeLines(item.code, item.language, cur)];
+    if (ui.checked && trace.length) out.push(tracePlayer(item, ui, rerender, want));
+    out.push(h('ol', { class: 'trace-qs' }, qs.map(function (q, k) {
+      return h('li', { class: ui.checked ? (ui.marks[k] ? 'cell-ok' : 'cell-bad') : null },
+        h('span', { class: 'q' }, rich(q.question)), blankCell(ui, cells[k], k, strip(q.question)));
+    })));
+    appendBlankControls(out, kp, item, ui, rerender, cells, 'predict', 'code_trace');
+    if (ui.checked) ui.answerText = qs.map(function (q, k) { return strip(q.question) + ' → ' + (ui.vals[k] || '—'); }).join('; ');
+    return out;
+  }
+
+  // ---------- simulated terminal (command line, git, devops) ----------
+  function normCmd(s) { return String(s == null ? '' : s).trim().replace(/\s+/g, ' '); }
+  function renderTerminal(kp, item, ui, rerender) {
+    var cmds = item.commands || [], ps1 = item.shell_prompt || '$';
+    if (!ui.log) { ui.log = []; ui.step = 0; ui.tries = cmds.map(function () { return 0; }); ui.shown = cmds.map(function () { return false; }); ui.hinted = cmds.map(function () { return false; }); }
+    var want = ui.focus;
+    delete ui.focus;
+    var finished = ui.step >= cmds.length;
+    var finish = function () {
+      if (ui.step < cmds.length || ui.done) return;
+      var shown = ui.shown.filter(Boolean).length;
+      var clean = cmds.every(function (c, k) { return !ui.shown[k] && !ui.tries[k]; });
+      var result = shown === cmds.length ? 'dont_know' : (clean ? 'correct' : (shown * 2 > cmds.length ? 'incorrect' : 'partial'));
+      ui.answerText = ui.log.filter(function (e) { return e.kind === 'cmd'; }).map(function (e) { return ps1 + ' ' + e.text + (e.shown ? ' ' + T.termRevealed : ''); }).join('\n');
+      var a = addAttempt(kp, item.id, { result: result, hint_level: shown ? 3 : (ui.hinted.some(Boolean) ? 1 : 0), question: item.prompt,
+        question_format: formatOf(item, 'produce'), interaction: 'terminal', duration_sec: durationSince(ui) });
+      ui.done = true; ui.result = result; ui.attemptId = a.id;
+    };
+    var accepted = function (c) { if (c.output) ui.log.push({ kind: 'out', text: c.output }); ui.step += 1; ui.focus = 'term'; finish(); rerender(); };
+    var out = [h('p', null, h('strong', null, rich(item.prompt))), h('p', { class: 'notice small' }, T.termNotice)];
+    var c = finished ? null : cmds[ui.step];
+    if (c) out.push(h('p', { class: 'term-task' }, h('strong', null, fmt(T.termTask, { n: ui.step + 1, total: cmds.length })), ' ', rich(c.task)));
+    var log = h('pre', { class: 'term-log' });
+    if (item.setup) log.appendChild(h('span', { class: 'note' }, item.setup + '\n'));
+    ui.log.forEach(function (e) {
+      if (e.kind === 'cmd') log.appendChild(h('span', null, h('span', { class: 'ps1' }, ps1 + ' '), e.text, e.shown ? h('span', { class: 'note' }, '  ' + T.termRevealed) : null, '\n'));
+      else log.appendChild(h('span', { class: e.kind }, e.text + '\n'));
+    });
+    var screen = h('div', { class: 'term', role: 'group', 'aria-label': T.termLabel }, log);
+    if (c) {
+      var input;
+      screen.appendChild(h('form', { class: 'term-line', onsubmit: function (e) {
+        e.preventDefault();
+        var typed = normCmd(input.value);
+        if (!typed) return;
+        ui.log.push({ kind: 'cmd', text: typed });
+        if (c.accept.some(function (a) { return normCmd(a) === typed; })) { accepted(c); return; }
+        ui.tries[ui.step] += 1;
+        ui.log.push({ kind: 'err', text: T.termUnknown });
+        ui.focus = 'term';
+        rerender();
+      } },
+        h('label', null, h('span', { class: 'ps1', 'aria-hidden': 'true' }, ps1), h('span', { class: 'sr-only' }, T.termInput),
+          input = h('input', { type: 'text', class: 'term-in', autocomplete: 'off', autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false',
+            'data-focus': want === 'term' ? '1' : null,
+            onkeydown: function (e) {
+              var mine = ui.log.filter(function (x) { return x.kind === 'cmd' && !x.shown; });
+              if (e.key === 'ArrowUp' && mine.length) { e.preventDefault(); this.value = mine[mine.length - 1].text; }
+            } }))));
+    }
+    out.push(screen);
+    if (c) {
+      out.push(h('div', { class: 'row' },
+        c.hint ? (ui.hinted[ui.step] ? h('p', { class: 'notice' }, T.hintLabel, rich(c.hint))
+          : h('button', { type: 'button', class: 'btn quiet', onclick: function () { ui.hinted[ui.step] = true; ui.focus = 'term'; rerender(); } }, T.hint)) : null,
+        h('button', { type: 'button', class: 'btn quiet', onclick: function () {
+          ui.shown[ui.step] = true;
+          ui.log.push({ kind: 'cmd', text: normCmd(c.accept[0]), shown: true });
+          accepted(c);
+        } }, T.termReveal)));
+      return out;
+    }
+    if (item.explanation) out.push(h('p', { class: 'small' }, rich(item.explanation)));
+    out.push(resultBanner(ui.result, null));
+    finishedTail(out, ui, rerender);
+    return out;
+  }
+
+  // ---------- plots and sliders (graph, simulation) ----------
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function svg(tag, attrs, text) {
+    var el = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { if (attrs[k] !== null && attrs[k] !== undefined) el.setAttribute(k, attrs[k]); });
+    if (text !== undefined) el.textContent = text;
+    return el;
+  }
+  function niceStep(span) {
+    var raw = span / 6, p = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10)), m = raw / p;
+    return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p;
+  }
+  function makePlot(spec, label) {
+    var W = 480, H = 300, L = 40, R = 12, TOP = 12, B = 30;
+    var xr = spec.x_range, yr = spec.y_range;
+    var sx = function (x) { return L + (x - xr[0]) / (xr[1] - xr[0]) * (W - L - R); };
+    var sy = function (y) { return H - B - (y - yr[0]) / (yr[1] - yr[0]) * (H - TOP - B); };
+    var root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'plot', role: 'img', 'aria-label': label });
+    var clip = nextId('clip');
+    var defs = svg('defs'), cp = svg('clipPath', { id: clip });
+    cp.appendChild(svg('rect', { x: L, y: TOP, width: W - L - R, height: H - TOP - B }));
+    defs.appendChild(cp);
+    root.appendChild(defs);
+    var grid = svg('g', { class: 'grid' }), labels = svg('g', { class: 'ticks' });
+    var dx = niceStep(xr[1] - xr[0]), dy = niceStep(yr[1] - yr[0]), n;
+    for (n = Math.ceil(xr[0] / dx); n * dx <= xr[1] + dx * 1e-6; n++) {
+      var px = sx(n * dx);
+      grid.appendChild(svg('line', { x1: px, x2: px, y1: TOP, y2: H - B }));
+      labels.appendChild(svg('text', { x: px, y: H - B + 18, 'text-anchor': 'middle' }, formatNum(Number((n * dx).toPrecision(6)))));
+    }
+    for (n = Math.ceil(yr[0] / dy); n * dy <= yr[1] + dy * 1e-6; n++) {
+      var py = sy(n * dy);
+      grid.appendChild(svg('line', { x1: L, x2: W - R, y1: py, y2: py }));
+      labels.appendChild(svg('text', { x: L - 6, y: py + 4, 'text-anchor': 'end' }, formatNum(Number((n * dy).toPrecision(6)))));
+    }
+    root.appendChild(grid);
+    if (xr[0] <= 0 && xr[1] >= 0) root.appendChild(svg('line', { class: 'axis', x1: sx(0), x2: sx(0), y1: TOP, y2: H - B }));
+    if (yr[0] <= 0 && yr[1] >= 0) root.appendChild(svg('line', { class: 'axis', x1: L, x2: W - R, y1: sy(0), y2: sy(0) }));
+    root.appendChild(labels);
+    if (spec.x_label) root.appendChild(svg('text', { class: 'axis-label', x: W - R - 4, y: H - B - 6, 'text-anchor': 'end' }, spec.x_label));
+    if (spec.y_label) root.appendChild(svg('text', { class: 'axis-label', x: L + 6, y: TOP + 14 }, spec.y_label));
+    var curves = svg('g', { 'clip-path': 'url(#' + clip + ')' });
+    root.appendChild(curves);
+    (spec.points || []).forEach(function (p) {
+      root.appendChild(svg('circle', { class: 'pt', cx: sx(p.x), cy: sy(p.y), r: 4 }));
+      if (p.label) root.appendChild(svg('text', { class: 'pt-label', x: sx(p.x) + 7, y: sy(p.y) - 7 }, p.label));
+    });
+    function path(fn, env) {
+      var d = '', pen = false, prevSide = 0, span = yr[1] - yr[0], lo = yr[0] - 5 * span, hi = yr[1] + 5 * span;
+      for (var k = 0; k <= 240; k++) {
+        var x = xr[0] + (xr[1] - xr[0]) * k / 240;
+        var y = evalAt(fn, Object.assign({}, env, { x: x }));
+        if (isNaN(y)) { pen = false; prevSide = 0; continue; }
+        var side = y > yr[1] ? 1 : (y < yr[0] ? -1 : 0);
+        if (side * prevSide === -1) pen = false;
+        prevSide = side;
+        d += (pen ? 'L' : 'M') + sx(x).toFixed(1) + ' ' + sy(Math.max(lo, Math.min(hi, y))).toFixed(1);
+        pen = true;
+      }
+      return d;
+    }
+    return { el: root, draw: function (list) {
+      curves.textContent = '';
+      list.forEach(function (c) { curves.appendChild(svg('path', { class: c.cls, d: path(c.fn, c.env) })); });
+    } };
+  }
+  function paramText(p, v) { return formatNum(v) + (p.unit ? ' ' + p.unit : ''); }
+  function sliderRows(params, ui, locked, onInput) {
+    return h('div', { class: 'sliders' }, params.map(function (p) {
+      var shown = h('output', { class: 'val' }, paramText(p, ui.vals[p.name]));
+      return h('label', { class: 'slider' }, h('span', { class: 'name' }, p.label || p.name),
+        h('input', { type: 'range', min: p.min, max: p.max, step: p.step || (p.max - p.min) / 100, value: ui.vals[p.name], disabled: locked,
+          'aria-valuetext': paramText(p, ui.vals[p.name]),
+          oninput: function () {
+            ui.vals[p.name] = Number(this.value);
+            shown.textContent = paramText(p, ui.vals[p.name]);
+            this.setAttribute('aria-valuetext', shown.textContent);
+            onInput();
+          },
+          onchange: function () { save(); } }),
+        shown);
+    }));
+  }
+  function startValues(ui, params) {
+    if (!ui.vals || Array.isArray(ui.vals)) { ui.vals = {}; params.forEach(function (p) { ui.vals[p.name] = p.value; }); }
+  }
+  function valuesText(params, vals) { return params.map(function (p) { return p.name + ' = ' + paramText(p, vals[p.name]); }).join(', '); }
+
+  function renderGraph(kp, item, ui, rerender) {
+    var params = item.params || [], fn;
+    try { fn = compileExpr(item.expr, params.map(function (p) { return p.name; }).concat(['x'])); }
+    catch (e) { return h('p', { class: 'notice' }, T.cannotRender); }
+    startValues(ui, params);
+    var plot = makePlot(item, fmt(T.plotLabel, { expr: 'y = ' + item.expr }));
+    var matching = !!item.target && !item.predict;
+    var showMine = !matching || ui.misses || ui.done;
+    var draw = function () {
+      var list = [];
+      if (matching) list.push({ fn: fn, env: item.target, cls: 'target' });
+      if (showMine) list.push({ fn: fn, env: ui.vals, cls: 'curve' });
+      plot.draw(list);
+    };
+    draw();
+    var out = [h('p', null, h('strong', null, rich(item.prompt))), h('p', { class: 'small muted' }, h('code', null, 'y = ' + item.expr)), plot.el];
+    if (matching) out.push(h('p', { class: 'legend small muted' }, h('span', { class: 'key target' }), T.targetCurve, showMine ? [h('span', { class: 'key curve' }), T.yourCurve] : null));
+    if (!matching) {
+      var locked = !ui.done;
+      out.push(h('p', { class: 'small muted' }, locked ? T.predictLocked : T.explore));
+      out.push(sliderRows(params, ui, locked, draw));
+      out.push(renderMcq(kp, item, ui, rerender, item.predict, 'graph', 'predict'));
+      return out;
+    }
+    out.push(h('p', { class: 'small muted' }, ui.done ? T.explore : (ui.misses ? T.graphAdjust : T.graphMatch)));
+    out.push(sliderRows(params, ui, false, draw));
+    if (!ui.done) {
+      var tolOf = function (p) { return item.tolerance !== undefined ? item.tolerance : (p.step || (p.max - p.min) / 100) / 2; };
+      var finishGraph = function (result, hintLevel) {
+        ui.answerText = valuesText(params, ui.vals);
+        var a = addAttempt(kp, item.id, { result: result, hint_level: hintLevel, question: item.prompt, question_format: formatOf(item, 'apply'),
+          interaction: 'graph', duration_sec: durationSince(ui) });
+        ui.done = true; ui.result = result; ui.attemptId = a.id;
+        rerender();
+      };
+      if (ui.misses) out.push(h('p', { class: 'notice', tabindex: '-1', 'data-focus': '1' }, T.graphMiss));
+      out.push(h('div', { class: 'row' }, hintBlock(item, ui, rerender),
+        ui.misses >= 2 ? h('button', { type: 'button', class: 'btn quiet', onclick: function () { finishGraph('incorrect', 3); } }, T.graphShow) : null,
+        h('button', { type: 'button', class: 'btn', onclick: function () {
+          var hit = params.every(function (p) { return Math.abs(ui.vals[p.name] - item.target[p.name]) <= tolOf(p) + 1e-9; });
+          if (hit) { finishGraph(ui.misses ? 'partial' : 'correct', ui.hintUsed ? 1 : 0); return; }
+          ui.misses = (ui.misses || 0) + 1;
+          rerender();
+        } }, T.check)));
+      return out;
+    }
+    out.push(h('p', { class: 'small' }, h('strong', null, T.targetWas), valuesText(params, item.target)));
+    if (item.explanation) out.push(h('p', { class: 'small' }, rich(item.explanation)));
+    out.push(resultBanner(ui.result, null));
+    finishedTail(out, ui, rerender);
+    return out;
+  }
+
+  function renderLab(kp, item, ui, rerender) {
+    var params = item.params || [], names = params.map(function (p) { return p.name; }).concat(['x']), outputs, curve;
+    try {
+      outputs = (item.outputs || []).map(function (o) { return { spec: o, fn: compileExpr(o.expr, names) }; });
+      curve = item.plot ? compileExpr(item.plot.expr, names) : null;
+    } catch (e) { return h('p', { class: 'notice' }, T.cannotRender); }
+    startValues(ui, params);
+    var locked = !ui.done;
+    var readouts = h('div', { class: 'readouts' });
+    var plot = curve ? makePlot(item.plot, fmt(T.plotLabel, { expr: item.plot.expr })) : null;
+    var update = function () {
+      readouts.textContent = '';
+      outputs.forEach(function (o) {
+        readouts.appendChild(h('div', { class: 'readout' }, h('span', { class: 'small muted' }, o.spec.label),
+          h('b', null, formatNum(evalAt(o.fn, ui.vals), o.spec.digits) + (o.spec.unit ? ' ' + o.spec.unit : ''))));
+      });
+      if (plot) plot.draw([{ fn: curve, env: ui.vals, cls: 'curve' }]);
+    };
+    update();
+    return [h('p', null, h('strong', null, rich(item.prompt))),
+      h('p', { class: 'small muted' }, locked ? (plot ? T.labLocked : T.predictLocked) : T.explore),
+      sliderRows(params, ui, locked, update), outputs.length ? readouts : null, plot && !locked ? plot.el : null,
+      renderMcq(kp, item, ui, rerender, item.predict, 'simulation', 'predict')];
   }
 
   // ---------- panels ----------
@@ -1347,8 +2117,12 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     else if (state.tab === 'mistakes') renderMistakes(panel);
     else renderData(panel);
     save();
+    var scope = state.focusKey ? Array.prototype.filter.call(panel.querySelectorAll('[data-key]'), function (el) { return el.getAttribute('data-key') === state.focusKey; })[0] : null;
+    state.focusKey = null;
     if (moveFocus !== false) {
-      var target = panel.querySelector('[data-focus="1"]') || panel.querySelector('.card.open textarea, .card.open input, .card.open button');
+      var target = (scope && (scope.querySelector('[data-focus="1"]') || scope.querySelector('input:not([disabled]), textarea, button:not([disabled])'))) ||
+        panel.querySelector('[data-focus="1"]') ||
+        panel.querySelector('.card.open textarea, .card.open input, .card.open button');
       if (target && moveFocus) target.focus({ preventScroll: false });
       else if (target && document.activeElement === document.body) target.focus({ preventScroll: true });
     }

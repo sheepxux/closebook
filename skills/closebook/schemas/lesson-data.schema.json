@@ -37,7 +37,8 @@
         "method": { "$ref": "progress.schema.json#/$defs/method" },
         "interaction_type": {
           "type": "string",
-          "enum": ["mcq", "flashcard", "free_text", "diagram_fill", "simulation", "timeline_fill", "compare_table_fill", "plain_qa"],
+          "enum": ["mcq", "flashcard", "free_text", "diagram_fill", "simulation", "timeline_fill", "compare_table_fill", "plain_qa",
+                   "numeric", "order_steps", "cloze_passage", "code_trace", "terminal", "graph"],
           "description": "Unknown values are shown as plain_qa by the page."
         },
         "interaction_reason": { "type": "string", "minLength": 1, "description": "One sentence: what this form saves or improves compared with plain Q&A." },
@@ -65,6 +66,31 @@
         "accept": { "type": "array", "items": { "type": "string" }, "description": "Accepted answers for automatic matching; defaults to [text]." }
       }
     },
+    "option": {
+      "type": "object",
+      "required": ["text", "correct", "explanation"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string" },
+        "correct": { "type": "boolean" },
+        "explanation": { "type": "string", "description": "Why it's right, or which misconception it represents." }
+      }
+    },
+    "param": {
+      "type": "object",
+      "required": ["name", "min", "max", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,15}$", "description": "Used in expressions; not x, pi or e." },
+        "label": { "type": "string", "description": "Shown next to the slider; defaults to name." },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "step": { "type": "number", "minimum": 0, "description": "Default: (max - min) / 100." },
+        "value": { "type": "number", "description": "Starting value." },
+        "unit": { "type": "string" }
+      }
+    },
+    "range": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
     "item": {
       "type": "object",
       "required": ["id"],
@@ -84,16 +110,7 @@
           "type": "array",
           "minItems": 2,
           "maxItems": 6,
-          "items": {
-            "type": "object",
-            "required": ["text", "correct", "explanation"],
-            "additionalProperties": false,
-            "properties": {
-              "text": { "type": "string" },
-              "correct": { "type": "boolean" },
-              "explanation": { "type": "string", "description": "Why it's right, or which misconception it represents." }
-            }
-          }
+          "items": { "$ref": "#/$defs/option" }
         },
         "front": { "type": "string" },
         "back": { "type": "string" },
@@ -168,11 +185,125 @@
             }
           }
         },
+        "value": { "type": "number", "description": "numeric: the correct value." },
+        "tolerance": { "type": "number", "minimum": 0, "description": "numeric: accepted absolute difference; graph: accepted difference per parameter." },
+        "tolerance_pct": { "type": "number", "minimum": 0, "description": "numeric: accepted relative difference in percent (used if larger than tolerance)." },
+        "unit": { "type": "string", "description": "numeric: shown after the input and the answer." },
+        "solution": { "type": "array", "items": { "type": "string" }, "description": "numeric: worked steps shown after answering." },
+        "steps": { "type": "array", "items": { "type": "string" }, "description": "order_steps: the items in the correct order." },
+        "distractors": { "type": "array", "items": { "type": "string" }, "description": "order_steps: items that don't belong (Parsons problems)." },
+        "alternatives": { "type": "array", "items": { "type": "array", "items": { "type": "string" } }, "description": "order_steps: other complete orders that are also right." },
+        "layout": { "type": "string", "enum": ["list", "tiles"], "description": "order_steps: list (rows with arrows) or tiles (word tiles in a line, for sentence building)." },
+        "monospace": { "type": "boolean", "description": "order_steps: show items as code lines." },
+        "text": { "type": "string", "description": "cloze_passage: passage with blanks written [[answer|variant|variant]]." },
+        "bank": { "type": "boolean", "description": "cloze_passage: show the answers as a word bank." },
+        "bank_extra": { "type": "array", "items": { "type": "string" }, "description": "cloze_passage: extra wrong words for the bank." },
+        "language": { "type": "string", "description": "code_trace: language label, e.g. Python." },
+        "trace": {
+          "type": "array",
+          "description": "code_trace: execution steps, shown only after the learner's predictions are checked.",
+          "items": {
+            "type": "object",
+            "required": ["line"],
+            "additionalProperties": false,
+            "properties": {
+              "line": { "type": "integer", "minimum": 1 },
+              "vars": { "type": "object", "description": "Variable name -> value (string or number) after this line." },
+              "out": { "type": "string", "description": "Text printed by this line." },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "questions": {
+          "type": "array",
+          "description": "code_trace: prediction questions answered before the trace is shown.",
+          "items": {
+            "type": "object",
+            "required": ["question", "answer"],
+            "additionalProperties": false,
+            "properties": {
+              "question": { "type": "string" },
+              "answer": { "type": "string" },
+              "accept": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "setup": { "type": "string", "description": "terminal: earlier session text shown above the first prompt." },
+        "shell_prompt": { "type": "string", "description": "terminal: prompt symbol; default $." },
+        "commands": {
+          "type": "array",
+          "description": "terminal: one task per step; the learner types the command.",
+          "items": {
+            "type": "object",
+            "required": ["task", "accept"],
+            "additionalProperties": false,
+            "properties": {
+              "task": { "type": "string" },
+              "accept": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "Accepted commands (whitespace-normalised, case-sensitive)." },
+              "output": { "type": "string", "description": "Scripted output shown when the command is accepted." },
+              "hint": { "type": "string" }
+            }
+          }
+        },
+        "expr": { "type": "string", "description": "graph: y as a function of x and the params, e.g. a*(x-h)^2+k." },
+        "params": { "type": "array", "items": { "$ref": "#/$defs/param" }, "description": "graph, simulation: sliders." },
+        "x_range": { "$ref": "#/$defs/range" },
+        "y_range": { "$ref": "#/$defs/range" },
+        "x_label": { "type": "string" },
+        "y_label": { "type": "string" },
+        "target": { "type": "object", "description": "graph: param name -> target value; the learner matches the dashed target curve." },
+        "points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["x", "y"],
+            "additionalProperties": false,
+            "properties": { "x": { "type": "number" }, "y": { "type": "number" }, "label": { "type": "string" } }
+          }
+        },
+        "predict": {
+          "type": "object",
+          "required": ["question", "options"],
+          "additionalProperties": false,
+          "description": "graph, simulation: a prediction asked before the sliders unlock.",
+          "properties": {
+            "question": { "type": "string" },
+            "options": { "type": "array", "minItems": 2, "maxItems": 6, "items": { "$ref": "#/$defs/option" } }
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "description": "simulation: computed readouts.",
+          "items": {
+            "type": "object",
+            "required": ["label", "expr"],
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string" },
+              "expr": { "type": "string" },
+              "unit": { "type": "string" },
+              "digits": { "type": "integer", "minimum": 0, "maximum": 10 }
+            }
+          }
+        },
+        "plot": {
+          "type": "object",
+          "required": ["expr", "x_range", "y_range"],
+          "additionalProperties": false,
+          "description": "simulation: optional curve of expr over x.",
+          "properties": {
+            "expr": { "type": "string" },
+            "x_range": { "$ref": "#/$defs/range" },
+            "y_range": { "$ref": "#/$defs/range" },
+            "x_label": { "type": "string" },
+            "y_label": { "type": "string" }
+          }
+        },
         "fallback": {
           "type": "object",
           "required": ["question", "answer"],
           "additionalProperties": false,
-          "description": "Plain question shown when the page can't render this item (always required for simulation).",
+          "description": "Plain question for pages or chats that can't render this item; for a simulation without params it's what the page shows.",
           "properties": {
             "question": { "type": "string" },
             "code": { "type": "string" },

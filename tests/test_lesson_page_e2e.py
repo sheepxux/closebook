@@ -28,6 +28,7 @@ except ImportError:  # pragma: no cover
 ZH_LESSON = os.path.join(SKILL, "schemas", "examples", "lesson.http-cache.json")
 SHOWCASE = os.path.join(ROOT, "tests", "fixtures", "showcase.lesson.json")
 PROGRESS = os.path.join(SKILL, "schemas", "examples", "progress.full.json")
+SUBJECTS = os.path.join(SKILL, "schemas", "examples", "lesson.subjects.json")
 
 
 def _build(lesson, directory, name):
@@ -424,6 +425,172 @@ class LessonPageE2E(unittest.TestCase):
         self.assertEqual(coherent["result"], "coherent")
         self.assertNotIn("confidence", coherent)
         self.assertEqual(progress_tool.validate_export(export), [])
+
+    @staticmethod
+    def focused(page, prop="textContent"):
+        return page.evaluate("p => document.activeElement && (document.activeElement[p] || document.activeElement.getAttribute(p))", prop)
+
+    def test_subject_widgets(self):
+        page = self.open(_build(progress_tool.load_json(SUBJECTS), self.tmp.name, "subjects.html"))
+        self.assertEqual(self.progress(page), "已作答 0 / 10 题")
+        conf = lambda c: page.locator("label.chip", has_text=c).click()  # noqa: E731
+        nxt = lambda: self.btn(page, "下一个知识点").click()  # noqa: E731
+
+        # numeric: expressions are evaluated, units stripped, tolerance applied
+        box = page.get_by_placeholder("数字或算式，如 0.75、3/4、2*pi")
+        box.fill("abc")
+        self.assertEqual(page.locator(".reads").inner_text(), "还无法识别为数字")
+        box.fill("50/2 m")
+        self.assertEqual(page.locator(".reads").inner_text(), "识别为 25 m")
+        self.assertTrue(self.btn(page, "提交").is_disabled(), "confidence still missing")
+        conf("2 · 比较确定")
+        self.btn(page, "提交").click()
+        self.assertIn("正确", page.locator(".result").inner_text())
+        page.get_by_placeholder("数字或算式，如 0.75、3/4、2*pi").fill("1,100")
+        conf("3 · 很确定")
+        self.btn(page, "提交").click()
+        card = page.locator("section.card").nth(2)
+        self.assertIn("高信心答错", card.inner_text())
+        self.assertIn("1102.5 元", card.inner_text())
+        self.assertIn("解题步骤", card.inner_text())
+        nxt()
+
+        # order_steps (Parsons): tap into place, fix with arrows, focus follows the moved line
+        def place(text):
+            items = page.locator(".pool-item")
+            items.nth(items.evaluate_all("(els, t) => els.findIndex(e => e.textContent === t)", text)).click()
+        lines = ["def sum_even(nums):", "    total = 0", "        if n % 2 == 0:", "    for n in nums:", "            total += n", "    return total"]
+        for line in lines:
+            place(line)
+        self.assertTrue(page.locator(".pool-item").first.is_disabled(), "pool closes when every slot is full")
+        self.assertEqual(page.locator(".pool-item").count(), 2, "the two distractors stay unused")
+        page.get_by_role("button", name="前移：for n in nums:").click()
+        self.assertEqual(self.focused(page, "aria-label"), "前移：for n in nums:")
+        conf("2 · 比较确定")
+        self.btn(page, "提交").click()
+        self.assertIn("正确", page.locator(".result").inner_text())
+        self.assertEqual(page.locator(".order-list li.ok").count(), 6)
+        nxt()
+
+        # order_steps (tiles): a distractor costs one position -> partial, correct order shown
+        for word in ["She", "didn't", "went", "to", "school", "yesterday."]:
+            place(word)
+        conf("1 · 猜的")
+        self.btn(page, "提交").click()
+        self.assertIn("部分正确", page.locator(".result").inner_text())
+        self.assertEqual(page.locator(".order-list li.bad .txt").inner_text(), "went")
+        self.assertIn("不属于这里的：went", page.locator("body").inner_text())
+        nxt()
+
+        # cloze_passage: word bank fills the next blank and keeps focus; variants accepted
+        page.get_by_role("button", name="二氧化碳", exact=True).click()
+        self.assertEqual(self.focused(page), "二氧化碳")
+        blanks = page.locator(".cloze input[type=text]")
+        self.assertEqual(blanks.nth(0).input_value(), "二氧化碳")
+        blanks.nth(1).fill("H₂O")
+        blanks.nth(2).fill("葡萄糖")
+        blanks.nth(3).fill("氮气")
+        self.btn(page, "提交").click()
+        self.assertEqual(page.get_by_label("算对").evaluate_all("els => els.map(e => e.checked)"), [True, True, True, False])
+        self.btn(page, "确认").click()
+        self.assertIn("部分正确", page.locator(".result").inner_text())
+        nxt()
+
+        # code_trace: predictions first, then the step player
+        self.assertEqual(page.locator(".trace").count(), 0, "trace hidden before predicting")
+        qs = page.locator(".trace-qs input[type=text]")
+        qs.nth(0).fill("14")
+        qs.nth(1).fill("4")
+        self.btn(page, "提交").click()
+        self.assertIn("第 1 / 8 步 · 第 1 行", page.locator(".trace").inner_text())
+        for _ in range(6):
+            self.btn(page, "下一步").click()
+        self.assertEqual(self.focused(page), "下一步")
+        self.assertEqual(page.locator(".code-lines .ln.cur").get_attribute("data-n"), "3")
+        self.assertEqual(page.locator(".trace tr.changed th").inner_text(), "total")
+        self.btn(page, "下一步").click()
+        self.assertEqual(page.locator(".trace pre.out").inner_text(), "14")
+        self.assertTrue(self.btn(page, "下一步").is_disabled())
+        self.btn(page, "确认").click()
+        self.assertIn("部分正确", page.locator(".result").inner_text())
+        nxt()
+
+        # terminal: scripted output, honest rejection, hint, reveal
+        term = page.locator(".term-in")
+        term.fill("git init")
+        term.press("Enter")
+        self.assertIn("Initialized empty Git repository", page.locator(".term").inner_text())
+        self.assertEqual(self.focused(page, "className"), "term-in", "focus stays in the terminal")
+        page.locator(".term-in").fill("git  add")
+        page.locator(".term-in").press("Enter")
+        self.assertIn("这一步要的不是这条命令", page.locator(".term").inner_text())
+        self.btn(page, "给个提示").click()
+        self.assertIn("跟一个点", page.locator("body").inner_text())
+        page.locator(".term-in").fill("git   add  .")
+        page.locator(".term-in").press("Enter")
+        self.assertIn("第 3 / 3 步", page.locator("body").inner_text())
+        self.btn(page, "看答案").click()
+        self.assertIn('git commit -m "first commit"  （看了答案）', page.locator(".term").inner_text())
+        self.assertIn("部分正确", page.locator(".result").inner_text())
+        nxt()
+
+        # graph (match): own curve hidden until the first check
+        self.assertEqual(page.locator("svg.plot path.target").count(), 1)
+        self.assertEqual(page.locator("svg.plot path.curve").count(), 0)
+        sliders = page.locator("input[type=range]")
+        sliders.nth(0).fill("0.5")
+        sliders.nth(1).fill("2")
+        sliders.nth(2).fill("-2")
+        self.btn(page, "提交").click()
+        self.assertIn("还没对上", page.locator("body").inner_text())
+        self.assertEqual(page.locator("svg.plot path.curve").count(), 1)
+        page.locator("input[type=range]").nth(2).fill("-3")
+        self.btn(page, "提交").click()
+        self.assertIn("部分正确", page.locator(".result").inner_text())
+        self.assertIn("目标：a = 0.5, h = 2, k = -3", page.locator("body").inner_text())
+        nxt()
+
+        # graph (predict): sliders locked until the prediction is in
+        self.assertTrue(page.locator("input[type=range]").first.is_disabled())
+        page.locator("label.option", has_text="周期减半").click()
+        conf("2 · 比较确定")
+        self.btn(page, "提交").click()
+        self.assertIn("正确", page.locator(".result").inner_text())
+        before = page.locator("svg.plot path.curve").get_attribute("d")
+        page.locator("input[type=range]").nth(1).fill("2")
+        self.assertNotEqual(page.locator("svg.plot path.curve").get_attribute("d"), before, "curve redraws as the slider moves")
+        nxt()
+
+        # simulation (parameter lab): no graph before predicting; readouts follow the sliders
+        self.assertEqual(page.locator("svg.plot").count(), 0, "the graph would give the prediction away")
+        self.assertIn("2.01 s", page.locator(".readouts").inner_text())
+        page.locator("label.option", has_text="4 倍").click()
+        conf("3 · 很确定")
+        self.btn(page, "提交").click()
+        self.assertIn("高信心答错", page.locator(".result").inner_text())
+        self.assertEqual(page.locator("svg.plot").count(), 1)
+        page.locator("input[type=range]").first.fill("4")
+        self.assertIn("4.01 s", page.locator(".readouts").inner_text())
+        self.assertEqual(self.progress(page), "已作答 10 / 10 题")
+
+        export = self.export_json(page)
+        self.assertEqual(progress_tool.validate_export(export), [])
+        by_kp = {a["kp_id"]: a for a in export["attempts"]}
+        self.assertEqual({a["interaction"] for a in export["attempts"]},
+                         {"numeric", "order_steps", "cloze_passage", "code_trace", "terminal", "graph", "simulation"})
+        self.assertEqual(by_kp["kp-git"]["hint_level"], 3)
+        self.assertEqual(by_kp["kp-sine"]["question_format"], "predict")
+        self.assertNotIn("self_assessed", by_kp["kp-parsons"])
+
+        page.get_by_role("button", name="生成").nth(1).click()
+        answers = page.locator("textarea.export-area").nth(1).input_value()
+        self.assertIn("1,100 (= 1100 元)", answers)
+        self.assertIn("She didn't went to school yesterday.", answers)
+        self.assertIn('~/demo $ git commit -m "first commit" （看了答案）', answers)
+        self.assertIn("最后打印出什么？ → 14", answers)
+        self.assertIn("二氧化碳 / H₂O / 葡萄糖 / 氮气", answers)
+        self.assertIn("a = 0.5, h = 2, k = -3", answers)
+        self.assertIn("B. 4 倍", answers)
 
     def test_works_when_storage_is_blocked(self):
         context = self.browser.new_context()

@@ -64,7 +64,8 @@
       "type": "string",
       "enum": [
         "plain_qa", "mcq", "flashcard", "free_text", "diagram_fill", "simulation",
-        "timeline_fill", "compare_table_fill", "checklist", "voice"
+        "timeline_fill", "compare_table_fill", "checklist", "voice",
+        "numeric", "order_steps", "cloze_passage", "code_trace", "terminal", "graph"
       ]
     },
     "error_type": {

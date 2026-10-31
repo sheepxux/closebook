@@ -1,0 +1,235 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "subject-widgets",
+  "topic": "按学科选题型：示例课",
+  "language": "zh-CN",
+  "mode": "review",
+  "intro": "每个知识点用一种适合它所在学科的题型：数值题、排序、完形填空、代码追踪、模拟终端、可调坐标图、参数实验室。",
+  "knowledge_points": [
+    {
+      "id": "kp-num",
+      "title": "用公式算出具体数值",
+      "importance": "core",
+      "knowledge_type": "procedural",
+      "method": "retrieval",
+      "interaction_type": "numeric",
+      "interaction_reason": "会不会用公式，要看能不能算出数；选择题能靠排除法猜中，填数不行。",
+      "items": [
+        {
+          "id": "kinematics",
+          "question": "物体从静止开始，以 2 m/s² 匀加速直线运动 5 s，走了多远？",
+          "value": 25,
+          "unit": "m",
+          "tolerance": 0.01,
+          "hint": "从静止开始：位移只和加速度、时间有关。",
+          "solution": ["从静止出发，初速度 v₀ = 0。", "位移公式 s = v₀t + ½at² = ½ × 2 × 5²。", "s = 25 m。"]
+        },
+        {
+          "id": "compound",
+          "question": "本金 1000 元，年利率 5%，按年复利，2 年后本息合计多少元？",
+          "value": 1102.5,
+          "unit": "元",
+          "tolerance": 0.01,
+          "solution": ["复利：每年在上一年的本息和上计息。", "1000 × 1.05 × 1.05 = 1000 × 1.1025。", "= 1102.5 元（单利只有 1100 元）。"]
+        }
+      ]
+    },
+    {
+      "id": "kp-parsons",
+      "title": "把代码行排成正确的函数",
+      "importance": "important",
+      "knowledge_type": "procedural",
+      "method": "retrieval",
+      "interaction_type": "order_steps",
+      "interaction_reason": "Parsons 题：只排顺序和缩进，不用从零手写，把注意力留给程序结构；混进来的错误行专门检验常见误解。",
+      "items": [
+        {
+          "id": "sum-even",
+          "prompt": "把下面的代码行排成函数 sum_even：返回列表里所有偶数之和。",
+          "monospace": true,
+          "steps": ["def sum_even(nums):", "    total = 0", "    for n in nums:", "        if n % 2 == 0:", "            total += n", "    return total"],
+          "distractors": ["        if n % 2 == 1:", "        return total"],
+          "explanation": "`return total` 必须在循环外（4 个空格缩进）；放进循环里，第一轮就会返回。"
+        }
+      ]
+    },
+    {
+      "id": "kp-sentence",
+      "title": "英语否定句的语序",
+      "importance": "minor",
+      "knowledge_type": "language_production",
+      "interaction_type": "order_steps",
+      "interaction_reason": "语序是要产出的，不是要认出的：自己把词排成句子，比在四个句子里挑一个更接近真实说话。",
+      "items": [
+        {
+          "id": "didnt",
+          "prompt": "把单词排成英文句子：她昨天没有去学校。",
+          "layout": "tiles",
+          "steps": ["She", "didn't", "go", "to", "school", "yesterday."],
+          "distractors": ["went"],
+          "explanation": "助动词 did 已经表示过去，后面的动词用原形 go，不用 went。"
+        }
+      ]
+    },
+    {
+      "id": "kp-cloze",
+      "title": "光合作用的原料和产物",
+      "importance": "core",
+      "knowledge_type": "factual",
+      "interaction_type": "cloze_passage",
+      "interaction_reason": "在一整句话里回忆关键词，比孤立的卡片多了上下文，又比自由作答好核对。",
+      "items": [
+        {
+          "id": "photosynthesis",
+          "prompt": "补全这段话。",
+          "text": "光合作用主要在叶绿体中进行：植物利用光能，把[[二氧化碳|CO2|CO₂]]和[[水|H2O|H₂O]]合成[[葡萄糖|糖|有机物]]，同时释放[[氧气|O2|O₂]]。",
+          "bank": true,
+          "bank_extra": ["氮气", "线粒体"]
+        }
+      ]
+    },
+    {
+      "id": "kp-trace",
+      "title": "读懂 for 循环的执行过程",
+      "importance": "core",
+      "knowledge_type": "procedural",
+      "method": "predict_verify",
+      "interaction_type": "code_trace",
+      "interaction_reason": "先在脑子里跑一遍代码再看真实过程：能追踪代码，是能写代码的前提。",
+      "items": [
+        {
+          "id": "squares",
+          "prompt": "不运行，读这段 Python 代码。",
+          "language": "Python",
+          "code": "total = 0\nfor i in range(1, 4):\n    total += i * i\nprint(total)",
+          "questions": [
+            { "question": "最后打印出什么？", "answer": "14" },
+            { "question": "第 3 行一共执行几次？", "answer": "3", "accept": ["3次", "三次"] }
+          ],
+          "trace": [
+            { "line": 1, "vars": { "total": 0 } },
+            { "line": 2, "vars": { "i": 1 }, "note": "range(1, 4) 依次给出 1、2、3，不含 4。" },
+            { "line": 3, "vars": { "total": 1 } },
+            { "line": 2, "vars": { "i": 2 } },
+            { "line": 3, "vars": { "total": 5 } },
+            { "line": 2, "vars": { "i": 3 } },
+            { "line": 3, "vars": { "total": 14 } },
+            { "line": 4, "out": "14" }
+          ],
+          "explanation": "1² + 2² + 3² = 14。range 的右端不包含在内，是最常见的错。"
+        }
+      ]
+    },
+    {
+      "id": "kp-git",
+      "title": "第一次提交：init、add、commit",
+      "importance": "core",
+      "knowledge_type": "procedural",
+      "interaction_type": "terminal",
+      "interaction_reason": "命令要能自己敲出来；看懂别人写的命令不等于会用。",
+      "items": [
+        {
+          "id": "first-commit",
+          "prompt": "在 ~/demo 目录里把项目纳入 Git 并完成第一次提交。",
+          "shell_prompt": "~/demo $",
+          "setup": "~/demo $ ls\nREADME.md  app.py",
+          "commands": [
+            { "task": "把当前目录初始化为 Git 仓库。", "accept": ["git init"], "output": "Initialized empty Git repository in /home/you/demo/.git/" },
+            { "task": "把所有文件加入暂存区。", "accept": ["git add .", "git add -A", "git add --all", "git add README.md app.py", "git add app.py README.md"], "hint": "add 后面可以跟一个点，表示当前目录。" },
+            { "task": "提交，提交信息写 first commit。", "accept": ["git commit -m \"first commit\"", "git commit -m 'first commit'"], "output": "[master (root-commit) 1a2b3c4] first commit\n 2 files changed, 12 insertions(+)\n create mode 100644 README.md\n create mode 100644 app.py" }
+          ],
+          "explanation": "init 建仓库，add 选中要提交的改动，commit 才真正记录一个版本。"
+        }
+      ]
+    },
+    {
+      "id": "kp-parabola",
+      "title": "顶点式 y = a(x − h)² + k 中参数的作用",
+      "importance": "core",
+      "knowledge_type": "conceptual",
+      "interaction_type": "graph",
+      "interaction_reason": "先凭理解定出参数，再看自己的曲线：图像和式子之间的对应，靠亲手调出来才记得住。",
+      "items": [
+        {
+          "id": "match",
+          "prompt": "调出虚线这条抛物线。",
+          "expr": "a*(x-h)^2+k",
+          "params": [
+            { "name": "a", "min": -3, "max": 3, "step": 0.5, "value": 1 },
+            { "name": "h", "min": -5, "max": 5, "step": 1, "value": 0 },
+            { "name": "k", "min": -5, "max": 5, "step": 1, "value": 0 }
+          ],
+          "x_range": [-6, 6],
+          "y_range": [-6, 6],
+          "target": { "a": 0.5, "h": 2, "k": -3 },
+          "hint": "先找顶点，再看开口方向和宽窄。",
+          "explanation": "顶点是 (h, k) = (2, −3)；开口向上、比 y = x² 宽，所以 0 < a < 1，这里 a = 0.5。"
+        }
+      ]
+    },
+    {
+      "id": "kp-sine",
+      "title": "y = A·sin(Bx) 中 A 和 B 的区别",
+      "importance": "important",
+      "knowledge_type": "conceptual",
+      "method": "predict_verify",
+      "interaction_type": "graph",
+      "interaction_reason": "先预测再拖滑块验证：预测错了的那一刻最容易记住。",
+      "items": [
+        {
+          "id": "predict-b",
+          "prompt": "下面是 y = A·sin(Bx)，现在 A = 1、B = 1。",
+          "expr": "A*sin(B*x)",
+          "params": [
+            { "name": "A", "min": 0.5, "max": 3, "step": 0.5, "value": 1 },
+            { "name": "B", "min": 0.5, "max": 3, "step": 0.5, "value": 1 }
+          ],
+          "x_range": [-6.3, 6.3],
+          "y_range": [-3.5, 3.5],
+          "predict": {
+            "question": "把 B 从 1 调到 2，图像会怎样？",
+            "options": [
+              { "text": "周期减半，波形变密", "correct": true, "explanation": "周期是 2π/B，B 翻倍，周期减半。" },
+              { "text": "波峰变成原来的 2 倍高", "correct": false, "explanation": "那是 A 的作用：A 控制振幅。" },
+              { "text": "整条曲线向右平移", "correct": false, "explanation": "平移要改 sin 里的常数项，比如 sin(x − c)。" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "kp-pendulum",
+      "title": "单摆周期和摆长的关系",
+      "importance": "important",
+      "knowledge_type": "conceptual",
+      "method": "predict_verify",
+      "interaction_type": "simulation",
+      "interaction_reason": "先预测再动手改参数：常见误解（周期和摆长成正比）只有在数字摆在面前时才会动摇。",
+      "items": [
+        {
+          "id": "length",
+          "prompt": "单摆（小角度）：T = 2π√(L/g)。",
+          "params": [
+            { "name": "L", "label": "摆长 L", "min": 0.1, "max": 4, "step": 0.1, "value": 1, "unit": "m" },
+            { "name": "g", "label": "重力加速度 g", "min": 1.6, "max": 25, "step": 0.1, "value": 9.8, "unit": "m/s²" }
+          ],
+          "outputs": [
+            { "label": "周期 T", "expr": "2*pi*sqrt(L/g)", "unit": "s", "digits": 2 },
+            { "label": "频率 f", "expr": "1/(2*pi*sqrt(L/g))", "unit": "Hz", "digits": 2 }
+          ],
+          "plot": { "expr": "2*pi*sqrt(x/g)", "x_range": [0, 4], "y_range": [0, 5], "x_label": "L (m)", "y_label": "T (s)" },
+          "predict": {
+            "question": "摆长变成原来的 4 倍，周期会变成原来的几倍？",
+            "options": [
+              { "text": "2 倍", "correct": true, "explanation": "T 和 √L 成正比，√4 = 2。" },
+              { "text": "4 倍", "correct": false, "explanation": "这是把 T 当成和 L 成正比了。" },
+              { "text": "不变", "correct": false, "explanation": "小角度下周期和振幅、摆球质量无关，但和摆长有关。" },
+              { "text": "16 倍", "correct": false, "explanation": "这是把关系当成平方了，方向反了。" }
+            ]
+          },
+          "fallback": { "question": "摆长变成原来的 4 倍，单摆周期变成几倍？为什么？", "answer": "2 倍，因为 T = 2π√(L/g)，T 和 √L 成正比。" }
+        }
+      ]
+    }
+  ]
+}

@@ -9,7 +9,7 @@
 2. **Ground truth over your memory.** Verify predictions by running code (learner's machine or your tool environment). If neither can run it, cite the documentation or the material as the source of the expected result. Never invent output.
 3. **Self-explanation on real snippets** (≤ 12 lines, numbered). Intervene only at the first wrong step.
 4. **Mini project** at the end of 60-minute sessions or as homework, when the learner has an environment. Review it like a code review: done-criterion, which points are applied correctly, one concrete improvement.
-5. **Interaction:** code blocks in plain text are usually best. `diagram_fill` for architecture or data flow (predict or fill first). `simulation` only when tweaking a parameter teaches a pattern and Level 2 is available; otherwise text predict-verify with 2–3 values.
+5. **Interaction:** code blocks in plain text are usually best. `diagram_fill` for architecture or data flow (predict or fill first). On a practice page (Level 2): `code_trace` for "predict what this prints" with a step-through afterwards; `order_steps` with `monospace` and distractor lines (a Parsons problem) before asking a novice to write the same code; `terminal` for CLI and git commands the learner must type exactly. `simulation` only when tweaking a parameter teaches a pattern; otherwise text predict-verify with 2–3 values. Writing real code still happens in the learner's editor or in `free_text`, reviewed in chat.
 6. **Errors:** `transfer_failure` is common (knows the API, misuses it in a new case); answer it with a new-context variant.
 
 ## What doesn't change

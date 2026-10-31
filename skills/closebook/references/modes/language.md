@@ -6,7 +6,7 @@
 
 ## What changes
 1. **Production over recognition.** Cue in the learner's language (or a picture/situation) → learner produces the target form. Recognition (target → meaning) only as a first step for brand-new words.
-2. **Vocabulary:** `flashcard` (front = meaning or situation, back = word + example sentence) or cloze in a sentence. The factual part (irregular forms, genders, stems) may use `chunking_mnemonics`; the learner builds the hook (keyword method works well).
+2. **Vocabulary:** `flashcard` (front = meaning or situation, back = word + example sentence) or cloze in a sentence (`cloze_passage` on a practice page; word order with `order_steps` and `layout: "tiles"`). The factual part (irregular forms, genders, stems) may use `chunking_mnemonics`; the learner builds the hook (keyword method works well).
 3. **Production practice:** after vocabulary and grammar points, one short task that uses them together: "Write 3 sentences about your last weekend using the preterite at least twice." Feedback: correct errors, name the rule, keep what's natural.
 4. **Grammar points** with a concept behind them (aspect, case) carry a secondary `conceptual` type, so the learner may self-explain the choice ("why imperfect here?").
 5. **Voice** only if the platform really supports audio input/output; otherwise say pronunciation can't be checked here and suggest a recording to compare with a native sample.

@@ -12,10 +12,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import re
 import sys
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 sys.dont_write_bytecode = True
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +33,146 @@ UNFIT_INTERACTIONS = {
     "mcq": {"judgment", "contested"},
     "flashcard": {"conceptual", "procedural", "judgment", "contested"},
     "simulation": {"contested", "factual"},
+    "graph": {"contested", "factual"},
+    "numeric": {"contested"},
+    "order_steps": {"contested"},
+    "code_trace": {"contested", "factual"},
+    "terminal": {"contested", "judgment"},
 }
+
+# Expression grammar shared with the page (assets/lesson-template.html, compileExpr):
+# numbers, variables, + - * / ^ (or **), parentheses, implicit multiplication (2x, 3(x+1)),
+# the functions below and the constants pi and e.
+FUNCS = {
+    "sin": math.sin, "cos": math.cos, "tan": math.tan, "asin": math.asin, "acos": math.acos, "atan": math.atan,
+    "sqrt": math.sqrt, "abs": abs, "exp": math.exp, "ln": math.log, "log": math.log10,
+    "floor": math.floor, "ceil": math.ceil, "round": round, "min": min, "max": max, "pow": math.pow,
+}
+CONSTS = {"pi": math.pi, "e": math.e}
+_TOKEN = re.compile(r"\s*(?:(\d+\.?\d*(?:[eE][+-]?\d+)?|\.\d+(?:[eE][+-]?\d+)?)|([A-Za-z_][A-Za-z0-9_]*)|(\*\*|[-+*/^(),×÷−·]))")
+
+
+def compile_expr(src: str, names: List[str]) -> Callable[[Dict[str, float]], float]:
+    """Compile an expression into a function of a name -> value dict. Raises ValueError."""
+    tokens, pos, src = [], 0, str(src)
+    while pos < len(src):
+        if src[pos:].strip() == "":
+            break
+        m = _TOKEN.match(src, pos)
+        if not m or m.end() == pos:
+            raise ValueError("unexpected %r" % src[pos:].strip()[:10])
+        num, ident, op = m.groups()
+        if num is not None:
+            tokens.append(("n", float(num)))
+        elif ident is not None:
+            tokens.append(("id", ident))
+        else:
+            tokens.append(("op", {"**": "^", "×": "*", "÷": "/", "−": "-", "·": "*"}.get(op, op)))
+        pos = m.end()
+    i = 0
+
+    def is_op(v: str) -> bool:
+        return i < len(tokens) and tokens[i] == ("op", v)
+
+    def expect(v: str) -> None:
+        nonlocal i
+        if not is_op(v):
+            raise ValueError("expected %s" % v)
+        i += 1
+
+    def starts_factor() -> bool:
+        return i < len(tokens) and (tokens[i][0] in ("n", "id") or tokens[i] == ("op", "("))
+
+    def expr():
+        nonlocal i
+        left = term()
+        while is_op("+") or is_op("-"):
+            op = tokens[i][1]
+            i += 1
+            a, b = left, term()
+            left = (lambda a, b: lambda env: a(env) + b(env))(a, b) if op == "+" else (lambda a, b: lambda env: a(env) - b(env))(a, b)
+        return left
+
+    def term():
+        nonlocal i
+        left = unary()
+        while True:
+            if is_op("*") or is_op("/"):
+                op = tokens[i][1]
+                i += 1
+                a, b = left, unary()
+                left = (lambda a, b: lambda env: a(env) * b(env))(a, b) if op == "*" else (lambda a, b: lambda env: a(env) / b(env))(a, b)
+            elif starts_factor():
+                a, b = left, power()
+                left = (lambda a, b: lambda env: a(env) * b(env))(a, b)
+            else:
+                return left
+
+    def unary():
+        nonlocal i
+        if is_op("-"):
+            i += 1
+            a = unary()
+            return lambda env: -a(env)
+        if is_op("+"):
+            i += 1
+            return unary()
+        return power()
+
+    def power():
+        nonlocal i
+        base = atom()
+        if is_op("^"):
+            i += 1
+            ex = unary()
+            return lambda env: base(env) ** ex(env)
+        return base
+
+    def atom():
+        nonlocal i
+        if i >= len(tokens):
+            raise ValueError("unexpected end")
+        kind, val = tokens[i]
+        i += 1
+        if kind == "n":
+            return lambda env: val
+        if kind == "op" and val == "(":
+            inner = expr()
+            expect(")")
+            return inner
+        if kind == "id":
+            if val in FUNCS and is_op("("):
+                i += 1
+                args = [expr()]
+                while is_op(","):
+                    i += 1
+                    args.append(expr())
+                expect(")")
+                fn = FUNCS[val]
+                return lambda env: fn(*[a(env) for a in args])
+            if val in CONSTS:
+                c = CONSTS[val]
+                return lambda env: c
+            if val in names:
+                return lambda env: env[val]
+            raise ValueError("unknown name %r" % val)
+        raise ValueError("unexpected %r" % val)
+
+    fn = expr()
+    if i != len(tokens):
+        raise ValueError("unexpected %r" % (tokens[i][1],))
+    return fn
+
+
+def _finite_somewhere(fn: Callable[[Dict[str, float]], float], env: Dict[str, float], xs: List[float]) -> bool:
+    for x in xs:
+        try:
+            y = fn(dict(env, x=x))
+        except (ArithmeticError, ValueError, TypeError):
+            continue
+        if isinstance(y, (int, float)) and math.isfinite(y):
+            return True
+    return False
 
 
 def _blank_count(item: Dict[str, Any], kind: str) -> int:
@@ -41,6 +181,57 @@ def _blank_count(item: Dict[str, Any], kind: str) -> int:
     if kind == "timeline_fill":
         return sum(1 for ev in item.get("events", []) if ev.get("blank"))
     return sum(1 for node in item.get("nodes", []) if node.get("blank"))
+
+
+CLOZE_BLANK = re.compile(r"\[\[(.*?)\]\]")
+
+
+def _check_options(options: List[Dict[str, Any]], path: str, err: Callable[[str, str], None]) -> None:
+    if sum(1 for o in options if o["correct"]) != 1:
+        err(path, "needs exactly one correct option")
+    if len({o["text"] for o in options}) != len(options):
+        err(path, "duplicate option text")
+
+
+def _check_params(item: Dict[str, Any], path: str, err: Callable[[str, str], None]) -> List[str]:
+    params = item.get("params") or []
+    if not params:
+        err(path, "needs at least one param (slider)")
+    names = []
+    for k, p in enumerate(params):
+        ppath = "%s.params[%d]" % (path, k)
+        if p["name"] in ("x", "pi", "e") or p["name"] in FUNCS:
+            err(ppath, "%r is reserved" % p["name"])
+        if p["name"] in names:
+            err(ppath, "duplicate param %s" % p["name"])
+        if not p["min"] < p["max"]:
+            err(ppath, "min must be below max")
+        elif not p["min"] <= p["value"] <= p["max"]:
+            err(ppath, "value is outside min..max")
+        names.append(p["name"])
+    return names + ["x"]
+
+
+def _check_range(r: Any, path: str, err: Callable[[str, str], None]) -> bool:
+    if not r or r[0] >= r[1]:
+        err(path, "needs [min, max] with min < max")
+        return False
+    return True
+
+
+def _check_curve(item: Dict[str, Any], names: List[str], env: Dict[str, float], path: str,
+                 err: Callable[[str, str], None], warn: Callable[[str, str], None]) -> None:
+    ok = _check_range(item.get("x_range"), path + ".x_range", err) & _check_range(item.get("y_range"), path + ".y_range", err)
+    try:
+        fn = compile_expr(item.get("expr") or "", names)
+    except ValueError as exc:
+        err(path + ".expr", "bad expression: %s" % exc)
+        return
+    if ok:
+        lo, hi = item["x_range"]
+        xs = [lo + (hi - lo) * k / 50 for k in range(51)]
+        if not _finite_somewhere(fn, env, xs):
+            warn(path + ".expr", "the curve has no finite points in x_range at the starting values")
 
 
 def _sentences(text: str) -> int:
@@ -126,8 +317,84 @@ def check_lesson(lesson: Any) -> List[Issue]:
                     if e["from"] not in ids or e["to"] not in ids:
                         err(ipath, "edge %s -> %s refers to an unknown node" % (e["from"], e["to"]))
             elif kind == "simulation":
-                if not item.get("fallback"):
-                    err(ipath, "simulation items need a fallback plain question (the page shows it instead)")
+                if item.get("params"):
+                    if not item.get("prompt"):
+                        err(ipath, "a parameter-lab simulation needs a prompt")
+                    names = _check_params(item, ipath, err)
+                    if not item.get("outputs") and not item.get("plot"):
+                        err(ipath, "simulation needs outputs (readouts) or a plot")
+                    env = {p["name"]: p["value"] for p in item["params"]}
+                    for k, o in enumerate(item.get("outputs") or []):
+                        try:
+                            if not _finite_somewhere(compile_expr(o["expr"], names), env, [0.0]):
+                                warn("%s.outputs[%d]" % (ipath, k), "expression isn't a finite number at the starting values")
+                        except ValueError as exc:
+                            err("%s.outputs[%d].expr" % (ipath, k), "bad expression: %s" % exc)
+                    if item.get("plot"):
+                        _check_curve(item["plot"], names, env, ipath + ".plot", err, warn)
+                    if not item.get("predict"):
+                        err(ipath, "simulation needs a predict question: the learner commits before the sliders unlock")
+                    else:
+                        _check_options(item["predict"]["options"], ipath + ".predict", err)
+                elif not item.get("fallback"):
+                    err(ipath, "simulation needs params (a parameter lab) or a fallback plain question")
+            elif kind == "graph":
+                if not item.get("prompt"):
+                    err(ipath, "graph needs a prompt")
+                names = _check_params(item, ipath, err)
+                env = {p["name"]: p["value"] for p in item.get("params") or []}
+                _check_curve(item, names, env, ipath, err, warn)
+                if bool(item.get("target")) == bool(item.get("predict")):
+                    err(ipath, "graph needs exactly one task: target (match the curve) or predict (answer, then explore)")
+                if item.get("target"):
+                    target = item["target"]
+                    for p in item.get("params") or []:
+                        v = target.get(p["name"])
+                        if not isinstance(v, (int, float)) or isinstance(v, bool):
+                            err(ipath + ".target", "needs a number for %s" % p["name"])
+                        elif not p["min"] <= v <= p["max"]:
+                            err(ipath + ".target", "%s = %s is outside the slider range" % (p["name"], v))
+                    extra = set(target) - {p["name"] for p in item.get("params") or []}
+                    if extra:
+                        err(ipath + ".target", "unknown params: %s" % ", ".join(sorted(extra)))
+                    if all(target.get(p["name"]) == p["value"] for p in item.get("params") or []):
+                        err(ipath + ".target", "the sliders already start at the target")
+                if item.get("predict"):
+                    _check_options(item["predict"]["options"], ipath + ".predict", err)
+            elif kind == "numeric":
+                if not item.get("question") or not isinstance(item.get("value"), (int, float)):
+                    err(ipath, "numeric needs question and value (a number)")
+                if not item.get("solution") and not item.get("explanation"):
+                    warn(ipath, "numeric without solution steps: the learner sees only the final number")
+            elif kind == "order_steps":
+                steps = item.get("steps") or []
+                if not item.get("prompt") or len(steps) < 3:
+                    err(ipath, "order_steps needs prompt and >= 3 steps")
+                pool = steps + (item.get("distractors") or [])
+                if len(set(pool)) != len(pool):
+                    err(ipath, "steps and distractors must all be different (identical items can't be told apart)")
+                for k, alt in enumerate(item.get("alternatives") or []):
+                    if sorted(alt) != sorted(steps):
+                        err("%s.alternatives[%d]" % (ipath, k), "must use exactly the same items as steps")
+            elif kind == "cloze_passage":
+                text = item.get("text") or ""
+                blanks = CLOZE_BLANK.findall(text)
+                if not blanks or not item.get("prompt"):
+                    err(ipath, "cloze_passage needs a prompt and text with at least one [[answer]] blank")
+                for b in blanks:
+                    if not [v for v in b.split("|") if v.strip()]:
+                        err(ipath, "empty blank [[]] in text")
+            elif kind == "code_trace":
+                code = item.get("code") or ""
+                lines = len(code.split("\n"))
+                if not code or not item.get("prompt") or not item.get("trace") or not item.get("questions"):
+                    err(ipath, "code_trace needs prompt, code, trace and questions")
+                for k, step in enumerate(item.get("trace") or []):
+                    if step["line"] > lines:
+                        err("%s.trace[%d]" % (ipath, k), "line %d is past the end of the code (%d lines)" % (step["line"], lines))
+            elif kind == "terminal":
+                if not item.get("prompt") or not item.get("commands"):
+                    err(ipath, "terminal needs prompt and commands")
 
     for section in ("free_recall", "plain_talk"):
         if section not in lesson:
