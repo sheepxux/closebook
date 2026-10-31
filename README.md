@@ -17,7 +17,7 @@ It is one skill folder ([`skills/closebook`](skills/closebook)) that works on Cl
 
 ## Ask your agent to install it
 
-**[Download the installation prompt (.md, English)](https://github.com/sheepxux/closebook/releases/latest/download/closebook-install-prompt.md)**, attach it to your agent, and say: **“Install closebook by following the prompt in this file.”**
+**[Download the installation prompt (.md, English)](https://github.com/sheepxux/closebook/releases/latest/download/closebook-install-prompt.md?v=149a229)**, attach it to your agent, and say: **“Install closebook by following the prompt in this file.”**
 
 The prompt is in English and requests progress updates and results in Simplified Chinese unless you ask for another language. It includes host detection and verification. You can also [read and copy the prompt](closebook-install-prompt.md).
 

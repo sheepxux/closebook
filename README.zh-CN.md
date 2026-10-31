@@ -17,7 +17,7 @@ closebook 只有一个目标：让你学的东西真正记住、真正理解，�
 
 ## 发给助手，自动配置
 
-**[下载安装提示词.md](https://github.com/sheepxux/closebook/releases/latest/download/closebook-install-prompt.md)**，直接把文件发给你正在使用的 agent，并说：**“请按文件里的提示词安装 closebook。”**
+**[下载安装提示词.md](https://github.com/sheepxux/closebook/releases/latest/download/closebook-install-prompt.md?v=149a229)**，直接把文件发给你正在使用的 agent，并说：**“请按文件里的提示词安装 closebook。”**
 
 文件内使用**英文安装提示词**，并要求 agent 用**中文提示和反馈**。agent 会自行读取流程、识别平台并验证结果。也可以[查看并复制提示词全文](closebook-install-prompt.md)。
 
