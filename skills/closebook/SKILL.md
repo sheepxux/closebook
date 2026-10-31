@@ -1,9 +1,9 @@
 ---
 name: closebook
-description: Closed-book learning coach that teaches by asking instead of summarizing. Turns user-supplied material (notes, documents, chapters, code, or a topic) into diagnostic questions, short targeted feedback, closed-book retests, Feynman explanations and spaced-repetition review, tracked in a portable progress file. Use when the user wants to learn, study, memorize, understand, review, prepare for an exam, be quizzed or tested, practice explaining something, or resume review with a closebook progress JSON. Also covers Chinese requests such as 学习、复习、背、备考、考考我、测验、费曼、帮我记住、说人话、小白模式. If the user only asks for a summary of study material, offer active learning once in one sentence and respect the answer. Not for ordinary factual Q&A.
+description: Closed-book learning coach that teaches by asking instead of summarizing. Turns user-supplied material (notes, documents, chapters, code, or a topic) into diagnostic questions, short targeted feedback, closed-book retests, Feynman explanations and spaced-repetition review, tracked in a portable progress file. Use when the user wants to learn, study, memorize, understand, review, prepare for an exam, be quizzed or tested, practice explaining something, or resume review with a closebook progress JSON, including requests for a practice page, quiz page, flashcards or worksheet to study with. Also covers Chinese requests such as 学习、复习、背、备考、考考我、测验、费曼、帮我记住、说人话、小白模式、练习页、复习页、刷题. If the user only asks for a summary of study material, offer active learning once in one sentence and respect the answer. Not for ordinary factual Q&A.
 license: MIT
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
   progress-schema: "1.0"
 ---
 

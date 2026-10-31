@@ -11,6 +11,7 @@ assets/lesson-template.html. The page logic is never modified.
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import math
 import os
@@ -424,6 +425,308 @@ def check_lesson(lesson: Any) -> List[Issue]:
     return issues
 
 
+_TRACE_BUILTINS = {
+    "abs", "all", "any", "bool", "chr", "dict", "divmod", "enumerate", "float", "int", "len", "list",
+    "max", "min", "ord", "pow", "print", "range", "reversed", "round", "set", "sorted", "str", "sum", "tuple", "zip",
+}
+_TRACE_METHODS = {
+    "append", "extend", "insert", "pop", "remove", "clear", "reverse", "sort", "count", "index", "copy",
+    "get", "keys", "values", "items", "update", "add", "discard", "union", "intersection", "difference",
+    "split", "join", "strip", "lstrip", "rstrip", "lower", "upper", "replace", "startswith", "endswith",
+}
+_TRACE_AST = {
+    "Module", "Expr", "Assign", "AugAssign", "Name", "Load", "Store", "Constant", "Num", "Str", "NameConstant",
+    "List", "Tuple", "Set", "Dict", "Subscript", "Slice", "Index", "ExtSlice", "BinOp", "UnaryOp", "BoolOp",
+    "Compare", "IfExp", "Add", "Sub", "Mult", "Div", "FloorDiv", "Mod", "Pow", "UAdd", "USub", "Not",
+    "And", "Or", "Eq", "NotEq", "Lt", "LtE", "Gt", "GtE", "Is", "IsNot", "In", "NotIn", "BitAnd", "BitOr",
+    "BitXor", "LShift", "RShift", "Invert", "If", "For", "While", "Break", "Continue", "Pass", "FunctionDef",
+    "arguments", "arg", "Return", "Call", "keyword", "Attribute", "ListComp", "SetComp", "DictComp", "comprehension",
+    "JoinedStr", "FormattedValue",
+}
+
+
+def check_python_subset(code: str) -> None:
+    """Reject unsupported constructs before executing the small teaching subset.
+
+    This is deliberately not a general-purpose Python sandbox. No imports, I/O
+    except captured print(), reflection, classes, attribute chains or deletion.
+    """
+    if len(code) > 50000:
+        raise ToolError("unsupported Python trace: code is longer than 50000 characters")
+    tree = ast.parse(code)
+    nodes = list(ast.walk(tree))
+    if len(nodes) > 2000:
+        raise ToolError("unsupported Python trace: more than 2000 syntax nodes")
+    functions = {node.name for node in nodes if isinstance(node, ast.FunctionDef)}
+    for node in nodes:
+        reason = None
+        if type(node).__name__ not in _TRACE_AST:
+            reason = type(node).__name__
+        elif isinstance(node, ast.Name) and node.id.startswith("_"):
+            reason = "private/dunder names"
+        elif isinstance(node, ast.arg) and (node.arg.startswith("_") or node.annotation is not None):
+            reason = "private arguments or annotations"
+        elif isinstance(node, ast.FunctionDef) and (
+                node.name.startswith("_") or node.decorator_list or node.returns is not None):
+            reason = "private functions, decorators or annotations"
+        elif isinstance(node, ast.Attribute) and (
+                not isinstance(node.value, ast.Name) or node.attr not in _TRACE_METHODS or not isinstance(node.ctx, ast.Load)):
+            reason = "only listed container/string methods on a simple variable are supported"
+        elif isinstance(node, ast.Call):
+            if isinstance(node.func, ast.Name):
+                if node.func.id not in _TRACE_BUILTINS | functions:
+                    reason = "call to %s" % node.func.id
+            elif not isinstance(node.func, ast.Attribute):
+                reason = "indirect function calls"
+            if any(kw.arg is None or kw.arg.startswith("_") or kw.arg == "file" for kw in node.keywords):
+                reason = "keyword expansion, private keywords or print(file=...)"
+        elif isinstance(node, ast.comprehension) and node.is_async:
+            reason = "async comprehensions"
+        if reason:
+            raise ToolError("unsupported Python trace at line %s: %s; use a small pure teaching example and check other code manually"
+                            % (getattr(node, "lineno", "?"), reason))
+
+
+_TRACE_RUNNER = r'''
+import builtins, io, json, sys
+try:
+    import resource
+    resource.setrlimit(resource.RLIMIT_CPU, (3, 3))
+    resource.setrlimit(resource.RLIMIT_AS, (256 * 1024 * 1024, 256 * 1024 * 1024))
+except (ImportError, ValueError, OSError):
+    pass
+class Output(io.StringIO):
+    def write(self, s):
+        if self.tell() + len(s) > 131072:
+            raise RuntimeError("more than 128 KiB of output")
+        return super().write(s)
+events, out, snapshot_size, frames = [], Output(), 0, []
+def visible(frame):
+    cursor = frame
+    while cursor is not None and cursor.f_code.co_filename == "<lesson>":
+        if cursor.f_code.co_name in ("<listcomp>", "<setcomp>", "<dictcomp>", "<genexpr>"):
+            return False
+        cursor = cursor.f_back
+    return frame.f_code.co_filename == "<lesson>"
+def snap(frame):
+    global snapshot_size
+    d = {}
+    for k, v in list(frame.f_locals.items()):
+        if k.startswith("_") or callable(v):
+            continue
+        try:
+            # Freeze mutable containers now, not when the entire run is serialized.
+            d[k] = [json.loads(json.dumps(v)), repr(v)]
+        except (TypeError, ValueError):
+            d[k] = [None, repr(v)]
+    snapshot_size += len(json.dumps(d))
+    if snapshot_size > 2 * 1024 * 1024:
+        raise RuntimeError("more than 2 MiB of variable snapshots")
+    return d
+def tracer(frame, event, arg):
+    if not visible(frame):
+        return None
+    if event == "call":
+        frames.append(frame)  # Keep frame ids distinct across successive calls.
+    if event in ("line", "return"):
+        if len(events) > 5000:
+            sys.settrace(None)
+            raise RuntimeError("more than 5000 steps")
+        ev = {"line": frame.f_lineno if event == "line" else None, "frame": id(frame), "vars": snap(frame), "out": len(out.getvalue())}
+        caller = frame.f_back
+        if event == "return" and caller is not None and visible(caller):
+            ev["caller"] = [id(caller), caller.f_lineno, snap(caller)]
+        events.append(ev)
+    return tracer
+request = json.loads(sys.stdin.read())
+code = compile(request["code"], "<lesson>", "exec")
+safe_builtins = {name: getattr(builtins, name) for name in request["builtins"]}
+real, error = sys.stdout, None
+sys.stdout = out
+sys.settrace(tracer)
+try:
+    exec(code, {"__name__": "__main__", "__builtins__": safe_builtins})
+except BaseException as exc:
+    error = "%s: %s" % (type(exc).__name__, exc)
+finally:
+    sys.settrace(None)
+    sys.stdout = real
+print(json.dumps({"events": events, "out": out.getvalue(), "error": error}))
+'''
+
+
+def run_python_trace(code: str, timeout: float = 5.0) -> Dict[str, Any]:
+    """Run code in a separate interpreter and return one entry per executed line:
+    {line, after (variables once the line has run, name -> [json value, repr]), out (text it printed)}."""
+    import subprocess
+    import tempfile
+    check_python_subset(code)
+    with tempfile.TemporaryDirectory(prefix="closebook-trace-") as directory:
+        proc = subprocess.run([sys.executable, "-I", "-B", "-c", _TRACE_RUNNER],
+                              input=json.dumps({"code": code, "builtins": sorted(_TRACE_BUILTINS)}),
+                              capture_output=True, text=True, timeout=timeout, cwd=directory)
+    if proc.returncode != 0:
+        raise ToolError("could not run the code: %s" % proc.stderr.strip().splitlines()[-1:])
+    raw = json.loads(proc.stdout)
+    events, text = raw["events"], raw["out"]
+    steps, seen_frames = [], set()
+    for i, ev in enumerate(events):
+        if ev["line"] is None:
+            if "caller" in ev:
+                # "back in the caller": optional step some traces show after a function returns
+                fid, line, before = ev["caller"]
+                nxt = next((e for e in events[i + 1:] if e["frame"] == fid), None)
+                steps.append({"line": line, "before": before, "after": nxt["vars"] if nxt else before,
+                              "frame": fid, "out": "", "optional": True})
+            continue
+        next_index = next((n for n in range(i + 1, len(events)) if events[n]["frame"] == ev["frame"]), None)
+        nxt = events[next_index] if next_index is not None else None
+        # A call first enters its function. The assignment completes at the
+        # optional caller-return entry, which may be merged into the next line.
+        enters_function = next_index is not None and next_index > i + 1
+        out_end = events[i + 1]["out"] if i + 1 < len(events) else len(text)
+        steps.append({"line": ev["line"], "frame": ev["frame"],
+                      "before": ev["vars"] if ev["frame"] in seen_frames else {},
+                      "after": ev["vars"] if enters_function or nxt is None else nxt["vars"],
+                      "out": text[ev["out"]:out_end]})
+        seen_frames.add(ev["frame"])
+    loop_bodies = {
+        node.lineno: (node.body[0].lineno, getattr(node.body[-1], "end_lineno", node.body[-1].lineno))
+        for node in ast.walk(ast.parse(code)) if isinstance(node, (ast.For, ast.While))
+    }
+    for i, step in enumerate(steps):
+        if step["line"] not in loop_bodies or step["before"] != step["after"] or step["out"]:
+            continue
+        following = next((other for other in steps[i + 1:] if other["frame"] == step["frame"]), None)
+        first, last = loop_bodies[step["line"]]
+        if following is None or (following["line"] != step["line"] and not first <= following["line"] <= last):
+            step["optional_loop_exit"] = True
+    return {"steps": steps, "out": text, "error": raw["error"]}
+
+
+def _same_value(claimed: Any, real: List[Any]) -> bool:
+    _, shown = real
+    # JSON turns tuples into lists and integer dictionary keys into strings.
+    # Reconstruct only literal values from the frozen repr to retain Python types.
+    try:
+        value = ast.literal_eval(shown)
+    except (ValueError, SyntaxError):
+        return isinstance(claimed, str) and claimed == shown
+
+    def equal(left, right):
+        if isinstance(left, (int, float)) and not isinstance(left, bool) and isinstance(right, (int, float)) \
+                and not isinstance(right, bool):
+            if left == right or isinstance(right, int):
+                return left == right  # Integers have no rounding allowance.
+            try:
+                return abs(left - right) <= 1e-9 * max(1.0, abs(right))
+            except OverflowError:
+                return False
+        if type(left) is not type(right):
+            return False
+        if isinstance(left, (list, tuple)):
+            return len(left) == len(right) and all(equal(a, b) for a, b in zip(left, right))
+        if isinstance(left, dict):
+            return len(left) == len(right) and all(
+                any(type(key) is type(other) and key == other and equal(val, right[other]) for other in right)
+                for key, val in left.items())
+        if isinstance(left, (set, frozenset)):
+            return len(left) == len(right) and all(any(type(a) is type(b) and a == b for b in right) for a in left)
+        return left == right
+
+    if isinstance(claimed, str):
+        if claimed == shown or (isinstance(value, str) and claimed == value):
+            return True
+        try:
+            claimed = ast.literal_eval(claimed)
+        except (ValueError, SyntaxError):
+            return False
+    return equal(claimed, value)
+
+
+def verify_trace(item: Dict[str, Any], timeout: float = 5.0) -> List[str]:
+    """Compare a code_trace item's trace with a real run. Python only. Returns problems (empty = matches)."""
+    try:
+        run = run_python_trace(item.get("code") or "", timeout)
+    except Exception as exc:  # timeouts, syntax errors, interpreter failures
+        return ["the code didn't run: %s" % exc]
+    real, problems, j = run["steps"], [], 0
+    if run["error"]:
+        problems.append("the code raises %s" % run["error"])
+    shown, stale = {}, set()  # what the page's variable table displays so far
+
+    def changes(actual):
+        return [name for name, value in actual["after"].items() if actual["before"].get(name) != value]
+
+    def skipped(actual, where, tail=False):
+        if actual["out"]:
+            problems.append("%s: the trace skips line %d, which prints %r"
+                            % (where, actual["line"], actual["out"].rstrip("\n")))
+        changed = changes(actual)
+        if changed and (not actual.get("optional") or tail):
+            problems.append("%s: line %d changes %s; a step that changes it is missing"
+                            % (where, actual["line"], ", ".join(changed)))
+        elif not actual.get("optional") and not actual.get("optional_loop_exit"):
+            problems.append("%s: line %d executes but is missing; only the final unchanged loop check may be omitted"
+                            % (where, actual["line"]))
+
+    for k, step in enumerate(item.get("trace") or []):
+        while j < len(real) and real[j]["line"] != step["line"]:
+            skipped(real[j], "step %d" % (k + 1))
+            j += 1
+        if j >= len(real):
+            problems.append("step %d: line %d doesn't run at this point" % (k + 1, step["line"]))
+            return problems
+        here = real[j]["after"]
+        for name, claimed in (step.get("vars") or {}).items():
+            shown[name] = claimed
+            if name not in here:
+                problems.append("step %d (line %d): no variable %s exists here" % (k + 1, step["line"], name))
+            elif not _same_value(claimed, here[name]):
+                stale.add(name)
+                problems.append("step %d (line %d): %s is %s after this line, the trace says %s"
+                                % (k + 1, step["line"], name, here[name][1], json.dumps(claimed, ensure_ascii=False)))
+            else:
+                stale.discard(name)
+        for name in here:
+            if name not in shown:
+                problems.append("step %d (line %d): the trace omits new variable %s = %s"
+                                % (k + 1, step["line"], name, here[name][1]))
+        for name, claimed in shown.items():
+            if name in here and name not in (step.get("vars") or {}) and name not in stale and not _same_value(claimed, here[name]):
+                stale.add(name)
+                problems.append("step %d (line %d): the page still shows %s = %s, but it is %s by now (a step that changes it is missing)"
+                                % (k + 1, step["line"], name, json.dumps(claimed, ensure_ascii=False), here[name][1]))
+        output = real[j]["out"]
+        printed = output[:-1] if output.endswith("\n") else output
+        if printed != step.get("out", "") or (bool(output) != ("out" in step)):
+            problems.append("step %d (line %d): prints %r, the trace says %r" % (k + 1, step["line"], printed, step.get("out") or ""))
+        j += 1
+    for actual in real[j:]:
+        skipped(actual, "the trace ends too early", tail=True)
+    displayed_output = "\n".join(step["out"] for step in item.get("trace", []) if "out" in step)
+    expected_output = run["out"][:-1] if run["out"].endswith("\n") else run["out"]
+    if displayed_output != expected_output:
+        problems.append("the page's complete output %r differs from the real output %r" % (displayed_output, expected_output))
+    return problems
+
+
+def check_code(lesson: Dict[str, Any], timeout: float = 5.0) -> List[Issue]:
+    """Run supported Python traces; natural-language prediction answers are not inferred."""
+    issues = []
+    for i, kp in enumerate(lesson.get("knowledge_points") or []):
+        if kp.get("interaction_type") != "code_trace":
+            continue
+        for j, item in enumerate(kp.get("items") or []):
+            path = "$.knowledge_points[%d].items[%d]" % (i, j)
+            if not re.match(r"(python|py)\s*3?(\.\d+)*$", str(item.get("language", "")).strip().lower()):
+                issues.append(Issue("warning", path, "only Python traces can be run; check this one by hand", "code"))
+                continue
+            for problem in verify_trace(item, timeout):
+                issues.append(Issue("error", path + ".trace", problem, "code"))
+    return issues
+
+
 def embed(lesson: Dict[str, Any], template_text: str) -> str:
     payload = json.dumps(lesson, ensure_ascii=False, indent=2).replace("</", "<\\/")
     if not DATA_BLOCK.search(template_text):
@@ -445,6 +748,8 @@ def main(argv: List[str] = None) -> int:
     parser.add_argument("--template", default=TEMPLATE)
     parser.add_argument("--check", action="store_true", help="validate only")
     parser.add_argument("--strict", action="store_true", help="treat fit warnings as errors")
+    parser.add_argument("--run-code", action="store_true",
+                        help="compatibility flag: Python traces are now checked on every build (5 s limit)")
     args = parser.parse_args(argv)
     try:
         if args.lesson.endswith(".html"):
@@ -453,6 +758,8 @@ def main(argv: List[str] = None) -> int:
         else:
             lesson = load_json(args.lesson)
         issues = check_lesson(lesson)
+        if not any(i.severity == "error" for i in issues):
+            issues += check_code(lesson)
         for issue in issues:
             print(repr(issue), file=sys.stderr)
         errors = [i for i in issues if i.severity == "error" or (args.strict and i.severity == "warning")]
@@ -460,6 +767,9 @@ def main(argv: List[str] = None) -> int:
             print("lesson data: INVALID (%d errors)" % len(errors), file=sys.stderr)
             return 1
         print("lesson data: VALID (%d warnings)" % len(issues), file=sys.stderr)
+        if any(kp.get("interaction_type") == "code_trace" for kp in lesson.get("knowledge_points", [])):
+            print("trace check covers supported Python execution steps, variables and output; "
+                  "prediction answers and other languages need independent review", file=sys.stderr)
         if args.check:
             return 0
         with open(args.template, encoding="utf-8") as fh:

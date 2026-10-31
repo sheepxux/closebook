@@ -287,6 +287,138 @@ class SubjectWidgets(unittest.TestCase):
         del it["plot"]
         self.assertError("needs outputs (readouts) or a plot")
 
+    def test_trace_matches_a_real_run(self):
+        it = self.item("kp-trace")
+        self.assertEqual(build_lesson.verify_trace(it), [])
+        self.assertEqual(build_lesson.check_code(self.lesson), [])
+        wrong = copy.deepcopy(it)
+        wrong["trace"][4]["vars"]["total"] = 4
+        self.assertEqual(build_lesson.verify_trace(wrong), ["step 5 (line 3): total is 5 after this line, the trace says 4"])
+        gap = copy.deepcopy(it)
+        gap["trace"].pop(4)
+        self.assertIn("a step that changes it is missing", str(build_lesson.verify_trace(gap)))
+        silent = copy.deepcopy(it)
+        del silent["trace"][-1]["out"]
+        self.assertIn("prints '14'", str(build_lesson.verify_trace(silent)))
+
+    def test_trace_through_a_function_call(self):
+        code = "def f(n):\n    return n * 2\ny = f(3)\nprint(y)"
+        with_return = [{"line": 1}, {"line": 3}, {"line": 2, "vars": {"n": 3}}, {"line": 3, "vars": {"y": 6}}, {"line": 4, "out": "6"}]
+        without = [{"line": 1}, {"line": 3}, {"line": 2, "vars": {"n": 3}}, {"line": 4, "vars": {"y": 6}, "out": "6"}]
+        for trace in (with_return, without):
+            self.assertEqual(build_lesson.verify_trace({"code": code, "trace": trace}), [])
+
+    def test_trace_freezes_mutable_snapshots(self):
+        item = {"code": "xs = []\nxs.append(1)\nprint(xs)", "trace": [
+            {"line": 1, "vars": {"xs": []}}, {"line": 2, "vars": {"xs": [1]}}, {"line": 3, "out": "[1]"},
+        ]}
+        self.assertEqual(build_lesson.verify_trace(item), [])
+        item["trace"][0]["vars"]["xs"] = [1]
+        self.assertIn("xs is []", str(build_lesson.verify_trace(item)))
+
+    def test_trace_preserves_python_container_types(self):
+        for code, wrong, correct in [
+            ("x = (1, 2)", [1, 2], "(1, 2)"),
+            ("x = {1: 2}", {"1": 2}, "{1: 2}"),
+            ("x = [True]", [1], [True]),
+            ("x = [(1,)]", [[1]], "[(1,)]"),
+            ("x = 10**12", 10**12 + 1, 10**12),
+        ]:
+            with self.subTest(code=code):
+                item = {"code": code, "trace": [{"line": 1, "vars": {"x": wrong}}]}
+                self.assertTrue(build_lesson.verify_trace(item))
+                item["trace"][0]["vars"]["x"] = correct
+                self.assertEqual(build_lesson.verify_trace(item), [])
+
+    def test_trace_rejects_missing_state_changes(self):
+        cases = [
+            {"code": "x = 0\nx = 1", "trace": [{"line": 1, "vars": {"x": 0}}]},
+            {"code": "x = 0\nx = 1\nprint(x)", "trace": [
+                {"line": 1, "vars": {"x": 0}}, {"line": 3, "vars": {"x": 1}, "out": "1"}]},
+        ]
+        for item in cases:
+            with self.subTest(code=item["code"]):
+                self.assertIn("a step that changes it is missing", str(build_lesson.verify_trace(item)))
+        self.assertIn("omits new variable x", str(build_lesson.verify_trace({
+            "code": "x = 1", "trace": [{"line": 1}],
+        })))
+        self.assertIn("unsupported Python trace", str(build_lesson.verify_trace({
+            "code": "x = 1\ndel x", "trace": [{"line": 1, "vars": {"x": 1}}, {"line": 2}],
+        })))
+
+    def test_trace_accepts_none_and_atomic_comprehensions(self):
+        item = {"code": "x = None\nys = [n * n for n in range(3)]\nprint(ys)", "trace": [
+            {"line": 1, "vars": {"x": None}}, {"line": 2, "vars": {"ys": [0, 1, 4]}},
+            {"line": 3, "out": "[0, 1, 4]"},
+        ]}
+        self.assertEqual(build_lesson.verify_trace(item), [])
+        item["trace"][0]["vars"]["x"] = "None"
+        self.assertEqual(build_lesson.verify_trace(item), [])
+
+    def test_trace_break_and_optional_loop_check(self):
+        item = {"code": "x = 0\nfor n in range(3):\n    x += n\n    if n == 1:\n        break\nprint(x)", "trace": [
+            {"line": 1, "vars": {"x": 0}}, {"line": 2, "vars": {"n": 0}},
+            {"line": 3}, {"line": 4}, {"line": 2, "vars": {"n": 1}},
+            {"line": 3, "vars": {"x": 1}}, {"line": 4}, {"line": 5}, {"line": 6, "out": "1"},
+        ]}
+        self.assertEqual(build_lesson.verify_trace(item), [])
+        # The bundled example intentionally omits the final for-condition check.
+        self.assertEqual(build_lesson.verify_trace(self.item("kp-trace")), [])
+
+    def test_trace_cannot_skip_unchanged_control_flow(self):
+        item = {"code": "x = 0\nwhile x < 1:\n    break\nprint(x)", "trace": [
+            {"line": 1, "vars": {"x": 0}}, {"line": 2}, {"line": 3}, {"line": 4, "out": "0"},
+        ]}
+        self.assertEqual(build_lesson.verify_trace(item), [])
+        for missing in (1, 2):
+            gap = copy.deepcopy(item)
+            gap["trace"].pop(missing)
+            self.assertIn("executes but is missing", str(build_lesson.verify_trace(gap)))
+        for code in ("x = 1\nif x == 1:\n    pass\nprint(x)", "x = 1\nx = 1\nprint(x)"):
+            gap = {"code": code, "trace": [
+                {"line": 1, "vars": {"x": 1}}, {"line": len(code.splitlines()), "out": "1"},
+            ]}
+            self.assertIn("executes but is missing", str(build_lesson.verify_trace(gap)))
+
+    def test_trace_preserves_blank_output_lines(self):
+        item = {"code": "print()\nprint('done')", "trace": [{"line": 1, "out": ""}, {"line": 2, "out": "done"}]}
+        self.assertEqual(build_lesson.verify_trace(item), [])
+        del item["trace"][0]["out"]
+        self.assertIn("complete output", str(build_lesson.verify_trace(item)))
+
+    def test_trace_rejects_unsupported_code_before_running(self):
+        for code in ["import os", "open('forbidden', 'w')", "input()", "eval('1')", "x = ().__class__",
+                     "x = {}\ny = x.get.__globals__", "x = __builtins__", "class Example:\n    pass",
+                     "print('x', file=None)", "getattr(1, 'real')", "x = 1\ndel x"]:
+            with self.subTest(code=code):
+                self.assertIn("unsupported Python trace", str(build_lesson.verify_trace({"code": code, "trace": []})))
+
+    def test_trace_timeout(self):
+        self.assertIn("timed out", str(build_lesson.verify_trace({
+            "code": "x = 1", "trace": [{"line": 1, "vars": {"x": 1}}],
+        }, timeout=0.000001)))
+
+    def test_cli_always_checks_python_traces(self):
+        self.item("kp-trace")["trace"][0]["vars"]["total"] = 99
+        with tempfile.TemporaryDirectory() as directory:
+            path = os.path.join(directory, "lesson.json")
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump(self.lesson, fh)
+            for flags in ([], ["--run-code"]):
+                err = io.StringIO()
+                with redirect_stderr(err):
+                    self.assertEqual(build_lesson.main([path, "--check"] + flags), 1)
+                self.assertIn("total is 0", err.getvalue())
+
+    def test_trace_runaway_and_crashing_code(self):
+        self.assertIn("more than 5000 steps", str(build_lesson.verify_trace({"code": "while True:\n    pass", "trace": [{"line": 2}]})))
+        self.assertIn("ZeroDivisionError", str(build_lesson.verify_trace({"code": "x = 1/0", "trace": [{"line": 1}]})))
+
+    def test_run_code_only_runs_python(self):
+        kp = [k for k in self.lesson["knowledge_points"] if k["id"] == "kp-trace"][0]
+        kp["items"][0]["language"] = "JavaScript"
+        self.assertIn("check this one by hand", str(build_lesson.check_code(self.lesson)))
+
     def test_fit_warnings(self):
         kp = [k for k in self.lesson["knowledge_points"] if k["id"] == "kp-sine"][0]
         kp["knowledge_type"] = "factual"

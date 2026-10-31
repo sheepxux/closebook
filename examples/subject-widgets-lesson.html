@@ -982,9 +982,41 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     s = String(s == null ? '' : s).trim().replace(/\s+/g, ' ').replace(/[。．.!！?？,，;；:：]+$/, '');
     return caseSensitive ? s : s.toLowerCase();
   }
-  function matches(value, accept, caseSensitive) {
-    var v = norm(value, caseSensitive);
-    return !!v && accept.some(function (a) { return norm(a, caseSensitive) === v; });
+  function matches(value, accept, caseSensitive, kp) {
+    var normalize = function (s) {
+      s = String(s == null ? '' : s);
+      // Smart punctuation changes the typography of a contraction, not its
+      // grammar. Keep programming and command answers outside this rule.
+      if (kp && kp.knowledge_type === 'language_production') s = s.replace(/[\u2018\u2019\u0060\u02bc]/g, "'");
+      return norm(s, caseSensitive);
+    };
+    var v = normalize(value);
+    return !!v && accept.some(function (a) { return normalize(a) === v; });
+  }
+  function normCode(s) {
+    s = String(s == null ? '' : s).trim();
+    // Only container syntax has insignificant punctuation spacing. Printed text
+    // and whitespace inside string literals must keep their meaning.
+    if (!/^[\[({]/.test(s)) return s;
+    var out = '', plain = '', quote = '', escaped = false;
+    function flush() { out += plain.replace(/\s*([,:;()[\]{}])\s*/g, '$1'); plain = ''; }
+    for (var i = 0; i < s.length; i++) {
+      var c = s[i];
+      if (quote) {
+        out += c;
+        if (escaped) escaped = false;
+        else if (c === '\\') escaped = true;
+        else if (c === quote) quote = '';
+      } else if (c === '"' || c === "'") { flush(); quote = c; out += c; }
+      else plain += c;
+    }
+    flush();
+    return out;
+  }
+  function matchesCode(value, accept, comparison) {
+    var normalize = comparison === 'container' ? normCode : function (s) { return String(s == null ? '' : s).trim(); };
+    var v = normalize(value);
+    return !!v && accept.some(function (a) { return normalize(a) === v; });
   }
   function announce(msg) { var live = document.getElementById('live'); live.textContent = ''; setTimeout(function () { live.textContent = msg; }, 30); }
   function kpById(id) { return data.knowledge_points.filter(function (k) { return k.id === id; })[0]; }
@@ -1248,7 +1280,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
         if (!norm(ui.draft) || (!contested && !ui.conf)) return;
         ui.answerText = ui.draft;
         if (accept) {
-          var ok = matches(ui.draft, accept, src.case_sensitive);
+          var ok = matches(ui.draft, accept, src.case_sensitive, kp);
           var a = addAttempt(kp, item.id, { result: ok ? 'correct' : 'incorrect', confidence: contested ? undefined : ui.conf,
             hint_level: ui.hintUsed ? 1 : 0, question: src.question, question_format: formatOf(item, 'cloze'),
             interaction: interaction, duration_sec: durationSince(ui) });
@@ -1374,8 +1406,11 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       })
     };
   }
-  function blankCheck(ui, cells) {
-    ui.auto = cells.map(function (c, i) { return matches(ui.vals[i], (c.accept && c.accept.length) ? c.accept : [c.text], false); });
+  function blankCheck(ui, cells, kp) {
+    ui.auto = cells.map(function (c, i) {
+      var accept = (c.accept && c.accept.length) ? c.accept : [c.text];
+      return c.code ? matchesCode(ui.vals[i], accept, c.comparison) : matches(ui.vals[i], accept, false, kp);
+    });
     ui.marks = ui.auto.slice();
     ui.checked = true;
   }
@@ -1463,7 +1498,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     var question = item.prompt || item.question;
     if (!ui.checked) {
       out.push(h('div', { class: 'row' }, hintBlock(item, ui, rerender), h('button', { type: 'button', class: 'btn', onclick: function () {
-        ui.duration = durationSince(ui); blankCheck(ui, cells); rerender();
+        ui.duration = durationSince(ui); blankCheck(ui, cells, kp); rerender();
       } }, T.check)));
     } else if (!ui.done) {
       out.push(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', 'data-focus': '1', onclick: function () {
@@ -1847,7 +1882,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   }
   function renderTrace(kp, item, ui, rerender) {
     var qs = item.questions || [];
-    var cells = qs.map(function (q) { return { text: q.answer, accept: [q.answer].concat(q.accept || []) }; });
+    var cells = qs.map(function (q) { return { text: q.answer, accept: [q.answer].concat(q.accept || []), code: true, comparison: q.comparison }; });
     if (!ui.vals || ui.vals.length !== cells.length) ui.vals = cells.map(function () { return ''; });
     var want = ui.focus;
     delete ui.focus;
@@ -1866,7 +1901,63 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   }
 
   // ---------- simulated terminal (command line, git, devops) ----------
-  function normCmd(s) { return String(s == null ? '' : s).trim().replace(/\s+/g, ' '); }
+  function normCmd(s) { return String(s == null ? '' : s).replace(/^[ \t]+|[ \t]+$/g, ''); }
+  function cmdWords(s) {
+    var words = [], word = '', started = false, quote = '';
+    for (var i = 0; i < s.length; i++) {
+      var c = s[i];
+      if (quote === "'") { if (c === quote) quote = ''; else word += c; }
+      else if (c === '\\') {
+        var next = s[++i];
+        if (next == null || /[\r\n]/.test(next)) return null;
+        if (quote === '"' && !/["\\$`]/.test(next)) word += '\\';
+        word += next; started = true;
+      } else if (quote) {
+        if (c === quote) quote = '';
+        else if (c === '$' || c === '`') return null;
+        else word += c;
+      } else if (c === '"' || c === "'") { quote = c; started = true; }
+      else if (/[\r\n|&;<>$`*?()[\]{}~#]/.test(c)) return null;
+      else if (/[ \t]/.test(c)) { if (started) words.push(word); word = ''; started = false; }
+      else { word += c; started = true; }
+    }
+    if (quote) return null;
+    if (started) words.push(word);
+    return words;
+  }
+  function cmdShape(s) {
+    var tokens = cmdWords(s);
+    if (!tokens) return null;
+    // Reorder only known independent Git switches, after the subcommand.
+    // Unknown flags stay in place; option arguments never become free words.
+    var switches = { log: ['--oneline', '--graph', '--all', '--decorate', '--decorate=short', '--decorate=full', '--abbrev-commit', '--pretty=oneline'],
+      merge: ['--no-edit'], status: ['--short', '-s', '--branch', '-b'] };
+    var values = { log: ['-n', '--max-count', '--author', '--grep', '--since', '--until'], merge: ['-m'], status: [] };
+    var allowed = tokens[0] === 'git' && switches[tokens[1]];
+    if (!allowed) return JSON.stringify(tokens);
+    var words = tokens.slice(0, 2), flags = [], rest = false;
+    for (var i = 2; i < tokens.length; i++) {
+      var w = tokens[i], count = tokens[1] === 'log' && /^(?:--max-count=|-n|-)(\d+)$/.exec(w);
+      if (w === '--') rest = true;
+      if (!rest && allowed.indexOf(w) >= 0) flags.push(w);
+      else if (!rest && count) words.push(['--max-count', count[1]]);
+      else if (!rest && values[tokens[1]].indexOf(w) >= 0) {
+        var value = tokens[++i];
+        if (value == null || /^-/.test(value)) return null;
+        words.push([tokens[1] === 'log' && w === '-n' ? '--max-count' : w, value]);
+      } else {
+        if (!rest && /^-./.test(w)) return JSON.stringify(tokens);
+        words.push(w);
+      }
+    }
+    if (flags.filter(function (f) { return /^--decorate(?:=|$)/.test(f); }).length > 1) return JSON.stringify(tokens);
+    return JSON.stringify([words, flags.sort()]);
+  }
+  function sameCmd(typed, accepted) {
+    if (normCmd(typed) === normCmd(accepted)) return true;
+    var shape = cmdShape(typed);
+    return shape !== null && shape === cmdShape(accepted);
+  }
   function renderTerminal(kp, item, ui, rerender) {
     var cmds = item.commands || [], ps1 = item.shell_prompt || '$';
     if (!ui.log) { ui.log = []; ui.step = 0; ui.tries = cmds.map(function () { return 0; }); ui.shown = cmds.map(function () { return false; }); ui.hinted = cmds.map(function () { return false; }); }
@@ -1901,7 +1992,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
         var typed = normCmd(input.value);
         if (!typed) return;
         ui.log.push({ kind: 'cmd', text: typed });
-        if (c.accept.some(function (a) { return normCmd(a) === typed; })) { accepted(c); return; }
+        if (c.accept.some(function (a) { return sameCmd(typed, a); })) { accepted(c); return; }
         ui.tries[ui.step] += 1;
         ui.log.push({ kind: 'err', text: T.termUnknown });
         ui.focus = 'term';

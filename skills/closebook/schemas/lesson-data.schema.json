@@ -224,6 +224,7 @@
             "properties": {
               "question": { "type": "string" },
               "answer": { "type": "string" },
+              "comparison": { "type": "string", "enum": ["exact", "container"], "description": "Defaults to exact. Use container only for a list/tuple/dict/set representation whose punctuation spacing is irrelevant, never for literal printed text." },
               "accept": { "type": "array", "items": { "type": "string" } }
             }
           }

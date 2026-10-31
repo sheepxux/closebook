@@ -1,202 +1,204 @@
-# Validation report
+# 验证报告
 
-**Date:** 2026-10-31 · **Skill version:** 0.1.0 · **Progress schema:** 1.0
-**Environment:** macOS, Python 3.9.6 (code targets 3.8+), Playwright 1.60.0 with headless Chromium.
+**日期：**2026-10-31 · **发布版本：**0.2.0（验证期间标记为 0.1.0）· **进度数据格式：**1.0
+**环境：**macOS、Python 3.9.6（代码面向 3.8+）、Playwright 1.60.0 与无头 Chromium。
 
-## Summary
+## 概览
 
-| Area | Result |
+| 验证范围 | 结果 |
 |---|---|
-| Automated tests | 105 / 105 pass (unit, packaging and browser tests) |
-| Practice page in a real browser | All spec §13 checks pass: load, answer, explanations, confidence, self-check, export, import-merge; the coach-grading round trip works end to end; every subject-specific form (numbers, ordering, cloze, code tracing, terminal, graphs, parameter lab) is played through and its export validates |
-| Packaging | Both ZIPs build reproducibly with no development files or macOS junk |
-| Behaviour evals (22 evals, 102 expectations) | First run 89 / 102 (87%), full rerun after fixes 99 / 102 (97%); later targeted reruns all pass |
-| Trigger check (proxy) | 18 / 18 queries routed as expected |
-| Real platform installs | Codex CLI: triggered on a natural request, taught, saved valid progress, built the page from the template, and graded exported answers with a block the page accepted (section 7). Claude, ChatGPT, Gemini: **not tested** (section 8). |
+| 自动化测试 | 初次审计：121/121 通过，包含 10 项浏览器测试。人工复核修复后：116/116 项非浏览器测试通过（新增 5 项 JavaScript 判分测试）；受本地文件浏览器策略限制，未重新运行那 10 项浏览器测试。 |
+| 真实浏览器中的练习页 | 需求规格 §13 的检查全部通过：加载、作答、解析、信心等级、自评、导出、导入合并；教练批改回传流程端到端可用；每种学科题型（数值、排序、完形填空、代码追踪、模拟终端、坐标图、参数实验室）都已实际作答，导出数据也通过验证 |
+| 打包 | 两种 ZIP 均可重复构建，且不含开发文件或 macOS 杂项文件 |
+| 行为评测（22 个用例、102 项预期） | 首轮 89 / 102（87%）；修复后完整重跑为 99 / 102（97%）；之后的定向重跑全部通过 |
+| 触发检查（近似测试） | 18 / 18 个请求按预期选择了 skill |
+| 真实平台安装 | Codex CLI：自然请求触发 skill，完成教学、保存有效进度、用模板生成页面，并对导出的作答进行批改；页面成功接收了批改数据块（第 7 节）。Claude、ChatGPT、Gemini：**未测试**（第 8 节）。 |
+| 模型生成的标准答案 | 已用独立的 Python 执行、公式计算和 Git 实操核对；找回的样本原有 11 次正确答案被拒。修正版练习通过了旧样本 469 次输入、新一轮 180 次输入及完形补充样本 36 次输入；原始失败记录与兼容性迁移记录分别保留。详见[标准答案验证](answer-key-validation.md)。 |
 
-## 1. Automated tests
+## 1. 自动化测试
 
 ```bash
 python3 -m unittest discover -s tests
 ```
 
-| File | Tests | Covers |
+| 文件 | 测试数 | 覆盖内容 |
 |---|---|---|
-| `test_progress_tool.py` | 57 | Schema validation, Leitner scheduling (first attempt per day, fuzzy/fail, diagnostics never count, exam-date cap), replay from history, priority flags, due order, statistics and calibration, merge and import of session exports (idempotent), applying the coach's grading (replaces self-checks, fixes error entries, idempotent, unknown ids reported), compact export, CLI exit codes |
-| `test_build_lesson.py` | 28 | Lesson-data rules (one correct MCQ option, table and diagram blanks, analogy limits, Plain Talk length), rules for the subject forms (tolerances, distinct order items, cloze blanks, trace lines inside the code, graph targets inside the slider range, one task per graph, a prediction before every parameter lab), the expression grammar (accepts arithmetic and listed functions, rejects everything else), fit warnings, `--strict`, `</script>` escaping, the example page matches a fresh build, and the template has no external requests or `innerHTML` |
-| `test_skill_structure.py` | 7 | Frontmatter keys, `name` = folder, description, `SKILL.md` stays lean, every referenced file exists, all 12 methods and 4 modes present, no junk files in the skill folder |
-| `test_package_skill.py` | 5 | ZIP root is `closebook/`, runtime files present, no evals or junk, the Gemini ZIP differs only by `agents/openai.yaml`, byte-identical rebuilds |
-| `test_lesson_page_e2e.py` | 8 | Browser tests of the practice page, detailed in section 2 below |
+| `test_progress_tool.py` | 57 | 数据格式验证；Leitner 复习调度（每天首次作答、记忆模糊或失败的情况，即 fuzzy/fail、诊断作答不计入调度、考试日期上限）；按历史记录重放；优先标记；到期顺序；统计与信心校准；学习记录导出的合并与导入（幂等）；应用教练批改（替换自评、修正错误记录、幂等、报告未知 id）；精简导出；CLI 退出码 |
+| `test_build_lesson.py` | 42 | 课程数据与学科题型规则、表达式语法、适配警告、数据嵌入和自包含模板；默认执行 Python 代码进行核对，覆盖可变对象快照、漏步骤/变量、函数、推导式、容器类型、输出、不支持的操作与超时 |
+| `test_skill_structure.py` | 7 | 文件头元数据（Frontmatter）字段、`name` 与文件夹名称一致、描述、`SKILL.md` 保持精简、引用文件全部存在、12 种方法和 4 种模式齐全、skill 文件夹无杂项文件 |
+| `test_package_skill.py` | 5 | ZIP 根目录为 `closebook/`、运行所需文件齐全、不含评测或杂项文件、Gemini ZIP 仅在 `agents/openai.yaml` 上有差异、重复构建结果逐字节一致 |
+| `test_answer_matching.py` | 5 | 在 Node 中运行模板内的实际 JavaScript 和提交回调：语言答案的撇号变体、语法错答、完形/普通问答（plain-QA）集成、保留原始输入、代码和终端匹配逻辑不变；不涉及浏览器交互 |
+| `test_lesson_page_e2e.py` | 10 | 练习页浏览器测试，详见下方第 2 节；另有 35 个输入案例保护代码追踪中的字符串内容、shell 空白与参数绑定关系 |
 
-## 2. Practice page (HTML)
+## 2. 练习页（HTML）
 
-The browser tests open [`examples/http-cache-lesson.html`](../examples/http-cache-lesson.html), [`examples/subject-widgets-lesson.html`](../examples/subject-widgets-lesson.html) and a fixture page in headless Chromium and use them like a learner would:
+浏览器测试在无头 Chromium 中打开 [`examples/http-cache-lesson.html`](../examples/http-cache-lesson.html)、[`examples/subject-widgets-lesson.html`](../examples/subject-widgets-lesson.html) 和一个测试样例页面，像学习者一样实际操作：
 
-- **Full Chinese session.** Fill in a flow diagram (partly right) and pick a mistake cause. Answer a multiple-choice question wrong with confidence 3 and get per-option explanations. Answer a typed question wrong, then mark it "I was actually right". Answer "don't know". Complete a comparison table. Pass the teach-then-hide gate. Self-check a free-text answer against key points (partial). Do free recall and Plain Talk recall, then group and select mistakes.
-- **Export and import.**
-  - The export passes `progress_tool.py validate`. `import-session` merges it into an existing progress file, and a second import changes nothing.
-  - The page refuses bad imports.
-  - A fresh page import restores 7 / 7 answered.
-  - State survives a reload.
-- **Coach grading round trip.** The exported answers carry an ID per answer (filled blanks included) and ask the coach for a `closebook-grading` block. Pasting the block, even inside a Markdown code fence, applies it: each graded answer shows the coach's verdict and feedback instead of "self-checked", "I was actually right" disappears, and the mistakes list, the progress export and a reload all keep the coach's results. The export still validates and merges. Re-pasting changes nothing; unknown ids and other lessons are reported.
-- **Subject forms.**
-  - Numbers: `50/2 m` reads as 25 m and is right; `1,100` against 1102.5 is wrong with confidence 3, flagged, and the worked solution appears.
-  - Parsons problem: lines are tapped into place, an arrow fixes the order and keyboard focus follows the moved line; distractors stay in the pool. Word tiles with a distractor score partial and show the right order.
-  - Cloze: a word-bank tap fills the next blank and keeps focus; `H₂O` is accepted for 水; 3 of 4 is partial.
-  - Code tracing: the trace stays hidden until the predictions are checked; stepping highlights the current line, marks the changed variable and builds the output.
-  - Terminal: the scripted output appears, focus stays in the prompt, a wrong command is rejected with an honest message, a hint and "show the command" work, and the result is partial with hint level 3.
-  - Graphs: the learner's curve is hidden until the first check; a near miss then a match scores partial. In predict mode the sliders unlock only after the prediction, and moving one redraws the curve.
-  - Parameter lab: no graph before the prediction (it would give the answer away); readouts follow the sliders (2.01 s → 4.01 s for L = 1 → 4 m).
-  - The export validates and carries the new interaction ids; "my answers" lists the typed number, the tile order, the commands (revealed ones marked), the trace predictions, the blanks and the slider values.
-- **Edge cases.**
-  - A retry produces two attempts.
-  - Keyboard-only answering works.
-  - The page opens in the light theme even when the OS is dark; "auto" follows the OS, and switching works.
-  - The 375 px layout has no horizontal overflow.
-  - An unknown interaction type falls back to typed answers.
-  - Blocked `localStorage` still works, with a copy/paste export.
-  - Broken lesson data shows a readable error.
+- **完整中文学习流程。** 填写流程图（部分正确），选择错误原因。以信心等级 3 答错一道选择题，查看每个选项的解析。答错一道输入题，再标记“I was actually right”（其实我答对了）。回答“don't know”（不知道）。完成对比表。通过先讲解、再隐藏讲解的作答步骤。对照要点自评自由回答（部分正确）。进行自由回忆和小白模式回忆，再对错题分组、选择。
+- **导出与导入。**
+  - 导出数据通过 `progress_tool.py validate`。`import-session` 将其合并到已有进度文件，第二次导入不产生变化。
+  - 页面拒绝无效的导入数据。
+  - 在新页面导入后，恢复为已答 7 / 7 题。
+  - 重新加载页面后状态保留。
+- **教练批改回传流程。** 导出的每个答案都有 ID（包括填空答案），并要求教练返回 `closebook-grading` 数据块。粘贴后即可应用，即使数据块位于 Markdown 代码围栏中也能识别：每个已批改答案显示教练的判定和反馈，替换“self-checked”（自评）；“I was actually right”（其实我答对了）不再显示；错题列表、进度导出和页面重新加载均保留教练的结果。导出数据仍能通过验证和合并。重复粘贴不产生变化；遇到未知 id 或其他课程的数据会提示。
+- **学科题型。**
+  - 数值题：`50/2 m` 被解析为 25 m 并判对；以信心等级 3 输入 `1,100`、标准答案为 1102.5 时判错，作出标记，并显示解题步骤。
+  - Parsons 代码排序题：点击代码行将其放入答案区，用箭头调整顺序时，键盘焦点跟随移动的代码行；干扰项留在候选区。词块排序中加入干扰项时判部分正确，并展示正确顺序。
+  - 完形填空：点击词库中的词会填入下一个空格并保留焦点；“水”接受 `H₂O`；4 空答对 3 空时判部分正确。
+  - 代码追踪：核对预测前不展示执行轨迹；逐步查看时高亮当前行，标出变化的变量，并累积输出。
+  - 模拟终端：显示预设输出，焦点保留在命令输入框；错误命令被拒绝，并如实说明；提示和“show the command”（显示命令）均可用，结果为部分正确、提示等级为 3。
+  - 坐标图：首次核对前隐藏学习者的曲线；先接近目标、再匹配成功时判部分正确。在预测模式下，作答后才解锁滑块，移动滑块会重绘曲线。
+  - 参数实验室：预测前不显示图像，以免泄露答案；读数随滑块变化（L = 1 → 4 m 时，2.01 s → 4.01 s）。
+  - 导出数据通过验证，并包含新交互类型的 id；“my answers”（我的作答）列出输入的数值、词块顺序、命令（已揭示的命令有标记）、代码追踪预测、填空和滑块值。
+- **边界情况。**
+  - 重试会产生两次作答记录。
+  - 仅使用键盘也能作答。
+  - 即使操作系统为深色模式，页面首次打开仍使用浅色主题；“auto”（自动）跟随系统，切换正常。
+  - 375 px 布局没有横向溢出。
+  - 未知交互类型降级为输入答案。
+  - `localStorage` 被阻止时页面仍可用，并可通过复制/粘贴导出。
+  - 课程数据损坏时显示可理解的错误提示。
 
-**Manual checks:** screenshots in light mode, dark mode, at 390 px mobile width, and of every tab and interaction type (diagram, table, timeline, flashcard, multiple choice answered wrong, the mini-lesson gate, Plain Talk, Save & load, and each subject form before and after answering), all reviewed by eye ([example](images/lesson-page.jpg), [subject forms](images/subject-widgets.jpg)).
+**人工检查：**已逐一目视检查浅色、深色、390 px 移动端宽度的截图，以及每个标签页和交互类型的截图（流程图、表格、时间线、闪卡、选择题答错状态、进入作答前的简短讲解、小白模式、保存与导入，以及各学科题型作答前后的状态；[示例](images/lesson-page.jpg)、[学科题型](images/subject-widgets.jpg)）。
 
-**Not possible:** the Cursor IDE browser cancels scripted clicks, so all interaction testing used Playwright.
+**未能采用的方式：**Cursor IDE 的浏览器会取消脚本点击，因此所有交互测试均使用 Playwright。
 
-## 3. Packaging
+## 3. 打包
 
-`python3 tools/package_skill.py` builds:
+`python3 tools/package_skill.py` 生成：
 
-| ZIP | Files | Size |
+| ZIP | 文件数 | 大小 |
 |---|---|---|
-| `dist/closebook.zip` | 42 | 141.0 KB |
-| `dist/closebook-gemini.zip` | 41 (no `agents/`) | 140.7 KB |
+| `dist/closebook.zip` | 42 | 149.6 KB |
+| `dist/closebook-gemini.zip` | 41（不含 `agents/`） | 149.4 KB |
 
-Two consecutive builds had identical SHA-256 hashes. No `._*`, `.DS_Store` or `__pycache__` files are present in the repository or the ZIPs.
+连续两次构建的 SHA-256 哈希相同。仓库和 ZIP 中均不存在 `._*`、`.DS_Store` 或 `__pycache__` 文件。
 
-## 4. Behaviour evals
+## 4. 行为评测
 
-**Suite:** [`skills/closebook/evals/evals.json`](../skills/closebook/evals/evals.json), 22 evals covering every scenario in spec §13. The table that maps evals to scenarios is in the [evals README](../skills/closebook/evals/README.md).
+**评测集：**[`skills/closebook/evals/evals.json`](../skills/closebook/evals/evals.json)，共 22 个用例，覆盖需求规格 §13 的全部场景。用例与场景的对应表见[评测 README](../skills/closebook/evals/README.md)。
 
-**Method:** skill-creator wasn't available here, so its protocol was followed by hand:
+**方法：**当时无法使用 skill-creator，因此手动遵循其评测流程：
 
-- Each eval ran in a fresh agent that saw only the skill folder, the prompt and the attached files, never the expectations.
-- A separate grader marked every expectation with quoted evidence and a strict burden of proof.
-- For eval 22, the exported JSON was checked with the real tool: `validate` reported 0 errors, and `recompute` gave the same schedule (all three points due 2026-11-01, point 3 weak and flagged).
-- Replies and grading are in [`docs/eval-results/2026-10-31/`](eval-results/2026-10-31/).
+- 每个用例由一个新建 agent 执行；它只能看到 skill 文件夹、提示词和附件，看不到预期判定标准。
+- 由另一位评审逐项判定预期是否满足，引用证据，并严格要求结论有据可查。
+- 用例 22 的导出 JSON 经过实际工具检查：`validate` 报告 0 个错误，`recompute` 得到相同的复习计划（三个知识点均于 2026-11-01 到期，第 3 个知识点薄弱且被标记）。
+- 回复与评分记录保存在 [`docs/eval-results/2026-10-31/`](eval-results/2026-10-31/)。
 
-| Run | Scope | Result |
+| 轮次 | 范围 | 结果 |
 |---|---|---|
-| Iteration 1 | All 22 | 89 / 102 (87%) |
-| Iteration 2 | All 22, after the fixes below | 99 / 102 (97%) |
-| Iteration 3 | Evals 4, 8, 17, 18, 21 | 20 / 22 |
-| Iteration 4 | Evals 4, 13, 18 | 15 / 15 |
+| 第 1 轮 | 全部 22 个用例 | 89 / 102（87%） |
+| 第 2 轮 | 完成下述修复后，重跑全部 22 个用例 | 99 / 102（97%） |
+| 第 3 轮 | 用例 4、8、17、18、21 | 20 / 22 |
+| 第 4 轮 | 用例 4、13、18 | 15 / 15 |
 
-### Skill changes driven by the evals
+### 根据评测修订的 skill 规则
 
-**After iteration 1:**
+**第 1 轮后：**
 
-| Failure | Fix |
+| 问题 | 修复 |
 |---|---|
-| No confidence asked on a diagnostic question (eval 2) | Diagnostics with a right answer now ask for confidence 1–3. A confident wrong answer is taught with a contrast example but still never counts as an error. |
-| Five glossary cards asked at once (eval 9) | A list of items to recall counts as several questions; ask one card per reply. |
-| Re-argued after the user insisted on an unfit method (eval 12) | Comply without repeating the warning, then log it. |
-| No visible per-point method plan for mixed material (eval 13) | The opening shows the planned approach for each point. |
-| Architecture point got prose, not a diagram (eval 14) | `SKILL.md` now says structures and flows get a predict-first diagram even in plain text. |
-| Extra questions after a Plain Talk recall question (eval 19) | The recall question ends the reply. |
-| Plain Talk before learning came with an outline full of unexplained terms (eval 21) | Previews stay scoped to what was asked. The recall is skipped if the user said "don't quiz me yet". |
+| 诊断题没有询问信心等级（用例 2） | 有标准答案的诊断题现在要求给出 1–3 的信心等级。对高信心错答，用对照示例讲解，但仍不计入错误记录。 |
+| 一次询问五张术语卡（用例 9） | 要求回忆多个条目等于提出多个问题；每次回复只问一张卡。 |
+| 用户坚持使用不适合的方法后仍继续争辩（用例 12） | 遵从用户要求，不重复警告，并记录该选择。 |
+| 混合材料没有展示各知识点的方法安排（用例 13） | 开场展示每个知识点计划采用的方法。 |
+| 架构知识点只给文字，没有图示（用例 14） | `SKILL.md` 现在要求：结构和流程即使在纯文本环境中，也采用先预测再揭示的图示。 |
+| 小白模式的回忆题后又追加问题（用例 19） | 回复以回忆题结束。 |
+| 学习前的小白模式给出满是未解释术语的提纲（用例 21） | 预览只覆盖用户询问的范围。用户说“don't quiz me yet”（先别考我）时跳过回忆题。 |
 
-**After iteration 2:**
+**第 2 轮后：**
 
-- Concept mode opens core points with a why or what-if question (eval 4).
-- Feedback on a confident correct answer names what was right (eval 8).
-- Plain Talk allows one sentence per part, two only for the analogy.
-- Markdown is dropped when the environment says it isn't rendered.
+- 概念模式用“为什么”或“如果……会怎样”的问题开始核心知识点（用例 4）。
+- 对高信心正确答案的反馈明确指出答对了什么（用例 8）。
+- 小白模式每个部分限一句，只有类比部分可用两句。
+- 环境明确表示不渲染 Markdown 时，不使用 Markdown。
 
-**After iteration 3:**
+**第 3 轮后：**
 
-- The anti-spoiler rule now covers outline notes and answer-format examples. In iteration 3, eval 4 leaked the answer through an outline note and eval 18 through an example answer.
+- 防剧透规则扩展到提纲注释和答案格式示例。第 3 轮中，用例 4 通过提纲注释泄露了答案，用例 18 通过示例答案泄露了答案。
 
-### Eval-design fixes (not skill fixes)
+### 对评测设计的修正（并非 skill 修复）
 
-- Evals 4 and 16 originally gave no time budget, so the correct behaviour was to ask for one, which contradicted their expectations. Both prompts now state the time ("有 30 分钟，直接开始" / "15 minutes, just start"). Their iteration-1 failures are partly due to this.
-- The graders sometimes read "plain text" in the environment as "markdown doesn't render". In these evals it means interaction Level 0 (no clickable UI). Only eval 16 says nothing is rendered. Later grader prompts state this.
+- 用例 4 和 16 原先没有提供可用时间，正确行为应是询问时间，但这与它们的预期冲突。两条提示词现在都明确给出时间（“有 30 分钟，直接开始” / “15 minutes, just start”，即“十五分钟，直接开始”）。第 1 轮失败部分源于这一问题。
+- 评审有时将环境中的“plain text”（纯文本）理解为“markdown doesn't render”（不渲染 Markdown）。这些用例中，该词指交互 Level 0（没有可点击界面）；只有用例 16 明确说不做渲染。后续评审提示词对此作了说明。
 
-### Known weaknesses still observed
+### 仍然观察到的不足
 
-None of these fail an expectation in the latest runs, but they recur:
+这些表现没有导致最新轮次的预期判定失败，但仍会重复出现：
 
-- Replies after "just start" can still carry a fairly long outline before the first question (evals 3 and 16).
-- Plain Talk points tend to sit at the top of the 4–6 sentence cap.
-- Outline wording can hint at the *direction* of an answer without giving it (eval 13, iteration 4).
-- Short-reply limits are met inconsistently (eval 17 passed in iterations 1 and 3, failed in 2 at about 173 characters).
-- Chat exports are valid but not always minimal: default values are sometimes kept.
+- 用户说“just start”（直接开始）后，回复仍可能在第一题前给出较长提纲（用例 3 和 16）。
+- 小白模式的知识点讲解往往接近 4–6 句限制的上限。
+- 提纲措辞可能暗示答案的*方向*，虽然没有直接揭示答案（第 4 轮，用例 13）。
+- 短回复限制执行不稳定（用例 17 在第 1、3 轮通过，第 2 轮因约 173 字而失败）。
+- 聊天导出数据有效，但不总是最精简的形式：有时仍保留默认值。
 
-Each eval was run once per iteration, so single passes and failures carry noise.
+每轮每个用例只运行一次，因此单次通过或失败都存在随机波动。
 
-## 5. Trigger check (proxy)
+## 5. 触发检查（近似测试）
 
-The behaviour evals assume the skill is loaded. To test the description itself, an agent saw only the names and descriptions of four skills and routed the 18 queries in [`trigger-queries.json`](../skills/closebook/evals/trigger-queries.json): 18 / 18 matched. That includes "summarize this chapter for my exam" (should load and offer once) and near misses such as meeting summaries, factual questions and writing a quiz for students (should not load). Details: [`trigger-proxy.md`](eval-results/2026-10-31/trigger-proxy.md). This approximates routing; it is not any platform's router.
+行为评测假定 skill 已加载。为单独测试描述的触发效果，一个 agent 只看到四个 skill 的名称和描述，再对 [`trigger-queries.json`](../skills/closebook/evals/trigger-queries.json) 中的 18 个请求作出选择：18 / 18 符合预期。其中包括“summarize this chapter for my exam”（为考试总结这一章，应加载并提议一次主动学习），以及会议总结、事实问答、为学生编写测验等相近但不应触发的请求。详见 [`trigger-proxy.md`](eval-results/2026-10-31/trigger-proxy.md)。这只是对触发选择的近似测试，并非任何平台的实际路由器。
 
-## 6. Spec §13 coverage
+## 6. 需求规格 §13 覆盖情况
 
-| Spec §13 item | Where it's checked |
+| 需求规格 §13 条目 | 验证位置 |
 |---|---|
-| Exam, coding, language and concept scenarios | Evals 1–4 |
-| Summary-only request | Evals 5–6, trigger query 9 |
-| Return with a progress file; retest due items; correct schedule update | Evals 7–8; `test_progress_tool.py` |
-| Pure glossary: no Feynman or analogies; retrieval, mnemonics, flashcards | Eval 9; `build_lesson.py` warns on factual analogies |
-| Contested material: no predict-verify, no right/wrong, open responses | Eval 10; `build_lesson.py` fit warnings |
-| User forces an unfit method: explain once, then comply and log | Evals 11–12 |
-| Mixed types: method chosen per point | Eval 13 |
-| Architecture: predict-first diagram, Feynman actually used | Evals 14–15 |
-| Level 0 only: correct downgrade, no pretend UI | Evals 16, 1–15 (all chat-only) |
-| One-sentence point: no component overuse | Eval 17 |
-| Plain Talk: no unexplained jargon, analogy limits, recall afterwards, no forced analogies for definitions | Evals 18–19, 21 |
-| Path B and "说人话" before learning | Evals 20–21 |
-| Chat export: compact JSON that the script validates and can import back | Eval 22; `test_progress_tool.py` (merge, compact) |
-| Python unit tests | Section 1 |
-| HTML render test: load, answer, explanations, confidence, self-check, export, import-merge | Section 2 |
+| 考试、编程、语言与概念场景 | 用例 1–4 |
+| 只要求总结 | 用例 5–6、触发请求 9 |
+| 携带进度文件回来；先复测到期项；正确更新计划 | 用例 7–8；`test_progress_tool.py` |
+| 纯术语表：不使用费曼或类比；采用回忆、助记、闪卡 | 用例 9；`build_lesson.py` 会对事实型知识使用类比发出警告 |
+| 有争议的材料：不做预测验证，不判对错，采用开放回答 | 用例 10；`build_lesson.py` 的适配警告 |
+| 用户坚持使用不适合的方法：解释一次，再遵从并记录 | 用例 11–12 |
+| 混合知识类型：逐个知识点选择方法 | 用例 13 |
+| 架构：先预测再揭示的图示，实际使用费曼方法 | 用例 14–15 |
+| 仅 Level 0：正确降级，不假装有可操作界面 | 用例 16、1–15（均为纯聊天） |
+| 一句话知识点：不过度使用组件 | 用例 17 |
+| 小白模式：无未解释术语、说明类比边界、之后安排回忆、不强行用类比讲定义 | 用例 18–19、21 |
+| 路径 B，以及学习前要求“说人话” | 用例 20–21 |
+| 聊天导出：精简 JSON，脚本能验证并重新导入 | 用例 22；`test_progress_tool.py`（合并、精简） |
+| Python 单元测试 | 第 1 节 |
+| HTML 渲染测试：加载、作答、解析、信心等级、自评、导出、导入合并 | 第 2 节 |
 
-## 7. Hands-on run: Codex CLI
+## 7. 实机测试：Codex CLI
 
-Run on 2026-10-31 with Codex CLI 0.153.4 (macOS, the maintainer's own config), using `codex exec` and `codex exec resume` for three turns in one session. The skill folder was copied to `.agents/skills/closebook/` inside a scratch git repository; `~/.codex` was not changed.
+测试于 2026-10-31 使用 Codex CLI 0.153.4 完成（macOS，维护者自己的配置），通过 `codex exec` 和 `codex exec resume` 在同一个会话中进行三轮交互。skill 文件夹复制到临时 Git 仓库内的 `.agents/skills/closebook/`；没有修改 `~/.codex`。
 
-| Turn | What was sent | What happened |
+| 轮次 | 发出的请求 | 实际表现 |
 |---|---|---|
-| 1 | A beginner asks to really remember strong vs. revalidated HTTP caching, without naming closebook | The skill triggered on its own: Codex read `SKILL.md`, then `teaching-flow.md`, the coding mode, `method-fit.md`, `interaction-fit.md` and the method files. The reply showed a three-point route with an approach per point, a short mini-lesson, then one predict-first question with a `?` step, an answer format with placeholders and a 1–3 confidence ask. No answer was given away. |
-| 2 | A wrong answer with confidence 3 | Treated as a misconception: the correct answer, why the reasoning failed, a source (RFC 9111 §4.2), then a different point first so the missed one is retested later. The progress file validated with `progress_tool.py validate` (0 errors), with the missed point due the next day. |
-| 3 | "Make a page I can click through in the browser" | Codex wrote `lesson.json` and ran `build_lesson.py --strict`; the page is byte-identical to a clean build from the template. Its reply said written answers are self-checked, not auto-graded, and asked for the export to be pasted back. Codex then clicked through the page in Safari on its own (9 questions, confident-wrong flag, mistakes list, retry, reload keeps 9/9, export, re-import with no duplicates, bad JSON rejected, 390 px preview). |
+| 1 | 初学者希望真正记住 HTTP 强缓存与协商缓存的区别，没有点名 closebook | skill 自然触发：Codex 先读取 `SKILL.md`，再读取 `teaching-flow.md`、编程模式、`method-fit.md`、`interaction-fit.md` 和方法文件。回复展示三个知识点及各自的方法，给出简短讲解，然后提出一道带 `?` 步骤的预测题，提供含占位符的作答格式，并要求给出 1–3 的信心等级。没有泄露答案。 |
+| 2 | 提交信心等级为 3 的错答 | 按概念误解处理：给出正确答案、推理出错的原因和来源（RFC 9111 §4.2），然后先换一个知识点，稍后再复测答错的内容。进度文件通过 `progress_tool.py validate`（0 个错误），答错知识点的复习安排在次日。 |
+| 3 | “Make a page I can click through in the browser”（做一个能在浏览器里点击练习的页面） | Codex 写入 `lesson.json` 并运行 `build_lesson.py --strict`；页面与直接用模板重新构建的结果逐字节一致。回复说明书面回答采用自评，并非自动批改，并要求将导出结果粘贴回来。随后 Codex 自行在 Safari 中逐项操作页面（9 道题、高信心错答标记、错题列表、重试、刷新后保留 9/9、导出、重复导入无重复记录、拒绝无效 JSON、390 px 预览）。 |
 
-A second session, with the coach-grading version of the skill, tested the other half of the round trip:
+第二个会话使用支持教练批改的 skill 版本，测试了回传流程的另一半：
 
-| Turn | What was sent | What happened |
+| 轮次 | 发出的请求 | 实际表现 |
 |---|---|---|
-| 1 | "I finished the practice page; here are my exported answers, please grade them", followed by a real export from the example page (7 answers, free recall, Plain Talk) | Codex read `html-lesson.md` and `grading.schema.json`, gave feedback worst-first, and ended with a `closebook-grading` block of 7 grades. Every id was copied exactly; the block validates. It also overturned an answer the learner had marked "I was actually right" (`--HEAD`), after checking with `curl --HEAD --version` that curl rejects it. Pasted into the page, all 7 grades applied, and the page's export still validated and merged into a progress file. |
+| 1 | “I finished the practice page; here are my exported answers, please grade them”（我完成了练习页，这是导出的作答，请批改），随后附上示例页的真实导出数据（7 个答案、自由回忆、小白模式） | Codex 读取 `html-lesson.md` 和 `grading.schema.json`，从问题最严重的答案开始反馈，最后给出包含 7 项批改的 `closebook-grading` 数据块。每个 id 均原样复制，数据块通过验证。它还撤销了学习者标记为“I was actually right”（其实我答对了）的一个答案（`--HEAD`）：先用 `curl --HEAD --version` 确认 curl 会拒绝该参数。粘贴回页面后，7 项批改全部应用，页面导出数据仍通过验证，并能合并到进度文件中。 |
 
-Observations:
+观察：
 
-- Codex warned that skill descriptions were shortened to fit its context budget (many skills were installed). The skill still triggered; this is why the description front-loads its trigger words.
-- Files went to the location set by the user's global `AGENTS.md`, not the scratch repository. That's expected: user instructions outrank the skill.
-- Turn 3 took about 7.5 minutes, mostly Codex's own Safari check, prompted by the user's other installed skills rather than closebook.
+- Codex 警告，为适应上下文预算而缩短了 skill 描述（当时安装了许多 skill）。closebook 仍成功触发；这也是描述将触发词放在前面的原因。
+- 文件保存到了用户全局 `AGENTS.md` 指定的位置，而非临时仓库。这符合预期：用户指令优先于 skill。
+- 第 3 轮耗时约 7.5 分钟，大部分时间用于 Codex 自行进行 Safari 检查；该检查由用户安装的其他 skill 触发，并非 closebook 要求。
 
-## 8. Not verified
+## 8. 尚未验证的内容
 
-- **Real installs on the other platforms:**
-  - uploading `dist/closebook.zip` to claude.ai or ChatGPT
-  - uploading `dist/closebook-gemini.zip` to Gemini Apps
-  - installing in Claude Code or Gemini CLI
+- **其他平台的真实安装：**
+  - 将 `dist/closebook.zip` 上传到 claude.ai 或 ChatGPT
+  - 将 `dist/closebook-gemini.zip` 上传到 Gemini Apps
+  - 安装到 Claude Code 或 Gemini CLI
 
-  These install paths come from official documentation checked on 2026-10-31 ([log](platform-verification.md)), not from trying them. Codex CLI was run for real (section 7).
-- **Trigger behaviour on the other platforms.** Codex CLI triggered on a natural request (section 7); elsewhere only the proxy above was run.
-- **Level 1 native UI:** clickable options or quiz cards on Claude, ChatGPT or Gemini. The skill never assumes them.
-- **Level 2 in hosted apps:**
-  - whether a Claude artifact can be built from the template file, and whether `localStorage` and downloads work inside one
-  - whether skill scripts can build files in ChatGPT
-  - whether Canvas can be used from a skill in Gemini
+  这些安装方式来自 2026-10-31 核对的官方文档（[记录](platform-verification.md)），并未实际尝试。Codex CLI 已进行实机测试（第 7 节）。
+- **其他平台的触发行为。** Codex CLI 能被自然请求触发（第 7 节）；其他平台只进行了上面的近似测试。
+- **Level 1 原生界面：**Claude、ChatGPT 或 Gemini 中的可点击选项或测验卡片。skill 从不假定这些功能存在。
+- **托管应用中的 Level 2：**
+  - 能否用模板文件构建 Claude artifact，以及其中的 `localStorage` 和下载是否可用
+  - skill 脚本能否在 ChatGPT 中构建文件
+  - Gemini 中的 skill 能否使用 Canvas
 
-  The page has copy/paste fallbacks.
-- **Gemini Apps:** whether it executes the bundled Python scripts, and whether a `.yaml` file in the ZIP would be rejected.
-- **The official skill-creator tooling:** not available here. The evals use its file format, but its runner and viewer were not used.
-- **Other models.** Eval runners and graders were agents in this environment, and other models may behave differently. Running the suite on each target platform's own model is the most valuable next check.
-- **Python versions:** the code avoids post-3.8 features, but only 3.9.6 was run.
-- **Subject forms with real learners and models.** The forms were tested with hand-written lesson data. No model has yet been asked to author a lesson that uses them (for example a correct `trace` for a learner's code, or every valid spelling of a command), and their learning effect wasn't measured here; the research cited in `interaction-fit.md` is about the general technique, not about this page.
-- **Not built:** image hotspots (anatomy, maps, circuit diagrams) and audio (pronunciation), because the page loads no external images and has no audio input.
+  页面提供复制/粘贴的降级方案。
+- **Gemini Apps：**是否执行随包提供的 Python 脚本，以及 ZIP 中含 `.yaml` 文件是否会被拒绝。
+- **官方 skill-creator 工具：**当时不可用。评测采用其文件格式，但没有使用其运行器和查看器。
+- **其他模型。** 执行评测与评分的是当前环境中的 agent，其他模型可能表现不同。最有价值的下一项验证，是在各目标平台自己的模型上运行这套评测。
+- **Python 版本：**代码避免使用 3.8 之后才有的特性，但只在 3.9.6 上实际运行过。
+- **真实学习者使用学科题型的情况。** 模型生成的标准答案与等价输入现已测试（[报告](answer-key-validation.md)）；有限样本不能证明覆盖所有有效答案。没有测量学习效果；`interaction-fit.md` 引用的研究针对一般教学方法，并非这个页面。
+- **尚未实现：**图片热点（解剖图、地图、电路图）与音频（发音），因为页面不加载外部图片，也没有音频输入。

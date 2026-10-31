@@ -592,6 +592,75 @@ class LessonPageE2E(unittest.TestCase):
         self.assertIn("a = 0.5, h = 2, k = -3", answers)
         self.assertIn("B. 4 倍", answers)
 
+    def test_trace_answer_spacing_preserves_string_contents(self):
+        cases = [
+            ("[4, 6]", "[ 4,6 ]", "container", True),
+            ("['a, b', 2]", "[ 'a, b',2 ]", "container", True),
+            ("['a, b', 2]", "['a,b',2]", "container", False),
+            ("['a  b']", "['a b']", "container", False),
+            ("hello, world", "hello,world", None, False),
+            ("True", "true", None, False),
+            ("[4, 6]", "(4, 6)", "container", False),
+            ("(hello, world)", "(hello,world)", None, False),
+            ("[a, b]", "[a,b]", None, False),
+            ("[1, 2]", "[1,2]", "exact", False),
+        ]
+        for n, (answer, typed, comparison, expected) in enumerate(cases):
+            with self.subTest(answer=answer, typed=typed):
+                lesson = progress_tool.load_json(SUBJECTS)
+                kp = next(k for k in lesson["knowledge_points"] if k["interaction_type"] == "code_trace")
+                lesson["knowledge_points"] = [kp]
+                kp["items"][0]["questions"] = [{"question": "输出是什么？", "answer": answer}]
+                if comparison:
+                    kp["items"][0]["questions"][0]["comparison"] = comparison
+                page = self.open(_build(lesson, self.tmp.name, "trace-spacing-%d.html" % n))
+                page.locator(".trace-qs input").fill(typed)
+                self.btn(page, "提交").click()
+                self.assertEqual(page.get_by_label("算对").is_checked(), expected)
+                page.context.close()
+
+    def test_terminal_equivalence_keeps_argument_binding(self):
+        cases = [
+            ("git log --graph --oneline --all --decorate", "git log --all --decorate --oneline --graph", True),
+            ("git log --graph --oneline --all --decorate=short", "git log --decorate=short --all --oneline --graph", True),
+            ("git log -n 2 --oneline", "git log --oneline -n 2", True),
+            ("git log --oneline --max-count=2", "git log --max-count=2 --oneline", True),
+            ("git log --oneline -2", "git log -2 --oneline", True),
+            ("git log --oneline -n2", "git log -n2 --oneline", True),
+            ("git log --oneline -n 2", "git log --max-count=2 --oneline", True),
+            ("git log --oneline -n 2", "git log --oneline -n20", False),
+            ("git log -n 2 --oneline", "git log -n --oneline 2", False),
+            ("git log --oneline --format=full", "git log --format=full --oneline", False),
+            ("git log --decorate=short --decorate=full", "git log --decorate=full --decorate=short", False),
+            ("git log --oneline", "git --oneline log", False),
+            ("git merge --no-edit feature/menu", "git merge feature/menu --no-edit", True),
+            ('git commit -m "fix bug"', "git   commit -m 'fix bug'", True),
+            ('git commit -m "fix  bug"', "git commit -m 'fix bug'", False),
+            ('git commit -m "fix bug"', 'git -m commit "fix bug"', False),
+            ('git commit -m "fix bug"', 'git commit -m "fix bug', False),
+            ("git show -n 2 --format short", "git show --format 2 -n short", False),
+            ("git add -- -f", "git add -f", False),
+            ("git log --oneline", "git log --oneline; pwd", False),
+            ("git status", "git\u3000status", False),
+            ("git status", "\u00a0git status", False),
+            ("git status", "git status\u00a0", False),
+            ("git status", "git\vstatus", False),
+            ("git status", "\tgit\tstatus\t", True),
+        ]
+        for n, (accepted, typed, expected) in enumerate(cases):
+            with self.subTest(accepted=accepted, typed=typed):
+                lesson = progress_tool.load_json(SUBJECTS)
+                kp = next(k for k in lesson["knowledge_points"] if k["interaction_type"] == "terminal")
+                lesson["knowledge_points"] = [kp]
+                kp["items"] = [{"id": "command", "prompt": "输入命令", "commands": [
+                    {"task": "执行指定操作", "accept": [accepted], "output": "done"}]}]
+                page = self.open(_build(lesson, self.tmp.name, "terminal-equivalence-%d.html" % n))
+                page.locator(".term-in").fill(typed)
+                page.locator(".term-in").press("Enter")
+                self.assertEqual(page.locator(".result.correct").count(), int(expected))
+                self.assertEqual(page.locator(".term-log .err").count(), int(not expected))
+                page.context.close()
+
     def test_works_when_storage_is_blocked(self):
         context = self.browser.new_context()
         self.addCleanup(context.close)
