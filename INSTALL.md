@@ -1,10 +1,22 @@
 # 发一句话，让 agent 安装 closebook
 
-**[下载独立的安装提示词.md](https://github.com/sheepxux/closebook/releases/download/v0.2.0/closebook-install-prompt.md?v=149a229)**，直接发给 agent，并说“请按文件里的提示词安装 closebook”。文件使用英文提示词，要求 agent 用中文提示和反馈，无需从本页挑选段落。
+复制下面整段发给 agent，由它下载并配置 closebook。用户无需下载提示词文件。
 
-也可以[查看并复制提示词全文](closebook-install-prompt.md)。助手会按当前平台选择安装方式；能操作技能目录的 agent 可以完成安装，需要账号界面上传的平台可能仍需你点击一次。下文供执行安装的 agent 读取。
+```text
+Install and configure closebook for the agent I am using now:
+https://github.com/sheepxux/closebook
 
-入口说明的原始文本：[INSTALL.md](https://raw.githubusercontent.com/sheepxux/closebook/main/INSTALL.md)。如果助手无法读取 GitHub，可以把本页内容粘贴给它。
+Fetch and follow the installation workflow:
+https://raw.githubusercontent.com/sheepxux/closebook/main/INSTALL.md
+
+Identify your actual host and active profile. Download the latest stable release yourself, install the complete skill in the correct persistent location, enable it using the host's supported mechanism, and verify that the host can discover it. Use your tools to complete the work; do not stop at instructions or ask me to download files that you can download yourself.
+
+Preserve my existing settings, local skill modifications, and learning records. Involve me only for required permissions, unavoidable UI actions, or unresolved conflicts. If persistent installation is impossible, explain the specific limitation and the minimum remaining step; do not claim success or mistake a temporary sandbox for an installed skill.
+
+Use Simplified Chinese for all progress updates, questions, and the final response. Report the installed version, location or scope, actual verification result, and one example learning request. Complete installation first; do not begin a lesson yet.
+```
+
+以下流程供 agent 读取并执行。
 
 ## 给执行安装的 agent
 

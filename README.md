@@ -17,11 +17,23 @@ It is one skill folder ([`skills/closebook`](skills/closebook)) that works on Cl
 
 ## Ask your agent to install it
 
-**[Download the installation prompt (.md, English)](https://github.com/sheepxux/closebook/releases/download/v0.2.0/closebook-install-prompt.md?v=149a229)**, attach it to your agent, and say: **“Install closebook by following the prompt in this file.”**
+Copy and paste this prompt into your agent. The agent downloads, installs, and configures the skill; progress and results are in Simplified Chinese.
 
-The prompt is in English and requests progress updates and results in Simplified Chinese unless you ask for another language. It includes host detection and verification. You can also [read and copy the prompt](closebook-install-prompt.md).
+```text
+Install and configure closebook for the agent I am using now:
+https://github.com/sheepxux/closebook
 
-Agents with access to a local skill directory can install it. Account-based apps may still need you to upload or enable the skill; chat-only assistants use the text fallback. [Installation workflow and limits](INSTALL.md) (Chinese).
+Fetch and follow the installation workflow:
+https://raw.githubusercontent.com/sheepxux/closebook/main/INSTALL.md
+
+Identify your actual host and active profile. Download the latest stable release yourself, install the complete skill in the correct persistent location, enable it using the host's supported mechanism, and verify that the host can discover it. Use your tools to complete the work; do not stop at instructions or ask me to download files that you can download yourself.
+
+Preserve my existing settings, local skill modifications, and learning records. Involve me only for required permissions, unavoidable UI actions, or unresolved conflicts. If persistent installation is impossible, explain the specific limitation and the minimum remaining step; do not claim success or mistake a temporary sandbox for an installed skill.
+
+Use Simplified Chinese for all progress updates, questions, and the final response. Report the installed version, location or scope, actual verification result, and one example learning request. Complete installation first; do not begin a lesson yet.
+```
+
+Agents with local skill installation access can perform these steps. Account-based apps may still require a user action or permission. [Installation workflow and limits](INSTALL.md) (Chinese).
 
 ## What a session looks like
 
