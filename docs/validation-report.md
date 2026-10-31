@@ -41,13 +41,13 @@ The browser tests open [`examples/http-cache-lesson.html`](../examples/http-cach
 - **Edge cases.**
   - A retry produces two attempts.
   - Keyboard-only answering works.
-  - Theme switching works.
+  - The page opens in the light theme even when the OS is dark; "auto" follows the OS, and switching works.
   - The 375 px layout has no horizontal overflow.
   - An unknown interaction type falls back to typed answers.
   - Blocked `localStorage` still works, with a copy/paste export.
   - Broken lesson data shows a readable error.
 
-**Manual checks:** screenshots in light mode, dark mode, at 390 px mobile width and of the Plain Talk tab, all reviewed by eye ([example](images/lesson-page.jpg)).
+**Manual checks:** screenshots in light mode, dark mode, at 390 px mobile width, and of every tab and interaction type (diagram, table, timeline, flashcard, multiple choice answered wrong, the mini-lesson gate, Plain Talk, Save & load), all reviewed by eye ([example](images/lesson-page.jpg)).
 
 **Not possible:** the Cursor IDE browser cancels scripted clicks, so all interaction testing used Playwright.
 

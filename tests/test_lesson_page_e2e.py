@@ -263,10 +263,16 @@ class LessonPageE2E(unittest.TestCase):
 
     def test_keyboard_theme_and_layout(self):
         page = self.open(self.zh_url, color_scheme="dark", viewport={"width": 375, "height": 800})
-        dark_bg = page.evaluate("getComputedStyle(document.body).backgroundColor")
-        page.locator("#theme").select_option("light")
-        light_bg = page.evaluate("getComputedStyle(document.body).backgroundColor")
+        bg = lambda: page.evaluate("getComputedStyle(document.body).backgroundColor")
+        light_bg = bg()
+        self.assertEqual(page.locator("#theme").input_value(), "light", "light by default, even when the OS is dark")
+        page.locator("#theme").select_option("auto")
+        self.assertNotEqual(bg(), light_bg, "auto follows the dark OS setting")
+        page.locator("#theme").select_option("dark")
+        dark_bg = bg()
         self.assertNotEqual(dark_bg, light_bg)
+        page.locator("#theme").select_option("light")
+        self.assertEqual(bg(), light_bg)
         self.assertLessEqual(page.evaluate("document.documentElement.scrollWidth"), 376, "horizontal overflow on mobile")
 
         page.get_by_role("tab", name="学习").focus()
@@ -279,7 +285,7 @@ class LessonPageE2E(unittest.TestCase):
 
         # MCQ answerable with the keyboard only
         self.tab(page, "学习").click()
-        self.btn(page, "○ 2. Cache-Control 指令与 304 状态码").click()
+        self.btn(page, "2. Cache-Control 指令与 304 状态码 · 未开始").click()
         page.locator("label.option input").first.focus()
         page.keyboard.press("ArrowDown")
         page.locator("label.chip input").first.focus()
