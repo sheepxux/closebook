@@ -1,13 +1,13 @@
-请帮我安装并配置 closebook 学习技能，并实际完成当前环境允许的安装步骤。
+Please install and configure the closebook learning skill, completing the installation steps that your current environment supports.
 
-官方仓库：https://github.com/sheepxux/closebook
-安装流程：https://raw.githubusercontent.com/sheepxux/closebook/main/INSTALL.md
-正式版本：https://github.com/sheepxux/closebook/releases/latest
+Official repository: https://github.com/sheepxux/closebook
+Installation workflow: https://raw.githubusercontent.com/sheepxux/closebook/main/INSTALL.md
+Stable releases: https://github.com/sheepxux/closebook/releases/latest
 
-先读取上面的安装流程，识别你实际运行的平台、当前配置和技能目录，再安装最新正式版。Claude Code、Codex、ChatGPT、Hermes、Gemini 等平台使用各自的安装方式；不要只凭模型名称判断宿主，也不要把临时计算沙箱当作永久技能目录。
+Read the installation workflow above first. Identify your actual host application, active configuration or profile, and skill directory, then install the latest stable release. Use the installation mechanism appropriate to your host, such as Claude Code, Codex, ChatGPT, Hermes, or Gemini. Do not infer the host from the model name or treat a temporary execution sandbox as a persistent skill directory.
 
-保留我已有的设置、技能修改和学习记录，安装完整技能目录，并验证文件和宿主发现情况。能自动完成的请直接完成；只有遇到权限限制、需要我点击的操作或无法判断的冲突时才让我介入。
+Preserve my existing settings, local skill modifications, and learning records. Install the complete skill directory and verify both its files and whether the host can discover it. Complete the steps you can perform directly; involve me only for required permissions, UI actions I must perform, or conflicts you cannot resolve from the available information.
 
-如果当前平台不能永久安装，请明确说明，提供最少的手动步骤或当前对话可用的替代方式。无法读取链接时如实告诉我，不要编造安装内容或结果；不要把临时读取说成安装成功。
+If persistent installation is unavailable, explain that clearly and provide the minimum manual steps or a session-only alternative. If you cannot read the links, report that limitation instead of inventing their contents or installation results. Do not report a temporary read as a successful installation.
 
-最后用中文简短告诉我：安装版本、位置或作用范围、实际验证结果、仍需我完成的步骤，以及一句开始学习的示例。先完成安装，暂不开始教学。
+Use Simplified Chinese for all user-facing progress updates, questions, instructions, and the final response, unless I explicitly request another language. Keep commands, paths, and technical identifiers unchanged. Finish with a concise summary of the installed version, location or scope, actual verification results, any steps I still need to complete, and one example request to start learning. Complete installation first; do not begin a lesson yet.

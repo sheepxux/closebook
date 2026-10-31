@@ -19,7 +19,7 @@ closebook 只有一个目标：让你学的东西真正记住、真正理解，�
 
 **[下载安装提示词.md](https://github.com/sheepxux/closebook/releases/latest/download/closebook-install-prompt.md)**，直接把文件发给你正在使用的 agent，并说：**“请按文件里的提示词安装 closebook。”**
 
-文件内就是完整的中文安装请求，agent 会自行读取流程、识别平台并验证结果。也可以[查看并复制提示词全文](closebook-install-prompt.md)。
+文件内使用**英文安装提示词**，并要求 agent 用**中文提示和反馈**。agent 会自行读取流程、识别平台并验证结果。也可以[查看并复制提示词全文](closebook-install-prompt.md)。
 
 支持本地技能的 agent 可以自行安装；Claude、ChatGPT、Gemini 等账号界面可能仍需你上传或启用。仅能聊天的助手使用文字版。[完整安装流程与边界](INSTALL.md)。
 
