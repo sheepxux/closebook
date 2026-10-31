@@ -37,6 +37,7 @@ Verification date for this round: **2026-10-31**. Pages change; re-check before 
 | Skills in ChatGPT are available to eligible **Business, Enterprise, Healthcare and Edu** users; upload via Plugins > Skills > Create > Upload; uploads are scanned | Verified 2026-10-31 | [Skills in ChatGPT (Help Center)](https://help.openai.com/en/articles/20001066-skills-in-chatgpt) |
 | Availability on personal plans (Free, Plus, Pro) for ChatGPT skills | **Unverified**: not stated on the help page | — |
 | Codex discovery paths: `.agents/skills` from CWD up to repo root, `$HOME/.agents/skills` (user), `/etc/codex/skills` (admin) | Verified 2026-10-31 | [Build skills](https://learn.chatgpt.com/docs/build-skills.md) |
+| Codex CLI 0.153.4 discovers a skill in `.agents/skills/<name>/` inside the current git repository and triggers it on a natural request | Verified 2026-10-31 by running it ([validation report §7](validation-report.md#7-hands-on-run-codex-cli)) | — |
 | `~/.codex/skills` as a user path | **Unverified / possibly outdated**: mentioned on a use-case page, not in the main skills doc | [Save workflows as skills](https://learn.chatgpt.com/use-cases/reusable-codex-skills) |
 | Codex shortens descriptions when many skills are installed, so trigger words should be front-loaded | Verified 2026-10-31 | [Build skills](https://learn.chatgpt.com/docs/build-skills.md) |
 | Optional `agents/openai.yaml` for UI metadata and invocation policy | Verified 2026-10-31 | [Build skills](https://learn.chatgpt.com/docs/build-skills.md) |

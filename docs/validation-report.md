@@ -12,7 +12,7 @@
 | Packaging | Both ZIPs build reproducibly with no development files or macOS junk |
 | Behaviour evals (22 evals, 102 expectations) | First run 89 / 102 (87%), full rerun after fixes 99 / 102 (97%); later targeted reruns all pass |
 | Trigger check (proxy) | 18 / 18 queries routed as expected |
-| Real platform installs | **Not tested** (see the last section) |
+| Real platform installs | Codex CLI: triggered on a natural request, taught, saved valid progress and built the page from the template (section 7). Claude, ChatGPT, Gemini: **not tested** (section 8). |
 
 ## 1. Automated tests
 
@@ -146,15 +146,31 @@ The behaviour evals assume the skill is loaded. To test the description itself, 
 | Python unit tests | Section 1 |
 | HTML render test: load, answer, explanations, confidence, self-check, export, import-merge | Section 2 |
 
-## 7. Not verified
+## 7. Hands-on run: Codex CLI
 
-- **Real installs on any platform:**
+Run on 2026-10-31 with Codex CLI 0.153.4 (macOS, the maintainer's own config), using `codex exec` and `codex exec resume` for three turns in one session. The skill folder was copied to `.agents/skills/closebook/` inside a scratch git repository; `~/.codex` was not changed.
+
+| Turn | What was sent | What happened |
+|---|---|---|
+| 1 | A beginner asks to really remember strong vs. revalidated HTTP caching, without naming closebook | The skill triggered on its own: Codex read `SKILL.md`, then `teaching-flow.md`, the coding mode, `method-fit.md`, `interaction-fit.md` and the method files. The reply showed a three-point route with an approach per point, a short mini-lesson, then one predict-first question with a `?` step, an answer format with placeholders and a 1–3 confidence ask. No answer was given away. |
+| 2 | A wrong answer with confidence 3 | Treated as a misconception: the correct answer, why the reasoning failed, a source (RFC 9111 §4.2), then a different point first so the missed one is retested later. The progress file validated with `progress_tool.py validate` (0 errors), with the missed point due the next day. |
+| 3 | "Make a page I can click through in the browser" | Codex wrote `lesson.json` and ran `build_lesson.py --strict`; the page is byte-identical to a clean build from the template. Its reply said written answers are self-checked, not auto-graded, and asked for the export to be pasted back. Codex then clicked through the page in Safari on its own (9 questions, confident-wrong flag, mistakes list, retry, reload keeps 9/9, export, re-import with no duplicates, bad JSON rejected, 390 px preview). |
+
+Observations:
+
+- Codex warned that skill descriptions were shortened to fit its context budget (many skills were installed). The skill still triggered; this is why the description front-loads its trigger words.
+- Files went to the location set by the user's global `AGENTS.md`, not the scratch repository. That's expected: user instructions outrank the skill.
+- Turn 3 took about 7.5 minutes, mostly Codex's own Safari check, prompted by the user's other installed skills rather than closebook.
+
+## 8. Not verified
+
+- **Real installs on the other platforms:**
   - uploading `dist/closebook.zip` to claude.ai or ChatGPT
   - uploading `dist/closebook-gemini.zip` to Gemini Apps
-  - installing in Claude Code, Codex or Gemini CLI
+  - installing in Claude Code or Gemini CLI
 
-  The install paths come from official documentation checked on 2026-10-31 ([log](platform-verification.md)), not from trying them.
-- **Each platform's real trigger behaviour.** Only the proxy above was run.
+  These install paths come from official documentation checked on 2026-10-31 ([log](platform-verification.md)), not from trying them. Codex CLI was run for real (section 7).
+- **Trigger behaviour on the other platforms.** Codex CLI triggered on a natural request (section 7); elsewhere only the proxy above was run.
 - **Level 1 native UI:** clickable options or quiz cards on Claude, ChatGPT or Gemini. The skill never assumes them.
 - **Level 2 in hosted apps:**
   - whether a Claude artifact can be built from the template file, and whether `localStorage` and downloads work inside one
