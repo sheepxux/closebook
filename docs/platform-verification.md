@@ -60,6 +60,23 @@ Verification date for this round: **2026-10-31**. Pages change; re-check before 
 | Gemini Canvas (gemini.google.com, signed in) can preview HTML and React web apps, with a console for errors | Verified 2026-10-31 | [Create docs, apps & more with Canvas](https://support.google.com/gemini/answer/16047321) |
 | Skills and Canvas can be combined in one chat | **Unverified** | — |
 
+## Hermes Agent (NousResearch)
+
+以下项目于 **2026-10-31** 通过官方文档与源码核实；不是 closebook 的 Hermes 实机测试。
+
+| 结论 | 状态 | 来源 |
+|---|---|---|
+| 默认技能目录为 `~/.hermes/skills/`；有效目录以当前 profile 的 `HERMES_HOME` 为准，命名 profile 通常使用 `~/.hermes/profiles/<name>/` | 文档已核实 | [Profiles](https://hermes-agent.nousresearch.com/docs/user-guide/profiles)、[技能指南](https://hermes-agent.nousresearch.com/docs/guides/work-with-skills) |
+| 支持 `hermes skills install <identifier-or-url>`，GitHub 子目录标识为 `owner/repo/path/to/skill-dir`；已查看的实现读取默认分支，不能据此声称安装指定 Release | 文档与源码已核实；固定 tag 的 CLI 参数未核实 | [GitHub 安装](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills#4-direct-github-skills-github)、[下载源码](https://github.com/NousResearch/hermes-agent/blob/main/tools/skills_hub_github.py) |
+| 可用 `hermes skills list`、`skills_list()` 和 `skill_view()` 检查发现及读取；`--source hub` 只适合筛选 Hub 安装项 | 文档已核实 | [技能指南](https://hermes-agent.nousresearch.com/docs/guides/work-with-skills) |
+| 最新技能文档描述下一条消息接收技能变化，`/reload-skills` 刷新斜杠命令；旧指南描述新会话行为，安装流程应按实际版本判断 | 文档存在版本差异，不能统一写成必须重置会话 | [对话中的技能变化](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills#skill-changes-during-a-conversation) |
+| 支持 `skills.external_dirs` 与符号链接，可沿用已有共享目录和外置存储配置 | 文档已核实 | [外部技能目录](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills#external-skill-directories)、[外置存储](https://hermes-agent.nousresearch.com/docs/getting-started/installation#symlinked-home-directories-and-external-storage) |
+| closebook 在 Hermes 中实际完成安装、自动触发、Python 脚本执行和 HTML 页面生成 | **未实测** | — |
+
+## 通用安装提示词
+
+[INSTALL.md](../INSTALL.md) 统一安装入口；宿主、配置、权限与实际发现结果决定完成状态。它不代表所有平台都能仅靠聊天自动持久安装。Codex 的用户目录、符号链接和技能发现机制在本轮按 [OpenAI 官方文档](https://learn.chatgpt.com/docs/build-skills) 再次核对。提示词未进行多平台实机安装测试，不能将文档核对或文件检查记作安装成功率。
+
 ## Consequences for closebook
 
 - Package folder is `skills/closebook/` so the folder name equals `name` and the folder can be zipped as-is.

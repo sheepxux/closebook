@@ -15,6 +15,20 @@ The most effective methods in learning research share one thing: you produce the
 
 It is one skill folder ([`skills/closebook`](skills/closebook)) that works on Claude, ChatGPT / Codex, Gemini and any assistant you can paste instructions into. The teaching flow needs nothing but plain text. Scripts and the HTML practice page are optional extras.
 
+## Ask your agent to install it
+
+Paste this into the agent you use:
+
+```text
+Please install and configure the closebook learning skill: https://github.com/sheepxux/closebook
+
+Read INSTALL.md at the repository root first and follow its steps. Identify your actual host, active configuration, and skill directory. Install the latest stable release, preserve my existing settings, local skill changes, and learning records, and verify the result. Complete the steps you can perform; involve me only for required permissions, UI actions, or conflicts you cannot resolve from the available information.
+
+If persistent installation is unavailable, say so and provide the minimum manual steps or a session-only alternative. Do not report a temporary read as a successful installation. Finish with the installed version, location or scope, verification result, and one example learning request. Reply in my language.
+```
+
+Agents with access to a local skill directory can install it. Account-based apps may still need you to upload or enable the skill; chat-only assistants use the text fallback. [Installation workflow and limits](INSTALL.md) (Chinese).
+
 ## What a session looks like
 
 > **You:** Quiz me on my HTTP caching notes. *(notes attached)*
@@ -51,7 +65,9 @@ At the end you get a short synthesis (explain the topic in your own words, or li
 
 ## Install
 
-Build the upload ZIPs once (Python 3.8+, standard library only):
+Download the ready-made [standard ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook.zip) or [Gemini ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook-gemini.zip). Use these directly for the upload steps below.
+
+The copy commands below assume a source checkout. Developers can also build the ZIPs (Python 3.8+, standard library only):
 
 ```bash
 python3 tools/package_skill.py   # writes dist/closebook.zip and dist/closebook-gemini.zip
@@ -62,6 +78,7 @@ python3 tools/package_skill.py   # writes dist/closebook.zip and dist/closebook-
 | Claude Code | `cp -R skills/closebook ~/.claude/skills/` | [adapters/claude.md](adapters/claude.md) |
 | claude.ai / Claude Desktop | Turn on code execution, then Customize → Skills → upload `dist/closebook.zip` | [adapters/claude.md](adapters/claude.md) |
 | Codex CLI / IDE | `cp -R skills/closebook ~/.agents/skills/`, then `$closebook` | [adapters/chatgpt-codex.md](adapters/chatgpt-codex.md) |
+| Hermes Agent | Install the complete skill under the active profile's `HERMES_HOME/skills/`; documented, not tested hands-on | [adapters/hermes.md](adapters/hermes.md) |
 | ChatGPT (Business, Enterprise, Healthcare, Edu) | Plugins → Skills → Create → upload `dist/closebook.zip` | [adapters/chatgpt-codex.md](adapters/chatgpt-codex.md) |
 | Gemini Apps | Create a skill from `dist/closebook-gemini.zip` | [adapters/gemini.md](adapters/gemini.md) |
 | Gemini CLI | `cp -R skills/closebook ~/.gemini/skills/` | [adapters/gemini.md](adapters/gemini.md) |

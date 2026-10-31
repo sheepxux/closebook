@@ -15,6 +15,20 @@ closebook 只有一个目标：让你学的东西真正记住、真正理解，�
 
 整个 skill 就是一个文件夹（[`skills/closebook`](skills/closebook)），可用于 Claude、ChatGPT / Codex、Gemini，以及任何能粘贴自定义指令的助手。教学流程只需要纯文本；脚本和 HTML 练习页都是可选的增强。
 
+## 发给助手，自动配置
+
+复制下面整段到你正在使用的 agent，让它识别平台、安装并验证：
+
+```text
+请帮我安装并配置 closebook 学习技能：https://github.com/sheepxux/closebook
+
+先读取仓库根目录的 INSTALL.md，按其中的步骤操作。识别你实际运行的平台、当前配置和技能目录，安装最新正式版，保留我已有的设置、技能修改和学习记录，并验证安装结果。能自动完成的请直接完成；只有遇到权限限制、需要我点击的操作或无法判断的冲突时才让我介入。
+
+如果当前平台不能永久安装，请明确说明，提供最少的手动步骤或当前对话可用的替代方式，不要把临时读取说成安装成功。最后用中文告诉我：安装版本、位置或作用范围、验证结果，以及一句开始学习的示例。
+```
+
+支持本地技能的 agent 可以自行安装；Claude、ChatGPT、Gemini 等账号界面可能仍需你上传或启用。仅能聊天的助手使用文字版。[完整安装流程与边界](INSTALL.md)。
+
 ## 一次学习是什么样的
 
 > **你：** 考考我这份 HTTP 缓存笔记。*（附上笔记）*
@@ -51,7 +65,9 @@ closebook 只有一个目标：让你学的东西真正记住、真正理解，�
 
 ## 安装
 
-先打包上传用的 ZIP（Python 3.8+，只用标准库）：
+直接下载[通用安装包](https://github.com/sheepxux/closebook/releases/latest/download/closebook.zip)或 [Gemini 安装包](https://github.com/sheepxux/closebook/releases/latest/download/closebook-gemini.zip)。下载的 ZIP 可直接用于下表中的上传步骤。
+
+从仓库源码安装时使用下表命令；开发者也可以自行打包（Python 3.8+，只用标准库）：
 
 ```bash
 python3 tools/package_skill.py   # 生成 dist/closebook.zip 和 dist/closebook-gemini.zip
@@ -62,6 +78,7 @@ python3 tools/package_skill.py   # 生成 dist/closebook.zip 和 dist/closebook-
 | Claude Code | `cp -R skills/closebook ~/.claude/skills/` | [adapters/claude.md](adapters/claude.md) |
 | claude.ai / Claude Desktop | 打开代码执行，然后 Customize → Skills → 上传 `dist/closebook.zip` | [adapters/claude.md](adapters/claude.md) |
 | Codex CLI / IDE | `cp -R skills/closebook ~/.agents/skills/`，然后用 `$closebook` | [adapters/chatgpt-codex.md](adapters/chatgpt-codex.md) |
+| Hermes Agent | 按当前 profile 将完整技能安装到其 `HERMES_HOME/skills/`；路径已核实，未实机测试 | [adapters/hermes.md](adapters/hermes.md) |
 | ChatGPT（Business、Enterprise、Healthcare、Edu） | Plugins → Skills → Create → 上传 `dist/closebook.zip` | [adapters/chatgpt-codex.md](adapters/chatgpt-codex.md) |
 | Gemini Apps | 用 `dist/closebook-gemini.zip` 创建 skill | [adapters/gemini.md](adapters/gemini.md) |
 | Gemini CLI | `cp -R skills/closebook ~/.gemini/skills/` | [adapters/gemini.md](adapters/gemini.md) |
