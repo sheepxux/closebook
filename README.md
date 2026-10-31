@@ -17,15 +17,9 @@ It is one skill folder ([`skills/closebook`](skills/closebook)) that works on Cl
 
 ## Ask your agent to install it
 
-Paste this into the agent you use:
+**[Download the installation prompt (.md, Chinese)](https://github.com/sheepxux/closebook/releases/latest/download/closebook-install-prompt.md)**, attach it to your agent, and say: **“Install closebook by following the prompt in this file.”**
 
-```text
-Please install and configure the closebook learning skill: https://github.com/sheepxux/closebook
-
-Read INSTALL.md at the repository root first and follow its steps. Identify your actual host, active configuration, and skill directory. Install the latest stable release, preserve my existing settings, local skill changes, and learning records, and verify the result. Complete the steps you can perform; involve me only for required permissions, UI actions, or conflicts you cannot resolve from the available information.
-
-If persistent installation is unavailable, say so and provide the minimum manual steps or a session-only alternative. Do not report a temporary read as a successful installation. Finish with the installed version, location or scope, verification result, and one example learning request. Reply in my language.
-```
+The file contains the installation request, including host detection and verification. You can also [read and copy the prompt](closebook-install-prompt.md).
 
 Agents with access to a local skill directory can install it. Account-based apps may still need you to upload or enable the skill; chat-only assistants use the text fallback. [Installation workflow and limits](INSTALL.md) (Chinese).
 

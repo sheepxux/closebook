@@ -1,5 +1,7 @@
 # 发一句话，让 agent 安装 closebook
 
+**[下载独立的安装提示词.md](https://github.com/sheepxux/closebook/releases/latest/download/closebook-install-prompt.md)**，直接发给 agent，并说“请按文件里的提示词安装 closebook”。文件只包含安装请求，无需从本页挑选段落。
+
 把下面整段发给正在使用的助手。它会按当前平台选择安装方式；能操作技能目录的 agent 可以完成安装，需要账号界面上传的平台可能仍需你点击一次。
 
 ```text

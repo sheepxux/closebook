@@ -17,15 +17,9 @@ closebook 只有一个目标：让你学的东西真正记住、真正理解，�
 
 ## 发给助手，自动配置
 
-复制下面整段到你正在使用的 agent，让它识别平台、安装并验证：
+**[下载安装提示词.md](https://github.com/sheepxux/closebook/releases/latest/download/closebook-install-prompt.md)**，直接把文件发给你正在使用的 agent，并说：**“请按文件里的提示词安装 closebook。”**
 
-```text
-请帮我安装并配置 closebook 学习技能：https://github.com/sheepxux/closebook
-
-先读取仓库根目录的 INSTALL.md，按其中的步骤操作。识别你实际运行的平台、当前配置和技能目录，安装最新正式版，保留我已有的设置、技能修改和学习记录，并验证安装结果。能自动完成的请直接完成；只有遇到权限限制、需要我点击的操作或无法判断的冲突时才让我介入。
-
-如果当前平台不能永久安装，请明确说明，提供最少的手动步骤或当前对话可用的替代方式，不要把临时读取说成安装成功。最后用中文告诉我：安装版本、位置或作用范围、验证结果，以及一句开始学习的示例。
-```
+文件内就是完整的中文安装请求，agent 会自行读取流程、识别平台并验证结果。也可以[查看并复制提示词全文](closebook-install-prompt.md)。
 
 支持本地技能的 agent 可以自行安装；Claude、ChatGPT、Gemini 等账号界面可能仍需你上传或启用。仅能聊天的助手使用文字版。[完整安装流程与边界](INSTALL.md)。
 
