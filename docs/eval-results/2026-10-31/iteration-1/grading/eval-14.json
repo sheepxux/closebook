@@ -1,0 +1,32 @@
+{
+  "eval_id": 14,
+  "expectations": [
+    {
+      "text": "Uses a diagram or structured layout in plain text (ASCII / indented list / table) of partitions and consumers, with something left for the learner to predict",
+      "passed": false,
+      "evidence": "Missing: the scenario is a prose blockquote (\"一个 orders topic 有 4 个分区。你在同一个消费组 billing 里启动了 6 个消费者实例。\"). There is no ASCII diagram, indented list, or table of partitions and consumers with blank assignments."
+    },
+    {
+      "text": "Asks the learner to predict before showing the complete assignment (e.g. which consumer reads which partition, or what happens with more consumers than partitions)",
+      "passed": true,
+      "evidence": "\"这 4 个分区的消息会怎样分配给这 6 个实例？用 2–3 句话说明，并讲讲为什么会这样。\" This is the more-consumers-than-partitions case."
+    },
+    {
+      "text": "Does not show the answer in the same message",
+      "passed": true,
+      "evidence": "The answer (each partition goes to exactly one consumer, so 2 consumers sit idle) is not given."
+    },
+    {
+      "text": "Does not claim to render an interactive or clickable diagram",
+      "passed": true,
+      "evidence": "No interactive, clickable, or rendered-diagram claims; plain text only."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "notes": "The question itself is well chosen: 4 partitions with 6 consumers directly targets the 'more consumers than partitions leaves some idle' rule from the notes. It is concise, and it explains why it uses a scenario instead of definitions. The miss is format: this point is structural and suits a predict-first text diagram (e.g. P0..P3 and C1..C6 with blank arrows), but the reply gives only prose. No factual errors."
+}

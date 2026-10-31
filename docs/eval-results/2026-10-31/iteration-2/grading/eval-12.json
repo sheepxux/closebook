@@ -1,0 +1,7 @@
+{"eval_id": 12, "expectations": [
+  {"text": "Complies: the reply contains a multiple-choice question", "passed": true, "evidence": "\"第 1 题 … 这个现象最直接支持下面哪条论断？ A… B… C… D…\""},
+  {"text": "Does not argue against the choice again (a one-clause acknowledgement is fine)", "passed": true, "evidence": "Opens with \"好，全部用选择题。\" and repeats no warning"},
+  {"text": "Mentions that the choice will be recorded (e.g. user override / 记录为用户指定) or records it in visible progress notes", "passed": true, "evidence": "\"题型是你指定的，我会在最后给你的进度记录里注明。\""},
+  {"text": "The MCQ has one defensible answer grounded in the material (e.g. attributing an argument or evidence limit to a view), not 'which view is correct'", "passed": true, "evidence": "Scenario matches view A's cited finding (cross-department network becomes static/isolated) → B; the other options are view B/C claims and B's patent evidence, none supported by the scenario"},
+  {"text": "Asks for confidence with the answer and does not reveal the answer", "passed": true, "evidence": "\"回复格式：字母 + 把握度 1–3 … 例如 `D 1`\"; no answer shown"}
+], "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.00}, "notes": "Planned Q5–6 (\"立场与反驳 … 按论证是否成立给标准答案\") risk drifting toward grading positions later. That is defensible if they stay about argument strength, but they are worth watching in multi-turn evals."}

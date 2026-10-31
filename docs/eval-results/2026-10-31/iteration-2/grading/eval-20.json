@@ -1,0 +1,32 @@
+{
+  "eval_id": 20,
+  "expectations": [
+    {
+      "text": "Does not open with a diagnostic question about material the user has said is entirely new",
+      "passed": true,
+      "evidence": "Opens with outline and arrangement, then teaches point 1; no diagnostic question on the new material"
+    },
+    {
+      "text": "Gives a minimal teaching block for the first point only: one concrete example plus one sentence of principle, roughly 150 words (or 300 Chinese characters) or fewer",
+      "passed": true,
+      "evidence": "Point-1 block: matrix A with v=(1,1) (eigen, λ=3) vs u=(1,0) as one contrast example, plus '原理一句话' Av=λv; ~147 Han characters (~350 non-space incl. math); only point 1 taught"
+    },
+    {
+      "text": "Follows the teaching with one closed-book question that the learner must answer, and does not answer it",
+      "passed": true,
+      "evidence": "One item on w=(1,−1): predict (with confidence) then compute Aw; answer (λ=1) not given; told not to look back at the v/u examples"
+    },
+    {
+      "text": "Does not teach all points at once or produce a long lecture",
+      "passed": true,
+      "evidence": "Points 2 and 3 only listed in the outline; no lecture on det(A−λI) or eigenvector solving"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Borderline on minimality: the block adds a prerequisite matrix-vector rule and the 'one-sentence' principle runs to two sentences; overall reply is long (~1000 non-space chars) because of the outline, pacing paragraph and a meta paragraph justifying predict-then-verify. The check allows looking at the multiplication rule (semi-closed-book) and has two sub-steps."
+}

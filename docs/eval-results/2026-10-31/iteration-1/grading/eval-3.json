@@ -1,0 +1,32 @@
+{
+  "eval_id": 3,
+  "expectations": [
+    {
+      "text": "Treats the point as language production: the first task asks the learner to produce Spanish (translate a sentence, fill a blank with a conjugated form, or write a sentence), not only pick from options",
+      "passed": true,
+      "evidence": "'把这句话翻成西班牙语：> 我姐姐是医生，但她今天病了，在家里。... 用 ser 还是 estar、怎么变位，由你来定，直接写整句就行。' It also states why: '主要给中文提示、让你自己写出西语句子，而不是做选择题'."
+    },
+    {
+      "text": "Asks only one item (or one small set of blanks belonging to one item) and does not show the answer",
+      "passed": true,
+      "evidence": "A single translation sentence (it contains three ser/estar slots in one item). Vocabulary is given (mi hermana, médica, enferma, en casa), but the target sentence 'Mi hermana es médica, pero hoy está enferma, está en casa' is not shown."
+    },
+    {
+      "text": "Does not open with a long grammar explanation of ser vs estar before the learner answers",
+      "passed": true,
+      "evidence": "The pre-question text is the outline and method notes only. There is no explanation of when to use ser vs estar; the point titles ('ser 和 estar 的基本分工', '同一个形容词，换个动词意思就变（listo、aburrido、malo…）') name topics without teaching the rules."
+    },
+    {
+      "text": "Does not use a Feynman 'explain it to a child' task as the first activity",
+      "passed": true,
+      "evidence": "The first activity is a translation diagnostic. The planned synthesis is '一个三五句的小写作', not a Feynman explanation."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Correct language-mode handling: production over recognition, with a one-sentence reason, and a well-designed first item that covers profession (ser), temporary state (estar) and location (estar) in one sentence. Vocabulary is accurate (médica for a female doctor, enferma agreeing with hermana). It is transparent that the outline is self-drafted ('不一定和你的教材一一对应') and promises absolute-dated reviews plus a progress JSON with a correct chat-only memory caveat. Minor issue: the user said '直接开始', yet about 350 characters of outline and method precede the question. That is acceptable but could be tighter. No factual errors."
+}

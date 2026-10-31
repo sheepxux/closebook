@@ -1,0 +1,32 @@
+{
+  "eval_id": 20,
+  "expectations": [
+    {
+      "text": "Does not open with a diagnostic question about material the user has said is entirely new",
+      "passed": true,
+      "evidence": "No diagnostic question. It goes straight to the outline and the teaching block. The line \"我默认你会算'2×2 矩阵乘一个向量'。如果不会，直接说\" is an assumption plus an opt-out, not a quiz."
+    },
+    {
+      "text": "Gives a minimal teaching block for the first point only: one concrete example plus one sentence of principle, roughly 150 words (or 300 Chinese characters) or fewer",
+      "passed": true,
+      "evidence": "The teaching block covers point 1 only. One concrete example (A = [[2,1],[1,2]] applied to (1,0) and (1,1), showing A·(1,1) = 3·(1,1)), plus one principle sentence (\"原理：矩阵会把大多数向量'掰歪'；特征向量是...写成 Av = λv\"). About 130 Han characters / 256 non-whitespace characters, under 300."
+    },
+    {
+      "text": "Follows the teaching with one closed-book question that the learner must answer, and does not answer it",
+      "passed": true,
+      "evidence": "\"还是 A = [[2, 1], [1, 2]]。向量 (1, −1) 是不是 A 的特征向量？如果是，特征值是多少？\" with a reply format and confidence. The answer (A·(1,−1) = (1,−1), λ = 1) is not given, and the reply ends on the question."
+    },
+    {
+      "text": "Does not teach all points at once or produce a long lecture",
+      "passed": true,
+      "evidence": "Points 2–4 are only listed in the outline, not taught. The whole reply is about 487 Han characters, much of it the outline and a one-paragraph rationale, so it is not a long lecture."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Math checks out: A·(1,0) = (2,1), A·(1,1) = (3,3), and the test vector (1,−1) is a genuine eigenvector with λ = 1, which is a good near-transfer item. Minor imprecision: the principle sentence describes eigenvectors as 'stretched, shrunk or reversed', which leaves out λ = 0 (the vector collapses to 0). Outline point 4 mentions 压扁 for that case, so it is covered later. The preamble (why active practice, the default-skill assumption) adds some length but stays short. Good adherence to entry path B."
+}

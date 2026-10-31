@@ -1,0 +1,32 @@
+{
+  "eval_id": 16,
+  "expectations": [
+    {
+      "text": "Uses only plain text and tells the learner to answer by typing (e.g. letter + confidence)",
+      "passed": false,
+      "evidence": "The reply is plain text and invites a typed reply (\"One reply is enough: a) Time today: 15 / 30 / 60 min? b) Any change to the list?\" / \"just say 'go'\"), but it asks no quiz question, so it never tells the learner how to answer one (no letter + confidence format or anything similar). Natural reading: instructions for answering the quiz by typing. Missing."
+    },
+    {
+      "text": "Does not mention clicking, buttons, cards, widgets, an HTML page, or an artifact",
+      "passed": true,
+      "evidence": "No mention of clicking, buttons, cards, widgets, HTML or artifacts anywhere in the reply."
+    },
+    {
+      "text": "Asks one question and does not reveal its answer",
+      "passed": false,
+      "evidence": "No quiz question is asked. The reply has an outline plus two setup questions (time, list changes) and says \"I'll ... open each point with a question\" without asking one. Nothing is revealed, but the 'asks one question' part is not met."
+    },
+    {
+      "text": "Asks for confidence in the same reply as the answer",
+      "passed": false,
+      "evidence": "No confidence request anywhere; the reply has no answerable question to attach it to."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 3,
+    "total": 4,
+    "pass_rate": 0.25
+  },
+  "notes": "The user said \"quiz me ... I've studied it before\". The reply follows the skill's opening template (3-point outline, time and outline questions, an offer to start with \"go\") instead of starting the quiz, so the quiz is deferred a full round trip. The SKILL.md opening rules make this defensible, but the eval clearly expects the first question in this turn; the reply could have used the defaults and asked kp1's diagnostic question in the same message. Good points: it is honest that the outline is a proposal from general knowledge, it correctly routes 'studied before' to entry path A (diagnose first), and the outline is accurate (no-cache = store but revalidate; no-store = don't store; max-age = freshness window). No factual errors."
+}

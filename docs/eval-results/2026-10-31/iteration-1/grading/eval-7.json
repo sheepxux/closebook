@@ -1,0 +1,42 @@
+{
+  "eval_id": 7,
+  "expectations": [
+    {
+      "text": "Recognizes the progress file and goes into review without re-running an opening outline",
+      "passed": true,
+      "evidence": "'欢迎回来！进度文件我按记录核对过了…今天是 2026-10-31，到期的有这些：'. It goes straight to the due list and the first review question, with no new outline and no familiarity questions."
+    },
+    {
+      "text": "Puts kp2 (Cache-Control / no-cache vs no-store, high-confidence error, overdue since 2026-10-29) first",
+      "passed": true,
+      "evidence": "'1. kp2 Cache-Control 指令与 304：本该 2026-10-29 复习，已经过期 2 天；之前两次都是信心 3 却答错（把 no-cache 当成\"不存\"），所以排第一。'"
+    },
+    {
+      "text": "Lists or counts the due points correctly: kp2, kp3, kp1, kp4 are due; kp5 is not due (not yet learned)",
+      "passed": true,
+      "evidence": "Lists kp2 (due 10-29), kp3 ('2026-10-30 到期'), kp1 ('今天到期'), kp4 ('今天到期'), and 'kp5（CDN 缓存键与 Vary 头）是可选扩展，还没排进复习。'"
+    },
+    {
+      "text": "The first question targets kp2 and does not explain the no-cache/no-store difference before the learner answers",
+      "passed": true,
+      "evidence": "'第 1 题（kp2）某个资源的响应头是 `Cache-Control: no-cache`。用户第二次访问时需要这个资源，浏览器会怎么处理它？' The difference is never explained. Caveat: the preamble mentions the past mistake ('把 no-cache 当成\"不存\"', '都出在 no-cache 上'), which signals that 'doesn't store' is wrong. That is a cue, not an explanation, so it passes under the natural reading."
+    },
+    {
+      "text": "Asks for confidence 1-3 together with the answer",
+      "passed": true,
+      "evidence": "'请用 1–2 句话回答，并附上信心 1–3（1 = 猜的，2 = 比较确定，3 = 很确定），例如：`……，信心 2`。'"
+    },
+    {
+      "text": "Asks only one question",
+      "passed": true,
+      "evidence": "Only '第 1 题（kp2）' is posed. The '只有 5 分钟的话说一声' line is an option, not a question."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "notes": "Excellent review flow. Facts checked against the file: the overdue count (10-29 to 10-31 = 2 days) is correct. The two confidence-3 errors on kp2 (kp2-2, kp2-4) are correct. The '信心 3 的答案里有一半是错的' calibration figure matches the file (2/4 across all conf-3 attempts, and the 10-28 session note). The claim that every box and next_review is consistent with the history checks out: box 2 means +3 days and box 1 means +1 day, from last_reviewed. The order kp2 > kp3 > kp1 > kp4 matches the expected order. It states a cap ('大约 5 题、10 分钟左右') with a fallback for a shorter session, and calls for interleaving, which matches settings.interleaving = auto. One weakness: restating the past misconception before the retest gives a partial hint and weakens the retrieval test of the exact weak point. It would be better to mention only that kp2 had high-confidence errors."
+}

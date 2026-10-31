@@ -1,0 +1,27 @@
+{
+  "eval_id": 6,
+  "expectations": [
+    {
+      "text": "Gives the summary directly",
+      "passed": true,
+      "evidence": "Opens with '好的，这篇文章的要点如下：', followed by five numbered points and a one-line summary."
+    },
+    {
+      "text": "Does not offer active learning or quizzing again",
+      "passed": true,
+      "evidence": "The reply contains no mention of quizzing, questions, 考我, or any further offer."
+    },
+    {
+      "text": "Summary covers slow-wave replay, REM's role, sleep deprivation hurting recall, naps helping partly, and cramming backfiring",
+      "passed": true,
+      "evidence": "Slow-wave replay: '深睡眠（慢波睡眠）…海马体会\"回放\"刚学过的信息…转移到新皮层'. REM: '更支持程序性记忆（技能类）和情绪记忆…和已有知识联系起来'. Deprivation: '学完之后被剥夺睡眠的人，第二天的回忆成绩通常比睡足的人差'. Naps: '学习后小睡一会儿能获得一部分好处'. Cramming: '通宵突击是适得其反的'."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "notes": "Concise, faithful summary that respects the user's refusal. It keeps the article's hedges ('一般认为', '似乎', '通常', '可能'). Point 5 (spaced study with sleep in between) is also in the article. Slight overstatement: '之后再补觉也补不回来' is a stronger rendering of 'even when the extra sleep happens later' (the article says 'usually find worse recall'). The '通常' earlier in the same sentence partly softens it. No other factual errors."
+}

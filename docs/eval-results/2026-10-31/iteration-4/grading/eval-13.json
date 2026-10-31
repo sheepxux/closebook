@@ -1,0 +1,37 @@
+{
+  "eval_id": 13,
+  "expectations": [
+    {
+      "text": "Outline has 3-5 points with at least three different knowledge types across them",
+      "passed": true,
+      "evidence": "4 main points labeled 概念理解 / 程序技能 / 判断决策 / 程序技能（带概念）, plus an optional ports extension marked \"纯记忆\". At least three types: conceptual, procedural and judgment."
+    },
+    {
+      "text": "Default ports are treated as factual, commands as procedural, and volumes vs bind mounts as judgment (or equivalent reasoning)",
+      "passed": true,
+      "evidence": "Ports: \"纯记忆，有时间就用闪卡\" (factual in substance, though not labeled with the type). Commands: \"[重要 · 程序技能] 常用命令\". Volumes: \"[重要 · 判断决策] 命名卷 vs 绑定挂载\"."
+    },
+    {
+      "text": "States per-point method choices that differ by type (e.g. flashcards/retrieval for ports, predict or do-the-command for commands, why/trade-off questions for volumes)",
+      "passed": true,
+      "evidence": "Image vs container: \"预测…再追问为什么\". Commands: \"给场景让你写命令，或预测一条命令的效果\". Volumes: \"给场景，你选一个并说理由\". Ports: \"用闪卡一张一张过\"."
+    },
+    {
+      "text": "Does not apply one identical method to every point",
+      "passed": true,
+      "evidence": "Points use different methods: predict + why, write the command, scenario choice + reason, predict the cache behavior, and flashcards."
+    },
+    {
+      "text": "Asks no more than the necessary opening questions (familiarity and time were given, so it should not re-ask them) and starts or offers to start immediately",
+      "passed": true,
+      "evidence": "\"好，30 分钟、学过一点，那就跳过讲解，直接摸底\". It doesn't re-ask time or familiarity, and the diagnostic question for point 1 is asked in the same reply."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "Spoiler check: mild leading hint. The outline line for point 1, \"预测'删掉容器会丢什么'\", assumes that deleting a container loses something. That points toward the answer \"不能\" to the open question about whether notes.txt survives docker rm plus a fresh docker run. It doesn't give the reason (the writable layer), so this is a leak in framing rather than a full spoiler. A neutral wording such as \"预测删掉容器后会发生什么\" would avoid it. The answer format uses placeholders (\"能/不能，因为……\"). No port numbers appear in the outline. Ports were moved to an optional item instead of one of the 3-5 core points. This is a defensible efficiency choice given 30 minutes and the fact that ports are minor rote material, but the ports item has no explicit type label. The reply says honestly that it can't run commands."
+}

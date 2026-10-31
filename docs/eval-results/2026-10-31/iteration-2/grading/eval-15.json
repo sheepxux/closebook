@@ -1,0 +1,6 @@
+{"eval_id": 15, "expectations": [
+  {"text": "Asks for a Feynman-style explanation in the learner's own words (e.g. explain to a new teammate what happens from producer to consumer, or during a consumer crash)", "passed": true, "evidence": "\"假设我是一个很聪明、但完全没接触过 Kafka 的朋友，用 3–6 句话告诉我：一条消息从生产者发出，到被消费者处理完，Kafka 在中间做了哪些事，为什么要这么设计。\""},
+  {"text": "Does not substitute a plain list-recall or another MCQ for the Feynman step", "passed": true, "evidence": "Single free-text explanation task; no list or options"},
+  {"text": "Does not explain the answer before the learner tries", "passed": true, "evidence": "No Kafka content is re-taught; only the task framing and \"请先合上笔记\""},
+  {"text": "Mentions next steps: review dates as absolute dates and/or saving progress (may be deferred until after the explanation)", "passed": true, "evidence": "\"复习清单：…给每个点排好下次复习的具体日期\" and \"保存进度：我输出一段进度 JSON…下次新开对话把它贴回来\""}
+], "summary": {"passed": 4, "failed": 0, "total": 4, "pass_rate": 1.00}, "notes": "Actual review dates are deferred, which the expectation allows. The scenario is the generic producer-to-consumer flow rather than a sharper concrete case (e.g. a consumer crash mid-processing) that would test offsets and rebalancing. It also correctly says it cannot remember across chats."}

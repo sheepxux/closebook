@@ -1,0 +1,32 @@
+{
+  "eval_id": 21,
+  "expectations": [
+    {
+      "text": "Explains in plain words with a one-line conclusion, an analogy with its limit, a concrete example and a common pitfall",
+      "passed": true,
+      "evidence": "Section 1: conclusion '很多人各自存一份、只能往后添、不能偷偷改的公共账本', class-ledger analogy + '这个比方不成立的地方', Bitcoin example, pitfall '以为区块链就等于比特币'; section 2 likewise"
+    },
+    {
+      "text": "No unexplained jargon (terms like hash, node, consensus are either avoided or explained in the same sentence)",
+      "passed": true,
+      "evidence": "哈希 explained in the same sentence ('根据整页内容算出来的一串短编码...叫*哈希*'); node/consensus avoided ('让大多数人手里的账本都认这个改动')"
+    },
+    {
+      "text": "Respects 'don't quiz me yet': at most one light recall question at the end, no multi-question quiz",
+      "passed": true,
+      "evidence": "No question asked: '你说了先别考你，这次我就不出题，等正式开始学的时候再考'"
+    },
+    {
+      "text": "Offers, in one sentence, to continue with active learning or check understanding later",
+      "passed": true,
+      "evidence": "'要不要接着正式学？' followed by a one-sentence description of how it would go"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Offer spans two short sentences (question + description). Zero recall question matches plain-talk.md's 'skip the recall' rule. Points run ~7 sentences each, over the 4-6 sentence cap; bold markdown in a plain-text environment."
+}

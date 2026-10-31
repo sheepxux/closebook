@@ -1,0 +1,37 @@
+{
+  "eval_id": 10,
+  "expectations": [
+    {
+      "text": "Labels the core question as contested / 主观有争议 (at least for the 'does remote work hurt innovation' point)",
+      "passed": true,
+      "evidence": "\"1. [核心 · 有争议，辅：事实] 三种观点…\" and \"3. [核心 · 有争议] 你自己的立场…\"; also \"这个话题本身没有定论\"."
+    },
+    {
+      "text": "The first question is open-ended (state a position, compare arguments, or name an evidence limitation), not multiple choice",
+      "passed": true,
+      "evidence": "\"用你自己的话，三种观点各用一两句说出：它的结论是什么，最主要的一条理由是什么。\" This is open-ended free recall of each view's argument, with no options. Read naturally, it falls under summarizing/comparing arguments."
+    },
+    {
+      "text": "Does not present any position as the correct answer and does not frame the task as right/wrong",
+      "passed": true,
+      "evidence": "\"第 1、3 点我不判对错，也不让你报把握度。\" No view is endorsed. The only point described as having a defensible answer is evidence limits (\"第 2 点有比较站得住的答案\"), which is not a position on the contested question."
+    },
+    {
+      "text": "Does not use predict-then-verify on the contested point",
+      "passed": true,
+      "evidence": "No predict-then-verify anywhere. The tasks are recall, evidence critique, and stating and defending a position."
+    },
+    {
+      "text": "Says, or makes clear, that answers will be judged on reasoning and use of evidence rather than correctness",
+      "passed": true,
+      "evidence": "\"我只看两件事：你复述的论据准不准，你的理由能不能撑住结论。\""
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "Clean reply. The outline maps directly onto the three classroom requirements (arguments, evidence limits with sample and measurement named, own position plus strongest rebuttal). It correctly skips confidence ratings for contested points, plans a Feynman-style synthesis at the end, and asks for the seminar date so it can schedule a review. No factual errors against the material."
+}

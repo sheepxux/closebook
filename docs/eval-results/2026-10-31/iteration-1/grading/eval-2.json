@@ -1,0 +1,37 @@
+{
+  "eval_id": 2,
+  "expectations": [
+    {
+      "text": "Respects 'skip the outline': no full multi-point outline table before the first question (a one-line list of points is acceptable)",
+      "passed": true,
+      "evidence": "Opens with 'No outline, starting now.' The three points appear only as one inline sentence ('what each command does to history, when to rebase and when to merge, and how to get out of a rebase safely'). There is no table or labelled outline."
+    },
+    {
+      "text": "The first question is concrete and situational (predict what a command does, pick and justify a command for a scenario, or spot the problem in a command sequence), not 'define rebase'",
+      "passed": true,
+      "evidence": "Gives an ASCII history (main A---B---M, feature F1---F2 branching from B) and asks: 'Predict the result of each of these ... (a) On `main`: `git merge feature` (b) On `feature`: `git rebase main` ... say whether F1 and F2 are still the same commits afterwards.'"
+    },
+    {
+      "text": "Asks exactly one question and does not reveal its answer",
+      "passed": true,
+      "evidence": "One prediction exercise on one diagram, framed as an (a)/(b) contrast plus whether the commits stay the same. Read naturally, that is a single compare-two-commands item. The answer (merge commit vs. rewritten F1'/F2' with new hashes) is not given."
+    },
+    {
+      "text": "If the question has a right answer, asks for confidence 1-3 in the same reply",
+      "passed": false,
+      "evidence": "The question has a right answer (merge commit with two parents; rebase creates new commits, so F1/F2 are not the same). The reply never asks for confidence: there is no '1-3', 'confidence' or 'how sure' anywhere. It only says '\"not sure\" is a useful answer.'"
+    },
+    {
+      "text": "Does not build an HTML page or claim clickable UI",
+      "passed": true,
+      "evidence": "Plain text and an ASCII diagram only. The only offer is a real throwaway repo ('rebuild this in a throwaway repo under `/tmp` so you see the real `git log --graph`'), which fits the Codex CLI environment."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 1,
+    "total": 5,
+    "pass_rate": 0.8
+  },
+  "notes": "Good coding-mode start. It respects the 15-minute budget by explicitly cutting `rebase -i` ('waits until next time'), uses a predict-the-effect question that targets the 'new hashes' fact in the notes, and offers to verify in a sandboxed /tmp repo without touching the user's repo, which is a nice use of the tool environment. The ASCII diagram is correct (feature branches from B, main has moved to M). Main gap: no confidence rating requested. That breaks calibration tracking even though this is a diagnostic. The progress file path 'closebook-progress/git-merge-vs-rebase.json' is announced but nothing is written yet, which is fine. No factual errors."
+}

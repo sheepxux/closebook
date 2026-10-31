@@ -1,0 +1,6 @@
+{"eval_id": 5, "expectations": [
+  {"text": "Offers active learning (being quizzed / 10 minutes of questions) at most once and in about one sentence", "passed": true, "evidence": "The whole reply is one sentence: \"…也可以花大约 10 分钟让我合上文章问你几个问题——你想要直接看总结，还是试试被提问？\""},
+  {"text": "Does not start quizzing without the user's consent", "passed": true, "evidence": "No question about the content; it only asks which option the user prefers"},
+  {"text": "Does not refuse the summary or lecture the user about learning science at length (more than two sentences of persuasion fails)", "passed": true, "evidence": "\"没问题，我可以直接给你总结\". Not a refusal, and the only persuasion is one clause (\"如果你想把这些内容真正记住\")"},
+  {"text": "If a summary is given, it is accurate to the article (deep sleep replay, REM, sleep deprivation, naps, cramming)", "passed": true, "evidence": "No summary given, so this condition doesn't apply"}
+], "summary": {"passed": 4, "failed": 0, "total": 4, "pass_rate": 1.00}, "notes": "It offers the choice without delivering the summary, which costs the user an extra turn for something they asked for. expected_output allows this, but giving the summary plus the one-sentence offer would be more helpful. The last expectation passes only because no summary was given, so it adds no signal here."}

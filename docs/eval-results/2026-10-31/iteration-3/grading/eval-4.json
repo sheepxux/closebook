@@ -1,0 +1,27 @@
+{
+  "eval_id": 4,
+  "expectations": [
+    {
+      "text": "Does not start with a full explanation of the three-way handshake",
+      "passed": true,
+      "evidence": "Opens with \"先用诊断题摸底，不先讲课\" and a 3-point outline; no step-by-step explanation of SYN/SYN-ACK/ACK."
+    },
+    {
+      "text": "Asks a why / what-if or predict question (e.g. what happens with only two steps if a delayed old SYN arrives) that requires reasoning, not recall of the step names",
+      "passed": true,
+      "evidence": "\"假设 TCP 完全没有握手：客户端第一个包就直接带着数据发给服务器。站在服务器的角度，这时它还不知道、或者还没法确认哪些事？\" is a what-if question, not recall of step names."
+    },
+    {
+      "text": "Asks at most one question and does not answer it",
+      "passed": false,
+      "evidence": "Only one question is asked, but outline item 1 already gives its answer: \"握手到底在确认什么（双方的收发能力 + 各自的初始序号）\". That is exactly what the server cannot confirm without a handshake. Item 2 also leaks \"迟到的旧 SYN、服务器的序号没人确认\"."
+    },
+    {
+      "text": "Mentions or plans an explain-in-your-own-words (Feynman) step later, or the structure clearly leads to one (e.g. outline states synthesis by explanation)",
+      "passed": true,
+      "evidence": "\"最后用费曼法收尾：你把'为什么是三次'讲给一个没学过网络的朋友听，我来找缺口\""
+    }
+  ],
+  "summary": {"passed": 3, "failed": 1, "total": 4, "pass_rate": 0.75},
+  "notes": "The outline's parenthetical method notes act as answer keys: they name both of the server's confirmation gaps and the old-SYN failure case before the learner reasons it out, which undercuts the 'reason before explaining' goal of concept mode. Familiarity was inferred as '听过术语但不牢' from 'I roughly know SYN/ACK', which is reasonable, and time was not re-asked. Confidence 1-3 is requested for an open reasoning question, which is acceptable. A disclaimer that the points come from general knowledge rather than the learner's textbook is a good honesty touch."
+}

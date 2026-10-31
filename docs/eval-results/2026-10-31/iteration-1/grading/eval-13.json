@@ -1,0 +1,37 @@
+{
+  "eval_id": 13,
+  "expectations": [
+    {
+      "text": "Outline has 3-5 points with at least three different knowledge types across them",
+      "passed": true,
+      "evidence": "Four points: \"[核心 · 概念理解] 镜像 vs 容器\", \"[重要 · 程序技能…] 常用命令\", \"[核心 · 判断决策…] 命名卷 vs 绑定挂载\", \"[重要 · 程序技能…] Dockerfile 层缓存\". Three distinct types: conceptual, procedural, judgment."
+    },
+    {
+      "text": "Default ports are treated as factual, commands as procedural, and volumes vs bind mounts as judgment (or equivalent reasoning)",
+      "passed": true,
+      "evidence": "Commands: \"程序技能\"; volumes: \"判断决策\"; ports: moved to an optional extension and described as \"纯数字记忆…几张闪卡两三分钟就能补上\", which is equivalent to factual even though it has no formal label and sits outside the main outline."
+    },
+    {
+      "text": "States per-point method choices that differ by type (e.g. flashcards/retrieval for ports, predict or do-the-command for commands, why/trade-off questions for volumes)",
+      "passed": false,
+      "evidence": "No per-point method plan. The method is stated once for everything (\"每个点先问一题摸底，只补你缺的那块，再合上笔记重测一次\") plus a material-wide emphasis (\"这是命令行工具类材料，所以我会多让你先写命令、先预测结果\"). Only the dropped ports item gets a distinct method (闪卡). There is no why/trade-off plan for volumes (judgment) and no specific plan for the conceptual point."
+    },
+    {
+      "text": "Does not apply one identical method to every point",
+      "passed": true,
+      "evidence": "Narrow pass. The four in-session points share one pipeline, but ports are assigned flashcards and the synthesis step is a separate Feynman-style explanation, so the reply does not literally apply one identical method to every point. This overlaps with the failure above."
+    },
+    {
+      "text": "Asks no more than the necessary opening questions (familiarity and time were given, so it should not re-ask them) and starts or offers to start immediately",
+      "passed": true,
+      "evidence": "Does not re-ask familiarity or time (\"好，30 分钟、'学过一点'\"), and starts immediately with a diagnostic: \"新容器里还有 /data.txt 吗？用 1–2 句话说说为什么。\""
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 1,
+    "total": 5,
+    "pass_rate": 0.8
+  },
+  "notes": "Type labelling is good. The first diagnostic is a strong conceptual predict question, and its expected answer (no, the writable layer is lost with the container) is correct per the notes. It is honest about not being able to run commands. Weaknesses: method choices are not differentiated per knowledge type in the plan, and default ports (note item 4) are demoted to optional, so the factual type never appears in the session plan. That choice is defensible under a 30-minute budget, but it means one note item is not studied unless the user opts in. No factual errors."
+}

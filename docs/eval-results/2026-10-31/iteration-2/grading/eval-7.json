@@ -1,0 +1,8 @@
+{"eval_id": 7, "expectations": [
+  {"text": "Recognizes the progress file and goes into review without re-running an opening outline", "passed": true, "evidence": "\"进度文件我看过了，结构和日期都对得上，可以直接接着复习\"; it lists due items only, with no outline or familiarity question"},
+  {"text": "Puts kp2 (Cache-Control / no-cache vs no-store, high-confidence error, overdue since 2026-10-29) first", "passed": true, "evidence": "\"1. Cache-Control 指令与 304 状态码：优先复习。上次有两次是高信心答错，而且原定 2026-10-29 复习，已经过期 2 天。\""},
+  {"text": "Lists or counts the due points correctly: kp2, kp3, kp1, kp4 are due; kp5 is not due (not yet learned)", "passed": true, "evidence": "\"到期的有 4 个点\": kp2, curl (kp3, 过期 1 天), 强缓存与协商缓存 (kp1), 按资源类型选择缓存策略 (kp4); \"CDN 缓存键与 Vary 头还是可选扩展，这次不排进来\""},
+  {"text": "The first question targets kp2 and does not explain the no-cache/no-store difference before the learner answers", "passed": true, "evidence": "\"第 1 题： Cache-Control: no-cache 是什么意思？\" with no explanation before it"},
+  {"text": "Asks for confidence 1-3 together with the answer", "passed": true, "evidence": "\"后面附上信心 1–3（1 = 猜的，2 = 比较确定，3 = 很确定），例如「……，信心 2」\""},
+  {"text": "Asks only one question", "passed": true, "evidence": "Only 第 1 题 is posed"}
+], "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.00}, "notes": "It states a question cap (\"一共 4 题，大约 10 分钟\") and explains the interleaving plan. The due order kp2 > kp3 > kp1 > kp4 matches the expected priority."}

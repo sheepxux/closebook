@@ -1,0 +1,32 @@
+{
+  "eval_id": 21,
+  "expectations": [
+    {
+      "text": "Explains in plain words with a one-line conclusion, an analogy with its limit, a concrete example and a common pitfall",
+      "passed": true,
+      "evidence": "Each of the 4 points has 结论 / 类比 / 类比不成立的地方 / 例子 / 常见的坑, e.g. point 1: \"像一个群里大家约好，每笔 AA 付款都要发到群里...类比不成立的地方：群里抄账靠人自觉...\""
+    },
+    {
+      "text": "No unexplained jargon (terms like hash, node, consensus are either avoided or explained in the same sentence)",
+      "passed": false,
+      "evidence": "The body explains its terms in place (\"这串乱码叫'哈希'\", \"这套规则叫'共识机制'\", \"这种做法叫'工作量证明'\"), and 'node' is avoided. But the optional-extension line \"智能合约、钱包与私钥、公链和联盟链\" names four technical terms with no explanation for a self-described 小白. 地址 (address) is also used without explanation. Strict reading: unexplained jargon is present."
+    },
+    {
+      "text": "Respects 'don't quiz me yet': at most one light recall question at the end, no multi-question quiz",
+      "passed": true,
+      "evidence": "No quiz questions at all; the only questions are setup questions (time, outline changes). This is within 'at most one light recall question'."
+    },
+    {
+      "text": "Offers, in one sentence, to continue with active learning or check understanding later",
+      "passed": false,
+      "evidence": "It offers to continue, but not in one sentence. The offer is a whole block: \"等你想正式学的时候，我打算按上面这 4 个点走\", a 4-item outline with importance/type tags, an extension list, a method note, and two setup questions (a/b). The expectation explicitly asks for one sentence."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  },
+  "notes": "Factually sound for a beginner: a shared ledger with many copies; each block carries the previous block's hash; changing history is expensive rather than impossible; PoW makes cheating costly (more hash power than the rest of the network); Bitcoin handles only single-digit transactions per second; it is not worth using when a trusted operator exists. Good honesty that the explanation is preview and doesn't count toward mastery. Problems: (1) Too long for 'just tell me what it is': about 1,289 Han characters across 4 full five-part blocks plus a summary and a full study outline. A one- or two-block Plain Talk would serve a 小白 better. (2) It ends without even a light recall prompt, which is allowed but misses the expected 'light recall question and/or offer'. Only the offer is present, and it is oversized. (3) Small simplification: 挖矿 rewards also include fees, and 'the first to solve wins' glosses over forks. Acceptable at this level."
+}

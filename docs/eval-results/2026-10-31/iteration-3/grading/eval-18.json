@@ -1,0 +1,37 @@
+{
+  "eval_id": 18,
+  "expectations": [
+    {
+      "text": "Gives a one-line conclusion in everyday words",
+      "passed": true,
+      "evidence": "\"强缓存是浏览器'自己看日期，没过期就直接用'，一句话都不问服务器；协商缓存是'用之前先问服务器一句：我手上这份还是最新的吗？'\""
+    },
+    {
+      "text": "Includes an everyday analogy AND explicitly states where the analogy breaks down",
+      "passed": true,
+      "evidence": "Milk expiry date vs asking the front desk about an old notice; \"类比不成立的地方：牛奶会自己变质，网页文件不会……\""
+    },
+    {
+      "text": "Gives one concrete example and one common pitfall",
+      "passed": true,
+      "evidence": "Example: a CSS file with max-age=3600, then ETag → 304 after one hour. Pitfall: \"以为协商缓存也不用联系服务器……省掉的是'重新下载整份文件'，不是那一趟来回\"."
+    },
+    {
+      "text": "Any technical term used (e.g. max-age, ETag, 304) is explained in plain words in the same reply",
+      "passed": true,
+      "evidence": "max-age is glossed as \"设了缓存 1 小时\", ETag as \"上次拿到的'版本号'\", and 304 as \"意思是'没变，接着用你那份'\"."
+    },
+    {
+      "text": "Ends with a recall question asking the learner to explain or apply it in their own words, without answering it",
+      "passed": false,
+      "evidence": "It does end with an apply question (1-day cache, reopened 2 days later, file unchanged), but the answer-format example \"（比如'会，用本地的，2'）\" is the correct answer: it contacts the server and keeps the local copy. The question is effectively answered in the same reply."
+    },
+    {
+      "text": "Does not insult or label the learner (no 'for dummies' tone)",
+      "passed": true,
+      "evidence": "\"好，我用大白话再讲一遍\" describes the style, not the learner; no condescension."
+    }
+  ],
+  "summary": {"passed": 5, "failed": 1, "total": 6, "pass_rate": 0.83},
+  "notes": "Plain Talk sentence count for the single point (strong vs negotiated cache): conclusion 1, analogy 2, break 1, example 1, pitfall 2, which makes 7 sentences. The extra \"一句话记住\" line brings it to 8 if counted as part of the point (or 1 if treated as the overview). This exceeds the 4-6 sentence cap, and the pitfall uses two sentences where the skill allows one. The content is accurate. The recall question is a well-chosen transfer case (expired strong cache falling through to revalidation), but the format example spoils it."
+}

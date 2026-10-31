@@ -1,0 +1,32 @@
+{
+  "eval_id": 19,
+  "expectations": [
+    {
+      "text": "Keeps the exact definitions (half-life: time for plasma concentration to fall by half; therapeutic index: LD50/ED50, larger is safer)",
+      "passed": true,
+      "evidence": "'血药浓度下降一半所需的时间' and 'TI = LD50 / ED50，越大越安全' marked as 背诵版, matching the glossary verbatim"
+    },
+    {
+      "text": "Does not force an everyday analogy onto these definitions, or explicitly says why it skips one",
+      "passed": true,
+      "evidence": "'打比方反而会把措辞带偏，所以这次不用类比'; no analogy appears"
+    },
+    {
+      "text": "Uses a concrete example (e.g. numbers showing concentration halving, or LD50/ED50 values)",
+      "passed": true,
+      "evidence": "Half-life 4 h: 100→50→25; drug A TI=1000/10=100 vs drug B TI=30/10=3"
+    },
+    {
+      "text": "Ends with a recall question and does not answer it",
+      "passed": true,
+      "evidence": "Ends 'ED50 = 20 mg/kg，LD50 = 500 mg/kg，它的治疗指数是多少？' with confidence format; 25 not given"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Good: preview disclaimer, offer of the normal flow, numerator/denominator pitfall. Bold markdown in a plain-text environment."
+}

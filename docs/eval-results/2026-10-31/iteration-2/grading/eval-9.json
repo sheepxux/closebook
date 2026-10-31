@@ -1,0 +1,8 @@
+{"eval_id": 9, "expectations": [
+  {"text": "Classifies the material as factual (事实记忆型)", "passed": true, "evidence": "All five groups labelled e.g. \"[核心 · 事实记忆] 药动学参数…\""},
+  {"text": "Plans retrieval practice with spaced repetition, and chunking or a mnemonic aid (e.g. grouping pairs like agonist/antagonist/partial agonist, or potency vs efficacy)", "passed": true, "evidence": "20 terms split into 5 groups; \"2026-11-01（明天）：先闭卷复测今天的 11 个…\" plus optional pre-quiz pass; \"请你自己编一个记忆钩子\"; flags 效能/效价强度 and 三种\"剂\" as confusable sets"},
+  {"text": "Does not use a Feynman explanation task or everyday analogies for the definitions", "passed": true, "evidence": "\"这里不用'费曼讲解'：定义没有'为什么'可讲\"; no analogies given"},
+  {"text": "Uses flashcard-style (term -> definition or reverse) or cloze questions, presented as plain text", "passed": true, "evidence": "\"卡 1 / 20 … 表观分布容积（Vd） 是什么？一句话或一个公式都行。\""},
+  {"text": "Asks only one card / item at a time and hides its answer", "passed": true, "evidence": "Only card 1 (Vd) is asked; definition not shown; \"一次只问一张\""},
+  {"text": "Asks for confidence along with the answer", "passed": true, "evidence": "\"回复格式：答案 + 把握 1–3（1 = 猜的…）\""}
+], "summary": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.00}, "notes": "Correctly resolves 下周一 to 2026-11-02 and fits a two-day schedule. The reply is long, and it adds a second, non-card question about quiz format (写定义/选择/算剂量). The question is useful, but it adds load to the first turn."}

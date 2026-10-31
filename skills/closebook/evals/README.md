@@ -1,0 +1,42 @@
+# closebook evals
+
+`evals.json` follows the skill-creator format (`skill_name`, `evals[]` with `id`, `prompt`, `expected_output`, `files`, `expectations`). `files` paths are relative to the skill root. This folder is left out of the packaged ZIP.
+
+Each prompt starts with a bracketed `[Environment: …]` preamble: the platform's capabilities, today's date and, for mid-session scenarios, a summary of earlier turns. The runner treats it as context, not as text the user typed. Each eval checks one assistant turn.
+
+The suite checks both directions: that a method or form is **used where it fits** (Feynman on conceptual material, predict-first diagrams on architecture, production on language) and **not used where it doesn't** (no analogies for a glossary, no right/wrong grading on contested material, no components for a one-line fact).
+
+| id | Scenario (spec §13) | What it checks |
+|---|---|---|
+| 1 | 1 · exam prep | Opening, exam date caps reviews, procedural label for calculations |
+| 2 | 1 · coding | Skips the outline on request; situational predict/choose question |
+| 3 | 1 · language | Production task, not recognition only; no lecture first |
+| 4 | 1 · concept | Why / what-if before explaining; Feynman planned |
+| 5 | 2 · summary only | One-sentence offer, no forced quiz |
+| 6 | 2 · summary declined | Summarizes, doesn't push again |
+| 7 | 3 · review with progress file | Due order (high-confidence error first), retest before explaining |
+| 8 | 3 · review, after an answer | Correct schedule update (box 2, 2026-11-03), error resolved |
+| 9 | 4 · pure glossary | Retrieval + chunking/mnemonics, flashcard/cloze, no Feynman or analogies |
+| 10 | 5 · contested material | Open responses, no right/wrong, no predict-verify |
+| 11 | 6 · unfit form requested | Risk in one sentence + alternative, no lecture |
+| 12 | 6 · user insists | Complies, records the override |
+| 13 | 7 · mixed types | Different types and methods per point |
+| 14 | 8 · architecture, predict first | Text diagram with blanks, predict before showing |
+| 15 | 8 · architecture, synthesis | Feynman actually used (anti-over-suppression) |
+| 16 | 9 · Level 0 only | Typed answers, no pretend UI |
+| 17 | 10 · one-line fact | No outline or components |
+| 18 | 11 · Plain Talk, conceptual | Analogy + its limit, jargon explained, recall question |
+| 19 | 11 · Plain Talk, precise definitions | Exact definitions, no forced analogy |
+| 20 | 12 · zero background (path B) | Minimal teaching block, then a closed-book check |
+| 21 | 12 · "说人话" before learning | Plain Talk first, no quiz (at most one light recall) |
+| 22 | 13 · chat export | Compact core JSON that `progress_tool.py validate` accepts |
+
+## Running
+
+**With skill-creator** (if your environment has it): point it at this folder; it reads `evals/evals.json`.
+
+**Without it** (how the 2026-10-31 run was done): for each eval, a fresh agent gets the skill folder, reads `SKILL.md` and only the references it routes to, and writes the next assistant reply. It never sees `evals/`. A separate grader marks every expectation pass/fail with quoted evidence. For eval 22, the grader extracts the JSON block and runs `scripts/progress_tool.py validate` on it. Results and responses: `docs/eval-results/<date>/iteration-<n>/`.
+
+## Trigger queries
+
+`trigger-queries.json` lists 18 requests with `should_trigger` true/false: study requests in English and Chinese, a summary of study material (should trigger the one-sentence offer), and near misses such as meeting summaries, factual questions and a teacher writing a quiz for students. The behaviour evals above assume the skill is already loaded; these queries test the description. Use them with a description optimizer if you have one, or as a routing check on each platform after installing.

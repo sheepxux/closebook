@@ -1,0 +1,32 @@
+{
+  "eval_id": 4,
+  "expectations": [
+    {
+      "text": "Does not start with a full explanation of the three-way handshake",
+      "passed": true,
+      "evidence": "Opens with \"不先讲解，直接用一道题摸底\"; only a bare 3-arrow skeleton (SYN / SYN+ACK / ACK) is shown, which the learner said they already know, with no explanation of why."
+    },
+    {
+      "text": "Asks a why / what-if or predict question (e.g. what happens with only two steps if a delayed old SYN arrives) that requires reasoning, not recall of the step names",
+      "passed": true,
+      "evidence": "\"② 刚到达 A 的那一刻，B 还有一件事是确定不了的。是什么？为什么 B 靠自己没法确定？\" To answer it the learner has to reason about what each side has confirmed so far. Naming the steps isn't enough, since the skeleton already shows them."
+    },
+    {
+      "text": "Asks at most one question and does not answer it",
+      "passed": true,
+      "evidence": "A single open question (what + why about one gap). The answer format uses placeholders: \"B 还不能确定……，因为……，信心 1–3\". The answer appears nowhere in the reply."
+    },
+    {
+      "text": "Mentions or plans an explain-in-your-own-words (Feynman) step later, or the structure clearly leads to one (e.g. outline states synthesis by explanation)",
+      "passed": true,
+      "evidence": "\"收尾：用费曼法，给一个没学过网络的朋友讲清'为什么是三次'\""
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Spoiler check: clean. The outline items (\"每一步握手之后，双方各自多确认了什么\", \"如果只握两次，会在什么场景下出事\", \"为什么不需要第四次\") are framed as questions and give no conclusions. The diagram shows only the structure the learner already knew. The diagnostic question isn't the delayed-old-SYN example, but the old-SYN scenario is planned as point 3. The reply doesn't re-ask the time or familiarity the learner already gave, says honestly that the outline comes from general networking knowledge, and asks for confidence in the same reply."
+}

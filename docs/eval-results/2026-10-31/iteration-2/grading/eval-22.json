@@ -1,0 +1,47 @@
+{
+  "eval_id": 22,
+  "expectations": [
+    {
+      "text": "Outputs exactly one JSON code block for the progress",
+      "passed": true,
+      "evidence": "Single ```json block containing the minified progress object"
+    },
+    {
+      "text": "The JSON validates: `python3 scripts/progress_tool.py validate <file>` reports no errors (grader runs it)",
+      "passed": true,
+      "evidence": "Coordinator ran progress_tool.py validate: 'progress file: VALID (0 errors, 0 warnings)'"
+    },
+    {
+      "text": "Uses only core fields (no extension-only fields such as method or interaction on attempts), unless the user asked for the full version",
+      "passed": true,
+      "evidence": "Fields used (schema_version, profile 'core', settings, kp id/title/importance/knowledge_type/status/mastery/leitner_box/next_review/last_reviewed/priority_flag/attempts/errors, weak_points) are all core per progress-state.md; no method/interaction/question/sessions"
+    },
+    {
+      "text": "kp1 is in box 1 with next_review 2026-11-01; kp2 and kp3 are weak or fuzzy in box 1 with next_review 2026-11-01; kp3 has a high-confidence error noted (priority / weak_points note)",
+      "passed": true,
+      "evidence": "kp1 box 1 / 2026-11-01; kp2 fuzzy box 1 / 2026-11-01; kp3 weak box 1 / 2026-11-01 with priority_flag true, errors high_confidence true and weak_points note '信心 3 答错'; recompute matches"
+    },
+    {
+      "text": "The diagnostic attempt has phase diagnostic and does not change the schedule",
+      "passed": true,
+      "evidence": "kp3-1 phase 'diagnostic' result 'dont_know'; recompute by replay gives the same schedule"
+    },
+    {
+      "text": "Tells the user to save it and paste it back in a new chat, and gives the next review date(s) as absolute dates",
+      "passed": true,
+      "evidence": "'把它整段复制存好...下次贴回来就能接着复习' and review list dated '2026-11-01（明天）'"
+    },
+    {
+      "text": "Does not claim it will remember the progress itself",
+      "passed": true,
+      "evidence": "'换一个新对话我就不记得今天的内容了，进度全在下面这段里'"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 0,
+    "total": 7,
+    "pass_rate": 1.0
+  },
+  "notes": "Not fully compact: keeps default core values (status 'active', hint_level 0) that the compact rule would drop. Synthesis free recall not recorded, with an explanation to the learner. Bold markdown in a plain-text environment."
+}

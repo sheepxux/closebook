@@ -1,0 +1,32 @@
+{
+  "eval_id": 4,
+  "expectations": [
+    {
+      "text": "Does not start with a full explanation of the three-way handshake",
+      "passed": true,
+      "evidence": "Opens with an outline of 4 points ('建立连接时，双方到底需要确认哪些东西', '只握两次会出什么问题' ...) and a method note. Nothing explains what the handshake steps do or why two is not enough."
+    },
+    {
+      "text": "Asks a why / what-if or predict question (e.g. what happens with only two steps if a delayed old SYN arrives) that requires reasoning, not recall of the step names",
+      "passed": false,
+      "evidence": "No content question is asked. The only questions are setup questions: 'a) 今天有多少时间…', 'b) 熟悉程度…', 'c) 清单要调整吗？'. The reply defers the reasoning question ('我们就直接从第 1 点的一道诊断题开始') without posing it, even though it guesses '见过但不牢' and could have asked one."
+    },
+    {
+      "text": "Asks at most one question and does not answer it",
+      "passed": true,
+      "evidence": "Ambiguous: read literally, the reply asks three setup questions (a/b/c) in one message. The expected output explicitly allows a concept-mode 'opening', so I read 'question' as a learning or quiz question. On that reading it asks zero learning questions and answers none, so it passes. A literal count would fail it."
+    },
+    {
+      "text": "Mentions or plans an explain-in-your-own-words (Feynman) step later, or the structure clearly leads to one (e.g. outline states synthesis by explanation)",
+      "passed": true,
+      "evidence": "'最后请你用大白话讲给一个没学过网络的朋友听，这样哪里只是\"认得这些词\"、哪里是真懂了，很快就能看出来。'"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "notes": "The method selection is right: why-questions for the mechanism points (1, 3), plain recall for the flag/seq conventions (point 2) with an honest note ('属于约定，没什么\"为什么\"可讲，就直接闭卷回忆，不硬编理由'), and a Feynman synthesis planned at the end. Asking for the time budget is legitimate because the user didn't give one. Main weakness: the user's message was itself a 'why' question and they described their familiarity ('大概知道 SYN/ACK 这些词'), yet the reply stops at a three-part setup checklist and asks no reasoning question. Asking the old-SYN what-if question in the same message would have been the stronger move. The outline is self-drafted, and the reply says so. No factual errors."
+}

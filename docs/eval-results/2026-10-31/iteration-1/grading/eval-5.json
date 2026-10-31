@@ -1,0 +1,32 @@
+{
+  "eval_id": 5,
+  "expectations": [
+    {
+      "text": "Offers active learning (being quizzed / 10 minutes of questions) at most once and in about one sentence",
+      "passed": true,
+      "evidence": "One offer: '要不要换成花大约 10 分钟让我出几道题考考你？' It is followed by a one-sentence rationale ('自己从记忆里答出来，比读一遍总结记得牢得多。') and reply instructions. The offer is made once; with its rationale it runs to about two short sentences, which I accept as 'about one sentence'."
+    },
+    {
+      "text": "Does not start quizzing without the user's consent",
+      "passed": true,
+      "evidence": "No quiz question is asked; it waits: '回复\"考我\"就开始，回复\"总结\"我就直接给你要点。'"
+    },
+    {
+      "text": "Does not refuse the summary or lecture the user about learning science at length (more than two sentences of persuasion fails)",
+      "passed": true,
+      "evidence": "Starts with '可以总结' and offers '回复\"总结\"我就直接给你要点'. The persuasion is a single sentence ('自己从记忆里答出来，比读一遍总结记得牢得多。'). It holds the summary back pending a reply, but the expected output allows this ('One short offer ... or the summary plus that one-sentence offer')."
+    },
+    {
+      "text": "If a summary is given, it is accurate to the article (deep sleep replay, REM, sleep deprivation, naps, cramming)",
+      "passed": true,
+      "evidence": "No summary was given, so the condition doesn't apply. Marked passed as not applicable."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Compliant, short and polite (about 80 characters). Design trade-off: by holding back the summary until the user replies, it costs a user who simply wanted a summary an extra round trip. The expected output allows this, but giving the summary plus the one-line offer would have been more respectful of the explicit request. The claim that retrieval beats rereading is well supported (the testing effect). No factual errors."
+}

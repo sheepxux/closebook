@@ -1,0 +1,20 @@
+[
+  {"query": "Quiz me on these lecture notes before Friday's exam.", "should_trigger": true},
+  {"query": "帮我复习一下这章有机化学，下周就考试了。", "should_trigger": true},
+  {"query": "I want to actually understand how React hooks work instead of copying code. Teach me.", "should_trigger": true},
+  {"query": "考考我：TCP 三次握手。", "should_trigger": true},
+  {"query": "Help me memorize these 30 Spanish irregular verbs.", "should_trigger": true},
+  {"query": "Here's my closebook progress JSON, let's do today's review.", "should_trigger": true},
+  {"query": "用费曼学习法带我过一遍这篇论文。", "should_trigger": true},
+  {"query": "说人话给我讲讲量子纠缠，讲完考我一下。", "should_trigger": true},
+  {"query": "Summarize this textbook chapter so I can study it for the midterm.", "should_trigger": true},
+  {"query": "What's the capital of Australia?", "should_trigger": false},
+  {"query": "Summarize this meeting transcript into action items.", "should_trigger": false},
+  {"query": "Write a Python function that parses ISO 8601 dates.", "should_trigger": false},
+  {"query": "Translate this paragraph into English.", "should_trigger": false},
+  {"query": "帮我总结一下这份周报，发给老板。", "should_trigger": false},
+  {"query": "Fix the failing test in this repository.", "should_trigger": false},
+  {"query": "What does HTTP status 304 mean?", "should_trigger": false},
+  {"query": "解释一下什么是区块链。", "should_trigger": false},
+  {"query": "Generate a 10-question multiple-choice quiz from this chapter for my students.", "should_trigger": false}
+]

@@ -1,0 +1,42 @@
+{
+  "eval_id": 18,
+  "expectations": [
+    {
+      "text": "Gives a one-line conclusion in everyday words",
+      "passed": true,
+      "evidence": "\"结论：两者只差一件事：用缓存之前要不要先问服务器。强缓存不问，直接用；协商缓存先问一句，服务器说'没变'才用。\" One line in everyday words (several short clauses, but one line)."
+    },
+    {
+      "text": "Includes an everyday analogy AND explicitly states where the analogy breaks down",
+      "passed": true,
+      "evidence": "The analogy is a screenshot of a shop's opening hours vs phoning the shop. \"类比不成立的地方：打电话挺费劲，但浏览器'问一句'只是个很小的请求：它省掉的是重新下载整个文件，省不掉的是这一来一回的等待。\""
+    },
+    {
+      "text": "Gives one concrete example and one common pitfall",
+      "passed": true,
+      "evidence": "Example: \"`app.3f9a.js` 这种文件名带哈希的文件...可以放心强缓存一年；`index.html`...走协商缓存\". Pitfall: \"以为看到 304 就是'没发请求'。其实 304 恰好说明浏览器问过服务器了\"."
+    },
+    {
+      "text": "Any technical term used (e.g. max-age, ETag, 304) is explained in plain words in the same reply",
+      "passed": true,
+      "evidence": "max-age and ETag are avoided. 304 is mapped in the same reply (\"店员那句'没变'就是 304\"). 哈希 in the filename is explained by its effect (\"内容一改名字就变\"). 请求 and 服务器 are left as everyday words."
+    },
+    {
+      "text": "Ends with a recall question asking the learner to explain or apply it in their own words, without answering it",
+      "passed": true,
+      "evidence": "Ends with an apply question: logo.png is strongly cached for a month and replaced under the same filename; new or old logo, and why? It asks for 1–2 sentences in their own words plus confidence, and the answer (old logo until expiry) is not given."
+    },
+    {
+      "text": "Does not insult or label the learner (no 'for dummies' tone)",
+      "passed": true,
+      "evidence": "Tone is neutral (\"好，我用大白话把这一个点再讲一遍\"), with no labeling of the learner."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "notes": "A strong Plain Talk reply, and the recall question is a new transfer case rather than a repeat. Factually accurate: a strong-cache hit sends no request; 304 means a conditional request was made; hashed filenames suit long max-age; HTML suits revalidation. A minor nuance it doesn't mention: an explicit reload can bypass strong cache, which only matters for edge answers to the logo question. Length is about 431 Han characters, reasonable for this format."
+}

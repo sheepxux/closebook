@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0",
+  "profile": "full",
+  "topic": "HTTP 缓存",
+  "language": "zh-CN",
+  "created": "2026-10-27",
+  "updated": "2026-10-28",
+  "settings": {
+    "leitner_intervals_days": [1, 3, 7, 14, 30],
+    "review_batch_size": 8,
+    "interleaving": "auto"
+  },
+  "knowledge_points": [
+    {
+      "id": "kp1",
+      "title": "强缓存与协商缓存的区别",
+      "importance": "core",
+      "knowledge_type": "conceptual",
+      "status": "active",
+      "mastery": "solid",
+      "leitner_box": 2,
+      "next_review": "2026-10-31",
+      "last_reviewed": "2026-10-28",
+      "attempts": [
+        { "id": "kp1-1", "at": "2026-10-27T20:02:00+08:00", "phase": "diagnostic", "result": "partial", "hint_level": 0, "question": "浏览器什么时候会直接用本地缓存、什么时候会去问服务器？", "question_format": "short_answer", "method": "retrieval", "interaction": "plain_qa", "source": "chat" },
+        { "id": "kp1-2", "at": "2026-10-27T20:07:00+08:00", "phase": "retest", "result": "correct", "hint_level": 0, "confidence": 2, "question": "协商缓存比强缓存多花了什么、又省了什么？", "question_format": "short_answer", "method": "retrieval", "interaction": "plain_qa", "source": "chat" },
+        { "id": "kp1-3", "at": "2026-10-27T20:31:00+08:00", "phase": "synthesis", "result": "correct", "hint_level": 0, "question": "费曼综合讲述：给外行讲清浏览器缓存", "question_format": "explain", "method": "feynman", "interaction": "free_text", "source": "chat" },
+        { "id": "kp1-4", "at": "2026-10-27T20:40:00+08:00", "phase": "plain_talk_recall", "result": "correct", "hint_level": 0, "confidence": 3, "question": "合上讲解：为什么 index.html 一般不用强缓存？", "question_format": "short_answer", "method": "retrieval", "interaction": "plain_qa", "source": "chat" },
+        { "id": "kp1-5", "at": "2026-10-28T08:15:00+08:00", "phase": "review", "result": "correct", "hint_level": 0, "confidence": 3, "question": "服务器返回 304 时，浏览器之前发了什么？", "question_format": "short_answer", "method": "interleaving", "interaction": "plain_qa", "duration_sec": 41, "source": "chat" }
+      ],
+      "errors": [],
+      "feynman": {
+        "at": "2026-10-27T20:31:00+08:00",
+        "accuracy": 2,
+        "completeness": 2,
+        "plainness": 1,
+        "jargon_masking": true,
+        "gaps": ["第一版用“验证”一词带过，追问后才说清是浏览器带着 ETag 去问服务器"],
+        "rounds": 2
+      },
+      "plain_talk_used": true,
+      "plain_talk_recall_result": "correct",
+      "methods_selected": ["retrieval", "spaced_repetition", "feynman"],
+      "interaction_selected": "plain_qa",
+      "efficiency": { "minutes_spent": 9, "minutes_is_estimate": true, "rounds_to_mastery": 1, "first_retest_correct": true }
+    },
+    {
+      "id": "kp2",
+      "title": "Cache-Control 指令与 304 状态码",
+      "importance": "important",
+      "knowledge_type": "factual",
+      "status": "active",
+      "mastery": "weak",
+      "leitner_box": 1,
+      "next_review": "2026-10-29",
+      "last_reviewed": "2026-10-28",
+      "priority_flag": true,
+      "attempts": [
+        { "id": "kp2-1", "at": "2026-10-27T20:10:00+08:00", "phase": "diagnostic", "result": "dont_know", "hint_level": 0, "question": "no-cache、no-store、max-age 各是什么意思？", "question_format": "short_answer", "method": "retrieval", "interaction": "plain_qa", "source": "chat" },
+        { "id": "kp2-2", "at": "2026-10-27T20:14:00+08:00", "phase": "retest", "result": "incorrect", "hint_level": 0, "confidence": 3, "error_type": "misconception", "question": "Cache-Control: no-cache 是“完全不缓存”吗？", "question_format": "mcq", "method": "retrieval", "interaction": "plain_qa", "source": "chat" },
+        { "id": "kp2-3", "at": "2026-10-27T20:24:00+08:00", "phase": "retest", "result": "correct", "hint_level": 0, "confidence": 2, "question": "哪个指令表示“根本不存储”？", "question_format": "cloze", "method": "chunking_mnemonics", "interaction": "plain_qa", "source": "chat" },
+        { "id": "kp2-4", "at": "2026-10-28T08:12:00+08:00", "phase": "review", "result": "incorrect", "hint_level": 0, "confidence": 3, "error_type": "misconception", "question": "响应带 no-cache，浏览器下次能不经询问直接用吗？", "question_format": "flashcard", "method": "retrieval", "interaction": "plain_qa", "duration_sec": 18, "source": "chat" }
+      ],
+      "errors": [
+        { "at": "2026-10-27T20:14:00+08:00", "question": "Cache-Control: no-cache 是“完全不缓存”吗？", "error_type": "misconception", "high_confidence": true, "remedy": "Contrast case that breaks the wrong model; ask why-not; retest in a new form.", "resolved": false },
+        { "at": "2026-10-28T08:12:00+08:00", "question": "响应带 no-cache，浏览器下次能不经询问直接用吗？", "error_type": "misconception", "high_confidence": true, "remedy": "Contrast case that breaks the wrong model; ask why-not; retest in a new form.", "resolved": false }
+      ],
+      "mnemonics": ["no-cache = 用前先问；no-store = 根本不存"],
+      "methods_selected": ["retrieval", "spaced_repetition", "error_review", "chunking_mnemonics"],
+      "methods_skipped": [{ "method": "feynman", "reason": "事实记忆型，没有“为什么”可讲" }],
+      "interaction_selected": "plain_qa",
+      "interaction_downgraded_from": { "from": "flashcard", "reason": "Level 0 平台：改为文字正面/背面两步" },
+      "efficiency": { "minutes_spent": 8, "minutes_is_estimate": true, "rounds_to_mastery": 2, "first_retest_correct": false }
+    },
+    {
+      "id": "kp3",
+      "title": "用 curl 检查缓存行为",
+      "importance": "important",
+      "knowledge_type": "procedural",
+      "status": "skipped_known",
+      "mastery": "solid",
+      "leitner_box": 2,
+      "next_review": "2026-10-30",
+      "last_reviewed": "2026-10-27",
+      "attempts": [
+        { "id": "kp3-1", "at": "2026-10-27T20:17:00+08:00", "phase": "verify_known", "result": "correct", "hint_level": 0, "confidence": 2, "question": "只看响应头、不下载正文，curl 用哪个参数？", "question_format": "apply", "method": "retrieval", "interaction": "plain_qa", "source": "chat" }
+      ],
+      "errors": [],
+      "methods_selected": ["retrieval", "spaced_repetition"],
+      "methods_skipped": [
+        { "method": "self_explanation", "reason": "用户说已掌握，一道验证题通过，跳过教学" },
+        { "method": "mini_project", "reason": "30 分钟会话，时间不足" }
+      ],
+      "interaction_selected": "plain_qa"
+    },
+    {
+      "id": "kp4",
+      "title": "按资源类型选择缓存策略",
+      "importance": "core",
+      "knowledge_type": "judgment",
+      "secondary_types": ["conceptual"],
+      "status": "active",
+      "mastery": "solid",
+      "leitner_box": 2,
+      "next_review": "2026-10-31",
+      "last_reviewed": "2026-10-28",
+      "attempts": [
+        { "id": "kp4-1", "at": "2026-10-27T20:19:00+08:00", "phase": "diagnostic", "result": "partial", "hint_level": 0, "question": "index.html 和 app.3f9a.js 应该用同样的缓存策略吗？", "question_format": "short_answer", "method": "elaborative_interrogation", "interaction": "free_text", "source": "chat" },
+        { "id": "kp4-2", "at": "2026-10-27T20:25:00+08:00", "phase": "retest", "result": "partial", "hint_level": 1, "confidence": 2, "error_type": "transfer_failure", "question": "接口返回的用户数据：CDN 缓存 60 秒、浏览器不缓存，怎么写？", "question_format": "apply", "method": "elaborative_interrogation", "interaction": "free_text", "source": "chat" },
+        { "id": "kp4-3", "at": "2026-10-27T20:31:00+08:00", "phase": "synthesis", "result": "correct", "hint_level": 0, "question": "费曼综合讲述：给外行讲清浏览器缓存", "question_format": "explain", "method": "feynman", "interaction": "free_text", "source": "chat" },
+        { "id": "kp4-4", "at": "2026-10-28T08:18:00+08:00", "phase": "review", "result": "correct", "hint_level": 0, "confidence": 2, "question": "你的 HTML 改了，用户还看到旧页面，最可能是哪个响应头导致的？", "question_format": "mcq", "method": "interleaving", "interaction": "mcq", "duration_sec": 35, "source": "chat" }
+      ],
+      "errors": [
+        { "at": "2026-10-27T20:25:00+08:00", "question": "接口返回的用户数据：CDN 缓存 60 秒、浏览器不缓存，怎么写？", "error_type": "transfer_failure", "high_confidence": false, "remedy": "New-context variant; explain why the rule applies there.", "resolved": true }
+      ],
+      "feynman": {
+        "at": "2026-10-27T20:31:00+08:00",
+        "accuracy": 2,
+        "completeness": 1,
+        "plainness": 2,
+        "jargon_masking": false,
+        "gaps": ["没说明 HTML 是“告诉浏览器去拿哪个新文件名”的入口"],
+        "rounds": 1
+      },
+      "methods_selected": ["retrieval", "spaced_repetition", "error_review", "elaborative_interrogation", "feynman"],
+      "interaction_selected": "free_text",
+      "interaction_override_by_user": {
+        "requested": "mcq",
+        "recommended": "free_text",
+        "risk_note": "选择题会把取舍压成一个“标准答案”；用户坚持用于复习中的单个诊断性问题",
+        "at": "2026-10-28T08:17:00+08:00"
+      },
+      "efficiency": { "minutes_spent": 10, "minutes_is_estimate": true, "rounds_to_mastery": 2, "first_retest_correct": false }
+    },
+    {
+      "id": "kp5",
+      "title": "CDN 缓存键与 Vary 头",
+      "importance": "minor",
+      "knowledge_type": "conceptual",
+      "status": "optional_extension",
+      "mastery": "not_assessed",
+      "leitner_box": 0,
+      "next_review": null,
+      "attempts": [],
+      "methods_skipped": [{ "method": "feynman", "reason": "按二八原则裁剪为可选扩展" }]
+    }
+  ],
+  "weak_points": [
+    { "kp_id": "kp2", "note": "把 no-cache 当成“不存储”（与 no-store 混淆），两次都是高信心答错" }
+  ],
+  "sessions": [
+    {
+      "date": "2026-10-27",
+      "mode": "coding",
+      "entry_path": "A",
+      "minutes_planned": 30,
+      "minutes_actual": 40,
+      "platform_level": 0,
+      "kp_ids": ["kp1", "kp2", "kp3", "kp4"],
+      "plain_talk_mode": "after",
+      "notes": "用户要求 30 分钟；kp5 裁剪为可选扩展。"
+    },
+    {
+      "date": "2026-10-28",
+      "mode": "review",
+      "minutes_planned": 10,
+      "minutes_actual": 8,
+      "platform_level": 0,
+      "kp_ids": ["kp2", "kp1", "kp4"],
+      "notes": "交错复习；校准：信心 3 时 2/4 正确，偏自信，集中在 no-cache。"
+    }
+  ],
+  "user_overrides": [
+    {
+      "at": "2026-10-28T08:17:00+08:00",
+      "scope": "interaction",
+      "kp_id": "kp4",
+      "requested": "mcq",
+      "recommended": "free_text",
+      "risk_note": "判断决策型用选择题会压扁取舍"
+    }
+  ]
+}

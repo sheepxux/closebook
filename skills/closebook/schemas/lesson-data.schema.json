@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:closebook:lesson-data:1.0",
+  "title": "closebook lesson data",
+  "description": "Content for assets/lesson-template.html. The model writes only this JSON; the page's logic never changes. Build with scripts/build_lesson.py, which also checks the per-type rules that JSON Schema can't express here.",
+  "type": "object",
+  "required": ["schema_version", "lesson_id", "topic", "language", "knowledge_points"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+$" },
+    "lesson_id": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,80}$", "description": "Stable id; used in attempt ids and browser storage." },
+    "topic": { "type": "string", "minLength": 1 },
+    "language": { "type": "string", "description": "BCP 47 tag. zh* shows a Chinese interface, anything else English." },
+    "created": { "$ref": "progress.schema.json#/$defs/date" },
+    "mode": { "type": "string", "enum": ["learn", "review"], "description": "learn = explanation blocks before questions (path B); review = questions first, explanation only afterwards." },
+    "intro": { "type": "string" },
+    "knowledge_points": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/knowledge_point" }
+    },
+    "free_recall": { "$ref": "#/$defs/free_recall" },
+    "plain_talk": { "$ref": "#/$defs/plain_talk" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,40}$" },
+    "knowledge_point": {
+      "type": "object",
+      "required": ["id", "title", "importance", "knowledge_type", "interaction_type", "interaction_reason", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "importance": { "$ref": "progress.schema.json#/$defs/importance" },
+        "knowledge_type": { "$ref": "progress.schema.json#/$defs/knowledge_type" },
+        "secondary_types": { "type": "array", "items": { "$ref": "progress.schema.json#/$defs/knowledge_type" } },
+        "method": { "$ref": "progress.schema.json#/$defs/method" },
+        "interaction_type": {
+          "type": "string",
+          "enum": ["mcq", "flashcard", "free_text", "diagram_fill", "simulation", "timeline_fill", "compare_table_fill", "plain_qa"],
+          "description": "Unknown values are shown as plain_qa by the page."
+        },
+        "interaction_reason": { "type": "string", "minLength": 1, "description": "One sentence: what this form saves or improves compared with plain Q&A." },
+        "teach": { "$ref": "#/$defs/teach" },
+        "items": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/item" } }
+      }
+    },
+    "teach": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Minimal teaching block (about 150 words): one example + one sentence of principle, optionally split into steps shown one at a time.",
+      "properties": {
+        "steps": { "type": "array", "items": { "type": "string" } },
+        "example": { "type": "string" },
+        "principle": { "type": "string" }
+      }
+    },
+    "cell": {
+      "type": "object",
+      "required": ["text"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string", "description": "Shown as-is, or the expected answer when blank is true." },
+        "blank": { "type": "boolean" },
+        "accept": { "type": "array", "items": { "type": "string" }, "description": "Accepted answers for automatic matching; defaults to [text]." }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "description": "Fields used depend on the point's interaction_type; build_lesson.py checks them.",
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "question": { "type": "string" },
+        "prompt": { "type": "string" },
+        "code": { "type": "string", "description": "Optional code shown in a block under the question." },
+        "hint": { "type": "string", "description": "Level-1 hint. Using it records hint_level 1." },
+        "question_format": {
+          "type": "string",
+          "enum": ["free_recall", "cloze", "short_answer", "mcq", "flashcard", "explain", "explain_steps", "why", "predict", "produce", "apply", "compare", "project", "other"]
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": ["text", "correct", "explanation"],
+            "additionalProperties": false,
+            "properties": {
+              "text": { "type": "string" },
+              "correct": { "type": "boolean" },
+              "explanation": { "type": "string", "description": "Why it's right, or which misconception it represents." }
+            }
+          }
+        },
+        "front": { "type": "string" },
+        "back": { "type": "string" },
+        "answer": { "type": "string" },
+        "accept": { "type": "array", "items": { "type": "string" } },
+        "case_sensitive": { "type": "boolean" },
+        "explanation": { "type": "string" },
+        "format_hint": { "type": "string" },
+        "reference_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text"],
+            "additionalProperties": false,
+            "properties": {
+              "text": { "type": "string" },
+              "required": { "type": "boolean" }
+            }
+          }
+        },
+        "columns": { "type": "array", "items": { "type": "string" } },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label", "cells"],
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string" },
+              "cells": { "type": "array", "items": { "$ref": "#/$defs/cell" } }
+            }
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["when", "what"],
+            "additionalProperties": false,
+            "properties": {
+              "when": { "type": "string" },
+              "what": { "type": "string" },
+              "blank": { "type": "string", "enum": ["when", "what"] },
+              "accept": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "label"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "label": { "type": "string" },
+              "blank": { "type": "boolean" },
+              "accept": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to"],
+            "additionalProperties": false,
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "label": { "type": "string" }
+            }
+          }
+        },
+        "fallback": {
+          "type": "object",
+          "required": ["question", "answer"],
+          "additionalProperties": false,
+          "description": "Plain question shown when the page can't render this item (always required for simulation).",
+          "properties": {
+            "question": { "type": "string" },
+            "code": { "type": "string" },
+            "answer": { "type": "string" },
+            "accept": { "type": "array", "items": { "type": "string" } },
+            "explanation": { "type": "string" }
+          }
+        }
+      }
+    },
+    "free_recall": {
+      "type": "object",
+      "required": ["prompt", "reference_points"],
+      "additionalProperties": false,
+      "properties": {
+        "prompt": { "type": "string" },
+        "reference_points": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["text", "kp_id"],
+            "additionalProperties": false,
+            "properties": {
+              "text": { "type": "string" },
+              "kp_id": { "type": "string" },
+              "required": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "plain_talk": {
+      "type": "object",
+      "required": ["points", "summary", "recall"],
+      "additionalProperties": false,
+      "properties": {
+        "points": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["kp_id", "conclusion", "example", "pitfall"],
+            "additionalProperties": false,
+            "properties": {
+              "kp_id": { "type": "string" },
+              "conclusion": { "type": "string" },
+              "analogy": { "type": "string" },
+              "analogy_limit": { "type": "string" },
+              "no_analogy_reason": { "type": "string", "description": "For precise definitions, formulas, legal text: why there's no analogy." },
+              "example": { "type": "string" },
+              "pitfall": { "type": "string" }
+            }
+          }
+        },
+        "summary": { "type": "string", "description": "At most 5 sentences." },
+        "recall": {
+          "type": "object",
+          "required": ["kp_id", "prompt"],
+          "additionalProperties": false,
+          "properties": {
+            "kp_id": { "type": "string" },
+            "prompt": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "eval_id": 1,
+  "expectations": [
+    {
+      "text": "Splits the material into 3-5 knowledge points, each labelled with importance (core/important/minor or 核心/重要/次要) and a knowledge type",
+      "passed": true,
+      "evidence": "Five points, each tagged, e.g. '[核心 · 概念理解型] TCP 三次握手', '[重要 · 事实记忆型] 四次挥手与 TIME_WAIT', '[核心 · 程序技能型，辅以概念] 拥塞窗口变化', '[核心 · 概念理解型，辅以事实] 强缓存 vs 协商缓存', '[重要 · 事实记忆型] no-cache vs no-store'."
+    },
+    {
+      "text": "Labels the congestion-window calculation topic as procedural (程序技能) or equivalent, not factual",
+      "passed": true,
+      "evidence": "'3. [核心 · 程序技能型，辅以概念] 拥塞窗口变化 ... 计算题那 30% 基本都在这里。'"
+    },
+    {
+      "text": "Asks about familiarity (e.g. new / seen but shaky / fairly familiar) and does not re-ask for the time budget, which was already given",
+      "passed": true,
+      "evidence": "'a) 熟悉程度：完全没学过 / 看过但不牢 / 比较熟？' The time budget is only acknowledged ('每天 30 分钟') and never asked again."
+    },
+    {
+      "text": "Mentions the exam date and that reviews will be scheduled before 2026-11-06 (no review dated on or after the exam day)",
+      "passed": true,
+      "evidence": "'今天到 11-06 之前还有 6 天（10-31 至 11-05）'. The schedule runs 10-31, 11-01, 11-02, 11-03 – 11-04, and ends at '11-05（考前一天）'. Nothing is dated 11-06 or later."
+    },
+    {
+      "text": "Does not summarize or re-explain the notes; at most one diagnostic question is asked and its answer is not revealed",
+      "passed": true,
+      "evidence": "The outline lines describe what each point will test ('谁进入 TIME_WAIT，要等多久', '什么时候根本不发请求，什么时候返回 304') without answering, and no diagnostic question is asked yet. Borderline: the textbook-variant aside states one note fact outright ('笔记里快速恢复写的是 cwnd = ssthresh'). Under the natural reading this is a one-line clarification, not a summary or re-explanation, so it passes, but it leaks one calculation rule."
+    },
+    {
+      "text": "Writes in Chinese",
+      "passed": true,
+      "evidence": "The whole reply is in Chinese."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "notes": "Strong exam-prep opening in one message. It uses the exam format from the notes (选择 30% / 简答 40% / 计算 30%), gives a per-day plan that ends the day before the exam, offers a sensible default ('直接回\"开始\"…按\"看过但不牢\"'), and correctly says chat-only means no reminders and no memory across chats, so a progress JSON will be handed over. Factual check: the 6-day count (10-31 to 11-05) is correct. The cwnd = ssthresh + 3 MSS variant is accurate; it is the classic Reno/RFC 5681 window inflation during fast recovery. Minor issues: the fast-recovery aside reveals a testable rule before any testing. Labelling 四次挥手与 TIME_WAIT as purely factual is defensible but debatable, since why the active closer waits 2MSL is conceptual. The claim '学完第二天的复习效果最好' is stated more firmly than the evidence supports. The reply is fairly long for an opener (~600 characters of schedule), but nothing in it is wrong."
+}

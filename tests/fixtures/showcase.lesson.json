@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "showcase-components",
+  "topic": "Component showcase",
+  "language": "en",
+  "mode": "review",
+  "intro": "Test fixture covering the remaining interaction types (timeline, simulation fallback, contested free text, flashcard).",
+  "knowledge_points": [
+    {
+      "id": "kp1",
+      "title": "HTTP caching headers over time",
+      "importance": "minor",
+      "knowledge_type": "factual",
+      "interaction_type": "timeline_fill",
+      "interaction_reason": "An order of events: filling the gaps first tests the sequence, not just recognition.",
+      "items": [
+        {
+          "id": "tl",
+          "prompt": "Fill in the missing years.",
+          "events": [
+            { "when": "1996", "what": "HTTP/1.0 (RFC 1945) caches with Expires", "blank": "when", "accept": ["1996"] },
+            { "when": "1999", "what": "HTTP/1.1 (RFC 2616) adds Cache-Control" },
+            { "when": "2017", "what": "RFC 8246 adds the immutable directive", "blank": "when", "accept": ["2017"] },
+            { "when": "2022", "what": "RFC 9111 becomes the HTTP caching standard" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kp2",
+      "title": "Cache hit ratio",
+      "importance": "important",
+      "knowledge_type": "procedural",
+      "interaction_type": "simulation",
+      "interaction_reason": "Tweaking max-age shows the pattern, but this page has no simulation, so it falls back to text.",
+      "items": [
+        {
+          "id": "sim",
+          "fallback": {
+            "question": "100 requests per minute, max-age=60, one origin fetch per expiry. How many origin requests per minute?",
+            "answer": "1",
+            "accept": ["1", "one"],
+            "explanation": "One fetch refreshes the cache for the whole 60 seconds."
+          }
+        }
+      ]
+    },
+    {
+      "id": "kp3",
+      "title": "Should CDNs cache personalised pages?",
+      "importance": "minor",
+      "knowledge_type": "contested",
+      "interaction_type": "free_text",
+      "interaction_reason": "There's no single right answer; you need room to argue a position.",
+      "items": [
+        {
+          "id": "arg",
+          "prompt": "Take a position and give your strongest reason and the strongest counter-argument.",
+          "reference_points": [
+            { "text": "States a clear position", "required": true },
+            { "text": "Gives a reason that supports it", "required": true },
+            { "text": "Acknowledges a counter-argument (privacy leaks vs. latency)", "required": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kp4",
+      "title": "Status codes",
+      "importance": "important",
+      "knowledge_type": "factual",
+      "interaction_type": "flashcard",
+      "interaction_reason": "Single facts: recall, then flip.",
+      "items": [
+        { "id": "f1", "front": "Status code for 'Not Modified'?", "back": "304" }
+      ]
+    }
+  ]
+}

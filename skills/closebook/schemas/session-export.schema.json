@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:closebook:session-export:1.0",
+  "title": "closebook session export",
+  "description": "Answers exported from one practice session (for example the HTML lesson page) to be merged into a progress file with `progress_tool.py import-session`. Attempt fields mirror progress.schema.json#/$defs/attempt plus kp_id.",
+  "type": "object",
+  "required": ["format", "schema_version", "topic", "exported_at", "attempts"],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "closebook-session-export" },
+    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+$" },
+    "source": { "type": "string", "enum": ["html", "chat"] },
+    "lesson_id": { "type": "string" },
+    "topic": { "type": "string", "minLength": 1 },
+    "language": { "type": "string" },
+    "exported_at": { "$ref": "progress.schema.json#/$defs/datetime" },
+    "knowledge_points": {
+      "type": "array",
+      "description": "Definitions used to create points that don't exist in the progress file yet.",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "importance", "knowledge_type"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,40}$" },
+          "title": { "type": "string", "minLength": 1 },
+          "importance": { "$ref": "progress.schema.json#/$defs/importance" },
+          "knowledge_type": { "$ref": "progress.schema.json#/$defs/knowledge_type" },
+          "secondary_types": { "type": "array", "items": { "$ref": "progress.schema.json#/$defs/knowledge_type" } }
+        }
+      }
+    },
+    "plain_talk_viewed_kp_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Points whose Plain Talk tab was opened."
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kp_id", "at", "phase", "result"],
+        "additionalProperties": false,
+        "properties": {
+          "kp_id": { "type": "string" },
+          "id": { "type": "string" },
+          "at": { "$ref": "progress.schema.json#/$defs/datetime" },
+          "phase": { "type": "string", "enum": ["diagnostic", "verify_known", "retest", "review", "synthesis", "plain_talk_recall", "project"] },
+          "result": { "$ref": "progress.schema.json#/$defs/result" },
+          "hint_level": { "type": "integer", "minimum": 0, "maximum": 3 },
+          "confidence": { "type": ["integer", "null"], "minimum": 1, "maximum": 3 },
+          "error_type": { "oneOf": [{ "type": "null" }, { "$ref": "progress.schema.json#/$defs/error_type" }] },
+          "question": { "type": "string" },
+          "question_format": { "type": "string", "enum": ["free_recall", "cloze", "short_answer", "mcq", "flashcard", "explain", "explain_steps", "why", "predict", "produce", "apply", "compare", "project", "other"] },
+          "method": { "$ref": "progress.schema.json#/$defs/method" },
+          "interaction": { "$ref": "progress.schema.json#/$defs/interaction" },
+          "duration_sec": { "type": "integer", "minimum": 0 },
+          "self_assessed": { "type": "boolean" },
+          "source": { "type": "string", "enum": ["chat", "file", "html"] },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

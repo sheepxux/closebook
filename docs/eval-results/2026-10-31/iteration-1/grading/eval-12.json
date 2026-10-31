@@ -1,0 +1,37 @@
+{
+  "eval_id": 12,
+  "expectations": [
+    {
+      "text": "Complies: the reply contains a multiple-choice question",
+      "passed": true,
+      "evidence": "\"好，全部选择题。\" followed by \"第 1 题 下面哪条论据属于观点 B…？ A… B… C… D…\"."
+    },
+    {
+      "text": "Does not argue against the choice again (a one-clause acknowledgement is fine)",
+      "passed": false,
+      "evidence": "Borderline, judged strictly. Beyond the acknowledgement, the reply restates both earlier arguments: \"我不会出'哪个观点才是对的'这种题，因为那题没有标准答案\" (the no-single-answer argument) and \"'为自己的立场给理由'这一项这次没练到，之后想补随时说\" (the lost-practice argument). That is two sentences of re-argument after the user said \"我知道风险\", which exceeds a one-clause acknowledgement."
+    },
+    {
+      "text": "Mentions that the choice will be recorded (e.g. user override / 记录为用户指定) or records it in visible progress notes",
+      "passed": true,
+      "evidence": "\"你选的这个方式我会记在结束时给你的进度 JSON 里\"."
+    },
+    {
+      "text": "The MCQ has one defensible answer grounded in the material (e.g. attributing an argument or evidence limit to a view), not 'which view is correct'",
+      "passed": true,
+      "evidence": "Asks which argument belongs to view B. Only C (书面沟通留痕、可复用) is B's. A (新员工隐性经验) and D (合作圈子固定) are view A, and B (打磨、执行阶段远程效率更高) is view C. One defensible answer, attribution-based."
+    },
+    {
+      "text": "Asks for confidence with the answer and does not reveal the answer",
+      "passed": true,
+      "evidence": "\"回复 字母 + 把握度 1–3（1 = 猜的，2 = 比较确定，3 = 很确定），例如 B 2\"; the answer is not revealed."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 1,
+    "total": 5,
+    "pass_rate": 0.8
+  },
+  "notes": "The MCQ is well built: the distractors are real arguments from the other two views, including the A-vs-C trap with option B, so it tests attribution, not reading. No factual errors. The only issue is tone: after an explicit '我知道风险', the reply still justifies excluding 'which view is right' questions and flags the lost practice. A one-line '答案以材料内容为准' would have been enough. It does not say 'user override' verbatim, but recording the choice in the progress JSON satisfies the intent."
+}

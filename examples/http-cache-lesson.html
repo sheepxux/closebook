@@ -1,0 +1,1531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>closebook</title>
+<!--
+  closebook lesson page. Self-contained: no external resources.
+  Only the JSON inside <script id="lesson-data"> changes between lessons
+  (see schemas/lesson-data.schema.json and scripts/build_lesson.py).
+  Escape "</" as "<\/" inside that JSON.
+-->
+<style>
+:root {
+  --bg: #f7f7f5; --surface: #ffffff; --surface-2: #f0f0ed; --text: #191919; --muted: #595959;
+  --border: #d4d4cf; --accent: #0a62b8; --accent-text: #ffffff; --brand: #bdeefc;
+  --ok: #17692f; --ok-bg: #e5f4ea; --mid: #7a4f00; --mid-bg: #fdf1d6; --bad: #a3221a; --bad-bg: #fce9e7;
+  --focus: #0a62b8; --radius: 10px;
+  font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  line-height: 1.55; color: var(--text); background: var(--bg);
+}
+:root[data-theme="dark"] {
+  --bg: #121212; --surface: #1c1c1c; --surface-2: #262626; --text: #ececec; --muted: #b0b0b0;
+  --border: #3a3a3a; --accent: #7cc0ff; --accent-text: #0b1520; --brand: #1d4f5c;
+  --ok: #7ad69a; --ok-bg: #16301f; --mid: #f0c36a; --mid-bg: #33280f; --bad: #ff9c92; --bad-bg: #3a1714; --focus: #7cc0ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121212; --surface: #1c1c1c; --surface-2: #262626; --text: #ececec; --muted: #b0b0b0;
+    --border: #3a3a3a; --accent: #7cc0ff; --accent-text: #0b1520; --brand: #1d4f5c;
+    --ok: #7ad69a; --ok-bg: #16301f; --mid: #f0c36a; --mid-bg: #33280f; --bad: #ff9c92; --bad-bg: #3a1714; --focus: #7cc0ff;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); }
+.wrap { max-width: 780px; margin: 0 auto; padding: 16px 16px 64px; }
+header.top { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+.brand { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+h1 { font-size: 1.45rem; margin: 2px 0 4px; line-height: 1.25; }
+h2 { font-size: 1.15rem; margin: 0 0 6px; }
+h3 { font-size: 1rem; margin: 0 0 6px; }
+p { margin: 6px 0; }
+.muted { color: var(--muted); }
+.small { font-size: .88rem; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--surface-2); padding: 10px 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; }
+pre code { background: none; padding: 0; }
+.progress { margin: 12px 0 4px; }
+.bar { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; border: 1px solid var(--border); }
+.bar > span { display: block; height: 100%; background: var(--accent); width: 0; transition: width .3s ease; }
+@media (prefers-reduced-motion: reduce) { .bar > span { transition: none; } }
+[role="tablist"] { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--border); margin: 14px 0 16px; }
+[role="tab"] { appearance: none; background: none; border: 0; border-bottom: 3px solid transparent; padding: 8px 12px; font: inherit; color: var(--muted); cursor: pointer; }
+[role="tab"][aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin: 12px 0; }
+.card.open { border-color: var(--accent); }
+.badges { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 8px; }
+.badge { font-size: .78rem; border: 1px solid var(--border); border-radius: 99px; padding: 1px 8px; color: var(--muted); }
+.badge.hot { border-color: var(--bad); color: var(--bad); }
+.stepper { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 8px; padding: 0; list-style: none; }
+.stepper button { font: inherit; font-size: .88rem; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 99px; padding: 4px 10px; cursor: pointer; }
+.stepper button[aria-current="step"] { border-color: var(--accent); background: var(--brand); }
+button.btn, a.btn, label.btn { font: inherit; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-text); cursor: pointer; text-decoration: none; }
+button.btn.secondary, label.btn.secondary { background: var(--surface); color: var(--accent); }
+button.btn.quiet { background: none; border-color: var(--border); color: var(--text); }
+button.btn:disabled { opacity: .45; cursor: not-allowed; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+fieldset { border: 0; padding: 0; margin: 8px 0; min-width: 0; }
+legend { font-weight: 600; padding: 0; margin-bottom: 6px; }
+.option { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin: 6px 0; cursor: pointer; background: var(--surface); }
+.option input { margin-top: 4px; }
+.option.right { border-color: var(--ok); background: var(--ok-bg); }
+.option.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.option .why { display: block; font-size: .9rem; color: var(--muted); margin-top: 2px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; cursor: pointer; background: var(--surface); min-height: 36px; font: inherit; color: var(--text); }
+.chip input { margin: 0; }
+.chip[aria-pressed="true"], .chip:has(input:checked) { border-color: var(--accent); background: var(--brand); }
+textarea, input[type="text"] { font: inherit; width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+textarea { min-height: 96px; resize: vertical; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.result { border-radius: 8px; padding: 8px 12px; margin: 10px 0; }
+.result.correct, .result.coherent { background: var(--ok-bg); color: var(--ok); }
+.result.partial, .result.partly_coherent { background: var(--mid-bg); color: var(--mid); }
+.result.incorrect, .result.dont_know, .result.incoherent { background: var(--bad-bg); color: var(--bad); }
+.result strong { display: block; }
+.result p { color: var(--text); }
+.notice { border-left: 4px solid var(--mid); background: var(--mid-bg); padding: 8px 12px; border-radius: 6px; margin: 8px 0; }
+.teach { border-left: 4px solid var(--accent); padding-left: 12px; margin: 8px 0; }
+.checklist label { display: flex; gap: 8px; align-items: flex-start; padding: 4px 0; }
+.checklist input { margin-top: 5px; }
+table.fill { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: .95rem; }
+table.fill th, table.fill td { border: 1px solid var(--border); padding: 6px 8px; text-align: left; vertical-align: top; }
+table.fill th { background: var(--surface-2); }
+table.fill input[type="text"] { padding: 4px 6px; }
+.cell-ok { background: var(--ok-bg); }
+.cell-bad { background: var(--bad-bg); }
+.expected { display: block; font-size: .85rem; color: var(--muted); }
+.flow { display: flex; flex-direction: column; align-items: stretch; gap: 0; margin: 8px 0; }
+.node { border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; background: var(--surface); }
+.arrow { text-align: center; color: var(--muted); padding: 2px 0; font-size: .9rem; }
+.flashcard { border: 2px dashed var(--border); border-radius: 12px; padding: 18px; text-align: center; font-size: 1.1rem; background: var(--surface-2); }
+.flashcard.back { border-style: solid; border-color: var(--accent); }
+.group h3 { margin-top: 14px; }
+.mistake { border-top: 1px solid var(--border); padding: 8px 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+select { font: inherit; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+footer { margin-top: 32px; font-size: .82rem; color: var(--muted); }
+@media (max-width: 520px) { .wrap { padding: 12px 12px 48px; } h1 { font-size: 1.25rem; } [role="tab"] { padding: 8px 8px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="brand">closebook</p>
+      <h1 id="title">closebook</h1>
+      <p id="intro" class="muted small"></p>
+    </div>
+    <label class="small"><span id="theme-label">Theme</span>
+      <select id="theme"></select>
+    </label>
+  </header>
+  <div class="progress" id="progress"></div>
+  <nav id="tabs" role="tablist"></nav>
+  <main id="panel" role="tabpanel" tabindex="-1"></main>
+  <p id="live" class="sr-only" aria-live="polite"></p>
+  <footer id="footer"></footer>
+</div>
+
+<script type="application/json" id="lesson-data">
+{
+  "schema_version": "1.0",
+  "lesson_id": "http-cache-2026-10-31",
+  "topic": "HTTP 缓存",
+  "language": "zh-CN",
+  "created": "2026-10-31",
+  "mode": "learn",
+  "intro": "复习 4 个已学知识点 + 学 1 个新知识点。全部凭记忆作答；新知识点先看一段最小讲解。",
+  "knowledge_points": [
+    {
+      "id": "kp1",
+      "title": "强缓存与协商缓存的区别",
+      "importance": "core",
+      "knowledge_type": "conceptual",
+      "method": "predict_verify",
+      "interaction_type": "diagram_fill",
+      "interaction_reason": "这是一个有先后顺序的流程，先自己补出缺的两步再看完整流程，比读一段文字更能暴露漏洞。",
+      "items": [
+        {
+          "id": "flow",
+          "prompt": "浏览器要再次使用一个缓存过的文件。补出流程中缺失的两步。",
+          "nodes": [
+            {
+              "id": "n1",
+              "label": "浏览器准备使用本地缓存的 index.html"
+            },
+            {
+              "id": "n2",
+              "label": "检查 max-age：已经过期"
+            },
+            {
+              "id": "n3",
+              "label": "带上 ETag 向服务器询问（If-None-Match）",
+              "blank": true,
+              "accept": [
+                "带上etag询问服务器",
+                "发送 if-none-match",
+                "带 etag 发请求",
+                "if-none-match"
+              ]
+            },
+            {
+              "id": "n4",
+              "label": "服务器比对 ETag：文件没变"
+            },
+            {
+              "id": "n5",
+              "label": "返回 304，不带正文",
+              "blank": true,
+              "accept": [
+                "304",
+                "返回304",
+                "304 not modified"
+              ]
+            },
+            {
+              "id": "n6",
+              "label": "浏览器继续使用本地副本"
+            }
+          ],
+          "edges": [
+            {
+              "from": "n2",
+              "to": "n3",
+              "label": "过期才问"
+            },
+            {
+              "from": "n1",
+              "to": "n6",
+              "label": "若没过期：直接用（强缓存）"
+            }
+          ],
+          "explanation": "没过期时直接用本地副本，一个请求都不发（强缓存）；过期后带着版本号去问（协商缓存），没变就只回 304。"
+        }
+      ]
+    },
+    {
+      "id": "kp2",
+      "title": "Cache-Control 指令与 304 状态码",
+      "importance": "important",
+      "knowledge_type": "factual",
+      "method": "retrieval",
+      "interaction_type": "mcq",
+      "interaction_reason": "no-cache 和 no-store 是你之前高信心混淆过的一对，选择题能直接检验能否把它们分开。",
+      "items": [
+        {
+          "id": "q1",
+          "question": "关于 `Cache-Control: no-cache`，哪种说法正确？",
+          "options": [
+            {
+              "text": "浏览器不能存储这个响应。",
+              "correct": false,
+              "explanation": "这是 `no-store` 的意思，也是最常见的混淆。"
+            },
+            {
+              "text": "浏览器可以存储，但每次使用前必须先向服务器确认。",
+              "correct": true,
+              "explanation": "正确：no-cache = 不能“直接”用缓存，要先协商。"
+            },
+            {
+              "text": "浏览器在过期前可以不经询问直接使用。",
+              "correct": false,
+              "explanation": "这是 `max-age` 下新鲜响应的行为，把强缓存套到了错误的指令上。"
+            },
+            {
+              "text": "只对 CDN 生效，浏览器会忽略它。",
+              "correct": false,
+              "explanation": "只针对共享缓存的是 `s-maxage`，不是 no-cache。"
+            }
+          ]
+        },
+        {
+          "id": "q2",
+          "question": "一个带哈希文件名的 `app.3f9a.js`，最合适的响应头是？",
+          "options": [
+            {
+              "text": "`Cache-Control: no-store`",
+              "correct": false,
+              "explanation": "完全不存会让每次访问都重新下载，浪费了“文件名随内容变”这个优势。"
+            },
+            {
+              "text": "`Cache-Control: no-cache`",
+              "correct": false,
+              "explanation": "每次都要询问服务器，对内容永不变化的文件是多余的往返。"
+            },
+            {
+              "text": "`Cache-Control: max-age=31536000, immutable`",
+              "correct": true,
+              "explanation": "正确：内容变了文件名就变，旧文件可以放心缓存一年且无需重新验证。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kp3",
+      "title": "用 curl 检查缓存行为",
+      "importance": "important",
+      "knowledge_type": "procedural",
+      "method": "retrieval",
+      "interaction_type": "plain_qa",
+      "interaction_reason": "答案是一个参数或一个状态码，一行文字就能完成，不需要更复杂的组件。",
+      "items": [
+        {
+          "id": "c1",
+          "question": "只看响应头、不下载正文，`curl` 要加哪个参数？",
+          "answer": "`-I`（或 `--head`）",
+          "accept": [
+            "-I",
+            "--head",
+            "curl -I"
+          ],
+          "case_sensitive": true,
+          "hint": "这个参数对应 HTTP 的 HEAD 方法。",
+          "question_format": "cloze"
+        },
+        {
+          "id": "c2",
+          "question": "执行下面的命令时，服务器上的 index.html 自上次以来没有变化。状态码是多少？",
+          "code": "curl -I -H 'If-None-Match: \"abc123\"' https://example.com/index.html",
+          "answer": "304",
+          "accept": [
+            "304",
+            "304 not modified"
+          ],
+          "explanation": "ETag 匹配说明没变，服务器只回 304 Not Modified，不带正文。",
+          "question_format": "predict"
+        }
+      ]
+    },
+    {
+      "id": "kp4",
+      "title": "按资源类型选择缓存策略",
+      "importance": "core",
+      "knowledge_type": "judgment",
+      "secondary_types": [
+        "conceptual"
+      ],
+      "method": "elaborative_interrogation",
+      "interaction_type": "compare_table_fill",
+      "interaction_reason": "三种资源放在一张表里对比，先填再核对，能看出你是否真的按“内容会不会变”来做取舍。",
+      "items": [
+        {
+          "id": "t1",
+          "prompt": "为三类资源填出合适的 Cache-Control，并想一想理由。",
+          "columns": [
+            "资源",
+            "Cache-Control",
+            "理由"
+          ],
+          "rows": [
+            {
+              "label": "index.html",
+              "cells": [
+                {
+                  "text": "no-cache",
+                  "blank": true,
+                  "accept": [
+                    "no-cache",
+                    "max-age=0, must-revalidate"
+                  ]
+                },
+                {
+                  "text": "入口文件，地址不变，必须每次确认是否有新版本"
+                }
+              ]
+            },
+            {
+              "label": "app.3f9a.js",
+              "cells": [
+                {
+                  "text": "max-age=31536000, immutable",
+                  "blank": true,
+                  "accept": [
+                    "max-age=31536000, immutable",
+                    "max-age=31536000,immutable",
+                    "public, max-age=31536000, immutable"
+                  ]
+                },
+                {
+                  "text": "文件名随内容变化，旧文件永远不会被错误复用"
+                }
+              ]
+            },
+            {
+              "label": "/api/me（个人数据）",
+              "cells": [
+                {
+                  "text": "private, no-store",
+                  "blank": true,
+                  "accept": [
+                    "private, no-store",
+                    "no-store",
+                    "no-store, private"
+                  ]
+                },
+                {
+                  "text": "含个人信息，不应被任何缓存保存"
+                }
+              ]
+            }
+          ],
+          "explanation": "判断依据始终是两个问题：内容会不会变、能不能被别人看到。"
+        }
+      ]
+    },
+    {
+      "id": "kp6",
+      "title": "ETag 与 Last-Modified 的取舍",
+      "importance": "important",
+      "knowledge_type": "judgment",
+      "secondary_types": [
+        "conceptual"
+      ],
+      "method": "elaborative_interrogation",
+      "interaction_type": "free_text",
+      "interaction_reason": "这是一个“什么时候用哪个”的取舍题，需要你写出理由，选择题会把取舍压成一个标准答案。",
+      "teach": {
+        "example": "一个文件每秒被构建脚本重写一次，但内容一模一样。用 Last-Modified 时，修改时间变了，浏览器就会重新下载；用 ETag（按内容算的指纹）时，指纹没变，服务器可以回 304。",
+        "principle": "Last-Modified 只记“什么时候改过”，精度到秒；ETag 记“内容是什么”，所以内容没变但时间变了、或一秒内改了多次时，ETag 更准确。"
+      },
+      "items": [
+        {
+          "id": "w1",
+          "prompt": "什么情况下 Last-Modified 不够用、应该用 ETag？至少写出两种情况，并说明原因。",
+          "format_hint": "2–4 句话即可。",
+          "reference_points": [
+            {
+              "text": "文件内容没变但修改时间变了（如重新构建、重新部署）",
+              "required": true
+            },
+            {
+              "text": "一秒内多次修改：Last-Modified 精度只到秒，区分不出来",
+              "required": true
+            },
+            {
+              "text": "ETag 基于内容生成，比时间戳更能反映“是否真的变了”"
+            },
+            {
+              "text": "代价：生成 ETag 需要计算，多服务器时要保证各台算法一致"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "free_recall": {
+    "prompt": "不看上面的内容：浏览器缓存是怎么决定“直接用”还是“先问”的？不同资源该怎么配？",
+    "reference_points": [
+      {
+        "text": "没过期直接用本地副本，不发请求（强缓存）",
+        "kp_id": "kp1",
+        "required": true
+      },
+      {
+        "text": "过期后带 ETag 询问，没变返回 304（协商缓存）",
+        "kp_id": "kp1",
+        "required": true
+      },
+      {
+        "text": "no-cache = 先问再用；no-store = 根本不存",
+        "kp_id": "kp2",
+        "required": true
+      },
+      {
+        "text": "入口 HTML 每次确认；带哈希的静态文件长期缓存 + immutable",
+        "kp_id": "kp4",
+        "required": true
+      },
+      {
+        "text": "个人数据用 private / no-store",
+        "kp_id": "kp4"
+      },
+      {
+        "text": "ETag 按内容判断，比 Last-Modified 准",
+        "kp_id": "kp6"
+      }
+    ]
+  },
+  "plain_talk": {
+    "points": [
+      {
+        "kp_id": "kp1",
+        "conclusion": "强缓存是“直接用存货”，协商缓存是“用之前先打电话问一句”。",
+        "analogy": "冰箱里的牛奶：没过保质期就直接喝；过了日期先问家里人还能不能喝。",
+        "analogy_limit": "牛奶会自己变质，网页文件不会；“变”的是服务器上出了新版本。",
+        "example": "带哈希名的 JS 一年内直接用；index.html 每次先问服务器。",
+        "pitfall": "以为协商缓存不发请求——它会发，只是省了下载正文。"
+      },
+      {
+        "kp_id": "kp2",
+        "conclusion": "no-cache 是“先问再用”，no-store 是“根本不存”。",
+        "no_analogy_reason": "这是两个指令名和它们的精确含义，打比方反而容易把两者混在一起。",
+        "example": "`Cache-Control: no-cache` 的响应会存下来，下次用之前发请求确认。",
+        "pitfall": "按字面把 no-cache 理解成“不缓存”。"
+      },
+      {
+        "kp_id": "kp4",
+        "conclusion": "先问两个问题：内容会不会变？能不能被别人看到？",
+        "analogy": "像给家里东西贴标签：日历每天换（每次确认），旧照片永远不变（放心收着），日记不给外人看（不存）。",
+        "analogy_limit": "家里东西是你自己决定，缓存却是浏览器和 CDN 按你写的响应头来执行，写错了它们也照做。",
+        "example": "index.html → no-cache；app.3f9a.js → max-age=31536000, immutable；/api/me → private, no-store。",
+        "pitfall": "给 index.html 设很长的 max-age，发布后用户看不到新版本。"
+      }
+    ],
+    "summary": "浏览器缓存就是在“省流量”和“拿到最新版本”之间做取舍。内容不会变的文件放心长期缓存，入口文件每次确认，私密数据干脆不存。确认的方式是带着版本号去问，没变就只回一个 304。",
+    "recall": {
+      "kp_id": "kp1",
+      "prompt": "用你自己的话说说：为什么 index.html 一般不用强缓存？"
+    }
+  }
+}
+</script>
+
+<script>
+(function () {
+  'use strict';
+
+  var STRINGS = {
+    en: {
+      tabLearn: 'Learn', tabRecall: 'Free recall', tabPlain: 'Plain Talk', tabMistakes: 'Mistakes', tabData: 'Save & load',
+      progress: '{done} of {total} questions answered', theme: 'Theme', themeAuto: 'Auto', themeLight: 'Light', themeDark: 'Dark',
+      importance: { core: 'core', important: 'important', minor: 'minor' },
+      types: { factual: 'factual', conceptual: 'conceptual', procedural: 'procedural', judgment: 'judgment', language_production: 'language production', contested: 'contested' },
+      whyForm: 'Why this format: ', pointsNav: 'Knowledge points',
+      teachTitle: 'Quick explanation', example: 'Example', principle: 'Principle', nextStep: 'Next step',
+      startQuestions: 'Close the explanation and answer from memory', showTeach: 'Show the explanation again',
+      closedBook: 'Answer from memory; looking it up turns this into reading practice.',
+      confidence: 'How sure are you?', conf1: '1 · guessing', conf2: '2 · fairly sure', conf3: '3 · certain',
+      check: 'Check', hint: 'Show a hint', hintLabel: 'Hint: ',
+      correct: 'Correct', partial: 'Partly right', incorrect: 'Not quite', dont_know: 'Marked as "don\'t know"',
+      coherent: 'Your reasoning holds together', partly_coherent: 'Your reasoning partly holds', incoherent: 'Your reasoning has gaps',
+      dontKnow: "I don't know",
+      highConf: 'Confident and wrong: the most useful kind of mistake to catch. It goes to the top of your next review.',
+      whyWrong: 'What went wrong? (optional; helps your review)',
+      errorTypes: {
+        misconception: ['Misconception', 'I had the wrong idea'], memory_lapse: ['Memory lapse', 'Knew it, couldn\'t recall it'],
+        careless: ['Careless slip', 'Knew it, slipped'], misread: ['Misread', 'Answered a different question'],
+        transfer_failure: ['Transfer', 'Knew the rule, couldn\'t apply it here']
+      },
+      unclassified: 'Not classified yet', retry: 'Try again', answeredAs: 'Answered earlier: {result}',
+      nextPoint: 'Next point', pointDone: 'All questions for this point are done.', allDone: 'All points done. Try free recall, Plain Talk, or save your progress.',
+      flip: 'Flip the card', flashPrompt: 'Answer first (type it, or at least say it to yourself), then flip.', gradeSelf: 'How did you do?',
+      gotIt: 'Got it', partly: 'Partly', missed: 'Missed',
+      yourAnswer: 'Your answer', referenceAnswer: 'Reference answer', actuallyRight: 'My answer was actually right (synonym or typo)',
+      selfCheck: 'Tick the points your answer really contains', confirmSelf: 'Confirm self-check', keyPoint: 'key', bonusPoint: 'bonus',
+      selfNote: 'This is a self-check, not automatic grading. For real feedback, export your answers (Save & load) and paste them to your coach.',
+      fillFirst: 'Fill in the blanks first, then check.', countRight: 'count as right', expected: 'Expected: ', confirmMarks: 'Confirm',
+      predictFirst: 'Predict the missing steps first; the full version appears after you check.',
+      simNotice: 'This page has no interactive simulation, so the question is shown as text.',
+      unknownNotice: 'This question format isn\'t supported here, so it\'s shown as a plain question.',
+      cannotRender: 'This question can\'t be displayed. Ask your coach to resend it in the chat.',
+      alsoEdges: 'Also: ', when: 'When', what: 'What',
+      recallIntro: 'Close your notes. Write down everything you remember, then compare with the key points.', recallCompare: 'Compare with the key points',
+      recallDone: 'Saved. Points you missed will come back in your review.',
+      ptIntro: 'The plain-language version. Reading it doesn\'t count toward mastery; the recall question at the end does.',
+      ptConclusion: 'In one line', ptAnalogy: 'Everyday comparison', ptLimit: 'Where the comparison breaks', ptExample: 'Example', ptPitfall: 'Common pitfall',
+      ptNoAnalogy: 'No comparison here: ', ptSummary: 'The whole picture', ptReady: 'I\'m ready: hide the explanation',
+      ptRecall: 'Close the page and say it in your own words', ptCompare: 'Compare with the explanation',
+      mistakesEmpty: 'No mistakes recorded yet.', hotBadge: 'confident & wrong', confShort: 'confidence {c}', mistakesSummary: '{n} answers to revisit',
+      exportTitle: 'Export progress (JSON)', exportHelp: 'Save this, or paste it to your coach. It merges into a closebook progress file.',
+      exportAnswers: 'Export my answers for the coach', exportAnswersHelp: 'Paste this into the chat so your coach can grade your written answers.',
+      generate: 'Generate', copy: 'Copy', copied: 'Copied.', copyFailed: 'Copy failed; select the text and copy it manually.',
+      download: 'Download', downloadFailed: 'Downloads are blocked here; use Copy instead.',
+      importTitle: 'Import progress', importHelp: 'Paste a progress JSON exported from this page, or choose the file, then merge.',
+      importBtn: 'Merge', importFile: 'Choose file', importOk: 'Merged {n} new answers.', importNone: 'Nothing new to merge.',
+      importBad: 'That isn\'t a closebook export.', importOther: 'This export belongs to another lesson ({id}).',
+      reset: 'Clear all answers on this page', resetConfirm: 'Clear all answers stored in this page?',
+      storageOn: 'Answers are also kept in this browser, but export them to be safe.', storageOff: 'This page can\'t store data here; export before closing it.',
+      dataError: 'The lesson data in this page could not be read: ', myAnswers: 'My answers', noText: '(no written answer)',
+      colon: ': ', selfAssessed: 'self-checked', footer: 'closebook · questions first, explanations after.'
+    },
+    zh: {
+      tabLearn: '学习', tabRecall: '自由回忆', tabPlain: '小白模式', tabMistakes: '错题', tabData: '保存与导入',
+      progress: '已作答 {done} / {total} 题', theme: '主题', themeAuto: '跟随系统', themeLight: '浅色', themeDark: '深色',
+      importance: { core: '核心', important: '重要', minor: '次要' },
+      types: { factual: '事实记忆型', conceptual: '概念理解型', procedural: '程序技能型', judgment: '判断决策型', language_production: '语言产出型', contested: '主观/有争议型' },
+      whyForm: '为什么用这种形式：', pointsNav: '知识点',
+      teachTitle: '最小讲解', example: '例子', principle: '原理', nextStep: '下一步',
+      startQuestions: '合上讲解，凭记忆作答', showTeach: '再看一遍讲解',
+      closedBook: '请凭记忆作答；翻材料就变成了阅读练习。',
+      confidence: '你有多确定？', conf1: '1 · 猜的', conf2: '2 · 比较确定', conf3: '3 · 很确定',
+      check: '提交', hint: '给个提示', hintLabel: '提示：',
+      correct: '正确', partial: '部分正确', incorrect: '不对', dont_know: '已记为“不知道”',
+      coherent: '理由自洽', partly_coherent: '理由部分自洽', incoherent: '理由有缺口',
+      dontKnow: '不知道',
+      highConf: '高信心答错：这是最值得发现的一类错误，下次复习会排在最前面。',
+      whyWrong: '错在哪？（可选，用于复习）',
+      errorTypes: {
+        misconception: ['概念误解', '我原来的理解就是错的'], memory_lapse: ['记忆遗漏', '学过但没想起来'],
+        careless: ['粗心', '会，但手滑了'], misread: ['审题', '答的不是题目问的'],
+        transfer_failure: ['迁移失败', '懂规则，换个场景不会用']
+      },
+      unclassified: '未归类', retry: '再试一次', answeredAs: '之前已作答：{result}',
+      nextPoint: '下一个知识点', pointDone: '这个知识点的题都做完了。', allDone: '全部知识点已完成。可以试试自由回忆、小白模式，或保存进度。',
+      flip: '翻面', flashPrompt: '先作答（写下来，或至少在心里说出来），再翻面。', gradeSelf: '你答得怎么样？',
+      gotIt: '答对了', partly: '部分对', missed: '没答出',
+      yourAnswer: '你的答案', referenceAnswer: '参考答案', actuallyRight: '其实我答对了（同义词或笔误）',
+      selfCheck: '勾选你的回答里确实包含的要点', confirmSelf: '确认自评', keyPoint: '必答', bonusPoint: '加分',
+      selfNote: '这是自评，不是自动批改。想要教练批改，请在“保存与导入”里导出“我的作答”，粘贴回对话。',
+      fillFirst: '先填空，再核对。', countRight: '算对', expected: '应为：', confirmMarks: '确认',
+      predictFirst: '先预测空缺的步骤；核对后才显示完整版。',
+      simNotice: '本页面没有交互模拟，这道题以文字形式出现。',
+      unknownNotice: '本页面不支持这种题型，已改为普通问答。',
+      cannotRender: '这道题无法显示，请让教练在对话里重新出题。',
+      alsoEdges: '另外：', when: '时间', what: '事件',
+      recallIntro: '合上笔记，把你记得的全部写下来，再和要点对照。', recallCompare: '与要点对照',
+      recallDone: '已记录。漏掉的要点会出现在复习里。',
+      ptIntro: '下面是大白话版本。阅读不计入掌握度；最后的复述题才计入。',
+      ptConclusion: '一句话结论', ptAnalogy: '生活类比', ptLimit: '这个类比哪里不成立', ptExample: '具体例子', ptPitfall: '常见的坑',
+      ptNoAnalogy: '这里不用类比：', ptSummary: '一段话总览', ptReady: '我准备好了，隐藏上面的讲解',
+      ptRecall: '合上页面，用你自己的话复述', ptCompare: '对照讲解',
+      mistakesEmpty: '还没有错题。', hotBadge: '高信心答错', confShort: '信心 {c}', mistakesSummary: '共 {n} 条需要回顾',
+      exportTitle: '导出进度（JSON）', exportHelp: '保存这段 JSON，或粘贴给教练。它可以合并进 closebook 进度文件。',
+      exportAnswers: '导出“我的作答”给教练批改', exportAnswersHelp: '把这段粘贴回对话，教练就能批改你的文字作答。',
+      generate: '生成', copy: '复制', copied: '已复制。', copyFailed: '复制失败，请手动选中文本复制。',
+      download: '下载', downloadFailed: '当前环境禁止下载，请用“复制”。',
+      importTitle: '导入进度', importHelp: '粘贴从本页面导出的进度 JSON（或选择文件），然后合并。',
+      importBtn: '合并', importFile: '选择文件', importOk: '合并了 {n} 条新作答。', importNone: '没有新的作答需要合并。',
+      importBad: '这不是 closebook 导出的进度。', importOther: '这份导出属于另一节课（{id}）。',
+      reset: '清空本页所有作答', resetConfirm: '确定清空本页保存的所有作答？',
+      storageOn: '作答也会保存在这个浏览器里，但稳妥起见请导出。', storageOff: '当前环境无法在本地保存，关闭前请先导出。',
+      dataError: '无法读取本页的课程数据：', myAnswers: '我的作答', noText: '（没有文字作答）',
+      colon: '：', selfAssessed: '自评', footer: 'closebook · 先问后讲。'
+    }
+  };
+
+  var TYPES = ['mcq', 'flashcard', 'free_text', 'diagram_fill', 'simulation', 'timeline_fill', 'compare_table_fill', 'plain_qa'];
+  var METHODS = ['retrieval', 'spaced_repetition', 'error_review', 'feynman', 'interleaving', 'elaborative_interrogation',
+    'self_explanation', 'predict_verify', 'calibration', 'chunking_mnemonics', 'difficulty_tuning', 'mini_project'];
+  var FORMATS = ['free_recall', 'cloze', 'short_answer', 'mcq', 'flashcard', 'explain', 'explain_steps', 'why', 'predict', 'produce', 'apply', 'compare', 'project', 'other'];
+  var BAD = ['incorrect', 'partial', 'dont_know', 'incoherent', 'partly_coherent'];
+  var EXPORT_FORMAT = 'closebook-session-export';
+
+  var data, T, storeKey, uid = 0;
+  var state = { attempts: [], seq: 0, ui: {}, tab: 'learn', kp: 0, ptViewed: {}, teach: {}, recall: {}, pt: {}, storage: false };
+
+  // ---------- helpers ----------
+  function h(tag, attrs) {
+    var el = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === 'class') el.className = v;
+        else if (k === 'text') el.textContent = v;
+        else if (k.slice(0, 2) === 'on') el.addEventListener(k.slice(2), v);
+        else if (k === 'value') el.value = v;
+        else if (k === 'checked' || k === 'disabled') el[k] = !!v;
+        else el.setAttribute(k, v === true ? '' : String(v));
+      });
+    }
+    for (var i = 2; i < arguments.length; i++) append(el, arguments[i]);
+    return el;
+  }
+  function append(el, kid) {
+    if (kid === null || kid === undefined || kid === false) return;
+    if (Array.isArray(kid)) { kid.forEach(function (k) { append(el, k); }); return; }
+    el.appendChild(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+  }
+  function rich(text) {
+    var frag = document.createDocumentFragment();
+    String(text == null ? '' : text).split('\n').forEach(function (line, i) {
+      if (i) frag.appendChild(h('br'));
+      line.split(/(`[^`]+`)/).forEach(function (part) {
+        if (/^`[^`]+`$/.test(part)) frag.appendChild(h('code', null, part.slice(1, -1)));
+        else if (part) frag.appendChild(document.createTextNode(part));
+      });
+    });
+    return frag;
+  }
+  function fmt(s, vars) { return String(s).replace(/\{(\w+)\}/g, function (_, k) { return vars[k]; }); }
+  function nextId(prefix) { uid += 1; return prefix + '-' + uid; }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function isoNow() {
+    var d = new Date(), off = -d.getTimezoneOffset(), a = Math.abs(off);
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' +
+      pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + (off >= 0 ? '+' : '-') + pad(Math.floor(a / 60)) + ':' + pad(a % 60);
+  }
+  function norm(s, caseSensitive) {
+    s = String(s == null ? '' : s).trim().replace(/\s+/g, ' ').replace(/[。．.!！?？,，;；:：]+$/, '');
+    return caseSensitive ? s : s.toLowerCase();
+  }
+  function matches(value, accept, caseSensitive) {
+    var v = norm(value, caseSensitive);
+    return !!v && accept.some(function (a) { return norm(a, caseSensitive) === v; });
+  }
+  function announce(msg) { var live = document.getElementById('live'); live.textContent = ''; setTimeout(function () { live.textContent = msg; }, 30); }
+  function kpById(id) { return data.knowledge_points.filter(function (k) { return k.id === id; })[0]; }
+  function isContested(kp) { return kp && kp.knowledge_type === 'contested'; }
+  function keyOf(kp, item) { return kp.id + '/' + item.id; }
+  function uiOf(key) { if (!state.ui[key]) state.ui[key] = {}; return state.ui[key]; }
+  function findAttempt(id) { return state.attempts.filter(function (a) { return a.id === id; })[0]; }
+
+  // ---------- storage ----------
+  function save() {
+    try {
+      window.localStorage.setItem(storeKey, JSON.stringify({ v: 1, attempts: state.attempts, seq: state.seq, ui: state.ui,
+        ptViewed: state.ptViewed, teach: state.teach, recall: state.recall, pt: state.pt }));
+      state.storage = true;
+    } catch (e) { state.storage = false; }
+  }
+  function restore() {
+    try {
+      var raw = window.localStorage.getItem(storeKey);
+      state.storage = true;
+      if (!raw) return;
+      var saved = JSON.parse(raw);
+      if (!saved || saved.v !== 1) return;
+      ['attempts', 'seq', 'ui', 'ptViewed', 'teach', 'recall', 'pt'].forEach(function (k) { if (saved[k] !== undefined) state[k] = saved[k]; });
+    } catch (e) { state.storage = false; }
+  }
+  function themePref(value) {
+    try { if (value === undefined) return window.localStorage.getItem('closebook:theme') || 'auto'; window.localStorage.setItem('closebook:theme', value); } catch (e) { }
+    return value || 'auto';
+  }
+  function applyTheme(value) {
+    if (value === 'light' || value === 'dark') document.documentElement.setAttribute('data-theme', value);
+    else document.documentElement.removeAttribute('data-theme');
+  }
+
+  // ---------- attempts ----------
+  function addAttempt(kp, itemId, fields) {
+    state.seq += 1;
+    var attempt = {
+      kp_id: kp.id,
+      id: [data.lesson_id, kp.id, itemId, state.seq].join('~'),
+      at: isoNow(),
+      phase: data.mode === 'review' ? 'review' : 'retest',
+      hint_level: 0,
+      source: 'html'
+    };
+    if (METHODS.indexOf(kp.method) >= 0) attempt.method = kp.method;
+    Object.keys(fields).forEach(function (k) {
+      if (fields[k] !== undefined && fields[k] !== null && fields[k] !== '') attempt[k] = fields[k];
+    });
+    state.attempts.push(attempt);
+    save();
+    return attempt;
+  }
+  function durationSince(ui) { return ui.openedAt ? Math.max(0, Math.round((Date.now() - ui.openedAt) / 1000)) : undefined; }
+  function formatOf(item, fallback) { return FORMATS.indexOf(item.question_format) >= 0 ? item.question_format : fallback; }
+
+  function rebuildFromAttempts() {
+    state.attempts.forEach(function (a) {
+      var parts = String(a.id || '').split('~');
+      if (parts.length !== 4 || parts[0] !== data.lesson_id) return;
+      var n = parseInt(parts[3], 10);
+      if (n > state.seq) state.seq = n;
+      if (parts[2] === 'free-recall') { state.recall.done = true; return; }
+      if (parts[2] === 'plain-talk') { state.pt.done = true; state.pt.result = a.result; return; }
+      var ui = uiOf(parts[1] + '/' + parts[2]);
+      if (ui.attemptId === a.id) return;
+      if (!ui.done || !findAttempt(ui.attemptId) || String(findAttempt(ui.attemptId).at) <= String(a.at)) {
+        if (ui.attemptId !== a.id) { ui.done = true; ui.result = a.result; ui.attemptId = a.id; ui.conf = a.confidence; ui.restored = true; }
+      }
+    });
+  }
+
+  // ---------- shared widgets ----------
+  function confidenceField(ui, onChange) {
+    var name = nextId('conf');
+    return h('fieldset', null, h('legend', null, T.confidence),
+      h('div', { class: 'chips' }, [1, 2, 3].map(function (c) {
+        return h('label', { class: 'chip' },
+          h('input', { type: 'radio', name: name, value: c, checked: ui.conf === c,
+            onchange: function () { ui.conf = c; if (onChange) onChange(); } }), T['conf' + c]);
+      })));
+  }
+  function hintBlock(item, ui, rerender) {
+    if (!item.hint) return null;
+    if (ui.hintUsed) return h('p', { class: 'notice' }, T.hintLabel, rich(item.hint));
+    return h('button', { type: 'button', class: 'btn quiet', onclick: function () { ui.hintUsed = true; rerender(); } }, T.hint);
+  }
+  function resultBanner(result, conf, extra) {
+    var box = h('div', { class: 'result ' + result, tabindex: '-1', 'data-focus': '1' }, h('strong', null, T[result] || result));
+    if (result === 'incorrect' && conf === 3) box.appendChild(h('p', null, T.highConf));
+    append(box, extra);
+    return box;
+  }
+  function errorChooser(attemptId) {
+    var attempt = findAttempt(attemptId);
+    if (!attempt || BAD.indexOf(attempt.result) < 0 || attempt.result === 'partly_coherent' || attempt.result === 'incoherent') return null;
+    var wrap = h('div', null, h('p', { class: 'small muted' }, T.whyWrong));
+    var chips = h('div', { class: 'chips' });
+    Object.keys(T.errorTypes).forEach(function (type) {
+      chips.appendChild(h('button', { type: 'button', class: 'chip', 'aria-pressed': attempt.error_type === type ? 'true' : 'false',
+        title: T.errorTypes[type][1],
+        onclick: function () {
+          attempt.error_type = attempt.error_type === type ? undefined : type;
+          if (!attempt.error_type) delete attempt.error_type;
+          save();
+          Array.prototype.forEach.call(chips.children, function (c) { c.setAttribute('aria-pressed', 'false'); });
+          if (attempt.error_type) this.setAttribute('aria-pressed', 'true');
+        } }, T.errorTypes[type][0]));
+    });
+    wrap.appendChild(chips);
+    return wrap;
+  }
+  function retryButton(ui, rerender) {
+    return h('button', { type: 'button', class: 'btn quiet', onclick: function () {
+      var keep = { draft: '' };
+      Object.keys(ui).forEach(function (k) { delete ui[k]; });
+      Object.assign(ui, keep);
+      rerender(true);
+    } }, T.retry);
+  }
+  function selfGrade(labels, onPick) {
+    return h('div', null, h('p', null, h('strong', null, T.gradeSelf)),
+      h('div', { class: 'chips' }, labels.map(function (pair) {
+        return h('button', { type: 'button', class: 'chip', onclick: function () { onPick(pair[0]); } }, pair[1]);
+      })));
+  }
+  function codeBlock(code) { return code ? h('pre', null, h('code', null, code)) : null; }
+
+  // ---------- item renderers ----------
+  function renderItem(kp, item, rerender) {
+    var key = keyOf(kp, item), ui = uiOf(key);
+    if (!ui.done && !ui.openedAt) ui.openedAt = Date.now();
+    var type = TYPES.indexOf(kp.interaction_type) >= 0 ? kp.interaction_type : 'unknown';
+    var card = h('section', { class: 'card' + (ui.done ? '' : ' open'), 'aria-label': String(item.question || item.prompt || item.front || kp.title).replace(/`/g, '') });
+    if (ui.done && ui.restored) {
+      card.appendChild(h('p', null, rich(item.question || item.prompt || item.front || (item.fallback && item.fallback.question) || '')));
+      card.appendChild(resultBanner(ui.result, ui.conf, h('p', { class: 'small' }, fmt(T.answeredAs, { result: T[ui.result] || ui.result }))));
+      card.appendChild(h('div', { class: 'row' }, retryButton(ui, rerender)));
+      return card;
+    }
+    var body;
+    switch (type) {
+      case 'mcq': body = renderMcq(kp, item, ui, rerender); break;
+      case 'flashcard': body = renderFlashcard(kp, item, ui, rerender); break;
+      case 'free_text': body = renderFreeText(kp, item, ui, rerender); break;
+      case 'plain_qa': body = renderPlainQa(kp, item, item, ui, rerender, 'plain_qa'); break;
+      case 'compare_table_fill': body = renderTable(kp, item, ui, rerender, compareModel(item), 'compare', 'compare_table_fill'); break;
+      case 'timeline_fill': body = renderTable(kp, item, ui, rerender, timelineModel(item), 'other', 'timeline_fill'); break;
+      case 'diagram_fill': body = renderDiagram(kp, item, ui, rerender); break;
+      case 'simulation':
+        body = item.fallback ? [h('p', { class: 'notice' }, T.simNotice), renderPlainQa(kp, item, item.fallback, ui, rerender, 'plain_qa')]
+          : h('p', { class: 'notice' }, T.cannotRender);
+        break;
+      default:
+        var source = (item.question && item.answer) ? item : item.fallback;
+        body = source ? [h('p', { class: 'notice' }, T.unknownNotice), renderPlainQa(kp, item, source, ui, rerender, 'plain_qa')]
+          : h('p', { class: 'notice' }, T.cannotRender);
+    }
+    append(card, body);
+    return card;
+  }
+
+  function renderMcq(kp, item, ui, rerender) {
+    var out = [];
+    var name = nextId('mcq');
+    var submit;
+    function ready() { if (submit) submit.disabled = !(ui.choice !== undefined && ui.conf); }
+    var opts = item.options.map(function (opt, i) {
+      var letter = String.fromCharCode(65 + i);
+      var cls = 'option';
+      if (ui.done) cls += opt.correct ? ' right' : (ui.choice === i ? ' wrong' : '');
+      return h('label', { class: cls },
+        h('input', { type: 'radio', name: name, value: i, checked: ui.choice === i, disabled: ui.done,
+          onchange: function () { ui.choice = i; ready(); } }),
+        h('span', null, h('strong', null, letter + '. '), rich(opt.text),
+          ui.done ? h('span', { class: 'why' }, (opt.correct ? '✓ ' : (ui.choice === i ? '✗ ' : '')), rich(opt.explanation)) : null));
+    });
+    var form = h('form', { onsubmit: function (e) {
+      e.preventDefault();
+      if (ui.choice === undefined || !ui.conf || ui.done) return;
+      var correct = !!item.options[ui.choice].correct;
+      var a = addAttempt(kp, item.id, { phase: undefined, result: correct ? 'correct' : 'incorrect', confidence: ui.conf,
+        hint_level: ui.hintUsed ? 1 : 0, question: item.question, question_format: formatOf(item, 'mcq'),
+        interaction: 'mcq', duration_sec: durationSince(ui) });
+      ui.done = true; ui.result = a.result; ui.attemptId = a.id;
+      rerender();
+    } },
+      h('fieldset', null, h('legend', null, rich(item.question)), codeBlock(item.code), opts),
+      ui.done ? null : confidenceField(ui, ready),
+      ui.done ? null : h('div', { class: 'row' }, hintBlock(item, ui, rerender),
+        submit = h('button', { type: 'submit', class: 'btn', disabled: !(ui.choice !== undefined && ui.conf) }, T.check)));
+    out.push(form);
+    if (ui.done) {
+      out.push(resultBanner(ui.result, ui.conf));
+      out.push(errorChooser(ui.attemptId));
+      if (ui.result !== 'correct') out.push(h('div', { class: 'row' }, retryButton(ui, rerender)));
+    }
+    return out;
+  }
+
+  function renderFlashcard(kp, item, ui, rerender) {
+    var out = [h('div', { class: 'flashcard' }, rich(item.front))];
+    if (!ui.flipped) {
+      var flip;
+      out.push(h('p', { class: 'small muted' }, T.flashPrompt));
+      out.push(h('label', null, h('span', { class: 'sr-only' }, T.yourAnswer),
+        h('textarea', { rows: 2, placeholder: T.yourAnswer, value: ui.draft || '', oninput: function () { ui.draft = this.value; } })));
+      out.push(confidenceField(ui, function () { flip.disabled = !ui.conf; }));
+      out.push(h('div', { class: 'row' }, hintBlock(item, ui, rerender),
+        flip = h('button', { type: 'button', class: 'btn', disabled: !ui.conf, onclick: function () { ui.flipped = true; rerender(); } }, T.flip)));
+      return out;
+    }
+    out.push(h('div', { class: 'flashcard back', tabindex: '-1', 'data-focus': ui.done ? null : '1' }, rich(item.back)));
+    if (ui.draft) out.push(h('p', { class: 'small' }, h('strong', null, T.yourAnswer + T.colon), ui.draft));
+    if (!ui.done) {
+      out.push(selfGrade([['correct', T.gotIt], ['partial', T.partly], ['incorrect', T.missed]], function (result) {
+        var a = addAttempt(kp, item.id, { result: result, confidence: ui.conf, hint_level: ui.hintUsed ? 1 : 0, question: item.front,
+          question_format: formatOf(item, 'flashcard'), interaction: 'flashcard', self_assessed: true, duration_sec: durationSince(ui) });
+        ui.done = true; ui.result = result; ui.attemptId = a.id; ui.answerText = ui.draft;
+        rerender();
+      }));
+    } else {
+      out.push(resultBanner(ui.result, ui.conf, h('p', { class: 'small' }, T.selfAssessed)));
+      out.push(errorChooser(ui.attemptId));
+      if (ui.result !== 'correct') out.push(h('div', { class: 'row' }, retryButton(ui, rerender)));
+    }
+    return out;
+  }
+
+  function renderPlainQa(kp, item, src, ui, rerender, interaction) {
+    var contested = isContested(kp);
+    var out = [h('p', null, h('strong', null, rich(src.question))), codeBlock(src.code)];
+    var accept = src.accept && src.accept.length ? src.accept : null;
+    if (!ui.done && !ui.revealed) {
+      var submit, input;
+      function ready() { if (submit) submit.disabled = !(norm(ui.draft) && (contested || ui.conf)); }
+      out.push(h('p', { class: 'small muted' }, T.closedBook));
+      out.push(h('form', { onsubmit: function (e) {
+        e.preventDefault();
+        if (!norm(ui.draft) || (!contested && !ui.conf)) return;
+        ui.answerText = ui.draft;
+        if (accept) {
+          var ok = matches(ui.draft, accept, src.case_sensitive);
+          var a = addAttempt(kp, item.id, { result: ok ? 'correct' : 'incorrect', confidence: contested ? undefined : ui.conf,
+            hint_level: ui.hintUsed ? 1 : 0, question: src.question, question_format: formatOf(item, 'cloze'),
+            interaction: interaction, duration_sec: durationSince(ui) });
+          ui.done = true; ui.result = a.result; ui.attemptId = a.id; ui.auto = true;
+        } else {
+          ui.revealed = true; ui.duration = durationSince(ui);
+        }
+        rerender();
+      } },
+        h('label', null, h('span', { class: 'sr-only' }, T.yourAnswer),
+          input = h('textarea', { rows: 2, placeholder: T.yourAnswer, value: ui.draft || '', oninput: function () { ui.draft = this.value; ready(); } })),
+        contested ? null : confidenceField(ui, ready),
+        h('div', { class: 'row' }, hintBlock(item, ui, rerender),
+          h('button', { type: 'button', class: 'btn quiet', onclick: function () {
+            var a = addAttempt(kp, item.id, { result: 'dont_know', hint_level: ui.hintUsed ? 1 : 0, question: src.question,
+              question_format: formatOf(item, accept ? 'cloze' : 'short_answer'), interaction: interaction, duration_sec: durationSince(ui) });
+            ui.done = true; ui.result = 'dont_know'; ui.attemptId = a.id; ui.revealed = true;
+            rerender();
+          } }, T.dontKnow),
+          submit = h('button', { type: 'submit', class: 'btn', disabled: !(norm(ui.draft) && (contested || ui.conf)) }, T.check))));
+      return out;
+    }
+    if (ui.answerText) out.push(h('p', null, h('strong', null, T.yourAnswer + T.colon), ui.answerText));
+    out.push(h('div', { class: 'teach' }, h('strong', null, T.referenceAnswer + T.colon), rich(src.answer),
+      src.explanation ? h('p', { class: 'small' }, rich(src.explanation)) : null));
+    if (!ui.done) {
+      var labels = contested ? [['coherent', T.coherent], ['partly_coherent', T.partly_coherent], ['incoherent', T.incoherent]]
+        : [['correct', T.gotIt], ['partial', T.partly], ['incorrect', T.missed]];
+      out.push(selfGrade(labels, function (result) {
+        var a = addAttempt(kp, item.id, { result: result, confidence: contested ? undefined : ui.conf, hint_level: ui.hintUsed ? 1 : 0,
+          question: src.question, question_format: formatOf(item, 'short_answer'), interaction: interaction, self_assessed: true,
+          duration_sec: ui.duration });
+        ui.done = true; ui.result = result; ui.attemptId = a.id;
+        rerender();
+      }));
+      out.push(h('p', { class: 'small muted' }, T.selfNote));
+      return out;
+    }
+    out.push(resultBanner(ui.result, ui.conf));
+    if (ui.auto && ui.result === 'incorrect') {
+      out.push(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn quiet', onclick: function () {
+        var a = findAttempt(ui.attemptId);
+        if (a) { a.result = 'correct'; a.self_assessed = true; delete a.error_type; save(); }
+        ui.result = 'correct';
+        rerender();
+      } }, T.actuallyRight)));
+    }
+    out.push(errorChooser(ui.attemptId));
+    if (ui.result !== 'correct' && ui.result !== 'coherent') out.push(h('div', { class: 'row' }, retryButton(ui, rerender)));
+    return out;
+  }
+
+  function renderFreeText(kp, item, ui, rerender) {
+    var contested = isContested(kp);
+    var points = item.reference_points || [];
+    var out = [h('p', null, h('strong', null, rich(item.prompt || item.question))), codeBlock(item.code)];
+    if (item.format_hint) out.push(h('p', { class: 'small muted' }, item.format_hint));
+    if (!ui.submitted) {
+      var submit;
+      out.push(h('form', { onsubmit: function (e) {
+        e.preventDefault();
+        if (!norm(ui.draft)) return;
+        ui.submitted = true; ui.answerText = ui.draft; ui.ticks = points.map(function () { return false; }); ui.duration = durationSince(ui);
+        rerender();
+      } },
+        h('label', null, h('span', { class: 'sr-only' }, T.yourAnswer),
+          h('textarea', { rows: 5, placeholder: T.yourAnswer, value: ui.draft || '', oninput: function () { ui.draft = this.value; submit.disabled = !norm(this.value); } })),
+        h('div', { class: 'row' }, hintBlock(item, ui, rerender),
+          h('button', { type: 'button', class: 'btn quiet', onclick: function () {
+            var a = addAttempt(kp, item.id, { result: 'dont_know', hint_level: ui.hintUsed ? 1 : 0, question: item.prompt || item.question,
+              question_format: formatOf(item, 'explain'), interaction: 'free_text', duration_sec: durationSince(ui) });
+            ui.submitted = true; ui.done = true; ui.result = 'dont_know'; ui.attemptId = a.id; ui.ticks = points.map(function () { return false; });
+            rerender();
+          } }, T.dontKnow),
+          submit = h('button', { type: 'submit', class: 'btn', disabled: !norm(ui.draft) }, T.check))));
+      return out;
+    }
+    if (ui.answerText) out.push(h('p', null, h('strong', null, T.yourAnswer + T.colon), ui.answerText));
+    var list = h('fieldset', { class: 'checklist' }, h('legend', { tabindex: '-1', 'data-focus': ui.done ? null : '1' }, T.selfCheck));
+    points.forEach(function (p, i) {
+      list.appendChild(h('label', null, h('input', { type: 'checkbox', checked: ui.ticks[i], disabled: ui.done,
+        onchange: function () { ui.ticks[i] = this.checked; } }),
+        h('span', null, rich(p.text), ' ', h('span', { class: 'badge' }, p.required ? T.keyPoint : T.bonusPoint))));
+    });
+    out.push(list);
+    if (!ui.done) {
+      out.push(h('p', { class: 'small muted' }, T.selfNote));
+      out.push(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', onclick: function () {
+        var result = gradeTicks(points, ui.ticks, contested);
+        var a = addAttempt(kp, item.id, { result: result, hint_level: ui.hintUsed ? 1 : 0, question: item.prompt || item.question,
+          question_format: formatOf(item, 'explain'), interaction: 'free_text', self_assessed: true, duration_sec: ui.duration });
+        ui.done = true; ui.result = result; ui.attemptId = a.id;
+        rerender();
+      } }, T.confirmSelf)));
+      return out;
+    }
+    out.push(resultBanner(ui.result, null, ui.result !== 'dont_know' ? h('p', { class: 'small' }, T.selfAssessed) : null));
+    out.push(errorChooser(ui.attemptId));
+    if (ui.result !== 'correct' && ui.result !== 'coherent') out.push(h('div', { class: 'row' }, retryButton(ui, rerender)));
+    return out;
+  }
+
+  function gradeTicks(points, ticks, contested) {
+    var req = [], all = [];
+    points.forEach(function (p, i) { all.push(!!ticks[i]); if (p.required) req.push(!!ticks[i]); });
+    var basis = req.length ? req : all;
+    var hit = basis.filter(Boolean).length;
+    var result = hit === basis.length ? 'correct' : (hit > 0 ? 'partial' : 'incorrect');
+    if (contested) result = { correct: 'coherent', partial: 'partly_coherent', incorrect: 'incoherent' }[result];
+    return result;
+  }
+
+  function compareModel(item) {
+    return { columns: item.columns || [], rows: (item.rows || []).map(function (r) { return { label: r.label, cells: r.cells || [] }; }) };
+  }
+  function timelineModel(item) {
+    return {
+      columns: [T.when, T.what],
+      rows: (item.events || []).map(function (e) {
+        return { cells: [{ text: e.when, blank: e.blank === 'when', accept: e.blank === 'when' ? e.accept : null },
+          { text: e.what, blank: e.blank === 'what', accept: e.blank === 'what' ? e.accept : null }] };
+      })
+    };
+  }
+  function blankCheck(ui, cells) {
+    ui.auto = cells.map(function (c, i) { return matches(ui.vals[i], (c.accept && c.accept.length) ? c.accept : [c.text], false); });
+    ui.marks = ui.auto.slice();
+    ui.checked = true;
+  }
+  function blankFinish(kp, item, ui, cells, format, interaction, question) {
+    var right = ui.marks.filter(Boolean).length;
+    var ratio = cells.length ? right / cells.length : 0;
+    var result = ratio === 1 ? 'correct' : (ratio >= 0.5 ? 'partial' : 'incorrect');
+    if (isContested(kp)) result = { correct: 'coherent', partial: 'partly_coherent', incorrect: 'incoherent' }[result];
+    var manual = ui.marks.some(function (m, i) { return m !== ui.auto[i]; });
+    var a = addAttempt(kp, item.id, { result: result, hint_level: ui.hintUsed ? 1 : 0, question: question,
+      question_format: formatOf(item, format), interaction: interaction, self_assessed: manual || undefined, duration_sec: ui.duration });
+    ui.done = true; ui.result = result; ui.attemptId = a.id;
+  }
+  function blankCell(ui, cell, idx, label) {
+    if (!ui.checked) {
+      return h('input', { type: 'text', 'aria-label': label, value: ui.vals[idx] || '', oninput: function () { ui.vals[idx] = this.value; } });
+    }
+    return h('span', null, h('span', null, ui.vals[idx] || '—'),
+      h('span', { class: 'expected' }, T.expected, cell.text),
+      ui.done ? null : h('label', { class: 'small' }, h('input', { type: 'checkbox', checked: ui.marks[idx],
+        onchange: function () { ui.marks[idx] = this.checked; } }), ' ', T.countRight));
+  }
+
+  function renderTable(kp, item, ui, rerender, model, format, interaction) {
+    var cells = [];
+    model.rows.forEach(function (r) { r.cells.forEach(function (c) { if (c.blank) cells.push(c); }); });
+    if (!ui.vals) ui.vals = cells.map(function () { return ''; });
+    var out = [h('p', null, h('strong', null, rich(item.prompt || item.question))), h('p', { class: 'small muted' }, T.fillFirst)];
+    var hasLabel = model.rows.some(function (r) { return r.label !== undefined; });
+    var idx = 0;
+    var head = h('tr', null, model.columns.map(function (c) { return h('th', { scope: 'col' }, c); }));
+    var body = model.rows.map(function (r) {
+      var tr = h('tr', null, hasLabel ? h('th', { scope: 'row' }, r.label) : null);
+      r.cells.forEach(function (c, ci) {
+        var colName = model.columns[(hasLabel ? 1 : 0) + ci] || '';
+        if (!c.blank) { tr.appendChild(h('td', null, rich(c.text))); return; }
+        var my = idx++;
+        var cls = ui.checked ? (ui.marks[my] ? 'cell-ok' : 'cell-bad') : null;
+        tr.appendChild(h('td', { class: cls }, blankCell(ui, c, my, (r.label ? r.label + ' · ' : '') + colName)));
+      });
+      return tr;
+    });
+    out.push(h('table', { class: 'fill' }, h('thead', null, head), h('tbody', null, body)));
+    appendBlankControls(out, kp, item, ui, rerender, cells, format, interaction);
+    return out;
+  }
+
+  function renderDiagram(kp, item, ui, rerender) {
+    var nodes = item.nodes || [];
+    var cells = nodes.filter(function (n) { return n.blank; }).map(function (n) { return { text: n.label, accept: n.accept }; });
+    if (!ui.vals) ui.vals = cells.map(function () { return ''; });
+    var out = [h('p', null, h('strong', null, rich(item.prompt || item.question))), h('p', { class: 'small muted' }, T.predictFirst)];
+    var flow = h('div', { class: 'flow', role: 'list' });
+    var idx = 0, used = {};
+    nodes.forEach(function (n, i) {
+      var content;
+      if (n.blank) {
+        var my = idx++;
+        content = blankCell(ui, cells[my], my, String(i + 1));
+        flow.appendChild(h('div', { class: 'node' + (ui.checked ? (ui.marks[my] ? ' cell-ok' : ' cell-bad') : ''), role: 'listitem' }, (i + 1) + '. ', content));
+      } else {
+        flow.appendChild(h('div', { class: 'node', role: 'listitem' }, (i + 1) + '. ', rich(n.label)));
+      }
+      var next = nodes[i + 1];
+      if (next) {
+        var edge = (item.edges || []).filter(function (e) { return e.from === n.id && e.to === next.id; })[0];
+        if (edge) used[(item.edges || []).indexOf(edge)] = true;
+        flow.appendChild(h('div', { class: 'arrow', 'aria-hidden': 'true' }, '↓', edge && edge.label ? ' ' + edge.label : ''));
+      }
+    });
+    out.push(flow);
+    var label = function (id) { var n = nodes.filter(function (x) { return x.id === id; })[0]; return n ? (n.blank && !ui.checked ? '?' : n.label) : id; };
+    var extra = (item.edges || []).filter(function (e, i) { return !used[i]; });
+    if (extra.length) {
+      out.push(h('p', { class: 'small muted' }, T.alsoEdges, extra.map(function (e, i) {
+        return (i ? '; ' : '') + label(e.from) + ' → ' + label(e.to) + (e.label ? ' (' + e.label + ')' : '');
+      }).join('')));
+    }
+    appendBlankControls(out, kp, item, ui, rerender, cells, 'predict', 'diagram_fill');
+    return out;
+  }
+
+  function appendBlankControls(out, kp, item, ui, rerender, cells, format, interaction) {
+    var question = item.prompt || item.question;
+    if (!ui.checked) {
+      out.push(h('div', { class: 'row' }, hintBlock(item, ui, rerender), h('button', { type: 'button', class: 'btn', onclick: function () {
+        ui.duration = durationSince(ui); blankCheck(ui, cells); rerender();
+      } }, T.check)));
+    } else if (!ui.done) {
+      out.push(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', 'data-focus': '1', onclick: function () {
+        blankFinish(kp, item, ui, cells, format, interaction, question); rerender();
+      } }, T.confirmMarks)));
+    } else {
+      out.push(resultBanner(ui.result, null));
+      out.push(errorChooser(ui.attemptId));
+      if (ui.result !== 'correct' && ui.result !== 'coherent') out.push(h('div', { class: 'row' }, retryButton(ui, rerender)));
+    }
+    if (item.explanation && ui.done) out.push(h('p', { class: 'small' }, rich(item.explanation)));
+  }
+
+  // ---------- panels ----------
+  function kpStatus(kp) {
+    var res = kp.items.map(function (it) { var u = state.ui[keyOf(kp, it)]; return u && u.done ? u.result : null; });
+    if (res.every(function (r) { return r === null; })) return '○';
+    if (res.some(function (r) { return r === null; })) return '…';
+    return res.every(function (r) { return r === 'correct' || r === 'coherent'; }) ? '✓' : '◐';
+  }
+
+  function renderLearn(panel) {
+    var kps = data.knowledge_points;
+    var kp = kps[state.kp] || kps[0];
+    panel.appendChild(h('nav', { 'aria-label': T.pointsNav }, h('ol', { class: 'stepper' }, kps.map(function (k, i) {
+      return h('li', null, h('button', { type: 'button', 'aria-current': i === state.kp ? 'step' : null,
+        onclick: function () { state.kp = i; render(true); } }, kpStatus(k) + ' ' + (i + 1) + '. ' + k.title));
+    }))));
+
+    var head = h('section', { class: 'card' }, h('h2', null, (state.kp + 1) + '. ' + kp.title),
+      h('div', { class: 'badges' }, h('span', { class: 'badge' }, T.importance[kp.importance] || kp.importance),
+        h('span', { class: 'badge' }, T.types[kp.knowledge_type] || kp.knowledge_type)),
+      h('p', { class: 'small muted' }, T.whyForm, kp.interaction_reason));
+    panel.appendChild(head);
+
+    var allDone = kp.items.every(function (it) { var u = state.ui[keyOf(kp, it)]; return u && u.done; });
+    var teach = kp.teach;
+    var tstate = state.teach[kp.id] || (state.teach[kp.id] = { step: 0, closed: false });
+    var review = data.mode === 'review';
+    if (teach && !review && !tstate.closed) {
+      head.appendChild(renderTeach(teach, tstate, true));
+      return;
+    }
+    if (teach && (allDone || (!review && tstate.show))) {
+      if (tstate.show) head.appendChild(renderTeach(teach, tstate, false));
+      else head.appendChild(h('button', { type: 'button', class: 'btn quiet', onclick: function () { tstate.show = true; render(); } }, T.showTeach));
+    }
+
+    var rerender = function (focusItem) { render(focusItem); };
+    for (var i = 0; i < kp.items.length; i++) {
+      var item = kp.items[i];
+      panel.appendChild(renderItem(kp, item, rerender));
+      var u = state.ui[keyOf(kp, item)];
+      if (!u || !u.done) break;
+    }
+    if (allDone) {
+      var last = state.kp >= kps.length - 1;
+      panel.appendChild(h('div', { class: 'card' }, h('p', null, last ? T.allDone : T.pointDone),
+        last ? null : h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', 'data-focus': '1',
+          onclick: function () { state.kp += 1; render(true); } }, T.nextPoint))));
+    }
+  }
+
+  function renderTeach(teach, tstate, gate) {
+    var box = h('div', { class: 'teach' }, h('h3', null, T.teachTitle));
+    if (teach.steps && teach.steps.length) {
+      var shown = gate ? teach.steps.slice(0, tstate.step + 1) : teach.steps;
+      box.appendChild(h('ol', null, shown.map(function (s) { return h('li', null, rich(s)); })));
+      if (gate && tstate.step < teach.steps.length - 1) {
+        box.appendChild(h('button', { type: 'button', class: 'btn secondary', onclick: function () { tstate.step += 1; save(); render(); } }, T.nextStep));
+        return box;
+      }
+    }
+    if (teach.example) box.appendChild(h('p', null, h('strong', null, T.example + T.colon), rich(teach.example)));
+    if (teach.principle) box.appendChild(h('p', null, h('strong', null, T.principle + T.colon), rich(teach.principle)));
+    if (gate) {
+      box.appendChild(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', onclick: function () {
+        tstate.closed = true; save(); render(true);
+      } }, T.startQuestions)));
+    }
+    return box;
+  }
+
+  function renderRecall(panel) {
+    var fr = data.free_recall, r = state.recall;
+    var card = h('section', { class: 'card' }, h('h2', null, T.tabRecall), h('p', null, rich(fr.prompt)), h('p', { class: 'small muted' }, T.recallIntro));
+    panel.appendChild(card);
+    if (!r.submitted) {
+      var btn;
+      card.appendChild(h('label', null, h('span', { class: 'sr-only' }, T.yourAnswer),
+        h('textarea', { rows: 6, value: r.draft || '', oninput: function () { r.draft = this.value; btn.disabled = !norm(this.value); } })));
+      card.appendChild(h('div', { class: 'row' }, btn = h('button', { type: 'button', class: 'btn', disabled: !norm(r.draft), onclick: function () {
+        r.submitted = true; r.text = r.draft; r.ticks = fr.reference_points.map(function () { return false; }); save(); render(true);
+      } }, T.recallCompare)));
+      return;
+    }
+    card.appendChild(h('p', null, h('strong', null, T.yourAnswer + T.colon), r.text));
+    var list = h('fieldset', { class: 'checklist' }, h('legend', { tabindex: '-1', 'data-focus': r.done ? null : '1' }, T.selfCheck));
+    fr.reference_points.forEach(function (p, i) {
+      var kp = kpById(p.kp_id);
+      list.appendChild(h('label', null, h('input', { type: 'checkbox', checked: r.ticks[i], disabled: r.done, onchange: function () { r.ticks[i] = this.checked; } }),
+        h('span', null, rich(p.text), ' ', h('span', { class: 'badge' }, (kp ? kp.title : p.kp_id) + ' · ' + (p.required ? T.keyPoint : T.bonusPoint)))));
+    });
+    card.appendChild(list);
+    if (r.done) { card.appendChild(h('p', { class: 'result partial' }, T.recallDone)); return; }
+    card.appendChild(h('p', { class: 'small muted' }, T.selfNote));
+    card.appendChild(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', onclick: function () {
+      var byKp = {};
+      fr.reference_points.forEach(function (p, i) { (byKp[p.kp_id] = byKp[p.kp_id] || { pts: [], ticks: [] }).pts.push(p); byKp[p.kp_id].ticks.push(r.ticks[i]); });
+      Object.keys(byKp).forEach(function (id) {
+        var kp = kpById(id);
+        if (!kp) return;
+        addAttempt(kp, 'free-recall', { phase: 'synthesis', result: gradeTicks(byKp[id].pts, byKp[id].ticks, isContested(kp)),
+          question: fr.prompt, question_format: 'free_recall', interaction: 'free_text', self_assessed: true });
+      });
+      r.done = true; save(); render(true);
+    } }, T.confirmSelf)));
+  }
+
+  function renderPlain(panel) {
+    var pt = data.plain_talk, s = state.pt;
+    pt.points.forEach(function (p) { state.ptViewed[p.kp_id] = true; });
+    save();
+    panel.appendChild(h('p', { class: 'notice' }, T.ptIntro));
+    if (!s.hidden) {
+      pt.points.forEach(function (p) {
+        var kp = kpById(p.kp_id);
+        var card = h('section', { class: 'card' }, h('h2', null, kp ? kp.title : p.kp_id));
+        card.appendChild(h('p', null, h('strong', null, T.ptConclusion + T.colon), rich(p.conclusion)));
+        if (p.analogy) {
+          card.appendChild(h('p', null, h('strong', null, T.ptAnalogy + T.colon), rich(p.analogy)));
+          if (p.analogy_limit) card.appendChild(h('p', null, h('strong', null, T.ptLimit + T.colon), rich(p.analogy_limit)));
+        } else if (p.no_analogy_reason) {
+          card.appendChild(h('p', { class: 'small muted' }, T.ptNoAnalogy, p.no_analogy_reason));
+        }
+        card.appendChild(h('p', null, h('strong', null, T.ptExample + T.colon), rich(p.example)));
+        card.appendChild(h('p', null, h('strong', null, T.ptPitfall + T.colon), rich(p.pitfall)));
+        panel.appendChild(card);
+      });
+      panel.appendChild(h('section', { class: 'card' }, h('h2', null, T.ptSummary), h('p', null, rich(pt.summary))));
+    }
+    var recallKp = kpById(pt.recall.kp_id);
+    var card = h('section', { class: 'card open' }, h('h2', null, T.ptRecall), h('p', null, rich(pt.recall.prompt)));
+    panel.appendChild(card);
+    if (!s.hidden) {
+      card.appendChild(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', onclick: function () { s.hidden = true; save(); render(true); } }, T.ptReady)));
+      return;
+    }
+    if (!s.submitted) {
+      var btn;
+      card.appendChild(h('label', { 'data-focus': '1', tabindex: '-1' }, h('span', { class: 'sr-only' }, T.yourAnswer),
+        h('textarea', { rows: 4, value: s.draft || '', oninput: function () { s.draft = this.value; btn.disabled = !norm(this.value); } })));
+      card.appendChild(h('div', { class: 'row' }, btn = h('button', { type: 'button', class: 'btn', disabled: !norm(s.draft), onclick: function () {
+        s.submitted = true; s.text = s.draft; save(); render(true);
+      } }, T.ptCompare)));
+      return;
+    }
+    card.appendChild(h('p', null, h('strong', null, T.yourAnswer + T.colon), s.text));
+    var ref = pt.points.filter(function (p) { return p.kp_id === pt.recall.kp_id; })[0];
+    if (ref) card.appendChild(h('div', { class: 'teach', tabindex: '-1', 'data-focus': s.done ? null : '1' },
+      h('p', null, h('strong', null, T.ptConclusion + T.colon), rich(ref.conclusion)), h('p', null, h('strong', null, T.ptExample + T.colon), rich(ref.example))));
+    if (!s.done && recallKp) {
+      card.appendChild(selfGrade([['correct', T.gotIt], ['partial', T.partly], ['incorrect', T.missed]], function (result) {
+        addAttempt(recallKp, 'plain-talk', { phase: 'plain_talk_recall', result: result, question: pt.recall.prompt,
+          question_format: 'free_recall', interaction: 'free_text', self_assessed: true });
+        s.done = true; s.result = result; save(); render(true);
+      }));
+      card.appendChild(h('p', { class: 'small muted' }, T.selfNote));
+    } else if (s.done) {
+      card.appendChild(resultBanner(s.result, null, h('p', { class: 'small' }, T.selfAssessed)));
+    }
+  }
+
+  function renderMistakes(panel) {
+    var bad = state.attempts.filter(function (a) { return BAD.indexOf(a.result) >= 0; });
+    if (!bad.length) { panel.appendChild(h('p', { class: 'card' }, T.mistakesEmpty)); return; }
+    panel.appendChild(h('p', { class: 'muted' }, fmt(T.mistakesSummary, { n: bad.length })));
+    var groups = {};
+    bad.forEach(function (a) { (groups[a.error_type || 'none'] = groups[a.error_type || 'none'] || []).push(a); });
+    var order = Object.keys(T.errorTypes).concat(['none']);
+    order.forEach(function (type) {
+      var list = groups[type];
+      if (!list) return;
+      list.sort(function (a, b) { return (b.confidence === 3 && b.result === 'incorrect') - (a.confidence === 3 && a.result === 'incorrect'); });
+      var section = h('section', { class: 'card group' }, h('h3', null, type === 'none' ? T.unclassified : T.errorTypes[type][0] + ' · ' + T.errorTypes[type][1]));
+      list.forEach(function (a) {
+        var kp = kpById(a.kp_id);
+        var hot = a.result === 'incorrect' && a.confidence === 3;
+        var select = h('select', { 'aria-label': T.whyWrong, onchange: function () {
+          if (this.value) a.error_type = this.value; else delete a.error_type;
+          save(); render();
+        } }, h('option', { value: '' }, T.unclassified), Object.keys(T.errorTypes).map(function (t) {
+          var o = h('option', { value: t }, T.errorTypes[t][0]);
+          if (a.error_type === t) o.selected = true;
+          return o;
+        }));
+        section.appendChild(h('div', { class: 'mistake' },
+          h('div', { class: 'badges' }, h('span', { class: 'badge' }, kp ? kp.title : a.kp_id), h('span', { class: 'badge' }, T[a.result] || a.result),
+            a.confidence ? h('span', { class: 'badge' }, fmt(T.confShort, { c: a.confidence })) : null,
+            hot ? h('span', { class: 'badge hot' }, T.hotBadge) : null),
+          h('p', null, rich(a.question || '')), select));
+      });
+      panel.appendChild(section);
+    });
+  }
+
+  function buildExport() {
+    var viewed = Object.keys(state.ptViewed).filter(function (k) { return state.ptViewed[k] && kpById(k); });
+    var out = {
+      format: EXPORT_FORMAT, schema_version: '1.0', source: 'html', lesson_id: data.lesson_id, topic: data.topic,
+      exported_at: isoNow(),
+      knowledge_points: data.knowledge_points.map(function (k) {
+        var d = { id: k.id, title: k.title, importance: k.importance, knowledge_type: k.knowledge_type };
+        if (k.secondary_types && k.secondary_types.length) d.secondary_types = k.secondary_types;
+        return d;
+      }),
+      attempts: state.attempts.map(function (a) { return JSON.parse(JSON.stringify(a)); })
+    };
+    if (data.language) out.language = data.language;
+    if (viewed.length) out.plain_talk_viewed_kp_ids = viewed;
+    return JSON.stringify(out, null, 2);
+  }
+
+  function buildAnswers() {
+    var lines = ['# closebook · ' + T.myAnswers, '', data.topic + ' (' + data.lesson_id + ') · ' + isoNow(), ''];
+    data.knowledge_points.forEach(function (kp) {
+      var rows = [];
+      kp.items.forEach(function (it) {
+        var u = state.ui[keyOf(kp, it)];
+        if (!u || !u.done) return;
+        var q = it.question || it.prompt || it.front || (it.fallback && it.fallback.question) || it.id;
+        var row = ['**Q:** ' + q, '**' + T.yourAnswer + ':** ' + (u.answerText || (u.choice !== undefined && it.options ? String.fromCharCode(65 + u.choice) + '. ' + it.options[u.choice].text : T.noText)),
+          '**' + T.gradeSelf + '** ' + (T[u.result] || u.result) + (u.conf ? ' · ' + fmt(T.confShort, { c: u.conf }) : '')];
+        if (u.ticks && it.reference_points) {
+          row.push(it.reference_points.map(function (p, i) { return (u.ticks[i] ? '- [x] ' : '- [ ] ') + p.text; }).join('\n'));
+        }
+        rows.push(row.join('\n'));
+      });
+      if (rows.length) { lines.push('## ' + kp.title, ''); lines.push(rows.join('\n\n'), ''); }
+    });
+    if (state.recall.text) lines.push('## ' + T.tabRecall, '', '**Q:** ' + data.free_recall.prompt, '**' + T.yourAnswer + ':** ' + state.recall.text, '');
+    if (state.pt.text) lines.push('## ' + T.tabPlain, '', '**Q:** ' + data.plain_talk.recall.prompt, '**' + T.yourAnswer + ':** ' + state.pt.text, '');
+    return lines.join('\n');
+  }
+
+  function copyText(area, status) {
+    function fallback() {
+      try { area.focus(); area.select(); var ok = document.execCommand('copy'); status.textContent = ok ? T.copied : T.copyFailed; }
+      catch (e) { status.textContent = T.copyFailed; }
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(area.value).then(function () { status.textContent = T.copied; }, fallback);
+      } else fallback();
+    } catch (e) { fallback(); }
+  }
+  function downloadText(text, name, type, status) {
+    try {
+      var url = URL.createObjectURL(new Blob([text], { type: type }));
+      var a = h('a', { href: url, download: name });
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+    } catch (e) { status.textContent = T.downloadFailed; }
+  }
+  function exportBox(title, help, builder, filename, type) {
+    var area = h('textarea', { rows: 8, readonly: true, 'aria-label': title, class: 'export-area' });
+    var status = h('p', { class: 'small', 'aria-live': 'polite' });
+    return h('section', { class: 'card' }, h('h2', null, title), h('p', { class: 'small muted' }, help),
+      h('div', { class: 'row' },
+        h('button', { type: 'button', class: 'btn', onclick: function () { area.value = builder(); status.textContent = ''; } }, T.generate),
+        h('button', { type: 'button', class: 'btn secondary', onclick: function () { if (!area.value) area.value = builder(); copyText(area, status); } }, T.copy),
+        h('button', { type: 'button', class: 'btn secondary', onclick: function () { if (!area.value) area.value = builder(); downloadText(area.value, filename, type, status); } }, T.download)),
+      h('label', null, h('span', { class: 'sr-only' }, title), area), status);
+  }
+
+  function importJson(text) {
+    var obj;
+    try { obj = JSON.parse(text); } catch (e) { return T.importBad; }
+    if (!obj || obj.format !== EXPORT_FORMAT || !Array.isArray(obj.attempts)) return T.importBad;
+    if (obj.lesson_id && obj.lesson_id !== data.lesson_id) return fmt(T.importOther, { id: obj.lesson_id });
+    var n = 0;
+    obj.attempts.forEach(function (a) {
+      if (!a || typeof a !== 'object' || !a.id || !a.kp_id || !a.result || !kpById(a.kp_id)) return;
+      if (findAttempt(a.id)) return;
+      state.attempts.push(a); n += 1;
+    });
+    state.attempts.sort(function (a, b) { return String(a.at) < String(b.at) ? -1 : (String(a.at) > String(b.at) ? 1 : 0); });
+    (obj.plain_talk_viewed_kp_ids || []).forEach(function (k) { state.ptViewed[k] = true; });
+    rebuildFromAttempts();
+    save();
+    return n ? fmt(T.importOk, { n: n }) : T.importNone;
+  }
+
+  function renderData(panel) {
+    panel.appendChild(exportBox(T.exportTitle, T.exportHelp, buildExport, data.lesson_id + '.closebook.json', 'application/json'));
+    panel.appendChild(exportBox(T.exportAnswers, T.exportAnswersHelp, buildAnswers, data.lesson_id + '.answers.md', 'text/markdown'));
+    var area = h('textarea', { rows: 6, 'aria-label': T.importTitle, class: 'import-area' });
+    var status = h('p', { class: 'small', 'aria-live': 'polite' });
+    var file = h('input', { type: 'file', accept: '.json,application/json', class: 'sr-only', id: 'import-file', onchange: function () {
+      var f = this.files && this.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function () { area.value = String(reader.result || ''); };
+      reader.readAsText(f);
+    } });
+    panel.appendChild(h('section', { class: 'card' }, h('h2', null, T.importTitle), h('p', { class: 'small muted' }, T.importHelp),
+      h('label', null, h('span', { class: 'sr-only' }, T.importTitle), area),
+      h('div', { class: 'row' },
+        h('button', { type: 'button', class: 'btn', onclick: function () { var msg = importJson(area.value); status.textContent = msg; announce(msg); renderProgress(); } }, T.importBtn),
+        file, h('label', { for: 'import-file', class: 'btn secondary', role: 'button', tabindex: '0',
+          onkeydown: function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); file.click(); } } }, T.importFile)),
+      status));
+    panel.appendChild(h('section', { class: 'card' }, h('p', { class: 'small muted' }, state.storage ? T.storageOn : T.storageOff),
+      h('button', { type: 'button', class: 'btn quiet', onclick: function () {
+        if (!window.confirm(T.resetConfirm)) return;
+        state.attempts = []; state.seq = 0; state.ui = {}; state.teach = {}; state.recall = {}; state.pt = {}; state.ptViewed = {};
+        save(); render();
+      } }, T.reset)));
+  }
+
+  // ---------- frame ----------
+  function tabs() {
+    var list = [['learn', T.tabLearn]];
+    if (data.free_recall) list.push(['recall', T.tabRecall]);
+    if (data.plain_talk) list.push(['plain', T.tabPlain]);
+    list.push(['mistakes', T.tabMistakes], ['data', T.tabData]);
+    return list;
+  }
+  function renderTabs() {
+    var nav = document.getElementById('tabs');
+    nav.textContent = '';
+    nav.setAttribute('aria-label', 'closebook');
+    var list = tabs();
+    list.forEach(function (t, i) {
+      nav.appendChild(h('button', { type: 'button', role: 'tab', id: 'tab-' + t[0], 'aria-selected': state.tab === t[0] ? 'true' : 'false',
+        'aria-controls': 'panel', tabindex: state.tab === t[0] ? '0' : '-1',
+        onclick: function () { state.tab = t[0]; render(); },
+        onkeydown: function (e) {
+          var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+          if (!d) return;
+          e.preventDefault();
+          var nt = list[(i + d + list.length) % list.length][0];
+          state.tab = nt; render(); document.getElementById('tab-' + nt).focus();
+        } }, t[1]));
+    });
+  }
+  function renderProgress() {
+    var total = 0, done = 0;
+    data.knowledge_points.forEach(function (kp) { kp.items.forEach(function (it) { total++; var u = state.ui[keyOf(kp, it)]; if (u && u.done) done++; }); });
+    var pct = total ? Math.round(done * 100 / total) : 0;
+    var el = document.getElementById('progress');
+    el.textContent = '';
+    el.appendChild(h('div', { class: 'bar', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': String(total), 'aria-valuenow': String(done),
+      'aria-label': fmt(T.progress, { done: done, total: total }) }, h('span', { style: 'width:' + pct + '%' })));
+    el.appendChild(h('p', { class: 'small muted' }, fmt(T.progress, { done: done, total: total })));
+  }
+  function render(moveFocus) {
+    renderTabs();
+    renderProgress();
+    var panel = document.getElementById('panel');
+    panel.textContent = '';
+    panel.setAttribute('aria-labelledby', 'tab-' + state.tab);
+    if (state.tab === 'learn') renderLearn(panel);
+    else if (state.tab === 'recall') renderRecall(panel);
+    else if (state.tab === 'plain') renderPlain(panel);
+    else if (state.tab === 'mistakes') renderMistakes(panel);
+    else renderData(panel);
+    save();
+    if (moveFocus !== false) {
+      var target = panel.querySelector('[data-focus="1"]') || panel.querySelector('.card.open textarea, .card.open input, .card.open button');
+      if (target && moveFocus) target.focus({ preventScroll: false });
+      else if (target && document.activeElement === document.body) target.focus({ preventScroll: true });
+    }
+  }
+
+  function fail(message) {
+    document.getElementById('panel').appendChild(h('p', { class: 'notice' }, message));
+  }
+
+  function init() {
+    T = STRINGS.en;
+    try {
+      data = JSON.parse(document.getElementById('lesson-data').textContent);
+      if (!data || !Array.isArray(data.knowledge_points) || !data.knowledge_points.length || !data.lesson_id) throw new Error('missing lesson_id or knowledge_points');
+      data.knowledge_points.forEach(function (kp) { if (!Array.isArray(kp.items) || !kp.items.length) throw new Error('point ' + kp.id + ' has no items'); });
+    } catch (e) {
+      fail(T.dataError + e.message);
+      return;
+    }
+    if (/^zh/i.test(data.language || '')) { T = STRINGS.zh; }
+    document.documentElement.lang = data.language || 'en';
+    document.title = data.topic + ' · closebook';
+    document.getElementById('title').textContent = data.topic;
+    document.getElementById('intro').textContent = data.intro || '';
+    document.getElementById('footer').textContent = T.footer;
+    storeKey = 'closebook:' + data.lesson_id;
+    restore();
+    rebuildFromAttempts();
+
+    var theme = document.getElementById('theme');
+    document.getElementById('theme-label').textContent = T.theme + ' ';
+    [['auto', T.themeAuto], ['light', T.themeLight], ['dark', T.themeDark]].forEach(function (o) {
+      var opt = h('option', { value: o[0] }, o[1]);
+      theme.appendChild(opt);
+    });
+    theme.value = themePref();
+    applyTheme(theme.value);
+    theme.addEventListener('change', function () { applyTheme(themePref(theme.value)); });
+    render(false);
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

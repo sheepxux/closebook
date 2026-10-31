@@ -1,0 +1,311 @@
+{
+  "skill_name": "closebook",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "[Environment: chat-only web app, plain text, no file tools. Today is 2026-10-31.]\n\n下周五（2026-11-06）考计算机网络期末，范围就是附件这份笔记。我每天能抽 30 分钟，帮我备考。",
+      "expected_output": "Exam-prep opening in one message: 3-5 knowledge points with importance and knowledge type, familiarity question, exam date noted with reviews planned before 2026-11-06; no summary of the notes and no question answered for the learner.",
+      "files": [
+        "evals/files/network-exam-notes.md"
+      ],
+      "expectations": [
+        "Splits the material into 3-5 knowledge points, each labelled with importance (core/important/minor or 核心/重要/次要) and a knowledge type",
+        "Labels the congestion-window calculation topic as procedural (程序技能) or equivalent, not factual",
+        "Asks about familiarity (e.g. new / seen but shaky / fairly familiar) and does not re-ask for the time budget, which was already given",
+        "Mentions the exam date and that reviews will be scheduled before 2026-11-06 (no review dated on or after the exam day)",
+        "Does not summarize or re-explain the notes; at most one diagnostic question is asked and its answer is not revealed",
+        "Writes in Chinese"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "[Environment: Codex CLI in a repository; you can read and write files and run commands. Today is 2026-10-31.]\n\nI keep messing up git rebase vs merge. Quiz me on the attached team notes. I've used git for a year but rebase still scares me; 15 minutes is all I have. Skip the outline, just start.",
+      "expected_output": "Coding-mode start: brief acknowledgement, first diagnostic question that asks the learner to predict a command's effect or choose/justify a command in a concrete scenario; one question only, confidence requested when there's a right answer.",
+      "files": [
+        "evals/files/git-rebase-notes.md"
+      ],
+      "expectations": [
+        "Respects 'skip the outline': no full multi-point outline table before the first question (a one-line list of points is acceptable)",
+        "The first question is concrete and situational (predict what a command does, pick and justify a command for a scenario, or spot the problem in a command sequence), not 'define rebase'",
+        "Asks exactly one question and does not reveal its answer",
+        "If the question has a right answer, asks for confidence 1-3 in the same reply",
+        "Does not build an HTML page or claim clickable UI"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n我在学西班牙语，ser 和 estar 学过但老是用错。30 分钟，直接开始练吧。",
+      "expected_output": "Language-mode practice: production tasks (translate or complete sentences into Spanish) rather than only recognition; one item at a time; feedback focused on the specific usage rule.",
+      "files": [],
+      "expectations": [
+        "Treats the point as language production: the first task asks the learner to produce Spanish (translate a sentence, fill a blank with a conjugated form, or write a sentence), not only pick from options",
+        "Asks only one item (or one small set of blanks belonging to one item) and does not show the answer",
+        "Does not open with a long grammar explanation of ser vs estar before the learner answers",
+        "Does not use a Feynman 'explain it to a child' task as the first activity"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n我不想死记，我想真正理解：为什么 TCP 要三次握手，两次不行吗？我大概知道 SYN/ACK 这些词。有 30 分钟，直接开始。",
+      "expected_output": "Concept-mode opening or first question: asks the learner to reason (why/what-if) before explaining, e.g. predict what goes wrong with two handshakes when an old SYN arrives; no lecture first.",
+      "files": [],
+      "expectations": [
+        "Does not start with a full explanation of the three-way handshake",
+        "Asks a why / what-if or predict question (e.g. what happens with only two steps if a delayed old SYN arrives) that requires reasoning, not recall of the step names",
+        "Asks at most one question and does not answer it",
+        "Mentions or plans an explain-in-your-own-words (Feynman) step later, or the structure clearly leads to one (e.g. outline states synthesis by explanation)"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "[Environment: chat-only, plain text.]\n\n帮我总结一下附件这篇文章的要点。",
+      "expected_output": "One short offer of active learning (about 10 minutes of questions) in one sentence, without lecturing or starting a quiz; or the summary plus that one-sentence offer. Never refuses to summarize.",
+      "files": [
+        "evals/files/sleep-article.md"
+      ],
+      "expectations": [
+        "Offers active learning (being quizzed / 10 minutes of questions) at most once and in about one sentence",
+        "Does not start quizzing without the user's consent",
+        "Does not refuse the summary or lecture the user about learning science at length (more than two sentences of persuasion fails)",
+        "If a summary is given, it is accurate to the article (deep sleep replay, REM, sleep deprivation, naps, cramming)"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "[Environment: chat-only, plain text. Earlier in this chat: you offered to quiz the user on the attached article instead of summarizing; the user replied the message below.]\n\n不用了，就要总结，谢谢。",
+      "expected_output": "A concise, accurate summary of the article, with no further push toward quizzing.",
+      "files": [
+        "evals/files/sleep-article.md"
+      ],
+      "expectations": [
+        "Gives the summary directly",
+        "Does not offer active learning or quizzing again",
+        "Summary covers slow-wave replay, REM's role, sleep deprivation hurting recall, naps helping partly, and cramming backfiring"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n我回来复习了，这是我的进度文件（附件）。",
+      "expected_output": "Review flow: identifies due items (kp2 first as an overdue, high-confidence error, then kp3/kp1/kp4), states a small question cap, and asks the first retest question on kp2 (no-cache vs no-store) before any explanation.",
+      "files": [
+        "evals/files/progress.http-cache.json"
+      ],
+      "expectations": [
+        "Recognizes the progress file and goes into review without re-running an opening outline",
+        "Puts kp2 (Cache-Control / no-cache vs no-store, high-confidence error, overdue since 2026-10-29) first",
+        "Lists or counts the due points correctly: kp2, kp3, kp1, kp4 are due; kp5 is not due (not yet learned)",
+        "The first question targets kp2 and does not explain the no-cache/no-store difference before the learner answers",
+        "Asks for confidence 1-3 together with the answer",
+        "Asks only one question"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31. Earlier in this chat: you started a review of the attached progress file and asked the first question on kp2: \"Cache-Control: no-cache 是什么意思？请连同信心 1-3 一起回答。\"]\n\n可以缓存，但每次用之前要先去服务器确认，没变就 304。信心 3",
+      "expected_output": "Feedback (correct, specific), states that kp2 moves to box 2 with next review 2026-11-03 (3 days) and the priority flag clears, then asks the next due question (kp3, kp1 or kp4) without explaining it first.",
+      "files": [
+        "evals/files/progress.http-cache.json"
+      ],
+      "expectations": [
+        "Judges the answer correct and says specifically what was right, without generic praise only",
+        "Updates kp2's schedule correctly: box 1 -> box 2 and next review 2026-11-03, or clearly states the 3-day interval from 2026-10-31",
+        "Notes that the earlier high-confidence error is now resolved / priority cleared (or equivalent)",
+        "Moves on to the next due point (kp3, kp1 or kp4) with one question and does not reveal its answer"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n这份术语表我要全部背下来，下周一小测。熟悉程度：看过一遍。每天 15 分钟。",
+      "expected_output": "Factual material: retrieval + spaced repetition + chunking/mnemonics; flashcard-style or cloze prompts in text; no Feynman, no analogies; terms grouped into chunks; one item at a time.",
+      "files": [
+        "evals/files/pharmacology-glossary.md"
+      ],
+      "expectations": [
+        "Classifies the material as factual (事实记忆型)",
+        "Plans retrieval practice with spaced repetition, and chunking or a mnemonic aid (e.g. grouping pairs like agonist/antagonist/partial agonist, or potency vs efficacy)",
+        "Does not use a Feynman explanation task or everyday analogies for the definitions",
+        "Uses flashcard-style (term -> definition or reverse) or cloze questions, presented as plain text",
+        "Asks only one card / item at a time and hides its answer",
+        "Asks for confidence along with the answer"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n下周研讨课要讨论这份材料。大纲你定，我看过一遍，30 分钟，开始吧。",
+      "expected_output": "Contested material: open-ended prompts asking the learner to state and justify a position or weigh evidence; no right/wrong grading, no multiple choice, no predict-then-verify; feedback will be on reasoning coherence and evidence limits.",
+      "files": [
+        "evals/files/remote-work-debate.md"
+      ],
+      "expectations": [
+        "Labels the core question as contested / 主观有争议 (at least for the 'does remote work hurt innovation' point)",
+        "The first question is open-ended (state a position, compare arguments, or name an evidence limitation), not multiple choice",
+        "Does not present any position as the correct answer and does not frame the task as right/wrong",
+        "Does not use predict-then-verify on the contested point",
+        "Says, or makes clear, that answers will be judged on reasoning and use of evidence rather than correctness"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31. Earlier in this chat: you outlined the attached seminar material and suggested open-ended argument questions because the topic is contested.]\n\n我不要开放题，太累了。全部给我出选择题，有标准答案的那种。",
+      "expected_output": "States the risk in one sentence (MCQ with a single right answer misrepresents a contested topic and trains recognition, not argument) and offers a lighter alternative (e.g. MCQ on who argues what / evidence limits, or short one-sentence positions); does not lecture; lets the user decide.",
+      "files": [
+        "evals/files/remote-work-debate.md"
+      ],
+      "expectations": [
+        "Explains the risk briefly (about one or two sentences), mentioning that contested questions don't have a single correct answer",
+        "Offers a concrete alternative that reduces effort (e.g. MCQ on factual parts such as which argument belongs to which view or evidence limits, or very short written answers)",
+        "Does not refuse; makes clear it will do MCQ if the user still wants it",
+        "Does not lecture at length or repeat the argument multiple times"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31. Earlier in this chat: the user asked for multiple-choice questions only on the attached contested material; you explained once that the topic has no single right answer and offered MCQ on who-argues-what plus short written positions.]\n\n我知道风险，就要选择题，全部。",
+      "expected_output": "Complies immediately with an MCQ, without arguing again; notes once that this preference is recorded as a user override; the MCQ is as defensible as possible (e.g. about which argument or evidence belongs to which view).",
+      "files": [
+        "evals/files/remote-work-debate.md"
+      ],
+      "expectations": [
+        "Complies: the reply contains a multiple-choice question",
+        "Does not argue against the choice again (a one-clause acknowledgement is fine)",
+        "Mentions that the choice will be recorded (e.g. user override / 记录为用户指定) or records it in visible progress notes",
+        "The MCQ has one defensible answer grounded in the material (e.g. attributing an argument or evidence limit to a view), not 'which view is correct'",
+        "Asks for confidence with the answer and does not reveal the answer"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n帮我学一下这份 Docker 入门笔记，学过一点，30 分钟。",
+      "expected_output": "Opening outline in which the points get different knowledge types (image vs container: conceptual; commands: procedural; volumes vs bind mounts: judgment; default ports: factual) and correspondingly different method plans.",
+      "files": [
+        "evals/files/docker-basics.md"
+      ],
+      "expectations": [
+        "Outline has 3-5 points with at least three different knowledge types across them",
+        "Default ports are treated as factual, commands as procedural, and volumes vs bind mounts as judgment (or equivalent reasoning)",
+        "States per-point method choices that differ by type (e.g. flashcards/retrieval for ports, predict or do-the-command for commands, why/trade-off questions for volumes)",
+        "Does not apply one identical method to every point",
+        "Asks no more than the necessary opening questions (familiarity and time were given, so it should not re-ask them) and starts or offers to start immediately"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31. Earlier in this chat: outline agreed; the learner has 'seen it but shaky'; you are now on the first point, 'consumer groups and partitions'.]\n\n开始第一个知识点吧。",
+      "expected_output": "Predict-first diagram: a text diagram of partitions and consumers with the assignment left blank (or a scenario like 4 partitions, 6 consumers), asking the learner to predict before the full diagram is shown.",
+      "files": [
+        "evals/files/kafka-architecture.md"
+      ],
+      "expectations": [
+        "Uses a diagram or structured layout in plain text (ASCII / indented list / table) of partitions and consumers, with something left for the learner to predict",
+        "Asks the learner to predict before showing the complete assignment (e.g. which consumer reads which partition, or what happens with more consumers than partitions)",
+        "Does not show the answer in the same message",
+        "Does not claim to render an interactive or clickable diagram"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31. Earlier in this chat: you covered all three points of the attached Kafka notes (partitions and keys, leaders and replicas, consumer groups and offsets) with retests; the learner got most right.]\n\n三个都做完了，接下来呢？",
+      "expected_output": "Synthesis via Feynman explanation (conceptual material): asks the learner to explain the whole flow in their own words to a newcomer, with a concrete scenario; then mentions the review list with absolute dates and the progress save. No re-teaching.",
+      "files": [
+        "evals/files/kafka-architecture.md"
+      ],
+      "expectations": [
+        "Asks for a Feynman-style explanation in the learner's own words (e.g. explain to a new teammate what happens from producer to consumer, or during a consumer crash)",
+        "Does not substitute a plain list-recall or another MCQ for the Feynman step",
+        "Does not explain the answer before the learner tries",
+        "Mentions next steps: review dates as absolute dates and/or saving progress (may be deferred until after the explanation)"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "[Environment: plain-text terminal chat; nothing is rendered, no buttons, no HTML preview. Today is 2026-10-31.]\n\nquiz me on HTTP caching: no-cache vs no-store vs max-age. I've studied it before; 15 minutes, just start.",
+      "expected_output": "Plain-text quiz that tells the learner how to answer by typing (e.g. 'reply with the letter and confidence, like B 2'); no mention of buttons, cards, clicking or an HTML page.",
+      "files": [],
+      "expectations": [
+        "Uses only plain text and tells the learner to answer by typing (e.g. letter + confidence)",
+        "Does not mention clicking, buttons, cards, widgets, an HTML page, or an artifact",
+        "Asks one question and does not reveal its answer",
+        "Asks for confidence in the same reply as the answer"
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n快速考我一下：HTTP 304 是什么意思？",
+      "expected_output": "One short question (or the user's question turned into a quick retrieval check) with a confidence prompt; no outline of 3-5 points, no table/diagram/HTML/flashcard deck, no long plan.",
+      "files": [],
+      "expectations": [
+        "Keeps it to one short retrieval question (e.g. 'what does 304 mean and when is it sent?') or answers briefly then asks one check question",
+        "Does not produce a 3-5 point outline, a study plan, a table, a diagram, a flashcard deck or an HTML page",
+        "Reply is short (roughly under 80 words / 150 Chinese characters)",
+        "Asks for confidence if it asks a question"
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31. Earlier in this chat: you taught 'strong cache vs negotiated cache' (强缓存/协商缓存) and the learner got the retest partly wrong.]\n\n说人话吧，我还是没懂强缓存和协商缓存到底差在哪。",
+      "expected_output": "Plain Talk format: one-line conclusion, an everyday analogy plus where it breaks, a concrete example, a common pitfall, every technical term explained or avoided; ends with a closed recall question (not answered).",
+      "files": [],
+      "expectations": [
+        "Gives a one-line conclusion in everyday words",
+        "Includes an everyday analogy AND explicitly states where the analogy breaks down",
+        "Gives one concrete example and one common pitfall",
+        "Any technical term used (e.g. max-age, ETag, 304) is explained in plain words in the same reply",
+        "Ends with a recall question asking the learner to explain or apply it in their own words, without answering it",
+        "Does not insult or label the learner (no 'for dummies' tone)"
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n说人话：药理学里的“半衰期”和“治疗指数”分别是什么？给我准确定义，考试要背的。",
+      "expected_output": "Plain Talk for precise definitions: exact definitions kept, explained in plain words with a concrete example (e.g. numbers), no forced analogy (or states why no analogy); ends with a recall question.",
+      "files": [
+        "evals/files/pharmacology-glossary.md"
+      ],
+      "expectations": [
+        "Keeps the exact definitions (half-life: time for plasma concentration to fall by half; therapeutic index: LD50/ED50, larger is safer)",
+        "Does not force an everyday analogy onto these definitions, or explicitly says why it skips one",
+        "Uses a concrete example (e.g. numbers showing concentration halving, or LD50/ED50 values)",
+        "Ends with a recall question and does not answer it"
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n特征值和特征向量我完全没学过，零基础。30 分钟，大纲你定，直接开始。",
+      "expected_output": "Entry path B: short outline, then a minimal teaching block for the first point (one concrete example + one sentence of principle, about 150 words or less), then one closed-book check question; no diagnostic quiz on unknown material first.",
+      "files": [],
+      "expectations": [
+        "Does not open with a diagnostic question about material the user has said is entirely new",
+        "Gives a minimal teaching block for the first point only: one concrete example plus one sentence of principle, roughly 150 words (or 300 Chinese characters) or fewer",
+        "Follows the teaching with one closed-book question that the learner must answer, and does not answer it",
+        "Does not teach all points at once or produce a long lecture"
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n我是小白，先别考我。先用大白话跟我说说区块链到底是个啥。",
+      "expected_output": "Plain Talk before learning: plain-language explanation with conclusion, analogy and its limit, example, pitfall; no unexplained jargon; ends with a light recall question and/or offers to continue into active learning; does not force a quiz the user declined right now beyond a single recall prompt.",
+      "files": [],
+      "expectations": [
+        "Explains in plain words with a one-line conclusion, an analogy with its limit, a concrete example and a common pitfall",
+        "No unexplained jargon (terms like hash, node, consensus are either avoided or explained in the same sentence)",
+        "Respects 'don't quiz me yet': at most one light recall question at the end, no multi-question quiz",
+        "Offers, in one sentence, to continue with active learning or check understanding later"
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "[Environment: chat-only, plain text; the user can't upload or download files. Today is 2026-10-31. Earlier in this chat (topic 'TCP 拥塞控制', zh-CN): kp1 慢启动 (core, procedural) — retest correct, confidence 2; kp2 拥塞避免 (important, procedural) — retest partial, confidence 2, error memory_lapse (forgot +1 MSS per RTT); kp3 超时与快速恢复 (core, conceptual) — diagnostic dont_know, then retest incorrect, confidence 3, misconception (thought cwnd goes to 1 after three duplicate ACKs). Synthesis: free recall was partial.]\n\n今天先到这，帮我保存进度。",
+      "expected_output": "One code block with compact core-field progress JSON (schema_version, topic, updated, weak_points, knowledge_points with id/title/importance/knowledge_type/mastery/leitner_box/next_review/attempts) that validates with progress_tool.py; absolute dates; brief instruction to paste it back next time; review dates listed.",
+      "files": [],
+      "expectations": [
+        "Outputs exactly one JSON code block for the progress",
+        "The JSON validates: `python3 scripts/progress_tool.py validate <file>` reports no errors (grader runs it)",
+        "Uses only core fields (no extension-only fields such as method or interaction on attempts), unless the user asked for the full version",
+        "kp1 is in box 1 with next_review 2026-11-01; kp2 and kp3 are weak or fuzzy in box 1 with next_review 2026-11-01; kp3 has a high-confidence error noted (priority / weak_points note)",
+        "The diagnostic attempt has phase diagnostic and does not change the schedule",
+        "Tells the user to save it and paste it back in a new chat, and gives the next review date(s) as absolute dates",
+        "Does not claim it will remember the progress itself"
+      ]
+    }
+  ]
+}

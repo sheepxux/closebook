@@ -1,0 +1,32 @@
+{
+  "eval_id": 15,
+  "expectations": [
+    {
+      "text": "Asks for a Feynman-style explanation in the learner's own words (e.g. explain to a new teammate what happens from producer to consumer, or during a consumer crash)",
+      "passed": true,
+      "evidence": "\"假设我是一个聪明、但完全没接触过 Kafka 的朋友。请用 3–6 句话给我讲清楚：Kafka 是怎么存放和分发消息的，把分区、leader 和副本、消费者组和 offset 串成一个完整的过程来讲。\" The reply explicitly names it \"费曼讲解\"."
+    },
+    {
+      "text": "Does not substitute a plain list-recall or another MCQ for the Feynman step",
+      "passed": true,
+      "evidence": "It asks for a connected explanation (\"串成一个完整的过程\"), not a list or an MCQ."
+    },
+    {
+      "text": "Does not explain the answer before the learner tries",
+      "passed": true,
+      "evidence": "No Kafka content is re-taught. It only says why the step matters (\"单独答对不代表能串起来\") and \"讲不全没关系\"."
+    },
+    {
+      "text": "Mentions next steps: review dates as absolute dates and/or saving progress (may be deferred until after the explanation)",
+      "passed": true,
+      "evidence": "\"根据你的讲解补上缺口，然后给你一份带具体日期的复习清单\" and \"输出一段进度 JSON，你复制保存；下次开新对话时贴回来…（我没法跨对话记住进度）\". Saving progress is mentioned; the dates are deferred, which is allowed."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Solid synthesis turn with a clear three-step wrap-up and an honest note about not remembering across chats. One gap compared with the expected output: the prompt is a general 'explain the whole flow' rather than a concrete scenario (e.g. a keyed message from producer to consumer, or a consumer crashing mid-processing and the group rebalancing from the last committed offset), so rebalancing and at-least-once may go untested. No factual errors."
+}

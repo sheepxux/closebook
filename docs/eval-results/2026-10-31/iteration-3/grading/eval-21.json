@@ -1,0 +1,27 @@
+{
+  "eval_id": 21,
+  "expectations": [
+    {
+      "text": "Explains in plain words with a one-line conclusion, an analogy with its limit, a concrete example and a common pitfall",
+      "passed": true,
+      "evidence": "Both points have labelled 结论 / 类比 / 类比不成立的地方 / 例子 / 常见的坑. For example, the class-fund ledger analogy has the limit \"真实区块链里的'同学'互不认识……不靠大家互相信任\", and the Bitcoin example has the pitfall \"很多人以为区块链就是比特币\"."
+    },
+    {
+      "text": "No unexplained jargon (terms like hash, node, consensus are either avoided or explained in the same sentence)",
+      "passed": true,
+      "evidence": "Hash becomes \"指纹\", explained as \"根据整页内容算出来的一串字符\". Node becomes \"电脑\", consensus becomes \"大家核对一致\", and 区块 is defined as \"每一页叫一个'区块'\". The raw terms hash, node and consensus never appear."
+    },
+    {
+      "text": "Respects 'don't quiz me yet': at most one light recall question at the end, no multi-question quiz",
+      "passed": true,
+      "evidence": "No quiz question at all: \"按你说的这次不考你，等正式开始学的时候我再请你凭记忆复述一下\". This matches plain-talk.md's rule for 先别考我."
+    },
+    {
+      "text": "Offers, in one sentence, to continue with active learning or check understanding later",
+      "passed": true,
+      "evidence": "\"想继续的话，我可以从刚才这两点出发，每次讲一个小例子再请你回忆一下，要开始吗？\" is a single sentence."
+    }
+  ],
+  "summary": {"passed": 4, "failed": 0, "total": 4, "pass_rate": 1.0},
+  "notes": "Plain Talk sentence counts. Point 1 (what blockchain is) has 6 sentences: conclusion 1, analogy 2, break 1, example 1, pitfall 1. Point 2 (blocks + chain, why it's hard to change) has 5: one sentence for each part. The overview has 4 sentences, within the 5-sentence limit. Everything is within the cap. The response says once that a preview doesn't count toward mastery and covers only 2 points with no outline of later topics, as plain-talk.md requires. One awkward phrase: \"比特币只是用了区块链的一个应用\" should be \"比特币只是区块链的一个应用\"; this is minor and does not change the meaning."
+}

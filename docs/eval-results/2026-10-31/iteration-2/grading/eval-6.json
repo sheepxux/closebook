@@ -1,0 +1,5 @@
+{"eval_id": 6, "expectations": [
+  {"text": "Gives the summary directly", "passed": true, "evidence": "Opens with \"好的，这篇文章的要点如下：\" followed by 4 points"},
+  {"text": "Does not offer active learning or quizzing again", "passed": true, "evidence": "Ends with \"一句话概括：学完要睡好…\"; no quiz offer"},
+  {"text": "Summary covers slow-wave replay, REM's role, sleep deprivation hurting recall, naps helping partly, and cramming backfiring", "passed": true, "evidence": "\"深睡眠（慢波睡眠）…海马体会…回放\"; \"REM 睡眠…程序性记忆…情绪记忆\"; \"学完后缺觉会损害记忆\"; \"小睡一会儿能获得一部分好处\"; \"考前通宵突击…适得其反\""}
+], "summary": {"passed": 3, "failed": 0, "total": 3, "pass_rate": 1.00}, "notes": "Accurate and concise, with hedged wording that matches the article (\"被认为\", \"似乎\", \"通常\")."}

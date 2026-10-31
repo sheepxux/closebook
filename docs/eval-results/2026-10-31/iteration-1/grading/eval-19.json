@@ -1,0 +1,32 @@
+{
+  "eval_id": 19,
+  "expectations": [
+    {
+      "text": "Keeps the exact definitions (half-life: time for plasma concentration to fall by half; therapeutic index: LD50/ED50, larger is safer)",
+      "passed": true,
+      "evidence": "Half-life: \"血药浓度下降一半所需的时间\". TI: \"TI = LD50 / ED50，数值越大越安全\". Both match the attached glossary word for word."
+    },
+    {
+      "text": "Does not force an everyday analogy onto these definitions, or explicitly says why it skips one",
+      "passed": true,
+      "evidence": "It skips the analogy and says why: \"这两个都是考试要原样写出来的定义，所以这次不打比方：原话要准，比方反而容易把它说歪。\""
+    },
+    {
+      "text": "Uses a concrete example (e.g. numbers showing concentration halving, or LD50/ED50 values)",
+      "passed": true,
+      "evidence": "Numbers for both: \"t½ = 6 小时，现在血药浓度是 100 → 6 小时后 50 → 12 小时后 25 → 18 小时后 12.5\" and \"LD50 = 100 mg/kg，ED50 = 10 mg/kg，那么 TI = 100 ÷ 10 = 10\"."
+    },
+    {
+      "text": "Ends with a recall question and does not answer it",
+      "passed": false,
+      "evidence": "A recall question is asked and not answered (\"治疗指数的公式是什么？它的数值大，说明什么？\"), but the reply does not end with it. It continues with \"答完顺便告诉我两件事\" and two logistics questions (exam date/format, available time). Under the natural reading of 'ends with', this is not met. Borderline: the recall prompt is the last learning content."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "notes": "Definitions are exact and match the attached glossary. LD50 and ED50 are explained in plain words, and the \"剩下 18 个词\" count is correct (20 terms minus 2). It is honest that this read-through counts as preview, not mastery. Issues: (1) the recall question only covers TI, not half-life, even though both were taught. (2) Stacking two logistics questions after the recall question dilutes the closed-book check and edges toward the skill's 'one open question at a time' spirit. (3) The recall question covers the definition the learner just read, so it measures short-term recall; this is acceptable for a first check. Minor accuracy nuance: a constant half-life holds for first-order kinetics, which the example assumes without saying so. No factual errors."
+}

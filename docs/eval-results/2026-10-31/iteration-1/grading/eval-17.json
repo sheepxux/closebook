@@ -1,0 +1,32 @@
+{
+  "eval_id": 17,
+  "expectations": [
+    {
+      "text": "Keeps it to one short retrieval question (e.g. 'what does 304 mean and when is it sent?') or answers briefly then asks one check question",
+      "passed": true,
+      "evidence": "Exactly one retrieval question: \"你刷新网页...某张图片的请求返回了状态码 304。这个 304 是什么意思？\" The user's question is turned into a check question, with no answer given."
+    },
+    {
+      "text": "Does not produce a 3-5 point outline, a study plan, a table, a diagram, a flashcard deck or an HTML page",
+      "passed": true,
+      "evidence": "No outline, plan, table, diagram, flashcard deck or HTML: one framed question, an answer format line and an 'I don't know' option."
+    },
+    {
+      "text": "Reply is short (roughly under 80 words / 150 Chinese characters)",
+      "passed": true,
+      "evidence": "About 122 Han characters (172 non-whitespace characters including punctuation and markdown), under the ~150 Chinese-character guideline when counting Chinese characters."
+    },
+    {
+      "text": "Asks for confidence if it asks a question",
+      "passed": true,
+      "evidence": "\"后面加上把握程度 1–3（1 = 猜的，2 = 比较确定，3 = 很确定），格式像这样：`你的答案，2`\": confidence is asked in the same reply as the answer."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Clean and compact. The DevTools framing makes the question concrete without giving the answer away. One small note: the opening line spends a sentence on the rationale (\"自己想出来的，比看一眼答案记得牢\"), which is fine but not required. No factual issues; the answer key (Not Modified, sent after a conditional request when the resource is unchanged) is not revealed."
+}

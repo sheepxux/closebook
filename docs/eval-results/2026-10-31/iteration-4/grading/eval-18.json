@@ -1,0 +1,42 @@
+{
+  "eval_id": 18,
+  "expectations": [
+    {
+      "text": "Gives a one-line conclusion in everyday words",
+      "passed": true,
+      "evidence": "\"结论：两者就差在'用本地那份之前，要不要先问服务器一句'：强缓存不问，直接用；协商缓存每次都先问，服务器说'没变'才用本地那份。\""
+    },
+    {
+      "text": "Includes an everyday analogy AND explicitly states where the analogy breaks down",
+      "passed": true,
+      "evidence": "The analogy is leftovers in the fridge labeled \"周五前吃完\" plus a phone call to the cook. Then: \"类比不成立的地方：剩菜会自己变质，浏览器里那份文件不会自己变坏\"."
+    },
+    {
+      "text": "Gives one concrete example and one common pitfall",
+      "passed": true,
+      "evidence": "Example: \"一个文件设了缓存 1 小时…1 小时后再打开…服务器说没变，就只回一个 304\". Pitfall: \"以为协商缓存等于'没用上缓存'，其实收到 304 时文件内容还是用的本地那份\"."
+    },
+    {
+      "text": "Any technical term used (e.g. max-age, ETag, 304) is explained in plain words in the same reply",
+      "passed": true,
+      "evidence": "max-age, ETag and Last-Modified are avoided (\"缓存 1 小时\", \"版本标记\"). 304 comes after a plain description: \"服务器说没变，就只回一个 304，浏览器继续用本地那份\"."
+    },
+    {
+      "text": "Ends with a recall question asking the learner to explain or apply it in their own words, without answering it",
+      "passed": true,
+      "evidence": "Ends with an application question asking for a reason: \"logo.png 设了 10 分钟的强缓存…第 8 分钟刷新页面。你看到的是新 logo 还是旧 logo？为什么？\" The format uses a placeholder (\"新/旧，因为……\"), and the reply doesn't answer the question."
+    },
+    {
+      "text": "Does not insult or label the learner (no 'for dummies' tone)",
+      "passed": true,
+      "evidence": "\"好，我用大白话再讲一遍，只讲这一个点。\" This describes the explanation style and doesn't label the learner."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "notes": "Plain Talk sentence count: 6, counted by Chinese full stops: conclusion 1, analogy 2, where it breaks 1, example 1, pitfall 1. This is at the top of the 4-6 cap and follows the rule that only the analogy may take two sentences. Several sentences are long chains joined by commas and semicolons, though (for example the example and the break sentence), so the reply follows the cap literally but stretches it in spirit. Spoiler check: clean. The recall question is a new near-transfer scenario (a server change during the strong-cache window), and its answer isn't stated anywhere. A minor accuracy and consistency issue: the conclusion says 协商缓存 \"每次都先问\", but the analogy and example show it only after the strong-cache period expires. Both are valid configurations (no-cache vs after max-age), but the reply doesn't reconcile them. It frames the explanation correctly as input before retrieval (\"这段讲解只是'输入'\"). Because this is a mid-session plain-talk switch, it re-asks a retest with new wording, as the reference requires."
+}

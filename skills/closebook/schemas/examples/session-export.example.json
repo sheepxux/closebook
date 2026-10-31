@@ -1,0 +1,19 @@
+{
+  "format": "closebook-session-export",
+  "schema_version": "1.0",
+  "source": "html",
+  "lesson_id": "http-cache-review-2026-10-31",
+  "topic": "HTTP 缓存",
+  "language": "zh-CN",
+  "exported_at": "2026-10-31T21:05:00+08:00",
+  "knowledge_points": [
+    { "id": "kp6", "title": "ETag 与 Last-Modified 的取舍", "importance": "important", "knowledge_type": "judgment", "secondary_types": ["conceptual"] }
+  ],
+  "plain_talk_viewed_kp_ids": ["kp6"],
+  "attempts": [
+    { "kp_id": "kp2", "id": "html-1", "at": "2026-10-31T20:50:00+08:00", "phase": "review", "result": "correct", "hint_level": 0, "confidence": 2, "question": "哪个指令允许存储，但每次使用前必须向服务器确认？", "question_format": "mcq", "method": "retrieval", "interaction": "mcq", "duration_sec": 22 },
+    { "kp_id": "kp3", "id": "html-2", "at": "2026-10-31T20:52:00+08:00", "phase": "review", "result": "partial", "hint_level": 0, "confidence": 3, "error_type": "memory_lapse", "question": "带上 If-None-Match 头重发请求的 curl 写法", "question_format": "free_recall", "method": "retrieval", "interaction": "free_text", "self_assessed": true, "duration_sec": 95 },
+    { "kp_id": "kp1", "id": "html-3", "at": "2026-10-31T20:55:00+08:00", "phase": "review", "result": "correct", "hint_level": 0, "confidence": 3, "question": "强缓存命中时，浏览器会发请求吗？", "question_format": "flashcard", "method": "retrieval", "interaction": "flashcard", "duration_sec": 9 },
+    { "kp_id": "kp6", "id": "html-4", "at": "2026-10-31T21:01:00+08:00", "phase": "plain_talk_recall", "result": "partial", "hint_level": 0, "question": "合上页面，用自己的话说：什么时候 Last-Modified 不够用？", "question_format": "free_recall", "interaction": "free_text", "self_assessed": true, "duration_sec": 70 }
+  ]
+}

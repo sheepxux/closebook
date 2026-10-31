@@ -1,0 +1,32 @@
+{
+  "eval_id": 17,
+  "expectations": [
+    {
+      "text": "Keeps it to one short retrieval question (e.g. 'what does 304 mean and when is it sent?') or answers briefly then asks one check question",
+      "passed": true,
+      "evidence": "Single question: '服务器返回了状态码 304。这个状态码是什么意思？'"
+    },
+    {
+      "text": "Does not produce a 3-5 point outline, a study plan, a table, a diagram, a flashcard deck or an HTML page",
+      "passed": true,
+      "evidence": "Explicitly '先不列提纲、不讲解'; no outline, table, diagram, deck or HTML"
+    },
+    {
+      "text": "Reply is short (roughly under 80 words / 150 Chinese characters)",
+      "passed": false,
+      "evidence": "About 173 Han characters / 225 non-space characters, over the ~150-character budget; padded with an anti-lookup rationale, a '答不知道也完全可以' line and a 'continue' offer"
+    },
+    {
+      "text": "Asks for confidence if it asks a question",
+      "passed": true,
+      "evidence": "'同时附上你的把握程度 1–3 ... 格式例如：`你的答案，2`'"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "notes": "Uses **bold** and backticks although the environment is plain text (no rendering)."
+}

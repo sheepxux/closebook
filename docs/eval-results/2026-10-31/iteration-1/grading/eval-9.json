@@ -1,0 +1,42 @@
+{
+  "eval_id": 9,
+  "expectations": [
+    {
+      "text": "Classifies the material as factual (事实记忆型)",
+      "passed": true,
+      "evidence": "All four groups are labelled factual: \"[核心 · 事实记忆] 药代基本参数…\", \"[核心 · 事实记忆] 受体与药效…\", \"[核心 · 事实记忆，含公式] 给药方案…\", \"[重要 · 事实记忆] 反复用药及其他…\"."
+    },
+    {
+      "text": "Plans retrieval practice with spaced repetition, and chunking or a mnemonic aid (e.g. grouping pairs like agonist/antagonist/partial agonist, or potency vs efficacy)",
+      "passed": true,
+      "evidence": "\"主力是闭卷回忆（给术语说定义，也会反过来给定义说术语）加间隔复习\"; the 20 terms are chunked into 4 groups (受体与药效 groups 激动剂/拮抗剂/部分激动剂/效能/效价强度); \"请你自己造记忆钩子\"; contrast items for \"效能和效价强度、零级和一级、耐受性和快速耐受\"; dated schedule 10-31 / 11-01 / 11-02."
+    },
+    {
+      "text": "Does not use a Feynman explanation task or everyday analogies for the definitions",
+      "passed": true,
+      "evidence": "No Feynman task and no analogies anywhere; the reply explicitly says \"术语表没有'为什么'可推\"."
+    },
+    {
+      "text": "Uses flashcard-style (term -> definition or reverse) or cloze questions, presented as plain text",
+      "passed": true,
+      "evidence": "Term -> definition prompts in plain text: \"每个用一句话说出意思：1. 半衰期 2. 生物利用度 …\"; reverse direction is planned (\"也会反过来给定义说术语\")."
+    },
+    {
+      "text": "Asks only one card / item at a time and hides its answer",
+      "passed": false,
+      "evidence": "Answers are hidden, but the reply asks five cards at once (半衰期、生物利用度、首过效应、表观分布容积、清除率) as a batch diagnostic, plus two setup questions a) and b) in the same message. That is not one card at a time."
+    },
+    {
+      "text": "Asks for confidence along with the answer",
+      "passed": false,
+      "evidence": "Missing: the reply never asks for confidence (no 1-3 rating or 把握度) for the five-term prompt or for later cards."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 2,
+    "total": 6,
+    "pass_rate": 0.67
+  },
+  "notes": "No factual errors: 20 terms, grouped 5+6+5+4 = 20, which matches the glossary, and 2026-10-31 is a Saturday, 2026-11-02 a Monday. The reply handles the ambiguous '下周一' well: it states the assumption (11-02) and asks the user to confirm. Planning is strong (no terms dropped, confusable pairs flagged, a JSON progress note, and it admits it can't remember across chats). Main problems: the message is overloaded, with an outline, a schedule, two logistics questions, and a 5-item batch diagnostic all in one turn, and it never asks for confidence."
+}

@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "http-cache-2026-10-31",
+  "topic": "HTTP 缓存",
+  "language": "zh-CN",
+  "created": "2026-10-31",
+  "mode": "learn",
+  "intro": "复习 4 个已学知识点 + 学 1 个新知识点。全部凭记忆作答；新知识点先看一段最小讲解。",
+  "knowledge_points": [
+    {
+      "id": "kp1",
+      "title": "强缓存与协商缓存的区别",
+      "importance": "core",
+      "knowledge_type": "conceptual",
+      "method": "predict_verify",
+      "interaction_type": "diagram_fill",
+      "interaction_reason": "这是一个有先后顺序的流程，先自己补出缺的两步再看完整流程，比读一段文字更能暴露漏洞。",
+      "items": [
+        {
+          "id": "flow",
+          "prompt": "浏览器要再次使用一个缓存过的文件。补出流程中缺失的两步。",
+          "nodes": [
+            { "id": "n1", "label": "浏览器准备使用本地缓存的 index.html" },
+            { "id": "n2", "label": "检查 max-age：已经过期" },
+            { "id": "n3", "label": "带上 ETag 向服务器询问（If-None-Match）", "blank": true, "accept": ["带上etag询问服务器", "发送 if-none-match", "带 etag 发请求", "if-none-match"] },
+            { "id": "n4", "label": "服务器比对 ETag：文件没变" },
+            { "id": "n5", "label": "返回 304，不带正文", "blank": true, "accept": ["304", "返回304", "304 not modified"] },
+            { "id": "n6", "label": "浏览器继续使用本地副本" }
+          ],
+          "edges": [
+            { "from": "n2", "to": "n3", "label": "过期才问" },
+            { "from": "n1", "to": "n6", "label": "若没过期：直接用（强缓存）" }
+          ],
+          "explanation": "没过期时直接用本地副本，一个请求都不发（强缓存）；过期后带着版本号去问（协商缓存），没变就只回 304。"
+        }
+      ]
+    },
+    {
+      "id": "kp2",
+      "title": "Cache-Control 指令与 304 状态码",
+      "importance": "important",
+      "knowledge_type": "factual",
+      "method": "retrieval",
+      "interaction_type": "mcq",
+      "interaction_reason": "no-cache 和 no-store 是你之前高信心混淆过的一对，选择题能直接检验能否把它们分开。",
+      "items": [
+        {
+          "id": "q1",
+          "question": "关于 `Cache-Control: no-cache`，哪种说法正确？",
+          "options": [
+            { "text": "浏览器不能存储这个响应。", "correct": false, "explanation": "这是 `no-store` 的意思，也是最常见的混淆。" },
+            { "text": "浏览器可以存储，但每次使用前必须先向服务器确认。", "correct": true, "explanation": "正确：no-cache = 不能“直接”用缓存，要先协商。" },
+            { "text": "浏览器在过期前可以不经询问直接使用。", "correct": false, "explanation": "这是 `max-age` 下新鲜响应的行为，把强缓存套到了错误的指令上。" },
+            { "text": "只对 CDN 生效，浏览器会忽略它。", "correct": false, "explanation": "只针对共享缓存的是 `s-maxage`，不是 no-cache。" }
+          ]
+        },
+        {
+          "id": "q2",
+          "question": "一个带哈希文件名的 `app.3f9a.js`，最合适的响应头是？",
+          "options": [
+            { "text": "`Cache-Control: no-store`", "correct": false, "explanation": "完全不存会让每次访问都重新下载，浪费了“文件名随内容变”这个优势。" },
+            { "text": "`Cache-Control: no-cache`", "correct": false, "explanation": "每次都要询问服务器，对内容永不变化的文件是多余的往返。" },
+            { "text": "`Cache-Control: max-age=31536000, immutable`", "correct": true, "explanation": "正确：内容变了文件名就变，旧文件可以放心缓存一年且无需重新验证。" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kp3",
+      "title": "用 curl 检查缓存行为",
+      "importance": "important",
+      "knowledge_type": "procedural",
+      "method": "retrieval",
+      "interaction_type": "plain_qa",
+      "interaction_reason": "答案是一个参数或一个状态码，一行文字就能完成，不需要更复杂的组件。",
+      "items": [
+        {
+          "id": "c1",
+          "question": "只看响应头、不下载正文，`curl` 要加哪个参数？",
+          "answer": "`-I`（或 `--head`）",
+          "accept": ["-I", "--head", "curl -I"],
+          "case_sensitive": true,
+          "hint": "这个参数对应 HTTP 的 HEAD 方法。",
+          "question_format": "cloze"
+        },
+        {
+          "id": "c2",
+          "question": "执行下面的命令时，服务器上的 index.html 自上次以来没有变化。状态码是多少？",
+          "code": "curl -I -H 'If-None-Match: \"abc123\"' https://example.com/index.html",
+          "answer": "304",
+          "accept": ["304", "304 not modified"],
+          "explanation": "ETag 匹配说明没变，服务器只回 304 Not Modified，不带正文。",
+          "question_format": "predict"
+        }
+      ]
+    },
+    {
+      "id": "kp4",
+      "title": "按资源类型选择缓存策略",
+      "importance": "core",
+      "knowledge_type": "judgment",
+      "secondary_types": ["conceptual"],
+      "method": "elaborative_interrogation",
+      "interaction_type": "compare_table_fill",
+      "interaction_reason": "三种资源放在一张表里对比，先填再核对，能看出你是否真的按“内容会不会变”来做取舍。",
+      "items": [
+        {
+          "id": "t1",
+          "prompt": "为三类资源填出合适的 Cache-Control，并想一想理由。",
+          "columns": ["资源", "Cache-Control", "理由"],
+          "rows": [
+            { "label": "index.html", "cells": [{ "text": "no-cache", "blank": true, "accept": ["no-cache", "max-age=0, must-revalidate"] }, { "text": "入口文件，地址不变，必须每次确认是否有新版本" }] },
+            { "label": "app.3f9a.js", "cells": [{ "text": "max-age=31536000, immutable", "blank": true, "accept": ["max-age=31536000, immutable", "max-age=31536000,immutable", "public, max-age=31536000, immutable"] }, { "text": "文件名随内容变化，旧文件永远不会被错误复用" }] },
+            { "label": "/api/me（个人数据）", "cells": [{ "text": "private, no-store", "blank": true, "accept": ["private, no-store", "no-store", "no-store, private"] }, { "text": "含个人信息，不应被任何缓存保存" }] }
+          ],
+          "explanation": "判断依据始终是两个问题：内容会不会变、能不能被别人看到。"
+        }
+      ]
+    },
+    {
+      "id": "kp6",
+      "title": "ETag 与 Last-Modified 的取舍",
+      "importance": "important",
+      "knowledge_type": "judgment",
+      "secondary_types": ["conceptual"],
+      "method": "elaborative_interrogation",
+      "interaction_type": "free_text",
+      "interaction_reason": "这是一个“什么时候用哪个”的取舍题，需要你写出理由，选择题会把取舍压成一个标准答案。",
+      "teach": {
+        "example": "一个文件每秒被构建脚本重写一次，但内容一模一样。用 Last-Modified 时，修改时间变了，浏览器就会重新下载；用 ETag（按内容算的指纹）时，指纹没变，服务器可以回 304。",
+        "principle": "Last-Modified 只记“什么时候改过”，精度到秒；ETag 记“内容是什么”，所以内容没变但时间变了、或一秒内改了多次时，ETag 更准确。"
+      },
+      "items": [
+        {
+          "id": "w1",
+          "prompt": "什么情况下 Last-Modified 不够用、应该用 ETag？至少写出两种情况，并说明原因。",
+          "format_hint": "2–4 句话即可。",
+          "reference_points": [
+            { "text": "文件内容没变但修改时间变了（如重新构建、重新部署）", "required": true },
+            { "text": "一秒内多次修改：Last-Modified 精度只到秒，区分不出来", "required": true },
+            { "text": "ETag 基于内容生成，比时间戳更能反映“是否真的变了”" },
+            { "text": "代价：生成 ETag 需要计算，多服务器时要保证各台算法一致" }
+          ]
+        }
+      ]
+    }
+  ],
+  "free_recall": {
+    "prompt": "不看上面的内容：浏览器缓存是怎么决定“直接用”还是“先问”的？不同资源该怎么配？",
+    "reference_points": [
+      { "text": "没过期直接用本地副本，不发请求（强缓存）", "kp_id": "kp1", "required": true },
+      { "text": "过期后带 ETag 询问，没变返回 304（协商缓存）", "kp_id": "kp1", "required": true },
+      { "text": "no-cache = 先问再用；no-store = 根本不存", "kp_id": "kp2", "required": true },
+      { "text": "入口 HTML 每次确认；带哈希的静态文件长期缓存 + immutable", "kp_id": "kp4", "required": true },
+      { "text": "个人数据用 private / no-store", "kp_id": "kp4" },
+      { "text": "ETag 按内容判断，比 Last-Modified 准", "kp_id": "kp6" }
+    ]
+  },
+  "plain_talk": {
+    "points": [
+      {
+        "kp_id": "kp1",
+        "conclusion": "强缓存是“直接用存货”，协商缓存是“用之前先打电话问一句”。",
+        "analogy": "冰箱里的牛奶：没过保质期就直接喝；过了日期先问家里人还能不能喝。",
+        "analogy_limit": "牛奶会自己变质，网页文件不会；“变”的是服务器上出了新版本。",
+        "example": "带哈希名的 JS 一年内直接用；index.html 每次先问服务器。",
+        "pitfall": "以为协商缓存不发请求——它会发，只是省了下载正文。"
+      },
+      {
+        "kp_id": "kp2",
+        "conclusion": "no-cache 是“先问再用”，no-store 是“根本不存”。",
+        "no_analogy_reason": "这是两个指令名和它们的精确含义，打比方反而容易把两者混在一起。",
+        "example": "`Cache-Control: no-cache` 的响应会存下来，下次用之前发请求确认。",
+        "pitfall": "按字面把 no-cache 理解成“不缓存”。"
+      },
+      {
+        "kp_id": "kp4",
+        "conclusion": "先问两个问题：内容会不会变？能不能被别人看到？",
+        "analogy": "像给家里东西贴标签：日历每天换（每次确认），旧照片永远不变（放心收着），日记不给外人看（不存）。",
+        "analogy_limit": "家里东西是你自己决定，缓存却是浏览器和 CDN 按你写的响应头来执行，写错了它们也照做。",
+        "example": "index.html → no-cache；app.3f9a.js → max-age=31536000, immutable；/api/me → private, no-store。",
+        "pitfall": "给 index.html 设很长的 max-age，发布后用户看不到新版本。"
+      }
+    ],
+    "summary": "浏览器缓存就是在“省流量”和“拿到最新版本”之间做取舍。内容不会变的文件放心长期缓存，入口文件每次确认，私密数据干脆不存。确认的方式是带着版本号去问，没变就只回一个 304。",
+    "recall": { "kp_id": "kp1", "prompt": "用你自己的话说说：为什么 index.html 一般不用强缓存？" }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "eval_id": 16,
+  "expectations": [
+    {
+      "text": "Uses only plain text and tells the learner to answer by typing (e.g. letter + confidence)",
+      "passed": true,
+      "evidence": "Ends with 'Reply with letter + confidence 1-3 ... e.g. \"B 2\"'; no markdown, only an indented header line"
+    },
+    {
+      "text": "Does not mention clicking, buttons, cards, widgets, an HTML page, or an artifact",
+      "passed": true,
+      "evidence": "No mention of click/button/card/widget/HTML/artifact; uses 'Say \"stop\"', 'answer below'"
+    },
+    {
+      "text": "Asks one question and does not reveal its answer",
+      "passed": true,
+      "evidence": "Only 'Question 1' (no-cache scenario, options A-D); correct option C not revealed or hinted"
+    },
+    {
+      "text": "Asks for confidence in the same reply as the answer",
+      "passed": true,
+      "evidence": "Same reply asks 'letter + confidence 1-3 (1 = guessing, 2 = fairly sure, 3 = certain)'"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "User said 'just start'; the reply front-loads a 3-point outline, trimmed list and pacing paragraph (~170 words) before Q1. Acceptable per the skill's opening rules but heavier than ideal."
+}

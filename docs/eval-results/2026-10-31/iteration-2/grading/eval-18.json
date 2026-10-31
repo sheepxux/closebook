@@ -1,0 +1,42 @@
+{
+  "eval_id": 18,
+  "expectations": [
+    {
+      "text": "Gives a one-line conclusion in everyday words",
+      "passed": true,
+      "evidence": "'两者只差一件事：用缓存之前，浏览器问不问服务器。'"
+    },
+    {
+      "text": "Includes an everyday analogy AND explicitly states where the analogy breaks down",
+      "passed": true,
+      "evidence": "Timetable analogy (教务处说本周有效 / 打电话问) plus '类比不成立的地方：... 是服务器提前在响应里写好的规则'"
+    },
+    {
+      "text": "Gives one concrete example and one common pitfall",
+      "passed": true,
+      "evidence": "Example: logo.png one-year validity vs index.html revalidated with 304; pitfall: '以为协商缓存\"没发请求\"'"
+    },
+    {
+      "text": "Any technical term used (e.g. max-age, ETag, 304) is explained in plain words in the same reply",
+      "passed": true,
+      "evidence": "max-age/ETag avoided; 304 glossed in place: '服务器只回一句\"没变\"（就是状态码 304）'; remaining words ('请求', '响应') are everyday-level"
+    },
+    {
+      "text": "Ends with a recall question asking the learner to explain or apply it in their own words, without answering it",
+      "passed": true,
+      "evidence": "Ends with a new application question (style.css strong-cached 7 days, updated today: new or old style, and why) plus answer format; not answered"
+    },
+    {
+      "text": "Does not insult or label the learner (no 'for dummies' tone)",
+      "passed": true,
+      "evidence": "Opens '我用大白话再讲一遍'; no labeling of the learner"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "notes": "Per-point text runs ~10 sentences, beyond plain-talk.md's 4-6 sentence cap. Bold markdown in a plain-text environment."
+}

@@ -1,0 +1,27 @@
+{
+  "eval_id": 17,
+  "expectations": [
+    {
+      "text": "Keeps it to one short retrieval question (e.g. 'what does 304 mean and when is it sent?') or answers briefly then asks one check question",
+      "passed": true,
+      "evidence": "Single question: \"HTTP 304 是什么意思？ 用一句话回答\"; the answer is not given."
+    },
+    {
+      "text": "Does not produce a 3-5 point outline, a study plan, a table, a diagram, a flashcard deck or an HTML page",
+      "passed": true,
+      "evidence": "None present. The only forward-looking line is an optional \"想多练的话我再接 2–3 道相关的小题\", which is not a plan or outline."
+    },
+    {
+      "text": "Reply is short (roughly under 80 words / 150 Chinese characters)",
+      "passed": true,
+      "evidence": "78 Han characters, 122 non-space characters in total."
+    },
+    {
+      "text": "Asks for confidence if it asks a question",
+      "passed": true,
+      "evidence": "\"后面附上信心 1–3（1 = 瞎猜，2 = 比较有把握，3 = 很确定），例如：`……  信心 2`\""
+    }
+  ],
+  "summary": {"passed": 4, "failed": 0, "total": 4, "pass_rate": 1.0},
+  "notes": "The quick-check request is handled proportionately. The closing offer of 2-3 follow-up items, one at a time, with an explicit option to stop, is light and does not push a full session."
+}

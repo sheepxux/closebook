@@ -1,0 +1,6 @@
+{"eval_id": 14, "expectations": [
+  {"text": "Uses a diagram or structured layout in plain text (ASCII / indented list / table) of partitions and consumers, with something left for the learner to predict", "passed": true, "evidence": "Code-block diagram: [P0] [P1] [P2], C1–C4, \"分配结果（请填 ?）：C1 读 → ? …\""},
+  {"text": "Asks the learner to predict before showing the complete assignment (e.g. which consumer reads which partition, or what happens with more consumers than partitions)", "passed": true, "evidence": "\"让你预测填空。完整的图等你答完再给\"; scenario is 3 partitions / 4 consumers"},
+  {"text": "Does not show the answer in the same message", "passed": true, "evidence": "Never states that one consumer sits idle; only says \"你写出一种可能的分配就行，我看的是分配的规律\""},
+  {"text": "Does not claim to render an interactive or clickable diagram", "passed": true, "evidence": "Plain code-block diagram; reply format is typed text"}
+], "summary": {"passed": 4, "failed": 0, "total": 4, "pass_rate": 1.00}, "notes": ""}
