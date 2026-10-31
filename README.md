@@ -2,14 +2,16 @@
 
 <h1 align="center">closebook</h1>
 
-<p align="center"><b>An Agent Skill that makes your AI quiz you instead of summarizing for you.</b><br>
-Answer first, get short feedback, retest with the notes closed, review on a schedule.</p>
+<p align="center"><b>Make knowledge actually stick, with the most efficient methods there are.</b><br>
+An Agent Skill that applies retrieval practice, spaced review, Feynman explanations and more, choosing the right method for each kind of knowledge.</p>
 
 <p align="center">English · <a href="README.zh-CN.md">简体中文</a> · <a href="LICENSE">MIT</a></p>
 
 ---
 
-Reading an AI summary feels like learning. Mostly it builds familiarity, not memory. closebook flips the default: when you ask your assistant to help you study, it splits the material into a few knowledge points and asks you about each one before explaining anything. It keeps the explanation short, retests you closed-book, and schedules the next review in a progress file you own.
+closebook has one goal: get what you study into long-term memory and real understanding, in the least time.
+
+The most effective methods in learning research share one thing: you produce the answer yourself instead of reading it again. Reading an AI summary feels like learning, but it mostly builds familiarity. So when you ask your assistant to help you study, closebook splits the material into a few knowledge points and has you answer each one first. Then it explains briefly, aimed at your gaps, retests you with the notes closed, and schedules the next review in a progress file you own. Different knowledge gets different methods: recall cards for terms, why-questions and Feynman explanations for concepts, predict-then-verify for procedures. Your time goes to what you don't know yet.
 
 It is one skill folder ([`skills/closebook`](skills/closebook)) that works on Claude, ChatGPT / Codex, Gemini and any assistant you can paste instructions into. The teaching flow needs nothing but plain text. Scripts and the HTML practice page are optional extras.
 
