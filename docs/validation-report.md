@@ -7,12 +7,12 @@
 
 | Area | Result |
 |---|---|
-| Automated tests | 86 / 86 pass (unit, packaging and browser tests) |
-| Practice page in a real browser | All spec §13 checks pass: load, answer, explanations, confidence, self-check, export, import-merge |
+| Automated tests | 93 / 93 pass (unit, packaging and browser tests) |
+| Practice page in a real browser | All spec §13 checks pass: load, answer, explanations, confidence, self-check, export, import-merge; the coach-grading round trip works end to end |
 | Packaging | Both ZIPs build reproducibly with no development files or macOS junk |
 | Behaviour evals (22 evals, 102 expectations) | First run 89 / 102 (87%), full rerun after fixes 99 / 102 (97%); later targeted reruns all pass |
 | Trigger check (proxy) | 18 / 18 queries routed as expected |
-| Real platform installs | Codex CLI: triggered on a natural request, taught, saved valid progress and built the page from the template (section 7). Claude, ChatGPT, Gemini: **not tested** (section 8). |
+| Real platform installs | Codex CLI: triggered on a natural request, taught, saved valid progress, built the page from the template, and graded exported answers with a block the page accepted (section 7). Claude, ChatGPT, Gemini: **not tested** (section 8). |
 
 ## 1. Automated tests
 
@@ -22,11 +22,11 @@ python3 -m unittest discover -s tests
 
 | File | Tests | Covers |
 |---|---|---|
-| `test_progress_tool.py` | 51 | Schema validation, Leitner scheduling (first attempt per day, fuzzy/fail, diagnostics never count, exam-date cap), replay from history, priority flags, due order, statistics and calibration, merge and import of session exports (idempotent), compact export, CLI exit codes |
+| `test_progress_tool.py` | 57 | Schema validation, Leitner scheduling (first attempt per day, fuzzy/fail, diagnostics never count, exam-date cap), replay from history, priority flags, due order, statistics and calibration, merge and import of session exports (idempotent), applying the coach's grading (replaces self-checks, fixes error entries, idempotent, unknown ids reported), compact export, CLI exit codes |
 | `test_build_lesson.py` | 17 | Lesson-data rules (one correct MCQ option, table and diagram blanks, analogy limits, Plain Talk length), fit warnings, `--strict`, `</script>` escaping, the example page matches a fresh build, and the template has no external requests or `innerHTML` |
 | `test_skill_structure.py` | 7 | Frontmatter keys, `name` = folder, description, `SKILL.md` stays lean, every referenced file exists, all 12 methods and 4 modes present, no junk files in the skill folder |
 | `test_package_skill.py` | 5 | ZIP root is `closebook/`, runtime files present, no evals or junk, the Gemini ZIP differs only by `agents/openai.yaml`, byte-identical rebuilds |
-| `test_lesson_page_e2e.py` | 6 | Browser tests of the practice page, detailed in section 2 below |
+| `test_lesson_page_e2e.py` | 7 | Browser tests of the practice page, detailed in section 2 below |
 
 ## 2. Practice page (HTML)
 
@@ -38,6 +38,7 @@ The browser tests open [`examples/http-cache-lesson.html`](../examples/http-cach
   - The page refuses bad imports.
   - A fresh page import restores 7 / 7 answered.
   - State survives a reload.
+- **Coach grading round trip.** The exported answers carry an ID per answer (filled blanks included) and ask the coach for a `closebook-grading` block. Pasting the block, even inside a Markdown code fence, applies it: each graded answer shows the coach's verdict and feedback instead of "self-checked", "I was actually right" disappears, and the mistakes list, the progress export and a reload all keep the coach's results. The export still validates and merges. Re-pasting changes nothing; unknown ids and other lessons are reported.
 - **Edge cases.**
   - A retry produces two attempts.
   - Keyboard-only answering works.
@@ -155,6 +156,12 @@ Run on 2026-10-31 with Codex CLI 0.153.4 (macOS, the maintainer's own config), u
 | 1 | A beginner asks to really remember strong vs. revalidated HTTP caching, without naming closebook | The skill triggered on its own: Codex read `SKILL.md`, then `teaching-flow.md`, the coding mode, `method-fit.md`, `interaction-fit.md` and the method files. The reply showed a three-point route with an approach per point, a short mini-lesson, then one predict-first question with a `?` step, an answer format with placeholders and a 1–3 confidence ask. No answer was given away. |
 | 2 | A wrong answer with confidence 3 | Treated as a misconception: the correct answer, why the reasoning failed, a source (RFC 9111 §4.2), then a different point first so the missed one is retested later. The progress file validated with `progress_tool.py validate` (0 errors), with the missed point due the next day. |
 | 3 | "Make a page I can click through in the browser" | Codex wrote `lesson.json` and ran `build_lesson.py --strict`; the page is byte-identical to a clean build from the template. Its reply said written answers are self-checked, not auto-graded, and asked for the export to be pasted back. Codex then clicked through the page in Safari on its own (9 questions, confident-wrong flag, mistakes list, retry, reload keeps 9/9, export, re-import with no duplicates, bad JSON rejected, 390 px preview). |
+
+A second session, with the coach-grading version of the skill, tested the other half of the round trip:
+
+| Turn | What was sent | What happened |
+|---|---|---|
+| 1 | "I finished the practice page; here are my exported answers, please grade them", followed by a real export from the example page (7 answers, free recall, Plain Talk) | Codex read `html-lesson.md` and `grading.schema.json`, gave feedback worst-first, and ended with a `closebook-grading` block of 7 grades. Every id was copied exactly; the block validates. It also overturned an answer the learner had marked "I was actually right" (`--HEAD`), after checking with `curl --HEAD --version` that curl rejects it. Pasted into the page, all 7 grades applied, and the page's export still validated and merged into a progress file. |
 
 Observations:
 

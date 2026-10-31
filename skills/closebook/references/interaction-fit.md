@@ -78,7 +78,7 @@ Shared with the HTML lesson template and the progress schema.
 
 **When to use Level 2 (HTML page):** only when it clearly pays off. Typical cases: the learner wants an offline or reusable practice page; a review deck of ≥ 8 MCQ/flashcard items; a `diagram_fill` or `simulation` that text can't express. The page can't grade free text (see below), so the chat remains the main channel. How to build the page: `html-lesson.md`.
 
-**Static page honesty:** a static HTML page can check MCQ and flashcard answers against stored keys, but it can't grade free-text answers. For `free_text` and free recall it shows a reference checklist and asks the learner to self-assess, plus an "export my answers" button for pasting back into chat. Never present self-assessment as automatic grading.
+**Static page honesty:** a static HTML page can check MCQ and flashcard answers against stored keys, but it can't grade free-text answers by itself. For `free_text` and free recall it shows a reference checklist and asks the learner to self-assess, plus an "export my answers" button. Grading is a round trip through the chat: the learner pastes the answers, you grade them and reply with a grading block, and the page shows your results once they paste it back (`html-lesson.md`). Never present self-assessment, or this round trip, as automatic grading.
 
 ## 5. Downgrade map
 

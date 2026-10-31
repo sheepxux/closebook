@@ -79,6 +79,7 @@ Progress is a JSON file ([schema](skills/closebook/schemas/progress.schema.json)
 python3 skills/closebook/scripts/progress_tool.py due closebook-progress/http-cache.json --date 2026-11-01
 python3 skills/closebook/scripts/progress_tool.py schedule closebook-progress/http-cache.json
 python3 skills/closebook/scripts/progress_tool.py import-session closebook-progress/http-cache.json export.json
+python3 skills/closebook/scripts/progress_tool.py apply-grading closebook-progress/http-cache.json grading.json
 ```
 
 In chat-only apps you get a compact JSON block at the end of each session. Paste it back next time. The skill never claims to remember across chats.
@@ -89,13 +90,15 @@ In chat-only apps you get a compact JSON block at the end of each session. Paste
 
 When the environment can produce a file, the skill writes the lesson data and [`build_lesson.py`](skills/closebook/scripts/build_lesson.py) embeds it into a [template](skills/closebook/assets/lesson-template.html). The result is a single offline HTML file with no network requests, light and dark themes, keyboard support and a mobile layout. Open [`examples/http-cache-lesson.html`](examples/http-cache-lesson.html) to try one. Without file support, the same questions run in plain text.
 
+The page checks multiple choice and fill-in blanks itself; flashcards and written answers start as self-checks. Written answers can go through the coach: export "my answers", paste them into the chat, and paste the grading block you get back into the page. Each answer then shows the coach's verdict and feedback, and the mistakes list and review schedule follow it. It's a copy-and-paste round trip rather than live grading, so the page stays offline and needs no API key.
+
 ## Repository layout
 
 ```
 skills/closebook/        the skill (this folder is what gets installed)
   SKILL.md               lean core: priorities, flow, routing
   references/            teaching flow, method and interaction fit, modes, Plain Talk, 12 methods
-  schemas/               progress, lesson-data and session-export schemas + examples
+  schemas/               progress, lesson-data, session-export and grading schemas + examples
   scripts/               progress_tool.py, build_lesson.py (Python 3.8+, stdlib only)
   assets/                lesson-template.html
   agents/openai.yaml     Codex display metadata

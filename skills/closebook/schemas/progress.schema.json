@@ -260,6 +260,7 @@
         "interaction": { "x-tier": "extension", "$ref": "#/$defs/interaction" },
         "duration_sec": { "x-tier": "extension", "type": "integer", "minimum": 0, "description": "Only when measured; never estimated." },
         "self_assessed": { "x-tier": "extension", "type": "boolean", "description": "Learner graded it (e.g. free text in a static HTML page)." },
+        "coach_graded": { "x-tier": "extension", "type": "boolean", "description": "The coach graded it after the learner pasted the answer back (see grading.schema.json); `note` holds the feedback." },
         "source": { "x-tier": "extension", "type": "string", "enum": ["chat", "file", "html"] },
         "note": { "x-tier": "extension", "type": "string" }
       }

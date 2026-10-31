@@ -4,7 +4,7 @@ A single self-contained page the learner opens in a browser: questions, confiden
 
 ## When to build one
 
-Only when it clearly pays off (see `interaction-fit.md`): the learner wants an offline or reusable practice page, a review deck of 8+ MCQ/flashcard items, or a `diagram_fill` / `simulation` that text can't express. The chat stays the main channel, because the page can't grade free text. If unsure, don't build it.
+Only when it clearly pays off (see `interaction-fit.md`): the learner wants an offline or reusable practice page, a review deck of 8+ MCQ/flashcard items, or a `diagram_fill` / `simulation` that text can't express. The chat stays the main channel: the page can't grade free text by itself, so written answers come back to you for grading (see below). If unsure, don't build it.
 
 ## How to produce the page
 
@@ -40,12 +40,31 @@ Schema: `schemas/lesson-data.schema.json`. Complete examples: the template's bui
 
 ## Telling the learner
 
-Two or three sentences, no more: what's in the page, that written answers are **self-checked** (not graded), and to press **Export** at the end and paste the result back here (or send "export my answers" if they want you to grade their writing). Mention that the page also tries to keep answers in the browser, but export is the reliable copy.
+Two or three sentences, no more: what's in the page, that written answers are **self-checked** in the page, and that for your grading they export "my answers" and paste them here; you reply with a grading block they paste back into the page. Also: press **Export** at the end and paste the progress back here. The page tries to keep answers in the browser, but export is the reliable copy.
 
 ## When the export comes back
 
 The export has `"format": "closebook-session-export"`.
 - **Files available:** `python3 scripts/progress_tool.py import-session <progress.json> <export.json>`; it validates, adds missing points from the export, skips attempts already imported, and replays the schedule.
 - **Chat only:** append the attempts to the matching knowledge points in the pasted progress JSON (skip ids already present), then recompute boxes and review dates by the rules in `spaced-repetition.md`.
-- Self-checked results keep `self_assessed: true`. If the learner also pasted their written answers, grade them; where your judgment differs from their self-check, say so in one sentence and record your result instead (drop `self_assessed`).
+- Self-checked results keep `self_assessed: true` until you grade them.
 - High-confidence errors from the page go to the top of the next review, as usual.
+
+## When "my answers" come back: grade them
+
+The learner pastes a Markdown list that starts with `# closebook ·`; every answer has an **ID** (the attempt id) and the learner's self-check.
+
+1. Grade each written answer against the item's reference answer or points, using `feedback-style.md`: judge the substance, not the wording. Contested points use `coherent` / `partly_coherent` / `incoherent`.
+2. In the chat, give the feedback one answer at a time, worst first; where your result differs from the self-check, say so in one sentence.
+3. End the reply with one fenced `json` block the learner can paste into the page's import box (Save & load), with one line saying so. Format (`schemas/grading.schema.json`, example `schemas/examples/grading.example.json`):
+
+   ```json
+   {"format": "closebook-grading", "schema_version": "1.0", "lesson_id": "<from the answers header>", "graded_at": "<now, ISO 8601 with offset>",
+    "grades": [{"attempt_id": "<ID>", "result": "partial", "feedback": "<1–2 sentences: what was right, what was missing>", "error_type": "memory_lapse"}]}
+   ```
+
+   - Only answers you actually graded; copy each ID exactly. `error_type` only for wrong or partial answers, and only if you can tell the cause.
+   - Don't include answers the page checked against a key (multiple choice, matched blanks) unless you're correcting the page.
+   - `feedback` must not reveal answers to questions the learner hasn't attempted yet.
+4. The page marks those answers "graded by your coach", shows the feedback, and the mistakes list and export follow your results.
+5. Update the progress file with the same block. **Files available:** save it and run `python3 scripts/progress_tool.py apply-grading <progress.json> <grading.json>` (import the session export first if those attempts aren't in the file yet). **Chat only:** in the progress JSON, set each attempt's `result`, add `coach_graded: true` and `note` (the feedback), drop `self_assessed`, then recompute by `spaced-repetition.md`.

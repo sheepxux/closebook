@@ -42,6 +42,7 @@ class PackageTest(unittest.TestCase):
         for rel in ("scripts/progress_tool.py", "scripts/build_lesson.py",
                     "assets/lesson-template.html", "schemas/progress.schema.json",
                     "schemas/lesson-data.schema.json", "schemas/session-export.schema.json",
+                    "schemas/grading.schema.json",
                     "references/teaching-flow.md"):
             self.assertIn("closebook/" + rel, self.full_names)
 

@@ -1,0 +1,10 @@
+{
+  "format": "closebook-grading",
+  "schema_version": "1.0",
+  "lesson_id": "http-cache-review-2026-10-31",
+  "graded_at": "2026-10-31T21:20:00+08:00",
+  "grades": [
+    { "attempt_id": "html-2", "result": "incorrect", "error_type": "memory_lapse", "feedback": "头名对了，但值要用上次响应里的 ETag，原样带引号：`curl -H 'If-None-Match: \"abc\"' URL`。" },
+    { "attempt_id": "html-4", "result": "correct", "feedback": "说到了“一秒内多次修改”和“内容没变但时间变了”两种情况，比自评的“部分对”更好。" }
+  ]
+}

@@ -24,6 +24,7 @@ EXAMPLES = os.path.join(SKILL, "schemas", "examples")
 FULL = os.path.join(EXAMPLES, "progress.full.json")
 CORE = os.path.join(EXAMPLES, "progress.core.json")
 EXPORT = os.path.join(EXAMPLES, "session-export.example.json")
+GRADING = os.path.join(EXAMPLES, "grading.example.json")
 TOOL = os.path.join(SKILL, "scripts", "progress_tool.py")
 
 
@@ -374,6 +375,56 @@ class MergeAndImportTest(unittest.TestCase):
             pt.import_session(load(FULL), export)
 
 
+class GradingTest(unittest.TestCase):
+    def imported(self):
+        return pt.import_session(load(FULL), load(EXPORT))
+
+    def attempt(self, progress, kp_id, attempt_id):
+        return [a for a in pt.get_kp(progress, kp_id)["attempts"] if a.get("id") == attempt_id][0]
+
+    def test_example_grading_is_valid(self):
+        self.assertEqual(pt.validate_grading(load(GRADING)), [])
+
+    def test_grading_replaces_self_checks(self):
+        graded, changed, unmatched = pt.apply_grading(self.imported(), load(GRADING))
+        self.assertEqual((changed, unmatched), (2, []))
+        self.assertEqual(errors(pt.validate_progress(graded)), [])
+        curl = self.attempt(graded, "kp3", "html-2")
+        self.assertEqual((curl["result"], curl["coach_graded"], curl["error_type"]), ("incorrect", True, "memory_lapse"))
+        self.assertNotIn("self_assessed", curl)
+        self.assertIn("If-None-Match", curl["note"])
+        self.assertEqual(sum(1 for e in pt.get_kp(graded, "kp3")["errors"] if e.get("question", "").startswith("带上")), 1,
+                         "the old error entry is replaced, not duplicated")
+        recall = self.attempt(graded, "kp6", "html-4")
+        self.assertEqual((recall["result"], recall["coach_graded"]), ("correct", True))
+        self.assertEqual(pt.get_kp(graded, "kp6")["plain_talk_recall_result"], "correct")
+
+    def test_grading_is_idempotent_and_reports_unknown_ids(self):
+        once, _, _ = pt.apply_grading(self.imported(), load(GRADING))
+        twice, changed, _ = pt.apply_grading(once, load(GRADING))
+        self.assertEqual((twice, changed), (once, 0))
+        grading = load(GRADING)
+        grading["grades"].append({"attempt_id": "ghost", "result": "correct"})
+        _, changed, unmatched = pt.apply_grading(self.imported(), grading)
+        self.assertEqual((changed, unmatched), (2, ["ghost"]))
+
+    def test_correct_grade_clears_the_error(self):
+        grading = load(GRADING)
+        grading["grades"] = [{"attempt_id": "html-2", "result": "correct", "feedback": "对。"}]
+        graded, _, _ = pt.apply_grading(self.imported(), grading)
+        curl = self.attempt(graded, "kp3", "html-2")
+        self.assertNotIn("error_type", curl)
+        self.assertFalse(any(e.get("question", "").startswith("带上") for e in pt.get_kp(graded, "kp3").get("errors", [])))
+
+    def test_invalid_grading_is_rejected(self):
+        bad = load(GRADING)
+        bad["grades"][0]["result"] = "great"
+        self.assertTrue(errors(pt.validate_grading(bad)))
+        bad = load(GRADING)
+        bad["grades"] = []
+        self.assertTrue(errors(pt.validate_grading(bad)))
+
+
 class CliTest(unittest.TestCase):
     def run_cli(self, *argv):
         out, err = io.StringIO(), io.StringIO()
@@ -427,6 +478,23 @@ class CliTest(unittest.TestCase):
         code, _, err = self.run_cli("due", "/nonexistent/p.json")
         self.assertEqual(code, 2)
         self.assertIn("not found", err)
+
+    def test_apply_grading_cli(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "p.json")
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump(load(FULL), fh)
+            code, _, err = self.run_cli("apply-grading", path, GRADING)
+            self.assertEqual(code, 2, "attempts not imported yet")
+            self.assertIn("import the session export first", err)
+            self.assertEqual(self.run_cli("import-session", path, EXPORT)[0], 0)
+            code, _, err = self.run_cli("apply-grading", path, GRADING)
+            self.assertEqual(code, 0)
+            self.assertIn("applied 2 grade(s)", err)
+            self.assertTrue(pt.get_kp(load(path), "kp6")["attempts"][-1]["coach_graded"])
+            code, out, _ = self.run_cli("validate", GRADING)
+            self.assertEqual(code, 0)
+            self.assertIn("grading: VALID", out)
 
     def test_script_runs_as_subprocess(self):
         env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")

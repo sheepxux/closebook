@@ -79,6 +79,7 @@ python3 tools/package_skill.py   # 生成 dist/closebook.zip 和 dist/closebook-
 python3 skills/closebook/scripts/progress_tool.py due closebook-progress/http-cache.json --date 2026-11-01
 python3 skills/closebook/scripts/progress_tool.py schedule closebook-progress/http-cache.json
 python3 skills/closebook/scripts/progress_tool.py import-session closebook-progress/http-cache.json export.json
+python3 skills/closebook/scripts/progress_tool.py apply-grading closebook-progress/http-cache.json grading.json
 ```
 
 在只能聊天的应用里，每次结束时你会拿到一段紧凑的 JSON，下次粘贴回来即可。skill 不会假装能跨对话记住你。
@@ -89,13 +90,15 @@ python3 skills/closebook/scripts/progress_tool.py import-session closebook-progr
 
 当环境能生成文件时，skill 写出课程数据，由 [`build_lesson.py`](skills/closebook/scripts/build_lesson.py) 嵌入[模板](skills/closebook/assets/lesson-template.html)，得到一个离线可用的单文件 HTML：不发任何网络请求，支持浅色/深色主题、键盘操作和手机布局。可以直接打开 [`examples/http-cache-lesson.html`](examples/http-cache-lesson.html) 试试。没有文件能力时，同样的题目以纯文本进行。
 
+选择题和填空由页面自己判对错；闪卡和文字作答先由你自评。文字作答还可以交给教练批改：导出“我的作答”，粘贴到对话；再把教练回复的批改结果粘回页面。每题会显示教练的判定和点评，错题本和复习计划也随之更新。这是一次复制粘贴的来回，不是实时批改，所以页面仍然离线、不需要 API Key。
+
 ## 仓库结构
 
 ```
 skills/closebook/        skill 本体（安装的就是这个文件夹）
   SKILL.md               精简核心：优先级、流程、路由
   references/            教学流程、方法与交互适配、场景模式、小白模式、12 种方法
-  schemas/               进度、课程数据、会话导出的 schema 和示例
+  schemas/               进度、课程数据、会话导出、批改结果的 schema 和示例
   scripts/               progress_tool.py、build_lesson.py（Python 3.8+，仅标准库）
   assets/                lesson-template.html
   agents/openai.yaml     Codex 展示信息

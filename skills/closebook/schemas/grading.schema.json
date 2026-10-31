@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:closebook:grading:1.0",
+  "title": "closebook grading",
+  "description": "The coach's grading of answers the learner exported from the HTML lesson page. The learner pastes it into the page's import box; `progress_tool.py apply-grading` applies the same block to a progress file. Each grade replaces the result of the attempt with the same id and marks it `coach_graded`.",
+  "type": "object",
+  "required": ["format", "schema_version", "grades"],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "closebook-grading" },
+    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+$" },
+    "lesson_id": { "type": "string", "description": "The lesson the answers came from; the page refuses grades for another lesson." },
+    "graded_at": { "$ref": "progress.schema.json#/$defs/datetime" },
+    "grades": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["attempt_id", "result"],
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": { "type": "string", "minLength": 1, "description": "The **ID** shown next to the answer in the exported answers." },
+          "result": { "$ref": "progress.schema.json#/$defs/result" },
+          "feedback": { "type": "string", "description": "One or two sentences for the learner: what was right, what was missing. Stored as the attempt's `note`." },
+          "error_type": { "$ref": "progress.schema.json#/$defs/error_type" }
+        }
+      }
+    }
+  }
+}

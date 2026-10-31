@@ -56,6 +56,7 @@
           "interaction": { "$ref": "progress.schema.json#/$defs/interaction" },
           "duration_sec": { "type": "integer", "minimum": 0 },
           "self_assessed": { "type": "boolean" },
+          "coach_graded": { "type": "boolean" },
           "source": { "type": "string", "enum": ["chat", "file", "html"] },
           "note": { "type": "string" }
         }

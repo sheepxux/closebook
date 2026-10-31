@@ -28,6 +28,8 @@ SCHEMA_DIR = os.path.join(os.path.dirname(HERE), "schemas")
 PROGRESS_SCHEMA = os.path.join(SCHEMA_DIR, "progress.schema.json")
 EXPORT_SCHEMA = os.path.join(SCHEMA_DIR, "session-export.schema.json")
 EXPORT_FORMAT = "closebook-session-export"
+GRADING_SCHEMA = os.path.join(SCHEMA_DIR, "grading.schema.json")
+GRADING_FORMAT = "closebook-grading"
 
 DEFAULT_INTERVALS = [1, 3, 7, 14, 30]
 DEFAULT_BATCH = 8
@@ -525,16 +527,24 @@ def _iter_dates(node: Any, path: str = "$") -> Iterable[Tuple[str, str]]:
             yield from _iter_dates(item, "%s[%d]" % (path, i))
 
 
-def validate_export(export: Any) -> List[Issue]:
-    issues = SchemaValidator(EXPORT_SCHEMA).validate(export)
-    if any(i.severity == "error" for i in issues) or not isinstance(export, dict):
+def _validate_with_dates(schema: str, doc: Any) -> List[Issue]:
+    issues = SchemaValidator(schema).validate(doc)
+    if any(i.severity == "error" for i in issues) or not isinstance(doc, dict):
         return issues
-    for path, value in _iter_dates(export):
+    for path, value in _iter_dates(doc):
         try:
             parse_date(value)
         except ToolError:
             issues.append(Issue("error", path, "not a real calendar date: %s" % value, "semantic"))
     return issues
+
+
+def validate_export(export: Any) -> List[Issue]:
+    return _validate_with_dates(EXPORT_SCHEMA, export)
+
+
+def validate_grading(grading: Any) -> List[Issue]:
+    return _validate_with_dates(GRADING_SCHEMA, grading)
 
 
 # --------------------------------------------------------------------------
@@ -726,6 +736,47 @@ def import_session(progress: Optional[Dict[str, Any]], export: Dict[str, Any]) -
         raise ToolError("no knowledge points to import")
     touch(progress, exported_day)
     return recompute(progress)
+
+
+def apply_grading(progress: Dict[str, Any], grading: Dict[str, Any]) -> Tuple[Dict[str, Any], int, List[str]]:
+    """Apply the coach's grades to the attempts with matching ids. Returns (progress, changed, unmatched ids)."""
+    progress = copy.deepcopy(progress)
+    by_id = {}
+    for kp in progress.get("knowledge_points", []):
+        for attempt in kp.get("attempts") or []:
+            if attempt.get("id"):
+                by_id[attempt["id"]] = (kp, attempt)
+    changed, unmatched = 0, []
+    for grade in grading["grades"]:
+        found = by_id.get(grade["attempt_id"])
+        if not found:
+            unmatched.append(grade["attempt_id"])
+            continue
+        kp, attempt = found
+        bad = grade["result"] not in PASS_RESULTS
+        error_type = (grade.get("error_type") or attempt.get("error_type")) if bad else None
+        note = grade.get("feedback") or None
+        if (attempt.get("coach_graded") and attempt["result"] == grade["result"]
+                and attempt.get("note") == note and attempt.get("error_type") == error_type):
+            continue
+        old_entry = _error_entry_for(attempt)
+        if old_entry:
+            kp["errors"] = [e for e in kp.get("errors", []) if not _same_error(e, old_entry)]
+        attempt["result"] = grade["result"]
+        attempt["coach_graded"] = True
+        attempt.pop("self_assessed", None)
+        for key, value in (("note", note), ("error_type", error_type)):
+            if value:
+                attempt[key] = value
+            else:
+                attempt.pop(key, None)
+        entry = _error_entry_for(attempt)
+        if entry:
+            add_error(kp, entry)
+        if not kp.get("errors"):
+            kp.pop("errors", None)
+        changed += 1
+    return recompute(progress), changed, unmatched
 
 
 def _is_empty(value: Any) -> bool:
@@ -927,9 +978,13 @@ def _load_valid(path: str, lenient: bool = True) -> Dict[str, Any]:
 
 def cmd_validate(args: argparse.Namespace) -> int:
     data = load_json(args.file)
-    is_export = isinstance(data, dict) and data.get("format") == EXPORT_FORMAT
-    issues = validate_export(data) if is_export else validate_progress(data, lenient=args.lenient)
-    kind = "session export" if is_export else "progress file"
+    fmt = data.get("format") if isinstance(data, dict) else None
+    if fmt == EXPORT_FORMAT:
+        issues, kind = validate_export(data), "session export"
+    elif fmt == GRADING_FORMAT:
+        issues, kind = validate_grading(data), "grading"
+    else:
+        issues, kind = validate_progress(data, lenient=args.lenient), "progress file"
     errors = [i for i in issues if i.severity == "error"]
     if args.json:
         print(dump_json({"kind": kind, "valid": not errors, "issues": [i.as_dict() for i in issues]}), end="")
@@ -994,6 +1049,21 @@ def cmd_import_session(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_apply_grading(args: argparse.Namespace) -> int:
+    grading = load_json(args.grading)
+    errors = [i for i in validate_grading(grading) if i.severity == "error"]
+    if errors:
+        raise ToolError("invalid grading:\n  %s" % "\n  ".join(map(repr, errors[:10])))
+    progress, changed, unmatched = apply_grading(_load_valid(args.progress), grading)
+    if unmatched and not changed and len(unmatched) == len(grading["grades"]):
+        raise ToolError("no grade matches an attempt in %s (import the session export first?): %s"
+                        % (args.progress, ", ".join(unmatched)))
+    print("applied %d grade(s)%s" % (changed, "; unmatched: " + ", ".join(unmatched) if unmatched else ""),
+          file=sys.stderr)
+    _save(args, progress, args.progress)
+    return 0
+
+
 def cmd_compact(args: argparse.Namespace) -> int:
     compact = to_compact(_load_valid(args.file))
     if args.out:
@@ -1051,7 +1121,7 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument("--json", action="store_true", help="machine-readable output")
         return p
 
-    p = add("validate", "validate a progress file or a session export")
+    p = add("validate", "validate a progress file, a session export or a grading block")
     p.add_argument("--lenient", action="store_true", help="treat unknown fields as warnings")
     p.set_defaults(func=cmd_validate)
 
@@ -1101,6 +1171,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--out")
     p.add_argument("--dry-run", action="store_true")
     p.set_defaults(func=cmd_import_session)
+
+    p = add("apply-grading", "apply the coach's grading of exported answers to PROGRESS", file_arg=False)
+    p.add_argument("progress", help="progress file that already contains the graded attempts")
+    p.add_argument("grading", help="closebook-grading JSON")
+    p.add_argument("--out")
+    p.add_argument("--dry-run", action="store_true")
+    p.set_defaults(func=cmd_apply_grading)
 
     p = add("compact", "print the compact core-only version for chat use")
     p.add_argument("--out")

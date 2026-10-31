@@ -38,7 +38,7 @@ The progress file lets learning continue across sessions and platforms. No platf
 `schema_version`, `profile`, `topic`, `language`, `created`, `updated`, `settings`, `exam`, `weak_points`, and per knowledge point: `id`, `title`, `importance`, `knowledge_type`, `secondary_types`, `status`, `mastery`, `leitner_box`, `next_review`, `last_reviewed`, `priority_flag`, `attempts` (core attempt fields: `id`, `at`, `phase`, `result`, `hint_level`, `confidence`, `error_type`), `errors`, `feynman`, `plain_talk_used`, `plain_talk_recall_result`.
 
 **Extension** (analytics and decision records; full version only):
-`sessions`, `user_overrides`, and per point: `mnemonics`, `methods_selected`, `methods_skipped`, `methods_insensitive`, `method_override_by_user`, `method_fit_flag`, `interaction_selected`, `interaction_downgraded_from`, `interaction_override_by_user`, `efficiency`, `notes`; per attempt: `question`, `question_format`, `method`, `interaction`, `duration_sec`, `self_assessed`, `source`, `note`.
+`sessions`, `user_overrides`, and per point: `mnemonics`, `methods_selected`, `methods_skipped`, `methods_insensitive`, `method_override_by_user`, `method_fit_flag`, `interaction_selected`, `interaction_downgraded_from`, `interaction_override_by_user`, `efficiency`, `notes`; per attempt: `question`, `question_format`, `method`, `interaction`, `duration_sec`, `self_assessed`, `coach_graded`, `source`, `note`.
 
 Compact rules: drop extension fields; drop core fields that are empty or default (`false`, `[]`, `null`, `""`), except the required ones (`next_review`, `attempts`, `weak_points`). `progress_tool.py compact` does exactly this.
 
@@ -64,6 +64,7 @@ Attempt ids: `<kp_id>-<n>`, continuing the numbering already in the file. They l
 ## 5. Merging and imports
 - **Compact chat export → local full file:** `progress_tool.py merge local.json pasted.json` (deduplicates attempts, keeps extension fields from the local file, replays the schedule).
 - **HTML page export → progress:** `progress_tool.py import-session progress.json export.json` (creates missing points from the export's definitions; self-assessed answers keep `self_assessed: true`).
+- **Your grading of the page's written answers → progress:** `progress_tool.py apply-grading progress.json grading.json` (same `closebook-grading` block the learner pastes into the page; sets `result`, `coach_graded`, `note`, then replays the schedule).
 - **In chat without tools:** append the new attempts to the pasted JSON by hand and update the schedule per `spaced-repetition.md`.
 - After any merge the schedule is **replayed from the full attempt history**, so the file and the rules can't drift apart. `validate` warns when stored state differs from the replay.
 

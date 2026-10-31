@@ -261,6 +261,78 @@ class LessonPageE2E(unittest.TestCase):
         self.assertEqual([a["result"] for a in attempts], ["incorrect", "correct"])
         self.assertEqual(len({a["id"] for a in attempts}), 2)
 
+    def test_coach_grading_round_trip(self):
+        page = self.open(self.zh_url)
+        self.complete_zh_lesson(page)
+        export = self.export_json(page)
+        written = [a for a in export["attempts"] if a.get("interaction") == "free_text" and a["phase"] == "retest"][0]
+        recall = [a for a in export["attempts"] if a["phase"] == "plain_talk_recall"][0]
+        curl = [a for a in export["attempts"] if a.get("question", "").startswith("只看响应头")][0]
+
+        self.btn(page, "生成").nth(1).click()
+        answers = page.locator("textarea.export-area").nth(1).input_value()
+        self.assertIn("closebook-grading", answers, "the export tells the coach how to reply")
+        self.assertIn("带 ETag 发请求 / 200 从缓存读", answers, "filled blanks are exported for grading")
+        for attempt in (written, recall):
+            self.assertIn("**ID:** `%s`" % attempt["id"], answers)
+
+        grading = {
+            "format": "closebook-grading", "schema_version": "1.0", "lesson_id": export["lesson_id"],
+            "graded_at": "2026-10-31T22:00:00+08:00",
+            "grades": [
+                {"attempt_id": written["id"], "result": "correct", "feedback": "抓住了“内容没变但时间变了”，这就是关键。"},
+                {"attempt_id": recall["id"], "result": "incorrect", "error_type": "misconception",
+                 "feedback": "说反了：入口文件要每次确认，长缓存留给带哈希的文件。"},
+                {"attempt_id": curl["id"], "result": "incorrect", "feedback": "curl 不认 --HEAD，要用 --head 或 -I。"},
+            ],
+        }
+        self.assertEqual(progress_tool.validate_grading(grading), [])
+        box = page.locator("textarea.import-area")
+        box.fill("```json\n%s\n```" % json.dumps(grading, ensure_ascii=False))
+        self.btn(page, "合并").click()
+        self.assertIn("已应用教练的 3 条批改", page.locator("body").inner_text())
+        self.btn(page, "合并").click()
+        self.assertIn("这些批改之前已经应用过了", page.locator("body").inner_text())
+        box.fill(json.dumps(dict(grading, grades=[{"attempt_id": "ghost", "result": "correct"}])))
+        self.btn(page, "合并").click()
+        self.assertIn("有 1 条批改对不上本页的作答", page.locator("body").inner_text())
+        box.fill(json.dumps(dict(grading, lesson_id="something-else")))
+        self.btn(page, "合并").click()
+        self.assertIn("另一节课", page.locator("body").inner_text())
+
+        self.tab(page, "学习").click()
+        page.locator(".stepper button").nth(4).click()
+        result = page.locator(".result").first.inner_text()
+        self.assertIn("正确", result)
+        self.assertIn("教练批改", result)
+        self.assertIn("内容没变但时间变了", result)
+        self.assertNotIn("自评", result)
+        page.locator(".stepper button").nth(2).click()
+        self.assertIn("curl 不认 --HEAD", page.locator("[role=tabpanel]").inner_text())
+        self.assertEqual(page.get_by_role("button", name="其实我答对了").count(), 0,
+                         "the learner can't overrule the coach in the page; disputes go to the chat")
+
+        self.tab(page, "小白模式").click()
+        self.assertIn("长缓存留给带哈希的文件", page.locator(".result").inner_text())
+
+        self.tab(page, "错题").click()
+        mistakes = page.locator("[role=tabpanel]").inner_text()
+        self.assertIn("长缓存留给带哈希的文件", mistakes)
+        self.assertIn("教练批改", mistakes)
+
+        graded = self.export_json(page)
+        self.assertEqual(progress_tool.validate_export(graded), [])
+        by_id = {a["id"]: a for a in graded["attempts"]}
+        self.assertEqual((by_id[written["id"]]["result"], by_id[written["id"]]["coach_graded"]), ("correct", True))
+        self.assertNotIn("self_assessed", by_id[written["id"]])
+        self.assertEqual(by_id[recall["id"]]["error_type"], "misconception")
+        merged = progress_tool.import_session(copy.deepcopy(progress_tool.load_json(PROGRESS)), graded)
+        self.assertEqual([i for i in progress_tool.validate_progress(merged) if i.severity == "error"], [])
+
+        page.reload()
+        self.tab(page, "错题").click()
+        self.assertIn("长缓存留给带哈希的文件", page.locator("[role=tabpanel]").inner_text(), "grades survive a reload")
+
     def test_keyboard_theme_and_layout(self):
         page = self.open(self.zh_url, color_scheme="dark", viewport={"width": 375, "height": 800})
         bg = lambda: page.evaluate("getComputedStyle(document.body).backgroundColor")

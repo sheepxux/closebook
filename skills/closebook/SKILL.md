@@ -100,6 +100,7 @@ Schema: `schemas/progress.schema.json` (versioned, core + extension fields). Sto
 | Saving, loading, exporting progress | `references/progress-state.md` |
 | Exam prep / coding / language / concept focus | `references/modes/` (load only the matching one) |
 | Level 2 HTML practice page (when it clearly pays off) | `references/html-lesson.md` (template `assets/lesson-template.html`, data `schemas/lesson-data.schema.json`, builder `scripts/build_lesson.py`) |
+| Learner pastes answers or an export from the practice page | `references/html-lesson.md` (grade, then reply with a `closebook-grading` block) |
 
 ## Tone
 

@@ -142,6 +142,8 @@ textarea:focus-visible, input[type="text"]:focus-visible { outline: none; }
 .result.incorrect, .result.dont_know, .result.incoherent { background: var(--bad-bg); color: var(--bad); }
 .result strong { display: block; }
 .result p { color: var(--text); margin: 6px 0 0; }
+.coach { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule-strong); color: var(--text); }
+.coach .coach-label { font-size: .8rem; font-weight: 600; color: var(--muted); margin: 0; }
 .notice { background: var(--surface-2); padding: 10px 14px; border-radius: 10px; margin: 12px 0; font-size: .92rem; }
 .teach { background: var(--surface-2); border-radius: var(--radius); padding: 18px 20px; margin: 16px 0 0; }
 .teach h3 { font-size: .85rem; color: var(--muted); font-weight: 600; letter-spacing: .02em; }
@@ -306,7 +308,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       gotIt: 'Got it', partly: 'Partly', missed: 'Missed',
       yourAnswer: 'Your answer', referenceAnswer: 'Reference answer', actuallyRight: 'My answer was actually right (synonym or typo)',
       selfCheck: 'Tick the points your answer really contains', confirmSelf: 'Confirm self-check', keyPoint: 'key', bonusPoint: 'bonus',
-      selfNote: 'This is a self-check, not automatic grading. For real feedback, export your answers (Save & load) and paste them to your coach.',
+      selfNote: 'This is a self-check, not automatic grading. To have your coach grade it: export your answers (Save & load), paste them into the chat, then paste the grading block you get back into the import box.',
       fillFirst: 'Fill in the blanks first, then check.', countRight: 'count as right', expected: 'Expected: ', confirmMarks: 'Confirm',
       predictFirst: 'Predict the missing steps first; the full version appears after you check.',
       simNotice: 'This page has no interactive simulation, so the question is shown as text.',
@@ -321,12 +323,15 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       ptRecall: 'Close the page and say it in your own words', ptCompare: 'Compare with the explanation',
       mistakesEmpty: 'No mistakes recorded yet.', hotBadge: 'confident & wrong', confShort: 'confidence {c}', mistakesSummary: '{n} answers to revisit',
       exportTitle: 'Export progress (JSON)', exportHelp: 'Save this, or paste it to your coach. It merges into a closebook progress file.',
-      exportAnswers: 'Export my answers for the coach', exportAnswersHelp: 'Paste this into the chat so your coach can grade your written answers.',
+      exportAnswers: 'Export my answers for the coach', exportAnswersHelp: 'Paste this into the chat. Your coach grades it and replies with a grading block; paste that block into the import box below.',
+      coachAsk: 'For the coach: grade these answers and reply with a closebook-grading JSON block (attempt_id, result, feedback) that I can paste back into the page.',
+      coachGraded: 'Graded by your coach', gradingOk: 'Applied {n} grades from your coach.', gradingNone: 'These grades were already applied.',
+      gradingMissing: '{n} grades didn\'t match any answer on this page.',
       generate: 'Generate', copy: 'Copy', copied: 'Copied.', copyFailed: 'Copy failed; select the text and copy it manually.',
       download: 'Download', downloadFailed: 'Downloads are blocked here; use Copy instead.',
-      importTitle: 'Import progress', importHelp: 'Paste a progress JSON exported from this page, or choose the file, then merge.',
+      importTitle: 'Import progress or grading', importHelp: 'Paste a progress JSON exported from this page, or the grading block your coach sent back (or choose a file), then merge.',
       importBtn: 'Merge', importFile: 'Choose file', importOk: 'Merged {n} new answers.', importNone: 'Nothing new to merge.',
-      importBad: 'That isn\'t a closebook export.', importOther: 'This export belongs to another lesson ({id}).',
+      importBad: 'That isn\'t a closebook export or grading block.', importOther: 'This export belongs to another lesson ({id}).',
       reset: 'Clear all answers on this page', resetConfirm: 'Clear all answers stored in this page?',
       storageOn: 'Answers are also kept in this browser, but export them to be safe.', storageOff: 'This page can\'t store data here; export before closing it.',
       dataError: 'The lesson data in this page could not be read: ', myAnswers: 'My answers', noText: '(no written answer)',
@@ -360,7 +365,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       gotIt: '答对了', partly: '部分对', missed: '没答出',
       yourAnswer: '你的答案', referenceAnswer: '参考答案', actuallyRight: '其实我答对了（同义词或笔误）',
       selfCheck: '勾选你的回答里确实包含的要点', confirmSelf: '确认自评', keyPoint: '必答', bonusPoint: '加分',
-      selfNote: '这是自评，不是自动批改。想要教练批改，请在“保存与导入”里导出“我的作答”，粘贴回对话。',
+      selfNote: '这是自评，不是自动批改。想让教练批改：在“保存与导入”导出“我的作答”，粘贴到对话；再把教练回复的批改结果粘回导入框。',
       fillFirst: '先填空，再核对。', countRight: '算对', expected: '应为：', confirmMarks: '确认',
       predictFirst: '先预测空缺的步骤；核对后才显示完整版。',
       simNotice: '本页面没有交互模拟，这道题以文字形式出现。',
@@ -375,12 +380,15 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       ptRecall: '合上页面，用你自己的话复述', ptCompare: '对照讲解',
       mistakesEmpty: '还没有错题。', hotBadge: '高信心答错', confShort: '信心 {c}', mistakesSummary: '共 {n} 条需要回顾',
       exportTitle: '导出进度（JSON）', exportHelp: '保存这段 JSON，或粘贴给教练。它可以合并进 closebook 进度文件。',
-      exportAnswers: '导出“我的作答”给教练批改', exportAnswersHelp: '把这段粘贴回对话，教练就能批改你的文字作答。',
+      exportAnswers: '导出“我的作答”给教练批改', exportAnswersHelp: '粘贴到对话里。教练批改后会回复一段批改结果，把它粘到下面的导入框。',
+      coachAsk: '给教练：请批改以下作答，并回复一段 closebook-grading JSON（attempt_id、result、feedback），我会把它粘回页面。',
+      coachGraded: '教练批改', gradingOk: '已应用教练的 {n} 条批改。', gradingNone: '这些批改之前已经应用过了。',
+      gradingMissing: '有 {n} 条批改对不上本页的作答。',
       generate: '生成', copy: '复制', copied: '已复制。', copyFailed: '复制失败，请手动选中文本复制。',
       download: '下载', downloadFailed: '当前环境禁止下载，请用“复制”。',
-      importTitle: '导入进度', importHelp: '粘贴从本页面导出的进度 JSON（或选择文件），然后合并。',
+      importTitle: '导入进度或批改结果', importHelp: '粘贴从本页面导出的进度 JSON，或教练回复的批改结果（也可以选择文件），然后合并。',
       importBtn: '合并', importFile: '选择文件', importOk: '合并了 {n} 条新作答。', importNone: '没有新的作答需要合并。',
-      importBad: '这不是 closebook 导出的进度。', importOther: '这份导出属于另一节课（{id}）。',
+      importBad: '这不是 closebook 导出的进度或批改结果。', importOther: '这份导出属于另一节课（{id}）。',
       reset: '清空本页所有作答', resetConfirm: '确定清空本页保存的所有作答？',
       storageOn: '作答也会保存在这个浏览器里，但稳妥起见请导出。', storageOff: '当前环境无法在本地保存，关闭前请先导出。',
       dataError: '无法读取本页的课程数据：', myAnswers: '我的作答', noText: '（没有文字作答）',
@@ -394,6 +402,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   var FORMATS = ['free_recall', 'cloze', 'short_answer', 'mcq', 'flashcard', 'explain', 'explain_steps', 'why', 'predict', 'produce', 'apply', 'compare', 'project', 'other'];
   var BAD = ['incorrect', 'partial', 'dont_know', 'incoherent', 'partly_coherent'];
   var EXPORT_FORMAT = 'closebook-session-export';
+  var GRADING_FORMAT = 'closebook-grading';
+  var RESULTS = ['correct', 'partial', 'incorrect', 'dont_know', 'coherent', 'partly_coherent', 'incoherent'];
 
   var data, T, storeKey, uid = 0;
   var state = { attempts: [], seq: 0, ui: {}, tab: 'learn', kp: 0, ptViewed: {}, teach: {}, recall: {}, pt: {}, storage: false };
@@ -540,6 +550,17 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     append(box, extra);
     return box;
   }
+  function coachNote(attempt) {
+    if (!attempt || !attempt.coach_graded) return null;
+    return h('div', { class: 'coach' }, h('p', { class: 'coach-label' }, T.coachGraded), attempt.note ? h('p', null, rich(attempt.note)) : null);
+  }
+  function withCoach(card, attempt) {
+    var note = coachNote(attempt);
+    if (!note) return card;
+    var banner = card.querySelector('.result');
+    (banner || card).appendChild(note);
+    return card;
+  }
   function errorChooser(attemptId) {
     var attempt = findAttempt(attemptId);
     if (!attempt || BAD.indexOf(attempt.result) < 0 || attempt.result === 'partly_coherent' || attempt.result === 'incoherent') return null;
@@ -585,7 +606,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       card.appendChild(h('p', null, rich(item.question || item.prompt || item.front || (item.fallback && item.fallback.question) || '')));
       card.appendChild(resultBanner(ui.result, ui.conf, h('p', { class: 'small' }, fmt(T.answeredAs, { result: T[ui.result] || ui.result }))));
       card.appendChild(h('div', { class: 'row' }, retryButton(ui, rerender)));
-      return card;
+      return withCoach(card, findAttempt(ui.attemptId));
     }
     var body;
     switch (type) {
@@ -606,7 +627,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
           : h('p', { class: 'notice' }, T.cannotRender);
     }
     append(card, body);
-    return card;
+    return ui.done ? withCoach(card, findAttempt(ui.attemptId)) : card;
   }
 
   function renderMcq(kp, item, ui, rerender) {
@@ -729,7 +750,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       return out;
     }
     out.push(resultBanner(ui.result, ui.conf));
-    if (ui.auto && ui.result === 'incorrect') {
+    if (ui.auto && ui.result === 'incorrect' && !(findAttempt(ui.attemptId) || {}).coach_graded) {
       out.push(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn quiet', onclick: function () {
         var a = findAttempt(ui.attemptId);
         if (a) { a.result = 'correct'; a.self_assessed = true; delete a.error_type; save(); }
@@ -786,7 +807,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       } }, T.confirmSelf)));
       return out;
     }
-    out.push(resultBanner(ui.result, null, ui.result !== 'dont_know' ? h('p', { class: 'small' }, T.selfAssessed) : null));
+    var graded = findAttempt(ui.attemptId);
+    out.push(resultBanner(ui.result, null, ui.result !== 'dont_know' && !(graded && graded.coach_graded) ? h('p', { class: 'small' }, T.selfAssessed) : null));
     out.push(errorChooser(ui.attemptId));
     if (ui.result !== 'correct' && ui.result !== 'coherent') out.push(h('div', { class: 'row' }, retryButton(ui, rerender)));
     return out;
@@ -1010,7 +1032,14 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
         h('span', null, rich(p.text), ' ', h('span', { class: 'badge' }, (kp ? kp.title : p.kp_id) + ' · ' + (p.required ? T.keyPoint : T.bonusPoint)))));
     });
     card.appendChild(list);
-    if (r.done) { card.appendChild(h('p', { class: 'result partial' }, T.recallDone)); return; }
+    if (r.done) {
+      card.appendChild(h('p', { class: 'result partial' }, T.recallDone));
+      recallAttempts().filter(function (a) { return a.coach_graded; }).forEach(function (a) {
+        var kp = kpById(a.kp_id);
+        card.appendChild(withCoach(h('div', null, resultBanner(a.result, null, h('p', { class: 'small' }, kp ? kp.title : a.kp_id))), a));
+      });
+      return;
+    }
     card.appendChild(h('p', { class: 'small muted' }, T.selfNote));
     card.appendChild(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', onclick: function () {
       var byKp = {};
@@ -1023,6 +1052,12 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       });
       r.done = true; save(); render(true);
     } }, T.confirmSelf)));
+  }
+
+  function recallAttempts() {
+    var latest = {};
+    state.attempts.forEach(function (a) { if (String(a.id).split('~')[2] === 'free-recall') latest[a.kp_id] = a; });
+    return Object.keys(latest).map(function (k) { return latest[k]; });
   }
 
   function renderPlain(panel) {
@@ -1075,7 +1110,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       }));
       card.appendChild(h('p', { class: 'small muted' }, T.selfNote));
     } else if (s.done) {
-      card.appendChild(resultBanner(s.result, null, h('p', { class: 'small' }, T.selfAssessed)));
+      var ptAttempt = state.attempts.filter(function (a) { return String(a.id).split('~')[2] === 'plain-talk'; }).pop();
+      card.appendChild(resultBanner(s.result, null, ptAttempt && ptAttempt.coach_graded ? coachNote(ptAttempt) : h('p', { class: 'small' }, T.selfAssessed)));
     }
   }
 
@@ -1105,8 +1141,9 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
         section.appendChild(h('div', { class: 'mistake' },
           h('div', { class: 'badges' }, h('span', { class: 'badge' }, kp ? kp.title : a.kp_id), h('span', { class: 'badge' }, T[a.result] || a.result),
             a.confidence ? h('span', { class: 'badge' }, fmt(T.confShort, { c: a.confidence })) : null,
-            hot ? h('span', { class: 'badge hot' }, T.hotBadge) : null),
-          h('p', null, rich(a.question || '')), select));
+            hot ? h('span', { class: 'badge hot' }, T.hotBadge) : null,
+            a.coach_graded ? h('span', { class: 'badge' }, T.coachGraded) : null),
+          h('p', null, rich(a.question || '')), a.coach_graded && a.note ? h('p', { class: 'small' }, rich(a.note)) : null, select));
       });
       panel.appendChild(section);
     });
@@ -1130,15 +1167,18 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   }
 
   function buildAnswers() {
-    var lines = ['# closebook · ' + T.myAnswers, '', data.topic + ' (' + data.lesson_id + ') · ' + isoNow(), ''];
+    var lines = ['# closebook · ' + T.myAnswers, '', data.topic + ' (' + data.lesson_id + ') · ' + isoNow(), '', '> ' + T.coachAsk, ''];
+    var idLine = function (id) { return '**ID:** `' + id + '`'; };
     data.knowledge_points.forEach(function (kp) {
       var rows = [];
       kp.items.forEach(function (it) {
         var u = state.ui[keyOf(kp, it)];
         if (!u || !u.done) return;
         var q = it.question || it.prompt || it.front || (it.fallback && it.fallback.question) || it.id;
-        var row = ['**Q:** ' + q, '**' + T.yourAnswer + ':** ' + (u.answerText || (u.choice !== undefined && it.options ? String.fromCharCode(65 + u.choice) + '. ' + it.options[u.choice].text : T.noText)),
+        var row = ['**Q:** ' + q, '**' + T.yourAnswer + ':** ' + (u.answerText || (u.choice !== undefined && it.options ? String.fromCharCode(65 + u.choice) + '. ' + it.options[u.choice].text
+            : (u.vals && u.vals.length ? u.vals.map(function (v) { return v || '—'; }).join(' / ') : T.noText))),
           '**' + T.gradeSelf + '** ' + (T[u.result] || u.result) + (u.conf ? ' · ' + fmt(T.confShort, { c: u.conf }) : '')];
+        if (u.attemptId) row.unshift(idLine(u.attemptId));
         if (u.ticks && it.reference_points) {
           row.push(it.reference_points.map(function (p, i) { return (u.ticks[i] ? '- [x] ' : '- [ ] ') + p.text; }).join('\n'));
         }
@@ -1146,8 +1186,17 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       });
       if (rows.length) { lines.push('## ' + kp.title, ''); lines.push(rows.join('\n\n'), ''); }
     });
-    if (state.recall.text) lines.push('## ' + T.tabRecall, '', '**Q:** ' + data.free_recall.prompt, '**' + T.yourAnswer + ':** ' + state.recall.text, '');
-    if (state.pt.text) lines.push('## ' + T.tabPlain, '', '**Q:** ' + data.plain_talk.recall.prompt, '**' + T.yourAnswer + ':** ' + state.pt.text, '');
+    if (state.recall.text) {
+      lines.push('## ' + T.tabRecall, '', '**Q:** ' + data.free_recall.prompt, '**' + T.yourAnswer + ':** ' + state.recall.text, '');
+      recallAttempts().forEach(function (a) { var kp = kpById(a.kp_id); lines.push('- ' + (kp ? kp.title : a.kp_id) + ' · ' + (T[a.result] || a.result) + ' · ' + idLine(a.id)); });
+      lines.push('');
+    }
+    if (state.pt.text) {
+      var pt = state.attempts.filter(function (a) { return String(a.id).split('~')[2] === 'plain-talk'; }).pop();
+      lines.push('## ' + T.tabPlain, '');
+      if (pt) lines.push(idLine(pt.id));
+      lines.push('**Q:** ' + data.plain_talk.recall.prompt, '**' + T.yourAnswer + ':** ' + state.pt.text, '');
+    }
     return lines.join('\n');
   }
 
@@ -1182,8 +1231,9 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   }
 
   function importJson(text) {
-    var obj;
-    try { obj = JSON.parse(text); } catch (e) { return T.importBad; }
+    var obj, raw = String(text || ''), start = raw.indexOf('{'), end = raw.lastIndexOf('}');
+    try { obj = JSON.parse(start >= 0 && end > start ? raw.slice(start, end + 1) : raw); } catch (e) { return T.importBad; }
+    if (obj && obj.format === GRADING_FORMAT && Array.isArray(obj.grades)) return applyGrading(obj);
     if (!obj || obj.format !== EXPORT_FORMAT || !Array.isArray(obj.attempts)) return T.importBad;
     if (obj.lesson_id && obj.lesson_id !== data.lesson_id) return fmt(T.importOther, { id: obj.lesson_id });
     var n = 0;
@@ -1197,6 +1247,29 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     rebuildFromAttempts();
     save();
     return n ? fmt(T.importOk, { n: n }) : T.importNone;
+  }
+
+  function applyGrading(obj) {
+    if (obj.lesson_id && obj.lesson_id !== data.lesson_id) return fmt(T.importOther, { id: obj.lesson_id });
+    var applied = 0, missing = 0;
+    obj.grades.forEach(function (g) {
+      var a = g && findAttempt(g.attempt_id);
+      if (!a || RESULTS.indexOf(g.result) < 0) { missing += 1; return; }
+      var note = typeof g.feedback === 'string' ? g.feedback : '';
+      var errorType = BAD.indexOf(g.result) >= 0 && T.errorTypes[g.error_type] ? g.error_type : (BAD.indexOf(g.result) >= 0 ? a.error_type : undefined);
+      if (a.coach_graded && a.result === g.result && (a.note || '') === note && a.error_type === errorType) return;
+      a.result = g.result; a.coach_graded = true;
+      delete a.self_assessed;
+      if (note) a.note = note; else delete a.note;
+      if (errorType) a.error_type = errorType; else delete a.error_type;
+      Object.keys(state.ui).forEach(function (k) { if (state.ui[k].attemptId === a.id) state.ui[k].result = a.result; });
+      if (String(a.id).split('~')[2] === 'plain-talk') state.pt.result = a.result;
+      applied += 1;
+    });
+    save();
+    var msg = applied ? fmt(T.gradingOk, { n: applied }) : (missing ? '' : T.gradingNone);
+    if (missing) msg += (msg ? ' ' : '') + fmt(T.gradingMissing, { n: missing });
+    return msg;
   }
 
   function renderData(panel) {
