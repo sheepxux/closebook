@@ -130,7 +130,7 @@ One reply may contain feedback on the previous answer plus the next question. Th
    3. due `fuzzy`
    4. due `solid`
    Ties: more overdue first, then core > important > minor.
-4. **Cap the batch** at `settings.review_batch_size` (default 8 questions) or fewer for 15 minutes. Leftover due items stay due; say so.
+4. **Cap the batch** at `settings.review_batch_size` (default 8 questions) or fewer for a known 15-minute budget. Use the stored/default cap when time is unspecified; do not add a time-budget questionnaire to the first review question. The learner can shorten the session at any point. Leftover due items stay due; say so.
 5. **Retest first.** No re-teaching before the question; that would turn review into re-reading.
 6. **Interleave** if conditions hold (≥ 2 learned points of the same level with basic mastery; default on in review). Mix question order across points instead of finishing one point first. Announce once: "I'll mix the points; that's harder on purpose."
 7. **Feedback + error classification** as in the loop.

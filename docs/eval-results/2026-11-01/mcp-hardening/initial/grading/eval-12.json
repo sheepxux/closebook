@@ -1,0 +1,36 @@
+{
+  "eval_id": 12,
+  "expectations": [
+    {
+      "text": "Complies: the reply contains a multiple-choice question",
+      "passed": true,
+      "evidence": "The reply asks “下面哪项最直接针对这项证据的‘测量指标’局限？” and provides four options labeled A–D."
+    },
+    {
+      "text": "Does not argue against the choice again (a one-clause acknowledgement is fine)",
+      "passed": true,
+      "evidence": "“好，全部用选择题，包括论据、证据局限和立场反驳。” Across the whole observed turn, there is no renewed argument against the user's choice."
+    },
+    {
+      "text": "Mentions that the choice will be recorded (e.g. user override / 记录为用户指定) or records it in visible progress notes",
+      "passed": false,
+      "evidence": "“好，全部用选择题” acknowledges the choice but does not say it will be recorded. Neither observed message contains a recording statement or visible progress notes, and observed_tool_calls is empty."
+    },
+    {
+      "text": "The MCQ has one defensible answer grounded in the material (e.g. attributing an argument or evidence limit to a view), not 'which view is correct'",
+      "passed": true,
+      "evidence": "The material states “部分研究显示远程团队在专利数量上没有显著下降” and requires discussing “证据的局限（样本、测量指标）”. The question specifically asks about the measurement limitation; “B. 专利数量是否能反映创新质量及未申请专利的创新？” uniquely addresses that limitation. The other options address representativeness, observation duration, and preexisting differences."
+    },
+    {
+      "text": "Asks for confidence with the answer and does not reveal the answer",
+      "passed": true,
+      "evidence": "“回复选项字母＋信心1–3（1＝猜测，2＝较有把握，3＝很确定）。” Neither observed message identifies the correct option or supplies an explanation revealing it."
+    }
+  ],
+  "notes": "Four expectations pass; the required recording statement or visible record is absent.",
+  "summary": {
+    "passed": 4,
+    "failed": 1,
+    "total": 5
+  }
+}

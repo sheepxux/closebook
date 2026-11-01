@@ -2,7 +2,7 @@
 
 `evals.json` follows the skill-creator format (`skill_name`, `evals[]` with `id`, `prompt`, `expected_output`, `files`, `expectations`). `files` paths are relative to the skill root. This folder is left out of the packaged ZIP.
 
-Each prompt starts with a bracketed `[Environment: …]` preamble: the platform's capabilities, today's date and, for mid-session scenarios, a summary of earlier turns. The runner treats it as context, not as text the user typed. Each eval checks one assistant turn.
+Each prompt starts with a bracketed `[Environment: …]` preamble: the platform's capabilities, today's date and, for mid-session scenarios, a summary of earlier turns. The runner treats it as context, not as text the user typed. Each eval checks one assistant turn, including its tool calls and any follow-up after a tool result.
 
 The suite checks both directions: that a method or form is **used where it fits** (Feynman on conceptual material, predict-first diagrams on architecture, production on language) and **not used where it doesn't** (no analogies for a glossary, no right/wrong grading on contested material, no components for a one-line fact).
 
@@ -36,12 +36,33 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 26 | routing · "quiz me" on unseen material | Explains first, says why in one line |
 | 27 | teach route · point taught | Goes on to the next point; no retest yet |
 | 28 | teach route · all points taught | Explanations closed; first retest on the point taught longest ago |
+| 29 | native-first · suitable built-in tool | Uses native once; no duplicate MCP display |
+| 30 | explicit MCP preview | Uses requested MCP with actual content, waits without scoring |
+| 31 | restricted native tool | Does not use clarification/approval input as a quiz; Chinese UI for English subject text |
+| 32 | open explanation | Preserves written production when native supports only choices |
+| 33 | lesson acknowledgement | Gives a fresh guided check; no scored attempt, mastery or schedule change |
+| 34 | failed native display | Attempts native once, then preserves the question in the MCP fallback |
 
 ## Running
 
 **With skill-creator** (if your environment has it): point it at this folder; it reads `evals/evals.json`.
 
+**With the repository runner:** an authenticated Codex CLI can execute `python3 tools/run_behavior_evals.py --out /absolute/path/to/new-eval-run` from the repository root. Use a fresh output directory outside the repository. It runs all 34 cases by default; `--ids 29,30,31,32,33,34` selects the renderer cases. It saves raw responses and tool logs but does not replace independent grading. This uses model calls and is separate from deterministic CI.
+
 **Without it** (how the 2026-10-31 run was done): for each eval, a fresh agent gets the skill folder, reads `SKILL.md` and only the references it routes to, and writes the next assistant reply. It never sees `evals/`. A separate grader marks every expectation pass/fail with quoted evidence. For eval 22, the grader extracts the JSON block and runs `scripts/progress_tool.py validate` on it. Results and responses: `docs/eval-results/<date>/iteration-<n>/`.
+
+## Tool-call cases (29–34)
+
+These six cases require executable tool doubles and recorded calls, not just a reply saying which renderer the agent would choose. Expose the names and capabilities described in each environment. Keep the test runner and expectations outside the runner's readable skill snapshot.
+
+- `host_native.show_exercise` represents a host-provided teaching component; constrain its supported forms per case. `host_native.ask_clarification` is restricted to clarification, planning and approval.
+- `closebook_card.show_exercise` uses the current card schema. A successful double reports that presentation was requested but supplies no learner answer.
+- In case 33, `learning_progress.record` records an actual scored attempt and updates mastery/scheduling. Log calls so a reading acknowledgement cannot silently count as an answer.
+- In case 34, the first native call must return an explicit rendering error stating that no card appeared and no answer was collected. The MCP double then succeeds. Do not tell the runner about the planned failure before it occurs.
+
+Grade actual call names, order, arguments and progress writes, together with the final reply. A separate grader must see the recorded evidence and cite it. These doubles test an agent's decisions with real tool calls; they do not establish that a client's built-in UI, MCP display or desktop click path works. Real-client submission checks remain separate.
+
+The suite now contains 34 cases. New cases need results before a behaviour change is declared validated; defining an expectation does not prove it passed. See the [2026-11-01 MCP validation report](../../../docs/mcp-hardening-validation.md) for actual tool-call evidence, original failures, targeted repairs and validation limits.
 
 ## Trigger queries
 

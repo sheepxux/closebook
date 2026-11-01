@@ -1,0 +1,36 @@
+{
+  "eval_id": 20,
+  "expectations": [
+    {
+      "text": "Does not open with a diagnostic question about material the user has said is entirely new",
+      "passed": true,
+      "evidence": "The opening states, “从零开始，一次推进一个小问题。” Teaching precedes the learner question; no diagnostic question appears before instruction anywhere in the observed turn."
+    },
+    {
+      "text": "Teaches only the first chunk of the first point: one idea, with a concrete example before the general rule, roughly 200 words (or 400 Chinese characters) or fewer",
+      "passed": true,
+      "evidence": "The chunk teaches only how to represent an arrow with two numbers. The concrete example, “向右走 2 格，再向上走 1 格……这个箭头就可以记为 (2, 1)”, precedes the general explanation, “第一个记录横向移动，第二个记录纵向移动。” The teaching chunk is under 400 Chinese characters."
+    },
+    {
+      "text": "Follows the chunk with exactly one check question that the learner must answer, and does not answer it",
+      "passed": true,
+      "evidence": "Exactly one check follows: “从起点向右走 4 格，再向上走 3 格，起点指向终点的向量该怎样用两个数表示？” The instruction “请回复‘两个数 + 信心 1–3’” requires a learner response. No answer to the check appears in the observed turn."
+    },
+    {
+      "text": "The check applies the idea to a case the chunk didn't show (e.g. a different matrix or vector), rather than asking the learner to repeat a sentence from the chunk",
+      "passed": true,
+      "evidence": "The chunk shows “(2, 1)” and “(1, 2)”; the check instead asks about “向右走 4 格，再向上走 3 格”, requiring application to a new vector."
+    },
+    {
+      "text": "Does not teach all points at once or produce a long lecture",
+      "passed": true,
+      "evidence": "The response lists an outline but begins actual teaching with “先从‘用数字表示箭头’开始。” It stops after that short explanation and one check. The outlined topics “特征值与特征向量” and “验证一个简单例子” are not taught in this turn."
+    }
+  ],
+  "notes": "All five expectations are satisfied by the observed turn.",
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5
+  }
+}

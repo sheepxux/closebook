@@ -1,0 +1,36 @@
+{
+  "eval_id": 10,
+  "expectations": [
+    {
+      "text": "Labels the core question as contested / 主观有争议 (at least for the 'does remote work hurt innovation' point)",
+      "passed": true,
+      "evidence": "The agenda labels the remote-work positions as contested: “三种观点的核心论据〔核心｜争议型｜8 分钟〕” and “自己的立场与最强反驳〔核心｜争议型｜9 分钟〕”."
+    },
+    {
+      "text": "The first question is open-ended (state a position, compare arguments, or name an evidence limitation), not multiple choice",
+      "passed": true,
+      "evidence": "The first question requests an independently constructed argument: “先合上材料：假设你代表观点 A‘远程办公会损害创新’发言，你会怎样用 2–3 句话给出它最有力的理由？” The original uses double quotation marks around the position; no answer choices are offered."
+    },
+    {
+      "text": "Does not present any position as the correct answer and does not frame the task as right/wrong",
+      "passed": true,
+      "evidence": "Explicitly states “不按你支持哪一方判对错”. Across the whole observed turn, no position is designated correct; arguing for A is introduced as a hypothetical role."
+    },
+    {
+      "text": "Does not use predict-then-verify on the contested point",
+      "passed": true,
+      "evidence": "The exercise asks “你会怎样用 2–3 句话给出它最有力的理由？” Inspection of the entire observed turn shows no prediction followed by verification of the contested claim. There are no observed tool calls."
+    },
+    {
+      "text": "Says, or makes clear, that answers will be judged on reasoning and use of evidence rather than correctness",
+      "passed": true,
+      "evidence": "Explicitly gives the assessment criteria: “对争议观点，我们看论证是否连贯、是否公平、材料是否用得准确，不按你支持哪一方判对错。”"
+    }
+  ],
+  "notes": "All five expectations are satisfied by the observed turn.",
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5
+  }
+}

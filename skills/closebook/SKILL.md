@@ -3,7 +3,7 @@ name: closebook
 description: Closed-book learning coach. Teaches new topics in small checked steps, then makes them stick by asking instead of summarizing. Turns user-supplied material (notes, documents, chapters, code, or a topic) into short explanations with checks, diagnostic questions, targeted feedback, closed-book retests, Feynman explanations and spaced-repetition review, tracked in a portable progress file. Use when the user wants to learn something new, be taught, study, memorize, understand, review, prepare for an exam, be quizzed or tested, practice explaining something, or resume review with a closebook progress JSON, including requests for a practice page, quiz page, flashcards or worksheet. Also covers Chinese requests such as 教我、我想学、入门、零基础、学习、复习、背、备考、考考我、测验、费曼、帮我记住、说人话、小白模式、练习页、复习页、刷题. If the user only asks for a summary of study material, offer active learning once in one sentence and respect the answer. Not for ordinary factual Q&A.
 license: MIT
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
   progress-schema: "1.0"
 ---
 
@@ -30,7 +30,7 @@ Deciding all four at once produces flashy but mismatched lessons; deciding them 
 
 ## Start of every session
 
-1. **Detect the environment once.** Platform level: 0 = plain text (always available), 1 = native clickable options, cards or checklists, 2 = you can produce a self-contained HTML page or artifact. Use the highest level you have concrete evidence for; when unsure, assume 0. If you're told markdown doesn't render (e.g. a raw terminal), drop bold, headings and tables. Also note whether you can read and write files and whether you know today's date.
+1. **Detect the environment once.** Check actual tools and their permitted uses, file access and today's date. Use the capability and renderer rules in `references/interaction-fit.md`; a platform name is not evidence of a capability. If markdown does not render, drop formatting.
 2. **Route the request.**
    - Progress JSON pasted or a progress file present → **review flow**.
    - Wants to **learn** something ("teach me", "I want to learn X", "get me started with", 教我、我想学、入门、从零学) → **teach route (B)**: teach in small checked steps, then the closed-book loop. `references/new-learning.md`.
@@ -69,6 +69,7 @@ After all points: **synthesis** (Feynman explanation if any point is conceptual 
 
 - Per knowledge point: baseline (retrieval practice, spaced repetition, error review when there are errors) **plus at most 2 optional methods**. Fewer is better. Rules and the full matrix: `references/method-fit.md`; each method's procedure: `references/methods/`.
 - Then choose at most 1–2 interaction forms per point, only if they beat plain text Q&A: `references/interaction-fit.md` (including subject starting points, e.g. code tracing for programming, numbers and graphs for maths). Plain text is always legal and often best.
+- **Native first on every agent platform; MCP is a fallback.** Apply the renderer order and exceptions in `references/interaction-fit.md`. When using closebook MCP, read `references/mcp-cards.md` for supported forms, language and submission rules.
 - Structure, flow or state change (architecture, pipelines, lifecycles) → a **predict-first diagram**, even in plain text: numbered steps or ASCII arrows with `?` blanks for the learner to fill; show the complete diagram only after they answer.
 - Say in one sentence which method you're using and why *now*. If you skip a standard step, say what and why. Never add a method just to look thorough.
 - The user can switch with one sentence ("only Feynman", "just quiz me today"). Comply and tell them which records that affects.
@@ -97,6 +98,7 @@ Schema: `schemas/progress.schema.json` (versioned, core + extension fields). Sto
 | Classifying a knowledge point | `references/knowledge-types.md` |
 | Choosing methods | `references/method-fit.md`, then the method file |
 | Choosing interaction forms, platform levels, downgrades | `references/interaction-fit.md` |
+| Native interaction unavailable/unsuitable; using the optional closebook MCP card | `references/mcp-cards.md` |
 | Writing questions and distractors | `references/question-design.md` |
 | Wording feedback | `references/feedback-style.md` |
 | Time budget, fatigue, trimming scope | `references/efficiency.md` |

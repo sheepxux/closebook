@@ -1,0 +1,172 @@
+{
+  "ui_resource": "learning-card-v5",
+  "purpose": "UI and real message-return acceptance only; no scored learning attempts",
+  "observations": [
+    {
+      "response_id": "lesson:mcp-v5-acceptance-lesson-20261101-01",
+      "type": "lesson",
+      "locale": "zh-CN",
+      "observed_at_utc": "2026-11-01T02:31:44.928616+00:00",
+      "source": "mcp_app message delivered to this chat",
+      "raw_message": "我在 closebook 卡片中提交了回应。\n回应编号：lesson:mcp-v5-acceptance-lesson-20261101-01\n标题：界面验收 1/7 · 知识讲解\n我已读完这段讲解，请出一道引导练习；这不表示我已经掌握。\n请用中文继续。",
+      "action": "continue",
+      "result": "real return received; continue path passed",
+      "learning_progress_written": false,
+      "visual_inspection": "not independently observed",
+      "other_actions": "explain_again not yet tested"
+    },
+    {
+      "response_id": "exercise:mcp-v5-acceptance-mcq-20261101-02",
+      "type": "mcq",
+      "locale": "en",
+      "observed_at_utc": "2026-11-01T02:32:16.024935+00:00",
+      "source": "mcp_app message delivered to this chat",
+      "raw_message": "I submitted a response in a closebook card.\nResponse ID: exercise:mcp-v5-acceptance-mcq-20261101-02\nTitle: UI check 2/7 · Multiple choice\nQuestion ID: mcp-v5-acceptance-mcq-20261101-02\nType: mcq\nQuestion: A triangle has a base of 10 cm and a perpendicular height of 3 cm. What is its area?\n\nThis is an interface test. Select an option and your confidence, then submit. No learning score will be recorded.\nMy choice: B (15 cm²)\nConfidence: 3\nCheck my original answer against the question, accept valid equivalent answers, and give feedback in English.",
+      "option_id": "B",
+      "option_text": "15 cm²",
+      "confidence": 3,
+      "result": "real return received; selected option, superscript and confidence preserved; English response labels present",
+      "learning_progress_written": false,
+      "visual_inspection": "not independently observed",
+      "other_actions": "validation errors and dont-know path not yet tested in desktop"
+    },
+    {
+      "response_id": "exercise:mcp-v5-acceptance-free-text-20261101-03",
+      "type": "free_text",
+      "locale": "zh-CN",
+      "observed_at_utc": "2026-11-01T02:32:48.007532+00:00",
+      "source": "mcp_app message delivered to this chat",
+      "raw_message": "我在 closebook 卡片中提交了回应。\n回应编号：exercise:mcp-v5-acceptance-free-text-20261101-03\n标题：界面验收 3/7 · 简答\n题目编号：mcp-v5-acceptance-free-text-20261101-03\n题型：free_text\n题目：请把下面两行原样复制到答案框，再提交，用来检查中文、英文、符号和换行是否保留：\n\n面积 = 底 × 高 ÷ 2\nArea = base × height / 2\n\n这只是界面验收，不计学习成绩。\n我的作答：\n面积 = 底 × 高 ÷ 2\nArea = base × height / 2\n\n这只是界面验收，不计学习成绩。\n请按题意核对原始作答，接受合理的等价写法，并用中文反馈。",
+      "submitted_text": "面积 = 底 × 高 ÷ 2\nArea = base × height / 2\n\n这只是界面验收，不计学习成绩。",
+      "requested_sample": "面积 = 底 × 高 ÷ 2\nArea = base × height / 2",
+      "requested_sample_present_verbatim": true,
+      "additional_text_received": "这只是界面验收，不计学习成绩。",
+      "result": "real return received; requested Chinese/English sample, symbols and newline present; extra copied note also received",
+      "learning_progress_written": false,
+      "visual_inspection": "not independently observed"
+    },
+    {
+      "response_id": "exercise:mcp-v5-acceptance-numeric-20261101-04",
+      "type": "numeric",
+      "locale": "zh-CN",
+      "observed_at_utc": "2026-11-01T02:33:19.190516+00:00",
+      "source": "mcp_app message delivered to this chat",
+      "raw_message": "我在 closebook 卡片中提交了回应。\n回应编号：exercise:mcp-v5-acceptance-numeric-20261101-04\n标题：界面验收 4/7 · 数值题\n题目编号：mcp-v5-acceptance-numeric-20261101-04\n题型：numeric\n题目：请分别填写下面三个字段，再提交：\n\n数值或表达式：1/2\n单位：m²\n计算过程：1 × 1 ÷ 2 = 1/2\n\n本次检查分数、单位上标和计算过程能否分别传回，不计学习成绩。\n我的数值/表达式：1/2\n我的单位：m²\n我的计算过程：\n1 × 1 ÷ 2 = 1/2\n请按题意核对原始作答，接受合理的等价写法，并用中文反馈。",
+      "value": "1/2",
+      "unit": "m²",
+      "working": "1 × 1 ÷ 2 = 1/2",
+      "requested_fields_match": true,
+      "result": "real return received; fraction, superscript unit and working match requested samples in separate fields",
+      "learning_progress_written": false,
+      "visual_inspection": "not independently observed"
+    },
+    {
+      "response_id": "exercise:mcp-v5-acceptance-cloze-20261101-05",
+      "type": "cloze_passage",
+      "locale": "zh-CN",
+      "observed_at_utc": "2026-11-01T02:33:47.416809+00:00",
+      "source": "mcp_app message delivered to this chat",
+      "raw_message": "我在 closebook 卡片中提交了回应。\n回应编号：exercise:mcp-v5-acceptance-cloze-20261101-05\n标题：界面验收 5/7 · 填空\n题目编号：mcp-v5-acceptance-cloze-20261101-05\n题型：cloze_passage\n题目：请把下面三段文字分别复制到对应空位，再提交：\n\n第 1 空：have known\n第 2 空：moved\n第 3 空：hasn’t seen\n\n本次检查空位对应关系、英文弯撇号和中文界面，不计学习成绩。\n原文：I {{b1}} Lily since childhood. She {{b2}} here in 2021, but she {{b3}} my brother recently.\n我的填空：\n第 1 空 [b1]：have known\n第 2 空 [b2]：moved\n第 3 空 [b3]：hasn’t seen\n请按题意核对原始作答，接受合理的等价写法，并用中文反馈。",
+      "blanks": {
+        "b1": "have known",
+        "b2": "moved",
+        "b3": "hasn’t seen"
+      },
+      "requested_fields_match": true,
+      "apostrophe_codepoint": "U+2019",
+      "result": "real return received; all three blank IDs, values and curly apostrophe match requested samples",
+      "learning_progress_written": false,
+      "visual_inspection": "not independently observed"
+    },
+    {
+      "response_id": "exercise:mcp-v5-acceptance-order-20261101-06",
+      "type": "order_steps",
+      "locale": "zh-CN",
+      "observed_at_utc": "2026-11-01T02:34:23.057481+00:00",
+      "source": "mcp_app message delivered to this chat",
+      "raw_message": "我在 closebook 卡片中提交了回应。\n回应编号：exercise:mcp-v5-acceptance-order-20261101-06\n标题：界面验收 6/7 · 排序\n题目编号：mcp-v5-acceptance-order-20261101-06\n题型：order_steps\n题目：请依次操作，检查点选、移回和调整顺序：\n\n1. 依次选中“底乘高”“结果加 2”“写面积单位”。\n2. 把“结果加 2”移回待选区。\n3. 选中“结果除以 2”，再把它上移一格。\n4. 确认顺序为“底乘高 → 结果除以 2 → 写面积单位”，然后提交。\n\n这只是界面验收，不计学习成绩。\n我的顺序：C → D → B\n1. [C] 写面积单位\n2. [D] 结果加 2\n3. [B] 结果除以 2\n请按题意核对原始作答，接受合理的等价写法，并用中文反馈。",
+      "returned_order": [
+        "C",
+        "D",
+        "B"
+      ],
+      "requested_final_order": [
+        "A",
+        "B",
+        "C"
+      ],
+      "requested_order_matches": false,
+      "result": "return delivered; actual pre-submit order unknown, so this attempt cannot determine whether there was a UI mismatch",
+      "learning_progress_written": false,
+      "visual_inspection": "not independently observed",
+      "intermediate_actions": "not observed; cannot infer whether remove/move controls were used",
+      "user_confirmation": "没留意当时的顺序"
+    },
+    {
+      "response_id": "exercise:mcp-v5-acceptance-order-20261101-06-recheck",
+      "type": "order_steps",
+      "locale": "zh-CN",
+      "observed_at_utc": "2026-11-01T02:35:45.468067+00:00",
+      "source": "mcp_app message delivered to this chat",
+      "raw_message": "我在 closebook 卡片中提交了回应。\n回应编号：exercise:mcp-v5-acceptance-order-20261101-06-recheck\n标题：界面验收 6/7 · 排序复核\n题目编号：mcp-v5-acceptance-order-20261101-06-recheck\n题型：order_steps\n题目：这次只调整一次：\n\n1. 依次点选 ①、③、②。\n2. 把最后一项“② 结果除以 2”上移一次。\n3. 确认“你的排列”从上到下显示 ① → ② → ③，再提交。\n\n“干扰项”留在待选区。这只是界面验收，不计学习成绩。\n我的顺序：A → C → B\n1. [A] ① 底乘高\n2. [C] ③ 写面积单位\n3. [B] ② 结果除以 2\n请按题意核对原始作答，接受合理的等价写法，并用中文反馈。",
+      "returned_order": [
+        "A",
+        "C",
+        "B"
+      ],
+      "requested_final_order": [
+        "A",
+        "B",
+        "C"
+      ],
+      "requested_order_matches": false,
+      "user_confirmation": "哦哦，我点错了",
+      "result": "return delivered; user reported a misclick, so no component defect is established; desktop movement confirmation remains outstanding",
+      "learning_progress_written": false,
+      "visual_inspection": "not independently observed"
+    },
+    {
+      "response_id": "exercise:mcp-v5-acceptance-flashcard-20261101-07",
+      "type": "flashcard",
+      "locale": "zh-CN",
+      "observed_at_utc": "2026-11-01T02:36:26.156092+00:00",
+      "source": "mcp_app message delivered to this chat",
+      "raw_message": "我在 closebook 卡片中提交了回应。\n回应编号：exercise:mcp-v5-acceptance-flashcard-20261101-07\n标题：界面验收 7/7 · 回忆卡\n题目编号：mcp-v5-acceptance-flashcard-20261101-07\n题型：flashcard\n题目：凭记忆写出三角形的面积公式，再点“提交并翻面”。\n\n请留意：提交前应看不到参考答案；提交成功后，卡片应显示参考答案。\n\n这只是界面验收，不计学习成绩。\n我的作答：\n低乘高除2\n请按题意核对原始作答，接受合理的等价写法，并用中文反馈。",
+      "submitted_text": "低乘高除2",
+      "result": "real return received; original spelling preserved; user confirms reference hidden before submission and visible only afterward",
+      "learning_progress_written": false,
+      "visual_inspection": "reference timing confirmed by user; not independently screen-inspected",
+      "user_visual_confirmation": "是，提交后才出现",
+      "reference_hidden_until_submit_confirmed": true
+    },
+    {
+      "response_id": "exercise:mcp-v5-acceptance-order-20261101-control",
+      "type": "order_steps",
+      "locale": "zh-CN",
+      "observed_at_utc": "2026-11-01T02:38:50.981182+00:00",
+      "source": "mcp_app message delivered to this chat",
+      "raw_message": "我在 closebook 卡片中提交了回应。\n回应编号：exercise:mcp-v5-acceptance-order-20261101-control\n标题：最后一项补检 · 上移按钮\n题目编号：mcp-v5-acceptance-order-20261101-control\n题型：order_steps\n题目：只检查按钮，不考知识：\n\n① 先选数字 2，再选数字 1。\n② 点数字 1 旁边的“上移”。\n③ 看到上面是 1、下面是 2 后，再点“提交答案”。\n我的顺序：one → two\n1. [one] 数字 1\n2. [two] 数字 2\n请按题意核对原始作答，接受合理的等价写法，并用中文反馈。",
+      "returned_order": [
+        "one",
+        "two"
+      ],
+      "requested_final_order": [
+        "one",
+        "two"
+      ],
+      "requested_order_matches": true,
+      "result": "simplified desktop recheck returned the requested final order; real message delivery confirmed",
+      "learning_progress_written": false,
+      "visual_inspection": "not independently observed",
+      "intermediate_actions": "user instructed to select two then one, move one up and confirm the display; no separate click telemetry or screen recording"
+    }
+  ],
+  "summary": {
+    "forms_with_real_returns": 7,
+    "real_return_count": 9,
+    "scored_learning_attempts": 0,
+    "ordering_desktop_recheck": "final two-item recheck returned expected one,two; earlier inconclusive and misclick attempts retained",
+    "flashcard_reveal": "user confirmed hidden before submission, shown after submission",
+    "acceptance_scope": "Seven form submission paths observed. This is not independent visual inspection, all-control coverage, all-client validation, or proof of every intermediate click."
+  }
+}

@@ -35,3 +35,8 @@ Hermes 提供 `hermes skills install <identifier-or-url>`，GitHub 子目录标�
 依据：[技能使用指南](https://hermes-agent.nousresearch.com/docs/guides/work-with-skills)、[对话中的技能变化](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills#skill-changes-during-a-conversation)。
 
 纯文本学习不依赖 Python。生成 HTML 页面还需要实际可用的文件操作、Python 3.8+ 和页面打开能力；这些能力应在当前 Hermes 环境中检查，不能仅凭安装成功就声称全部可用。
+
+
+## 可选 MCP 卡片
+
+优先使用适合教学任务的内置能力，具体顺序见[交互规则](../skills/closebook/references/interaction-fit.md)。[closebook MCP 组件](../mcp/README.md) 是单独配置的可选备用方案，不包含在 skill ZIP 中；其卡片显示和提交回传**尚未在 Hermes 实测**。应检查当前客户端实际支持的 MCP Apps 能力，连接成功不能代替界面验证。纯文字教学始终可用。

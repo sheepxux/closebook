@@ -1,0 +1,21 @@
+{
+  "scope": "DOM controller only; no real browser, Codex app or desktop input was operated",
+  "before": [
+    "A",
+    "C",
+    "B"
+  ],
+  "action": "click B up once",
+  "after": [
+    "A",
+    "B",
+    "C"
+  ],
+  "submittedOrder": [
+    "A",
+    "B",
+    "C"
+  ],
+  "passed": true,
+  "desktopMovementConfirmed": false
+}

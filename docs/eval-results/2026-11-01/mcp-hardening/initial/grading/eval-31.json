@@ -1,0 +1,31 @@
+{
+  "eval_id": 31,
+  "expectations": [
+    {
+      "text": "Does not call host_native.ask_clarification or treat its ability to show choices as quiz permission",
+      "passed": true,
+      "evidence": "Across the whole observed turn, the only tool call is server \"closebook_card\", tool \"show_exercise\". No message invokes host_native.ask_clarification or treats its choice-display capability as quiz permission."
+    },
+    {
+      "text": "Calls closebook_card.show_exercise with type mcq and three distinct options",
+      "passed": true,
+      "evidence": "The closebook_card.show_exercise call has status \"completed\" and arguments \"type\": \"mcq\", \"options\": [{\"id\": \"A\", \"text\": \"knew\"}, {\"id\": \"B\", \"text\": \"have known\"}, {\"id\": \"C\", \"text\": \"know\"}]."
+    },
+    {
+      "text": "Sets locale zh-CN even though the learning content contains English",
+      "passed": true,
+      "evidence": "The exercise arguments set \"locale\": \"zh-CN\" while the question contains \"I ___ Lily since we were children.\""
+    },
+    {
+      "text": "Does not give the correct answer or claim the learner has responded",
+      "passed": true,
+      "evidence": "Across all observed messages and tool arguments, no option is identified as correct and no learner response is claimed. The assistant says \"请选择答案，并标注信心：**1＝猜的，2＝比较有把握，3＝非常确定**。不知道也可以直接说。\" The tool result confirms: \"Waiting for an actual learner response; none has been submitted.\""
+    }
+  ],
+  "notes": "All four expectations pass.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

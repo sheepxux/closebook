@@ -4,6 +4,8 @@ A single self-contained page the learner opens in a browser: questions, confiden
 
 ## When to build one
 
+Choose this renderer using the order in `interaction-fit.md`; explicit requests for an offline/practice page take precedence. File-writing capability alone is not a reason to move the learner out of chat.
+
 Only when it clearly pays off (see `interaction-fit.md`): the learner wants an offline or reusable practice page, a review deck of 8+ MCQ/flashcard items, or a form text can't express well (`diagram_fill`, `simulation`, `graph`, `code_trace`, `terminal`, `order_steps`). The chat stays the main channel: the page can't grade free text by itself, so written answers come back to you for grading (see below). If unsure, don't build it.
 
 ## How to produce the page

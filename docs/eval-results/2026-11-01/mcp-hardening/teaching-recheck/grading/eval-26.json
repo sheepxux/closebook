@@ -1,0 +1,31 @@
+{
+  "eval_id": 26,
+  "expectations": [
+    {
+      "text": "Says in about one sentence that it will explain first because the learner hasn't met the material",
+      "passed": true,
+      "evidence": "“你完全没学过，我们就先讲一小块，再考一题。” explicitly connects the learner’s lack of prior knowledge to explaining first."
+    },
+    {
+      "text": "Does not ask a quiz or diagnostic question about ownership before explaining anything",
+      "passed": true,
+      "evidence": "Across the entire observed turn, no ownership question precedes the explanation. The first actual question, “填空：创建文字 → 第一次转交 → 第二次转交 → 最后由 ___ 拥有。”, appears after the code example and explanation of ownership transfer."
+    },
+    {
+      "text": "Gives one short teaching chunk (one idea, a concrete code example before the rule) and then exactly one check question, without answering it",
+      "passed": true,
+      "evidence": "The concrete example “let a = String::from(\"茶\");\n    let b = a;” precedes the rule “对于这里的 String，赋值会转交所有权，不会自动复制出另一份文字。” The short chunk teaches ownership transfer, then gives exactly one fill-in check: “最后由 ___ 拥有。” It never supplies the answer; “变量名 + 一句理由 + 信心 1–3” specifies the response format for that same check."
+    },
+    {
+      "text": "Keeps scope to the 15 minutes: covers one point or plans at most two, without a long lecture",
+      "passed": true,
+      "evidence": "“15 分钟只练一个核心点，最后再闭卷回测。” The ownership-transfer topic is marked “今天学这个。”, while borrowing and cleanup are each marked “留到以后。” Actual teaching stays within one short ownership-transfer example and explanation."
+    }
+  ],
+  "notes": "The opening statement about starting with a small question is an intention; the observed teaching actually explains before asking.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

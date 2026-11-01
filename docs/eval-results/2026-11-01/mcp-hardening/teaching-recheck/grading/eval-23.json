@@ -1,0 +1,36 @@
+{
+  "eval_id": 23,
+  "expectations": [
+    {
+      "text": "Treats the request as wanting to be taught: the outline or first message makes clear that it will explain first and check after each part",
+      "passed": true,
+      "evidence": "Explicitly proposes “小例子讲解 → 一道小题”. Each outline step pairs explanation with a check, including “讲小例子，再请你解释关键一步” and “示范后，做代码填空”."
+    },
+    {
+      "text": "Does not open by quizzing the learner on decorators themselves (a single starting-point question on a prerequisite such as functions is acceptable)",
+      "passed": true,
+      "evidence": "Neither observed message quizzes the learner on decorators. The opening question is scheduling: “今天你有 15、30 还是 60 分钟？”"
+    },
+    {
+      "text": "Says, in about one sentence, that the outline or explanations come from general knowledge rather than the learner's course or material",
+      "passed": true,
+      "evidence": "States: “我先按 Python 的通用知识来教；如果你有指定教材，也可以跟着教材走。”"
+    },
+    {
+      "text": "Asks at most the necessary setup questions (e.g. time) in one message, or starts with one chunk and one check; never two open questions about the content",
+      "passed": true,
+      "evidence": "Bundles time and optional prior-knowledge setup in one message: “今天你有 15、30 还是 60 分钟？可以顺带告诉我哪些部分已经会了”. Across the whole turn, there are no two open content questions."
+    },
+    {
+      "text": "Does not produce a long lecture covering several points",
+      "passed": true,
+      "evidence": "Provides a brief outline introduced by “学习路线分四步，今天按你的时间选”, with one-line descriptions of each step. The whole turn contains no extended explanation or multi-point lecture."
+    }
+  ],
+  "notes": "",
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5
+  }
+}

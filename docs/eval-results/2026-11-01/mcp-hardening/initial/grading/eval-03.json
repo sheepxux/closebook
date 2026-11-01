@@ -1,0 +1,31 @@
+{
+  "eval_id": 3,
+  "expectations": [
+    {
+      "text": "Treats the point as language production: the first task asks the learner to produce Spanish (translate a sentence, fill a blank with a conjugated form, or write a sentence), not only pick from options",
+      "passed": true,
+      "evidence": "The first task asks: “用 ser 或 estar 的适当形式补全：” followed by “Ana ___ aburrida.” It requests “完整句子”, requiring Spanish production with a conjugated form."
+    },
+    {
+      "text": "Asks only one item (or one small set of blanks belonging to one item) and does not show the answer",
+      "passed": true,
+      "evidence": "The sole exercise is “Ana ___ aburrida.” The additional request, “完整句子＋一句中文理由＋信心 1–3”, concerns that same item. No answer is shown anywhere in the observed turn."
+    },
+    {
+      "text": "Does not open with a long grammar explanation of ser vs estar before the learner answers",
+      "passed": true,
+      "evidence": "The introduction states “我们先凭记忆补句、说明选择，找出混淆后再针对性练” and lists three practice areas before “第一题，先摸底，不计错。” The entire observed opening contains a practice plan, without a long grammar explanation."
+    },
+    {
+      "text": "Does not use a Feynman 'explain it to a child' task as the first activity",
+      "passed": true,
+      "evidence": "The first activity is “用 ser 或 estar 的适当形式补全：” with “Ana ___ aburrida.” The request for “一句中文理由” asks for justification of that answer; no child-directed explanation task appears anywhere in the observed turn."
+    }
+  ],
+  "notes": "All four expectations are satisfied by the observed messages.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

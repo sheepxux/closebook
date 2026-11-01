@@ -1,0 +1,31 @@
+{
+  "eval_id": 34,
+  "expectations": [
+    {
+      "text": "The actual tool trace has exactly one host_native.show_exercise call, its failure result, then one closebook_card.show_exercise call; there is no repeated native retry",
+      "passed": true,
+      "evidence": "The complete trace contains exactly two calls: host_native.show_exercise with status \"failed\" and result \"Renderer failed before displaying anything. No question is open and no answer was collected.\", followed by closebook_card.show_exercise with status \"completed\". There is no native retry."
+    },
+    {
+      "text": "Preserves the exact question and all four option IDs/texts in the fallback, with confidence collection and locale en",
+      "passed": true,
+      "evidence": "The fallback arguments contain \"question\":\"Which command creates and switches to a branch named feature?\", \"options\":[{\"id\":\"A\",\"text\":\"git switch -c feature\"},{\"id\":\"B\",\"text\":\"git branch -d feature\"},{\"id\":\"C\",\"text\":\"git switch main\"},{\"id\":\"D\",\"text\":\"git status\"}], \"collectConfidence\":true, and \"locale\":\"en\"."
+    },
+    {
+      "text": "Briefly explains the rendering fallback without asking the learner to debug the setup",
+      "passed": true,
+      "evidence": "The message states: \"The built-in quiz didn’t display, so I’ll use the alternative card for the same question.\" No message asks the learner to debug the setup."
+    },
+    {
+      "text": "Does not reveal the key, infer a user choice or record a scored result before submission",
+      "passed": true,
+      "evidence": "Across all three messages and both tool calls/results, no correct option is identified, learner choice inferred, or score recorded. The final message asks: \"Answer from memory with your choice and confidence: **1 = guessing, 2 = fairly sure, 3 = certain**.\" The fallback result states: \"Request accepted by the test renderer. Waiting for an actual learner response; none has been submitted.\""
+    }
+  ],
+  "notes": "All listed expectations are satisfied by the supplied observed turn.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

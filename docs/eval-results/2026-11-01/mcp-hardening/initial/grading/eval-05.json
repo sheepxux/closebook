@@ -1,0 +1,31 @@
+{
+  "eval_id": 5,
+  "expectations": [
+    {
+      "text": "Offers active learning (being quizzed / 10 minutes of questions) at most once and in about one sentence",
+      "passed": true,
+      "evidence": "The single, one-sentence offer is: “你想直接看要点总结，还是花约 10 分钟做几道简短问答，帮助把文章内容记牢？”"
+    },
+    {
+      "text": "Does not start quizzing without the user's consent",
+      "passed": true,
+      "evidence": "“你想直接看要点总结，还是花约 10 分钟做几道简短问答，帮助把文章内容记牢？” asks for the user's preference. Neither observed message asks an article-content quiz question."
+    },
+    {
+      "text": "Does not refuse the summary or lecture the user about learning science at length (more than two sentences of persuasion fails)",
+      "passed": true,
+      "evidence": "“再回应你的总结请求” expresses willingness to respond, and “直接看要点总结” remains an offered option. Across the whole turn, there is no refusal; persuasion consists only of “帮助把文章内容记牢”."
+    },
+    {
+      "text": "If a summary is given, it is accurate to the article (deep sleep replay, REM, sleep deprivation, naps, cramming)",
+      "passed": true,
+      "evidence": "“我会先按 closebook 技能读取附件，再回应你的总结请求。” announces a future action; the remaining message asks which format the user prefers. No summary or substantive article claims appear anywhere in the observed turn, so this conditional requirement is not triggered."
+    }
+  ],
+  "notes": "No tool calls occurred. The announced intention to read the attachment is not evidence of a completed read.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

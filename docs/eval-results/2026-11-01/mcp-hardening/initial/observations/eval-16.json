@@ -1,0 +1,8 @@
+{
+  "eval_id": 16,
+  "observed_messages": [
+    "I’ll use the closebook skill to start with a short diagnostic question.\n",
+    "We’ll use short, closed-book scenarios to find the gaps, then one retest per point within your 15 minutes.\n\nProposed focus, based on general HTTP knowledge:\n\n1. no-cache — core, conceptual; explain a claim.\n2. no-store — core, conceptual; apply it to a scenario.\n3. max-age — core, conceptual; predict a request flow.\n\nYou can adjust the focus as we go.\n\nFirst question, from memory:\n\nA server responds with:\nCache-Control: no-cache\n\nA teammate says: “This means the browser is forbidden from storing that response in its HTTP cache.”\n\nIs that claim correct? Explain what no-cache actually requires in 1–2 sentences.\n\nInclude confidence: 1 = guessing, 2 = fairly sure, 3 = certain. “I don’t know” is fine—this is just the diagnostic."
+  ],
+  "observed_tool_calls": []
+}

@@ -1,0 +1,41 @@
+{
+  "eval_id": 1,
+  "expectations": [
+    {
+      "text": "Splits the material into 3-5 knowledge points, each labelled with importance (core/important/minor or 核心/重要/次要) and a knowledge type",
+      "passed": true,
+      "evidence": "Lists four points: “TCP 连接管理｜核心·概念理解＋事实记忆”, “TCP 拥塞控制｜核心·程序技能”, “强缓存与协商缓存｜核心·概念理解”, and “缓存指令与验证头｜重要·事实记忆”. Each has importance and knowledge-type labels."
+    },
+    {
+      "text": "Labels the congestion-window calculation topic as procedural (程序技能) or equivalent, not factual",
+      "passed": true,
+      "evidence": "Explicitly labels it “TCP 拥塞控制｜核心·程序技能：逐 RTT 计算，说明关键步骤。”"
+    },
+    {
+      "text": "Asks about familiarity (e.g. new / seen but shaky / fairly familiar) and does not re-ask for the time budget, which was already given",
+      "passed": true,
+      "evidence": "“如果这部分没学过，直接说，我会先讲。” conditionally asks the learner to report unfamiliarity. It accepts the supplied budget with “每天 30 分钟，共 180 分钟”; no message re-asks for the time budget."
+    },
+    {
+      "text": "Mentions the exam date and that reviews will be scheduled before 2026-11-06 (no review dated on or after the exam day)",
+      "passed": true,
+      "evidence": "States “到 2026-11-06 考试前有 6 天”. All scheduled sessions fall between 2026-10-31 and 2026-11-05, ending with “2026-11-05：补漏，优先复测‘很确定却答错’的题。” No review is dated on or after the exam."
+    },
+    {
+      "text": "Does not summarize or re-explain the notes; at most one diagnostic question is asked and its answer is not revealed",
+      "passed": true,
+      "evidence": "The response provides topic labels and a study schedule without summarizing the notes’ explanations. Its single diagnostic asks “这会给服务器带来什么问题？” after a hypothetical two-handshake scenario. The observed turn never supplies the answer about an unnecessary connection and wasted resources."
+    },
+    {
+      "text": "Writes in Chinese",
+      "passed": true,
+      "evidence": "The teaching prose is Chinese, including “我们拆成 4 个知识点，目前已诊断 0/4” and “用 1–2 句话回答，并附信心 1–3”."
+    }
+  ],
+  "notes": "The familiarity request is conditional and topic-specific, but explicitly requests disclosure of unfamiliarity.",
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "eval_id": 14,
+  "expectations": [
+    {
+      "text": "Uses a diagram or structured layout in plain text (ASCII / indented list / table) of partitions and consumers, with something left for the learner to predict",
+      "passed": true,
+      "evidence": "The plain-text layout lists partitions and consumers and leaves a blank: “Topic 的分区：P0、P1、P2\n→ 同一个消费组 G：C1、C2、C3、C4\n→ 最多有 ? 个消费者能同时分到分区”."
+    },
+    {
+      "text": "Asks the learner to predict before showing the complete assignment (e.g. which consumer reads which partition, or what happens with more consumers than partitions)",
+      "passed": true,
+      "evidence": "With four consumers and three partitions, it asks “请填出 ?，用一句话说明理由”, requesting a prediction of how many consumers can receive partitions before revealing any assignment."
+    },
+    {
+      "text": "Does not show the answer in the same message",
+      "passed": true,
+      "evidence": "The question remains “最多有 ? 个消费者能同时分到分区”. Across both observed messages, neither the answer nor a completed assignment is provided."
+    },
+    {
+      "text": "Does not claim to render an interactive or clickable diagram",
+      "passed": true,
+      "evidence": "It describes the presentation as “文字关系图”. Neither observed message claims an interactive or clickable diagram."
+    }
+  ],
+  "notes": "All four expectations are satisfied by the observed text. No tool calls were observed or needed for these expectations.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

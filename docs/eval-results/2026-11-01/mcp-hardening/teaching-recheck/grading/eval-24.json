@@ -1,0 +1,36 @@
+{
+  "eval_id": 24,
+  "expectations": [
+    {
+      "text": "Proposes a learning path of several points in prerequisite order (e.g. functions/slope before limits before derivatives), shown briefly as titles",
+      "passed": true,
+      "evidence": "The brief numbered titles progress from “函数的输入与输出【今天】” through “平均变化率”, “极限”, “导数的含义与计算”, “积分与累积”, and “微分与积分的联系”, in prerequisite order."
+    },
+    {
+      "text": "Marks which points today's 30 minutes will cover (about 2-3 new points), and says the rest will come in later sessions",
+      "passed": true,
+      "evidence": "It states “我们按每天 30 分钟开始，每次学 2–3 个小点” and “今天只学前 3 项，其余留到后续”. The first three titles each carry “【今天】”."
+    },
+    {
+      "text": "Does not try to teach the whole path or several points in this reply",
+      "passed": true,
+      "evidence": "It begins instruction with “先学第一小块：函数。” Across the whole turn, only the function input/output concept is taught; the remaining points appear as titles and learning goals."
+    },
+    {
+      "text": "If it starts teaching, it gives one short chunk and one check question, and does not answer the check",
+      "passed": true,
+      "evidence": "One short notebook-price example leads to “这种给每个允许的输入指定唯一输出的规则，叫函数。” One check follows: “有人提出规则：‘输入一个数，输出一个比它大的数。’例如输入 3，可以输出 4，也可以输出 10。这条规则算函数吗？” The response requests “算／不算＋一句理由＋信心 1–3” and never answers the check."
+    },
+    {
+      "text": "Does not ask whether the learner has studied calculus before as a separate question when they said 'from zero'",
+      "passed": true,
+      "evidence": "It acknowledges “你说从零开始，我会先讲一个例子”. Inspection of the whole observed turn finds no separate question about prior calculus study. “已经会的部分也可以指出” is an optional invitation, not such a question."
+    }
+  ],
+  "notes": "All five expectations are satisfied.",
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5
+  }
+}

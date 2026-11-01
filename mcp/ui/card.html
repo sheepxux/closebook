@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>closebook learning cards</title>
+<style>
+:root {
+    color-scheme: light dark;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --accent: #b7f1fd;
+    --accent-hover: #a1e5f5;
+    --accent-ink: #245c6f;
+    --accent-wash: #effbfe;
+    --accent-line: #8bcbdc;
+    --canvas: #fdfefe;
+    --surface: #ffffff;
+    --surface-soft: #f5f8fa;
+    --text: #1d3039;
+    --muted: #596e79;
+    --line: #e3eaee;
+    --control-line: #7e909b;
+    --focus: #31383c;
+    --hairline: 1px;
+    --weight-normal: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --button-shadow: 0 0 0 1px rgb(0 0 0 / .035), 0 2px 4px rgb(0 0 0 / .025);
+    color: var(--text);
+    background: var(--color-background-primary, var(--canvas));
+  }
+  :root[data-theme="dark"] {
+    --accent: #b7f1fd;
+    --accent-hover: #d0f6ff;
+    --accent-ink: #9bd9e9;
+    --accent-wash: #182e37;
+    --accent-line: #426d7b;
+    --canvas: #121b20;
+    --surface: #182329;
+    --surface-soft: #1d2b32;
+    --text: #e8f0f4;
+    --muted: #a4b6bf;
+    --line: #30434d;
+    --control-line: #68808d;
+    --focus: #e8edf0;
+    --button-shadow: 0 0 0 1px rgb(255 255 255 / .08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --accent-hover: #d0f6ff;
+      --accent-ink: #9bd9e9;
+      --accent-wash: #182e37;
+      --accent-line: #426d7b;
+      --canvas: #121b20;
+      --surface: #182329;
+      --surface-soft: #1d2b32;
+      --text: #e8f0f4;
+      --muted: #a4b6bf;
+      --line: #30434d;
+      --control-line: #68808d;
+      --focus: #e8edf0;
+      --button-shadow: 0 0 0 1px rgb(255 255 255 / .08);
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; padding: 28px; -webkit-font-smoothing: antialiased; font-size: 15px; }
+  main { max-width: 640px; margin: auto; min-width: 0; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; font-weight: var(--weight-medium); letter-spacing: .025em; line-height: 20px; }
+  .brand::before { content: ""; width: 22px; height: 7px; border-radius: 4px; background: var(--accent); box-shadow: inset 0 0 0 1px rgb(0 0 0 / .06); pointer-events: none; }
+  h1 { margin: 14px 0 25px; font-size: clamp(21px, 4.8vw, 25px); font-weight: var(--weight-semibold); line-height: 1.45; letter-spacing: -.025em; text-wrap: balance; }
+  h2 { margin: 0 0 10px; font-size: 13px; font-weight: var(--weight-semibold); line-height: 1.6; color: var(--accent-ink); text-wrap: balance; }
+  p { line-height: 1.85; margin: 0 0 18px; }
+  .preserve, #question { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .example, #reference { padding: 20px 22px; border-radius: 16px; background: var(--accent-wash); margin: 22px 0; }
+  .example p:last-child, #reference p:last-child { margin-bottom: 0; }
+  #reference .note { padding-top: 12px; border-top: var(--hairline) solid var(--line); margin-top: 16px; }
+  #body:empty { display: none; }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  legend { display: block; width: 100%; font-weight: var(--weight-medium); margin-bottom: 20px; padding: 0; line-height: 1.85; }
+  .choices, .stack { display: grid; gap: 10px; }
+  .choice { display: flex; align-items: center; gap: 13px; min-height: 54px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer; line-height: 1.65; transition: border-color 150ms ease-out, background-color 150ms ease-out; }
+  .choice:has(input:checked) { border-color: var(--accent-line); background: var(--accent-wash); }
+  input[type=radio], input[type=checkbox] { accent-color: var(--accent-ink); width: 18px; height: 18px; flex-shrink: 0; margin: 0; cursor: pointer; }
+  input[type=radio] { appearance: none; border: 1.5px solid var(--control-line); border-radius: 50%; background: var(--surface); }
+  input[type=radio]:checked { border-color: var(--accent-ink); background: var(--accent-ink); box-shadow: inset 0 0 0 4px var(--surface); }
+  input[type=text], textarea { width: 100%; min-height: 48px; border: 1px solid var(--control-line); border-radius: 12px; padding: 13px 15px; font: inherit; line-height: 1.7; color: var(--text); background: var(--surface); caret-color: var(--accent-ink); transition: border-color 150ms ease-out, background-color 150ms ease-out; }
+  input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
+  textarea { min-height: 132px; resize: vertical; }
+  label.field { display: grid; gap: 9px; line-height: 1.6; }
+  label.field > span { color: var(--muted); font-size: 13px; }
+  .numeric-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 14px; }
+  #answer.stack { gap: 20px; }
+  .inline-blank { display: inline-block; width: 174px !important; max-width: 100%; margin: 6px 5px; vertical-align: baseline; background: var(--accent-wash) !important; }
+  .passage { padding: 16px 18px; border-radius: 16px; background: var(--surface-soft); white-space: pre-wrap; line-height: 2.5; overflow-wrap: anywhere; }
+  .confidence { margin-top: 18px; padding-top: 20px; border-top: var(--hairline) solid var(--line); }
+  .confidence legend { float: left; margin-bottom: 12px; color: var(--muted); font-size: 12px; }
+  .confidence .choices { clear: both; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .confidence .choice { gap: 8px; min-height: 46px; padding: 10px 11px; font-size: 12px; border-radius: 10px; }
+  .confidence input[type=radio] { width: 16px; height: 16px; }
+  .confidence input[type=radio]:checked { box-shadow: inset 0 0 0 3px var(--surface); }
+  .unknown { display: flex; align-items: center; gap: 9px; width: fit-content; min-height: 44px; margin: 10px 0 0; color: var(--muted); font-size: 13px; cursor: pointer; }
+  button { display: inline-flex; justify-content: center; align-items: center; min-height: 46px; gap: 8px; padding: 12px 22px; border: 0; border-radius: 12px; color: #173844; background: var(--accent); box-shadow: var(--button-shadow); font: inherit; font-size: 14px; font-weight: var(--weight-medium); line-height: 1.5; cursor: pointer; transition: color 150ms ease-out, background-color 150ms ease-out, box-shadow 150ms ease-out, transform 150ms ease-out; }
+  button.secondary { color: var(--text); background: var(--surface-soft); box-shadow: none; }
+  button:not(:disabled):active { transform: scale(.96); }
+  button:disabled { opacity: .5; cursor: default; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+  input[type=text]:focus-visible, textarea:focus-visible { border-color: var(--focus); outline-offset: 2px; }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 24px; }
+  #submit { min-width: 144px; }
+  .item { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--accent-line); border-radius: 12px; background: var(--accent-wash); }
+  .item-text { flex: 1; min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.75; }
+  .moves { display: flex; gap: 4px; flex-wrap: wrap; }
+  .moves button { min-width: 44px; min-height: 44px; padding: 8px; border-radius: 8px; background: transparent; font-size: 12px; }
+  .pool button { justify-content: flex-start; min-height: 52px; padding: 14px 16px; border: 1px solid var(--line); background: var(--surface); text-align: start; white-space: pre-wrap; overflow-wrap: anywhere; font-weight: var(--weight-normal); }
+  .monospace { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 13px; }
+  .note, #status { color: var(--muted); font-size: 12px; line-height: 1.8; }
+  .note { font-variant-numeric: tabular-nums; }
+  #status { min-height: 22px; margin: 14px 0 0; }
+  #fallback { margin-top: 14px; min-height: 170px; }
+  @media (hover: hover) {
+    .choice:hover { border-color: var(--accent-line); background: var(--accent-wash); }
+    button:not(:disabled):hover { background: var(--accent-hover); }
+    button.secondary:not(:disabled):hover { background: var(--accent-wash); }
+    input[type=text]:hover, textarea:hover { border-color: var(--accent-ink); }
+  }
+  @media (min-resolution: 192dpi) { :root { --hairline: .5px; } }
+  @media (max-width: 460px) {
+    body { padding: 20px; }
+    h1 { margin-bottom: 21px; }
+    .example, #reference { padding: 17px 18px; }
+    .item { align-items: flex-start; flex-direction: column; }
+    .moves { width: 100%; justify-content: flex-end; }
+    .numeric-row { grid-template-columns: 1fr; }
+    .confidence .choices { grid-template-columns: 1fr; }
+    .confidence .choice { font-size: 13px; }
+    .actions > button { flex: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } button:not(:disabled):active { transform: none; } }
+</style>
+<main>
+  <div class="brand" id="kind">closebook · Learning card</div>
+  <h1>Preparing content…</h1>
+  <section id="body"></section>
+  <form id="exercise-form" hidden>
+    <fieldset id="answer-fields"><legend id="question"></legend><div id="answer"></div></fieldset>
+    <label class="unknown"><input id="dont-know" type="checkbox"><span data-i18n="dontKnow">I don't know yet</span></label>
+    <fieldset id="confidence" class="confidence" hidden>
+      <legend data-i18n="confidence">How confident are you?</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="confidence" value="1"><span data-confidence-label>1 · Guessing</span></label>
+        <label class="choice"><input type="radio" name="confidence" value="2"><span data-confidence-label>2 · Fairly sure</span></label>
+        <label class="choice"><input type="radio" name="confidence" value="3"><span data-confidence-label>3 · Very sure</span></label>
+      </div>
+    </fieldset>
+    <div class="actions"><button id="submit" type="submit" disabled data-i18n="submit">Submit answer</button></div>
+  </form>
+  <div id="lesson-actions" class="actions" hidden>
+    <button id="continue" type="button" disabled data-i18n="continue">Continue to practice</button>
+    <button id="explain-again" class="secondary" type="button" disabled data-i18n="explainAgain">Explain with another example</button>
+  </div>
+  <section id="reference" hidden aria-live="polite"></section>
+  <p id="status" role="status" aria-live="polite">Connecting to chat…</p>
+  <textarea id="fallback" aria-label="Response text to copy" readonly hidden></textarea>
+</main>
+<script>/* APP_BUNDLE */</script>
+</html>

@@ -1,0 +1,46 @@
+{
+  "eval_id": 22,
+  "expectations": [
+    {
+      "text": "Outputs exactly one JSON code block for the progress",
+      "passed": true,
+      "evidence": "The whole observed turn contains exactly one fenced block beginning with ```json and ending with ```, containing the progress object."
+    },
+    {
+      "text": "The JSON validates: `python3 scripts/progress_tool.py validate <file>` reports no errors (grader runs it)",
+      "passed": false,
+      "evidence": "The JSON is syntactically well-formed, but neither the validator/schema nor a validation result is supplied. \"observed_tool_calls\": [] does not establish that the required validator reports no errors."
+    },
+    {
+      "text": "Uses only core fields (no extension-only fields such as method or interaction on attempts), unless the user asked for the full version",
+      "passed": true,
+      "evidence": "The object declares \"profile\":\"core\". Attempts use \"id\", \"at\", \"phase\", \"result\", \"confidence\", and \"error_type\"; no \"method\", \"interaction\", or other identifiable extension-only fields appear."
+    },
+    {
+      "text": "kp1 is in box 1 with next_review 2026-11-01; kp2 and kp3 are weak or fuzzy in box 1 with next_review 2026-11-01; kp3 has a high-confidence error noted (priority / weak_points note)",
+      "passed": true,
+      "evidence": "All three points have \"leitner_box\":1,\"next_review\":\"2026-11-01\". kp2 has \"mastery\":\"fuzzy\" and kp3 has \"mastery\":\"weak\". kp3 also has \"priority_flag\":true and the note \"误以为三个重复 ACK 后 cwnd 会降至 1；高信心错误，优先复习。\""
+    },
+    {
+      "text": "The diagnostic attempt has phase diagnostic and does not change the schedule",
+      "passed": true,
+      "evidence": "The diagnostic is recorded as {\"id\":\"kp3-1\",\"at\":\"2026-10-31\",\"phase\":\"diagnostic\",\"result\":\"dont_know\"}, with no schedule mutation attached. After the subsequent incorrect retest, kp3 remains at \"leitner_box\":1,\"next_review\":\"2026-11-01\"."
+    },
+    {
+      "text": "Tells the user to save it and paste it back in a new chat, and gives the next review date(s) as absolute dates",
+      "passed": true,
+      "evidence": "The cross-chat handoff is conveyed by \"这里不能保存文件或保证跨聊天记忆。请复制保存下面的进度，下次粘贴回来即可继续。\" The absolute review date is stated as \"下次复习：2026-11-01\"."
+    },
+    {
+      "text": "Does not claim it will remember the progress itself",
+      "passed": true,
+      "evidence": "It explicitly says \"这里不能保存文件或保证跨聊天记忆。\" No message in the observed turn claims automatic retention."
+    }
+  ],
+  "notes": "Expectation 2 is unverified, not demonstrated invalid. No tools were called for this assessment.",
+  "summary": {
+    "passed": 6,
+    "failed": 1,
+    "total": 7
+  }
+}

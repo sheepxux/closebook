@@ -1,0 +1,31 @@
+{
+  "eval_id": 17,
+  "expectations": [
+    {
+      "text": "Keeps it to one short retrieval question (e.g. 'what does 304 mean and when is it sent?') or answers briefly then asks one check question",
+      "passed": true,
+      "evidence": "Asks exactly one short retrieval question: “HTTP 状态码 304 表示什么意思？”"
+    },
+    {
+      "text": "Does not produce a 3-5 point outline, a study plan, a table, a diagram, a flashcard deck or an HTML page",
+      "passed": true,
+      "evidence": "Across both observed messages, there is only a brief skill announcement, the question “HTTP 状态码 304 表示什么意思？”, and response/confidence instructions. None of the listed artifacts appears."
+    },
+    {
+      "text": "Reply is short (roughly under 80 words / 150 Chinese characters)",
+      "passed": true,
+      "evidence": "Both messages combined remain below the rough length limit: a short announcement beginning “我会用 closebook 技能” and a brief question with instructions ending “不记得就说“不知道”。”"
+    },
+    {
+      "text": "Asks for confidence if it asks a question",
+      "passed": true,
+      "evidence": "Explicitly requests confidence: “用一句话回答，附上信心 1–3（1＝猜的，2＝较确定，3＝很确定）。”"
+    }
+  ],
+  "notes": "All four expectations are satisfied.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

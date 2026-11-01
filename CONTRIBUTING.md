@@ -12,12 +12,25 @@ Thanks for helping. closebook is a teaching skill, so most changes are changes t
 
 ## Running the checks
 
-```bash
-python3 -m unittest discover -s tests          # unit, packaging and (if Playwright is installed) browser tests
-python3 tools/package_skill.py --check         # what would ship in the ZIPs
+Install Node.js 20+, the MCP dependencies and the browser test dependencies once:
+
+```sh
+npm ci --prefix mcp
+python3 -m pip install playwright
+python3 -m playwright install chromium-headless-shell
 ```
 
-Browser tests need `pip install playwright && python3 -m playwright install chromium-headless-shell`. Without it they're skipped, not failed.
+Then run all deterministic checks from the repository root:
+
+```sh
+python3 tools/check.py
+```
+
+This runs the Python suite, packaging checks and MCP tests. The full command fails if tests are skipped, so a missing browser cannot silently look like a complete pass. GitHub Actions runs the same command on pushes and pull requests.
+
+When browser access is unavailable or prohibited in the current environment, run `python3 tools/check.py --skip-browser` and label the result as partial. Do not bypass a host's browser restrictions. For focused work, `npm --prefix mcp test` runs only MCP checks.
+
+Model behaviour evaluations and real-client clicks are separate from deterministic CI. Protocol/DOM tests do not prove correct renderer selection, learning-state updates or successful interaction in a desktop app.
 
 If you change `skills/closebook/assets/lesson-template.html`, rebuild the example page (a test compares them):
 
@@ -34,9 +47,18 @@ Behaviour is tested with the evals in [`skills/closebook/evals`](skills/closeboo
 1. Find or add the eval for the behaviour you're changing. Each expectation should be checkable from a single reply.
 2. Run the eval **blind**: the runner gets only the skill folder, the prompt and the attached files, never the expectations. The grader gets the expectations and the reply, and must quote evidence for each pass.
 3. Save replies and grading under `docs/eval-results/<date>/iteration-<n>/` and report before/after numbers in the pull request.
-4. Prefer fixing the skill text over loosening an expectation. If the eval itself was wrong (e.g. the prompt didn't contain what the expectation assumed), fix the eval and say so explicitly.
+4. For renderer cases 29–34, record actual calls and arguments using the tool doubles described in [`evals/README.md`](skills/closebook/evals/README.md). Check progress-writing calls too. A textual promise to use a tool is not a passing tool-selection test.
+5. Prefer fixing the skill text over loosening an expectation. If the eval itself was wrong (e.g. the prompt didn't contain what the expectation assumed), fix the eval and say so explicitly.
 
-One run per eval is noisy. A pull request that changes `SKILL.md` should rerun all evals. A change limited to one reference file can rerun the evals that route to it.
+The repository provides an opt-in runner for an authenticated Codex CLI:
+
+```sh
+python3 tools/run_behavior_evals.py --out /absolute/path/to/new-eval-run
+```
+
+Use a new output directory outside the repository for private raw logs. The runner snapshots the skill without `evals/`, records tool calls and saves responses; a separate grader still needs to assess the expectations. It is not part of ordinary CI and consumes model calls.
+
+One run per eval is noisy. A pull request that changes `SKILL.md` should rerun all evals. A change limited to one reference file can rerun the evals that route to it. Report behavioural results separately from CI and desktop submission checks.
 
 ## Repository hygiene
 

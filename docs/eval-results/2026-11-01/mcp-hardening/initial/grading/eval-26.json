@@ -1,0 +1,31 @@
+{
+  "eval_id": 26,
+  "expectations": [
+    {
+      "text": "Says in about one sentence that it will explain first because the learner hasn't met the material",
+      "passed": true,
+      "evidence": "“你完全没学过，那就先讲一小块，再马上考你。” explicitly connects the learner’s lack of prior knowledge to explaining first."
+    },
+    {
+      "text": "Does not ask a quiz or diagnostic question about ownership before explaining anything",
+      "passed": true,
+      "evidence": "No quiz or diagnostic question appears before the explanation. It teaches “把这份数据的所有权交给 b 后，b 成为所有者，a 就不能再使用那份数据。” before introducing “现在先别回看解释，试一道小检查：”."
+    },
+    {
+      "text": "Gives one short teaching chunk (one idea, a concrete code example before the rule) and then exactly one check question, without answering it",
+      "passed": false,
+      "evidence": "The short chunk explains ownership transfer, but provides no concrete code example anywhere in the turn. “假设 Rust 中有一份文字数据，由变量 a 持有。” is prose, followed by the rule “同一份值，在同一时刻只有一个所有者。” It does then ask exactly one unanswered check: “此时，最初的 x 还能使用这份数据吗？用一句话说明理由，并附上信心 1–3（1＝猜的，2＝比较确定，3＝很确定）。” The required code example is missing."
+    },
+    {
+      "text": "Keeps scope to the 15 minutes: covers one point or plans at most two, without a long lecture",
+      "passed": true,
+      "evidence": "“15 分钟今天只学第 1 点，其余留到以后：” explicitly limits this session to ownership and moves. Although it lists three topics, the other two are deferred; the actual teaching covers only ownership transfer in a short explanation."
+    }
+  ],
+  "notes": "Assessed the complete observed turn. No tool calls were observed.",
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4
+  }
+}

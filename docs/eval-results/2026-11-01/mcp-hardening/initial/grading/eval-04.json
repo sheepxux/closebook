@@ -1,0 +1,31 @@
+{
+  "eval_id": 4,
+  "expectations": [
+    {
+      "text": "Does not start with a full explanation of the three-way handshake",
+      "passed": true,
+      "evidence": "Starts with “从一个具体场景开始，看看你目前的理解。” The turn provides a brief initial-sequence-number setup and two message exchanges, without explaining the complete three-way handshake."
+    },
+    {
+      "text": "Asks a why / what-if or predict question (e.g. what happens with only two steps if a delayed old SYN arrives) that requires reasoning, not recall of the step names",
+      "passed": true,
+      "evidence": "Specifies “假设协议只规定上面两次发送，没有后续通信” and asks “B 能确定 A 已经收到了“起点700”吗？用一两句话说明理由”. This requires reasoning about what B can establish from the available communication."
+    },
+    {
+      "text": "Asks at most one question and does not answer it",
+      "passed": false,
+      "evidence": "Includes two question prompts: “B 此时掌握的证据：？” and “B 能确定 A 已经收到了“起点700”吗？” Neither is answered, but the additional evidence prompt exceeds the one-question limit."
+    },
+    {
+      "text": "Mentions or plans an explain-in-your-own-words (Feynman) step later, or the structure clearly leads to one (e.g. outline states synthesis by explanation)",
+      "passed": true,
+      "evidence": "The outline explicitly plans “两次与三次的差别：核心·概念理解；补全流程→自己讲清”, which leads to the learner explaining the distinction themselves."
+    }
+  ],
+  "notes": "Assessed the complete observed turn. No tool calls were observed.",
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4
+  }
+}

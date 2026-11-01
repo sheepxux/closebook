@@ -1,0 +1,26 @@
+{
+  "eval_id": 6,
+  "expectations": [
+    {
+      "text": "Gives the summary directly",
+      "passed": true,
+      "evidence": "The response provides the summary without requesting further input: “这篇文章的核心是：睡眠有助于巩固记忆，是学习过程的一部分。” Three numbered points follow."
+    },
+    {
+      "text": "Does not offer active learning or quizzing again",
+      "passed": true,
+      "evidence": "The entire observed turn contains no renewed offer of active learning or quizzing. It acknowledges “尊重你只要总结的选择。” and then supplies the summary."
+    },
+    {
+      "text": "Summary covers slow-wave replay, REM's role, sleep deprivation hurting recall, naps helping partly, and cramming backfiring",
+      "passed": true,
+      "evidence": "All five topics appear: “深度睡眠时，海马体会重放新学的信息”; “快速眼动睡眠则可能帮助巩固技能和情绪相关记忆，并把新旧知识联系起来。”; “学习后缺觉，通常会导致第二天回忆效果变差”; “学习后小睡能带来部分益处。”; and “考前通宵会挤占巩固记忆所需的睡眠，换来的却是疲劳状态下的低效阅读。”"
+    }
+  ],
+  "notes": "All listed expectations are satisfied.",
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3
+  }
+}

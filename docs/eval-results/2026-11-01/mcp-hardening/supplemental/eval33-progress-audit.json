@@ -1,0 +1,37 @@
+{
+  "case": 33,
+  "source": "behavior-run/eval-33",
+  "baseline": "behavior-run/skill-snapshot",
+  "baseline_file_count": 45,
+  "workspace_file_count": 45,
+  "attachments": [],
+  "workspace_changes": {},
+  "workspace_content_unchanged": true,
+  "observed_mcp_calls": [
+    {
+      "server": "closebook_card",
+      "tool": "show_exercise",
+      "arguments": {
+        "exercise": {
+          "id": "triangle-area-teach-check-01",
+          "locale": "zh-CN",
+          "title": "三角形面积：引导练习",
+          "type": "numeric",
+          "question": "先别回看讲解。一个三角形的底是 8 cm，对应的垂直高度是 5 cm。它的面积是多少？\n\n引导：先想同底同高的长方形，再回想三角形与它的面积关系。\n\n请填写数值和面积单位，并选择信心：1＝不太确定，2＝比较确定，3＝很确定。不知道也可以直接提交“我不知道”。",
+          "requireUnit": true,
+          "collectConfidence": true
+        }
+      },
+      "error": null,
+      "status": "completed"
+    }
+  ],
+  "learning_progress_record_call_count": 0,
+  "progress_stub_log_exists": false,
+  "source_hashes": {
+    "events.jsonl": "873efe2e06c6d35c21beff6d19fcf9e7b7195945176e5148624095440f5eec0a",
+    "closebook_card.jsonl": "c725091d658720ebcef9caef50191b76ce9120bef86163fba52f3bd54c469a8b",
+    "response.md": "7af75eddb18787e139c4417f2724accb3b7c81ecf417fc79b7603dc0cc4c9bb9"
+  },
+  "scope": "Reconstructed full workspace content comparison against the copied skill snapshot; this case had no file attachments. Progress snapshot was supplied in the prompt, not a mutable progress file. No content changes or scored-progress tool calls were observed. This is not a real host persistence test."
+}

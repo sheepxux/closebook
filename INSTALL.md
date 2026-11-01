@@ -84,6 +84,12 @@ Use Simplified Chinese for all progress updates, questions, and the final respon
 
 不能联网读取安装说明或技能内容时，不编造已读取的内容；提供[发布页](https://github.com/sheepxux/closebook/releases/latest)，让用户上传安装包或粘贴相应指令，再继续。
 
+## 可选 MCP 组件
+
+上面的复制提示词只安装稳定版 skill，不会顺带安装 MCP 服务。纯文字教学无需 MCP；先使用适合教学任务的内置能力，选择顺序见[交互规则](skills/closebook/references/interaction-fit.md)。
+
+用户需要可选卡片时，再按 [MCP 组件说明](mcp/README.md)配置当前客户端支持的连接方式。这部分是 [v0.3.0 源码中的可选组件](https://github.com/sheepxux/closebook/tree/v0.3.0/mcp)，不在 skill ZIP 中。确认 Node.js、构建、服务握手和实际卡片显示，再用一次真实提交验证回传；不能把“服务已连接”当作“所有卡片可用”。各客户端的已验证范围见适配说明，Claude、Hermes、Gemini 的这套组件尚未实机验证。不要为了普通文字学习自动改动全局 MCP 设置。
+
 ## 验证范围
 
 本页是供 agent 执行的安装流程，不是绕过平台权限的统一安装器。Codex 的技能目录和发现方式已依据 OpenAI 官方文档核对，Hermes 的目录、profile 和技能管理方式已依据其官方文档与源码核对，但未进行 Hermes 实机安装；其他平台的依据与边界见上方适配说明及[平台核实记录](docs/platform-verification.md)。不能据此声称这段提示词已经在所有 agent、操作系统和账号上实测成功。

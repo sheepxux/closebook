@@ -1,0 +1,53 @@
+{
+  "eval_id": 30,
+  "observed_messages": [
+    "我会先读取你指定的 closebook 技能，再明确调用 `closebook_card.show_exercise` 显示四选一题。\n",
+    "这次只做组件预览：用一道预测输出题测试四选一提交，不计入学习进度。\n",
+    "已调用 `closebook_card.show_exercise`。请在卡片中选择答案和信心程度，点击提交；我会等你提交后再继续。"
+  ],
+  "observed_tool_calls": [
+    {
+      "server": "closebook_card",
+      "tool": "show_exercise",
+      "arguments": {
+        "exercise": {
+          "id": "python-list-index-preview-20261101-01",
+          "locale": "zh-CN",
+          "title": "Python 列表索引 · MCP 预览",
+          "type": "mcq",
+          "question": "下面这段 Python 代码会输出什么？\n\n```python\nnums = [10, 20, 30, 40]\nprint(nums[-1])\n```\n\n请选择一个选项和信心程度（1＝不确定，2＝较确定，3＝很确定），然后点击提交。",
+          "options": [
+            {
+              "id": "A",
+              "text": "10"
+            },
+            {
+              "id": "B",
+              "text": "30"
+            },
+            {
+              "id": "C",
+              "text": "40"
+            },
+            {
+              "id": "D",
+              "text": "抛出 IndexError"
+            }
+          ],
+          "collectConfidence": true
+        }
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Request accepted by the test renderer. Waiting for an actual learner response; none has been submitted."
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  ]
+}

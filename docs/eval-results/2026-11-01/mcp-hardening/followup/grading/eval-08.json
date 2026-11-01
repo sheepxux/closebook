@@ -1,0 +1,31 @@
+{
+  "eval_id": 8,
+  "expectations": [
+    {
+      "text": "Judges the answer correct and says specifically what was right, without generic praise only",
+      "passed": true,
+      "evidence": "“答对了，你分清了‘能否存储’和‘能否直接使用’的区别。” explicitly judges correctness and identifies the distinction understood."
+    },
+    {
+      "text": "Updates kp2's schedule correctly: box 1 -> box 2 and next review 2026-11-03, or clearly states the 3-day interval from 2026-10-31",
+      "passed": true,
+      "evidence": "“复习盒从 1 升到 2，解除优先错题标记，下次复习是 2026-11-03。” states the required box advancement and review date."
+    },
+    {
+      "text": "Notes that the earlier high-confidence error is now resolved / priority cleared (or equivalent)",
+      "passed": true,
+      "evidence": "“解除优先错题标记” explicitly clears the priority error flag."
+    },
+    {
+      "text": "Moves on to the next due point (kp3, kp1 or kp4) with one question and does not reveal its answer",
+      "passed": true,
+      "evidence": "“不看资料：只查看 https://example.com 的响应头、不下载响应正文，curl 命令怎么写？请连同信心 1–3 一起回答。” asks one kp3 question with confidence reporting. No answer to that question appears anywhere in the observed turn."
+    }
+  ],
+  "notes": "All four expectations are satisfied. The schedule update is stated in chat; no tool calls or persisted file updates were observed.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

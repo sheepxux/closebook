@@ -1,0 +1,41 @@
+{
+  "eval_id": 18,
+  "expectations": [
+    {
+      "text": "Gives a one-line conclusion in everyday words",
+      "passed": true,
+      "evidence": "“强缓存和协商缓存，最关键的差别就是：用浏览器存好的文件之前，要不要先问服务器。” directly states the distinction in everyday words."
+    },
+    {
+      "text": "Includes an everyday analogy AND explicitly states where the analogy breaks down",
+      "passed": true,
+      "evidence": "The menu analogy contrasts “十分钟内直接用这张” with calling to ask “我这张菜单还能用吗”. Its limitation is explicit: “电话只是比方，实际是浏览器自动联系服务器，不用你操作。”"
+    },
+    {
+      "text": "Gives one concrete example and one common pitfall",
+      "passed": true,
+      "evidence": "Concrete example: “比如网页里的一张图片：强缓存命中，就直接用存好的图片；走协商缓存，服务器说‘没变’就用原图，说‘变了’就发来新图。” Common pitfall: “协商缓存虽然联系了服务器，却不一定要重新下载图片。”"
+    },
+    {
+      "text": "Any technical term used (e.g. max-age, ETag, 304) is explained in plain words in the same reply",
+      "passed": true,
+      "evidence": "The caching terms are explained through “用浏览器存好的文件之前，要不要先问服务器”, with “强缓存命中，就直接用存好的图片” explaining the hit behavior. The summary reinforces their meanings: “一个提前获准直接用，一个这次先确认。” No max-age, ETag, or 304 terminology is introduced."
+    },
+    {
+      "text": "Ends with a recall question asking the learner to explain or apply it in their own words, without answering it",
+      "passed": true,
+      "evidence": "The final scenario asks the learner to apply strong caching after the server changes an image, ending with “你预计看到旧图还是新图，为什么？回答时带上把握程度：1＝不确定，2＝大概懂了，3＝很确定。” It requests the learner’s reasoning and leaves the answer unstated."
+    },
+    {
+      "text": "Does not insult or label the learner (no 'for dummies' tone)",
+      "passed": true,
+      "evidence": "Neither observed message insults or labels the learner. “看看这个区别有没有说清” frames the check around the explanation’s clarity, and “换个更直白的说法” offers a simpler explanation respectfully."
+    }
+  ],
+  "notes": "Assessed both observed messages. No tool calls were observed or required by the listed expectations.",
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6
+  }
+}

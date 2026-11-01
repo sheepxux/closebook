@@ -1,0 +1,36 @@
+{
+  "eval_id": 2,
+  "expectations": [
+    {
+      "text": "Respects 'skip the outline': no full multi-point outline table before the first question (a one-line list of points is acceptable)",
+      "passed": true,
+      "evidence": "Both observed messages contain no outline table or full multi-point outline. The introduction says, “We’ll start with a history prediction to see where rebase gets confusing,” then presents the scenario."
+    },
+    {
+      "text": "The first question is concrete and situational (predict what a command does, pick and justify a command for a scenario, or spot the problem in a command sequence), not 'define rebase'",
+      "passed": true,
+      "evidence": "After showing a specific branch history, it says, “Imagine running `git rebase main` with no conflicts” and asks, “What would that history look like?”"
+    },
+    {
+      "text": "Asks exactly one question and does not reveal its answer",
+      "passed": true,
+      "evidence": "The sole question is “What would that history look like?” The instructions “Sketch it or describe it, indicating which commits, if any, get new hashes” elaborate that same question. Neither message supplies the resulting history or identifies which commits receive new hashes."
+    },
+    {
+      "text": "If the question has a right answer, asks for confidence 1-3 in the same reply",
+      "passed": true,
+      "evidence": "The question’s reply explicitly requests “confidence 1–3” and specifies “1 = guessing, 2 = fairly sure, 3 = certain”."
+    },
+    {
+      "text": "Does not build an HTML page or claim clickable UI",
+      "passed": true,
+      "evidence": "Across the entire observed turn, there is no HTML construction or clickable UI claim. The response uses text diagrams and requests “Sketch it or describe it”; the tool-call log is empty: “observed_tool_calls”: []."
+    }
+  ],
+  "notes": "All five expectations are satisfied by the observed turn.",
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5
+  }
+}

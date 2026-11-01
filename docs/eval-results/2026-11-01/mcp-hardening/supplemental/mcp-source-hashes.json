@@ -1,0 +1,21 @@
+{
+  "mcp/cards.mjs": "c825ccddcbdb2506e2209b5e132e73be8c670e9e4e89c4a1ee1dbd1f0f3943e3",
+  "mcp/.npmrc": "46b7bd38b3a04f657e7028dba2c3ade000f64c2ae6d5cf67629650684d1d7e72",
+  "mcp/locale.mjs": "98b55cf0801b57fdf1e1a9005d9e85f8924a963e61ef9bb58404fce845e41139",
+  "mcp/README.md": "68656cc89fa874cb08c73c871cf11a44d2df4ceae94a41094db6a1b5b4a62ca0",
+  "mcp/package-lock.json": "63e9b9d45ad778f23fd37856a28e4f04bd2716032114bd4509f0b948c9473483",
+  "mcp/package.json": "f3ab8fcb1f37dd03abc4d307d30cc56a17feaca0209f012a1892a6d4bd6e11a0",
+  "mcp/build-state.mjs": "f69403f423a399d2eb9e78b18c1a1a51afbb780bf5f8d92b36b35ee6972f6ada",
+  "mcp/build.mjs": "5930606f8e94bab10f1e36e0eb6613936d9f7eb9295574155b5823dd52128423",
+  "mcp/server.mjs": "e5d4db1dd4d56ae04e76d0b11fb9687f45e311796511baa2beb393dc4c937b4a",
+  "mcp/ui/submission.mjs": "423904a135d911a97f75afd9637673b4c7e241e82546b59ae0440bcab58ae9eb",
+  "mcp/ui/render.mjs": "94754ccfb28d9d80f27182bf9d7e60ec1e5a531b3af96430710143fa2b253600",
+  "mcp/ui/card.html": "fd84d32481375b47bd8cbfeb9be4e282a1a0dc6444c7373f7f3e76791b40c928",
+  "mcp/ui/app.mjs": "4d991b4da7f2a4d5e38ae556160b158a5a75a0d6c90f4210770a015ee3da50a6",
+  "mcp/tests/components.test.mjs": "defb8828aff5b8c86b8610910c63c58bf2bea3beafeb9d4dda3aa1e15b34ac21",
+  "mcp/tests/locale-protocol.test.mjs": "3bb3aecbdaac0192f212094e2a0d89dd21d7e751d2cf01d5e11eb297ca9b0418",
+  "mcp/tests/runtime.test.mjs": "a1f0366c52a97774d5b5dca31069350eef469690fadc8da918752bdba2f3ac7d",
+  "mcp/tests/protocol.test.mjs": "2a581760b7ce19be262351fc46306a1995e6b18389acfafe2365d4f816421441",
+  "mcp/tests/fixtures.mjs": "a50cab8a2288f84875609f17a0e5d58b9466a15c1ec71e56831a00515bbcaf4c",
+  "mcp/tests/locale.test.mjs": "12af0a7d749b3a6e4583d48fa56cb7bddaa26e44c3f565bac95b4ef2966e26ce"
+}

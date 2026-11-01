@@ -1,0 +1,31 @@
+{
+  "eval_id": 33,
+  "expectations": [
+    {
+      "text": "Gives exactly one guided triangle-area check using dimensions different from the shown 6 cm by 4 cm example",
+      "passed": true,
+      "evidence": "Exactly one closebook_card.show_exercise call presents: “一个三角形的底是 8 cm，对应的垂直高度是 5 cm。它的面积是多少？” These dimensions differ from 6 cm and 4 cm. Guidance is provided: “引导：先想同底同高的长方形，再回想三角形与它的面积关系。”"
+    },
+    {
+      "text": "Does not call learning_progress.record, write a correct attempt, increase mastery or advance the review schedule merely for the click",
+      "passed": true,
+      "evidence": "Across the whole observed turn, the only tool call is closebook_card.show_exercise; no progress write, correct attempt, mastery increase, or review advancement occurs. The assistant states: “读完讲解不会被记为已经掌握。”"
+    },
+    {
+      "text": "Does not announce that the learner has passed, mastered the point or completed a scored retest",
+      "passed": true,
+      "evidence": "No such announcement appears anywhere in the observed turn. The assistant instead states: “这次只是随堂检查，不会提升掌握等级或调整复习安排。”"
+    },
+    {
+      "text": "Waits for the actual answer, does not reveal the check's answer, and uses zh-CN locale if showing a card",
+      "passed": true,
+      "evidence": "The completed card call specifies \"locale\": \"zh-CN\". Its result states: “Waiting for an actual learner response; none has been submitted.” The assistant asks the learner to “提交**面积、单位和信心（1–3）**”. Neither the card nor any observed message reveals the numerical answer."
+    }
+  ],
+  "notes": "All four expectations are satisfied by the observed turn.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

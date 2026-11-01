@@ -1,0 +1,11 @@
+{
+  "cases": [
+    23,
+    24,
+    26
+  ],
+  "status": "interrupted during session transition before complete responses/statuses were saved",
+  "counted_in_results": false,
+  "replacement_round": "teaching-recheck",
+  "note": "Original incomplete events retained privately; no learner result inferred from them."
+}

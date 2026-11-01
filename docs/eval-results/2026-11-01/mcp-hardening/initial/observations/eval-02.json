@@ -1,0 +1,8 @@
+{
+  "eval_id": 2,
+  "observed_messages": [
+    "I’ll use the closebook skill and your team notes to start with one question.\n",
+    "We’ll start with a history prediction to see where rebase gets confusing. Keep the notes closed; “I don’t know” is fine.\n\nYour private feature branch looks like this:\n\n```text\nA---B---C  main\n     \\\n      D---E  feature (checked out)\n```\n\nImagine running `git rebase main` with no conflicts:\n\n```text\nHistory leading to feature afterward: ?\n```\n\n**What would that history look like?** Sketch it or describe it, indicating which commits, if any, get new hashes.\n\nReply with your prediction, a sentence explaining why, and **confidence 1–3** (1 = guessing, 2 = fairly sure, 3 = certain)."
+  ],
+  "observed_tool_calls": []
+}

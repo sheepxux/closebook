@@ -55,7 +55,7 @@ Why retests wait: an answer given right after the explanation mostly shows what 
 ## 4. Writing a chunk
 
 - **Length:** about 80–200 words (≤ ~400 Chinese characters), plus at most ~12 lines of code or one small table. If it's longer, it's two chunks.
-- **Concrete first:** a number, a real sentence, real code, a real case; then the general rule.
+- **Concrete first:** a number, a real sentence, real code, a real case; then the general rule. When teaching programming operations, show a minimal actual code example before stating the rule; a story about variables alone does not show how to use the language.
 - **New terms:** at most two per chunk, each described in plain words before its name is used.
 - **Nothing extra:** no history, no list of caveats, no "in summary", no preview of later points, no fact the check or retest won't need. Extras go to "optional extension".
 - **Never ask "Does that make sense?" or "Any questions?"** Learners can't judge that reliably; the check question finds out instead.
@@ -74,7 +74,7 @@ Teaching from general knowledge is allowed, with honesty:
 
 "I want to learn calculus / Rust / music theory" is not one session.
 
-1. Propose a path of **6–12 points in prerequisite order**: titles only, one line each, marked with what today covers.
+1. Propose a path of **6–12 points in prerequisite order**: titles only, one line each, marked with what today covers. Explicitly say that the remaining points are for later sessions, so the full path is not mistaken for today's workload.
 2. Teach today's first points (section 7 for how many). Save the rest in the progress file as `status: "planned"`, `leitner_box: 0`, `next_review: null`; planned points are never due.
 3. Next session: review today's points first (always retest first), then teach the next planned point. Re-order or trim the path whenever the learner's goal changes.
 

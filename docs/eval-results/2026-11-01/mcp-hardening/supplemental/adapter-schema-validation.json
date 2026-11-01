@@ -1,0 +1,179 @@
+{
+  "schema_source": "mcp/cards.mjs",
+  "schema_source_sha256": "c825ccddcbdb2506e2209b5e132e73be8c670e9e4e89c4a1ee1dbd1f0f3943e3",
+  "server_wrapper_source": "mcp/server.mjs",
+  "server_wrapper_sha256": "e5d4db1dd4d56ae04e76d0b11fb9687f45e311796511baa2beb393dc4c937b4a",
+  "method": "Validated original recorded arguments with the current production Zod schemas and the exact strict input wrapper used by server.mjs. No conversion or repair was applied.",
+  "cases": [
+    {
+      "case": 29,
+      "log": "behavior-run/eval-29/closebook_card.jsonl",
+      "calls": [],
+      "note": "No closebook_card calls. Case 29 intentionally selected the native adapter."
+    },
+    {
+      "case": 30,
+      "log": "behavior-run/eval-30/closebook_card.jsonl",
+      "calls": [
+        {
+          "tool": "show_exercise",
+          "valid": true,
+          "issues": [],
+          "arguments": {
+            "exercise": {
+              "id": "python-list-index-preview-20261101-01",
+              "locale": "zh-CN",
+              "title": "Python 列表索引 · MCP 预览",
+              "type": "mcq",
+              "question": "下面这段 Python 代码会输出什么？\n\n```python\nnums = [10, 20, 30, 40]\nprint(nums[-1])\n```\n\n请选择一个选项和信心程度（1＝不确定，2＝较确定，3＝很确定），然后点击提交。",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "10"
+                },
+                {
+                  "id": "B",
+                  "text": "30"
+                },
+                {
+                  "id": "C",
+                  "text": "40"
+                },
+                {
+                  "id": "D",
+                  "text": "抛出 IndexError"
+                }
+              ],
+              "collectConfidence": true
+            }
+          }
+        }
+      ],
+      "log_sha256": "9ad223ec18f641769bad015926a661eb6404eac83f48ee4ed99a789131dc515b"
+    },
+    {
+      "case": 31,
+      "log": "behavior-run/eval-31/closebook_card.jsonl",
+      "calls": [
+        {
+          "tool": "show_exercise",
+          "valid": true,
+          "issues": [],
+          "arguments": {
+            "exercise": {
+              "id": "present-perfect-diagnostic-20261101-01",
+              "locale": "zh-CN",
+              "title": "现在完成时：三选一",
+              "type": "mcq",
+              "question": "按你的要求只做一道：先不翻笔记，凭记忆辨别时态。\n\n选择最恰当的一项补全句子：\nI ___ Lily since we were children.\n\n选择答案时，也请选择信心：1＝猜的，2＝比较有把握，3＝非常确定。不知道也可以直接说。",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "knew"
+                },
+                {
+                  "id": "B",
+                  "text": "have known"
+                },
+                {
+                  "id": "C",
+                  "text": "know"
+                }
+              ],
+              "collectConfidence": true
+            }
+          }
+        }
+      ],
+      "log_sha256": "7e54fdbe37f43fd0d92e48630e5322ffb9418dcecfa25296076aeb3ddf063463"
+    },
+    {
+      "case": 32,
+      "log": "behavior-run/eval-32/closebook_card.jsonl",
+      "calls": [
+        {
+          "tool": "show_exercise",
+          "valid": true,
+          "issues": [],
+          "arguments": {
+            "exercise": {
+              "id": "earth-seasons-explanation-2026-11-01",
+              "locale": "en",
+              "title": "Explain the seasons",
+              "type": "free_text",
+              "question": "From memory, explain why Earth has seasons in your own words, as if explaining it to a friend who has never studied it. Use a few sentences. It's fine to say if you're unsure.",
+              "collectConfidence": false
+            }
+          }
+        }
+      ],
+      "log_sha256": "20705f8d06f0c74770aecc8ed6ee7e8569576b1ec84ec11813d1340876582c9d"
+    },
+    {
+      "case": 33,
+      "log": "behavior-run/eval-33/closebook_card.jsonl",
+      "calls": [
+        {
+          "tool": "show_exercise",
+          "valid": true,
+          "issues": [],
+          "arguments": {
+            "exercise": {
+              "id": "triangle-area-teach-check-01",
+              "locale": "zh-CN",
+              "title": "三角形面积：引导练习",
+              "type": "numeric",
+              "question": "先别回看讲解。一个三角形的底是 8 cm，对应的垂直高度是 5 cm。它的面积是多少？\n\n引导：先想同底同高的长方形，再回想三角形与它的面积关系。\n\n请填写数值和面积单位，并选择信心：1＝不太确定，2＝比较确定，3＝很确定。不知道也可以直接提交“我不知道”。",
+              "requireUnit": true,
+              "collectConfidence": true
+            }
+          }
+        }
+      ],
+      "log_sha256": "c725091d658720ebcef9caef50191b76ce9120bef86163fba52f3bd54c469a8b"
+    },
+    {
+      "case": 34,
+      "log": "behavior-run/eval-34/closebook_card.jsonl",
+      "calls": [
+        {
+          "tool": "show_exercise",
+          "valid": true,
+          "issues": [],
+          "arguments": {
+            "exercise": {
+              "id": "git-create-switch-feature",
+              "type": "mcq",
+              "locale": "en",
+              "title": "Git memory check",
+              "question": "Which command creates and switches to a branch named feature?",
+              "options": [
+                {
+                  "id": "A",
+                  "text": "git switch -c feature"
+                },
+                {
+                  "id": "B",
+                  "text": "git branch -d feature"
+                },
+                {
+                  "id": "C",
+                  "text": "git switch main"
+                },
+                {
+                  "id": "D",
+                  "text": "git status"
+                }
+              ],
+              "collectConfidence": true
+            }
+          }
+        }
+      ],
+      "log_sha256": "e5b2db22a70b0033f6af224325d52204b528319f668726e3b5ad9215510a7bda"
+    }
+  ],
+  "call_count": 5,
+  "all_calls_valid": true,
+  "limitations": "This validates argument structure against the production schemas. Test adapters accepted these calls, but these runs did not display actual desktop MCP UI or submit learner answers."
+}

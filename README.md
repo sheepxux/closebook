@@ -2,22 +2,21 @@
 
 <h1 align="center">closebook</h1>
 
-<p align="center"><b>Make knowledge actually stick, with the most efficient methods there are.</b><br>
-An Agent Skill that applies retrieval practice, spaced review, Feynman explanations and more, choosing the right method for each kind of knowledge.</p>
+<p align="center"><b>Learn it. Close the notes. Explain it yourself.</b><br>
+An agent skill for guided lessons, recall practice and spaced review.</p>
 
 <p align="center">English · <a href="README.zh-CN.md">简体中文</a> · <a href="LICENSE">MIT</a></p>
 
----
+closebook gives your AI assistant a teaching flow. Bring a topic, your notes or a progress file, and tell it what you want to learn.
 
-closebook has one goal: get what you study into long-term memory and real understanding, in the least time.
+- **For new material**, it explains one small part, shows an example and checks your understanding. After all of today's points are taught, it tests them again with the notes closed.
+- **For practice and review**, it starts with a question, explains the gap in your answer and gives you a new question to check it.
 
-The most effective methods in learning research share one thing: you produce the answer yourself instead of reading it again. Reading an AI summary feels like learning, but it mostly builds familiarity. But you can't recall what you've never learned, so closebook takes one of two routes depending on what you ask. "Teach me" or "I want to learn X": it explains in small parts, checks each part with a quick question right away, and then tests you with the notes closed. "Quiz me", "practice" or "review": it splits the material into a few knowledge points and has you answer each one first, explains briefly where you have gaps, and retests you with the notes closed. Either way, the next review goes into a progress file you own. Different knowledge gets different methods: recall cards for terms, why-questions and Feynman explanations for concepts, predict-then-verify for procedures. Your time goes to what you don't know yet.
+**On every agent platform, suitable built-in components, tools and plugins come first.** Optional MCP cards, HTML and text follow the same [renderer rules](skills/closebook/references/interaction-fit.md).
 
-It is one skill folder ([`skills/closebook`](skills/closebook)) that works on Claude, ChatGPT / Codex, Gemini and any assistant you can paste instructions into. The teaching flow needs nothing but plain text. Scripts and the HTML practice page are optional extras.
+## Install by pasting a prompt
 
-## Ask your agent to install it
-
-Copy and paste this prompt into your agent. The agent downloads, installs, and configures the skill; progress and results are in Simplified Chinese.
+Copy the entire block below into the agent you use. It asks the agent to download, install, configure and verify closebook. You do not need to download a prompt file or work out configuration paths. The prompt is in English; installation updates and any steps for you are in Simplified Chinese.
 
 ```text
 Install and configure closebook for the agent I am using now:
@@ -37,149 +36,153 @@ When I must act, give one concrete step at a time in everyday Chinese: where to 
 Use Simplified Chinese for all progress updates, questions, and the final response. Lead with whether closebook is actually ready to use, any action I still need to take, and one ready-to-copy learning request. Keep version, path, and verification details brief and secondary. Complete installation first; do not begin a lesson yet.
 ```
 
-Agents with local skill installation access can perform these steps. Account-based apps may still require a user action or permission. [Installation workflow and limits](INSTALL.md) (Chinese).
+The agent needs a supported installation mechanism and permission to use it. Some apps still require a click, an upload or a restart. If persistent installation is unavailable, it should say so and offer a clearly labelled session-only option. See the [installation workflow](INSTALL.md).
 
-## What a session looks like
+**Release scope:** the prompt installs the latest stable release, [v0.3.0](https://github.com/sheepxux/closebook/releases/tag/v0.3.0), which includes the expanded teach-first flow and native-first interaction rules described here. The optional Chinese/English MCP companion is available in this release's source under `mcp/`; it is configured separately and is not included in the skill ZIPs.
 
-> **You:** Quiz me on my HTTP caching notes. *(notes attached)*
->
-> **closebook:** Here's how I'd split this:
-> 1. [important · factual] Cache-Control directives and the 304 status: quick recall
-> 2. [core · conceptual] Strong vs. negotiated cache: predict the request flow, then why-questions
-> 3. [core · judgment] Caching strategy per file type: pick and justify
->
-> One reply is enough: time today (15 / 30 / 60 min)? How familiar (new / seen it but shaky / fairly familiar)? Any change to the list?
->
-> **You:** 30, shaky, go.
->
-> **closebook:** Notes closed, please. "I don't know" is a fine answer here.
-> What does `Cache-Control: no-cache` tell the browser? Answer + confidence 1–3 (1 = guessing, 3 = certain).
->
-> **You:** Don't cache it at all. 3
->
-> **closebook:** You were certain, and this is the most common mix-up, so it's worth fixing now. `no-cache` *does* store the response; the browser just has to check with the server before every reuse. "Don't store at all" is `no-store`. Example: `index.html` with `no-cache` sends a conditional request on each visit, and if nothing changed the server answers with a tiny `304`.
-> Retest, notes still closed: a response has `no-store` and the user reloads the page. Can the browser get a `304`? Why or why not? Answer + confidence.
+## Start learning
 
-Starting from zero, the order flips: teach first, then test, one small part at a time.
+After installation, send a request like one of these. You can use your own language.
 
-> **You:** I've never studied eigenvalues or eigenvectors. 30 minutes, just start.
->
-> **closebook:** Then I'll explain one small piece and check it straight away. Take A = [[2, 0], [0, 3]]. It turns (1, 0) into (2, 0): same direction, twice as long. It turns (1, 1) into (2, 3): the direction changes. A nonzero vector whose direction A doesn't change, only stretches or shrinks, is an **eigenvector** of A, and the stretch factor is its **eigenvalue**: A·v = λ·v.
-> Without scrolling up: for B = [[3, 1], [0, 2]], is (1, 0) an eigenvector of B? If so, with which eigenvalue? Add your confidence 1–3.
+| What you want | What to send |
+|---|---|
+| Start from zero | "Use closebook to teach me Python list comprehensions. I'm a complete beginner and have 20 minutes." |
+| Review notes | "Use closebook to quiz me on these notes. Focus on anything I get wrong." |
+| Get a simpler explanation | "Explain slope and intercept in everyday language, with an example, then let me try." |
+| Continue later | "Here is my closebook progress file. Review what's due today." |
+| Practise offline | "Make an offline practice page for the present perfect, with explanations before the exercises." |
 
-A right answer moves on to the next part; a wrong one gets a different example and a new check. These checks don't count toward your review schedule. Once all of today's points are taught, the explanations close and the real retests follow, starting with the point taught first, so you answer from memory rather than from what you just read. Ask to learn a whole subject and it first lays out a path in prerequisite order, teaches what fits today and keeps the rest for later sessions.
+Your stated background takes priority: saying "quiz me" while explaining that you have never studied the topic still calls for teaching first. For a large subject, closebook proposes a path in prerequisite order and saves the unfinished points for later.
 
-At the end you get a short synthesis (explain the topic in your own words, or list what you remember), a review list with real dates such as `2026-11-01: point 1 (high-confidence error first)`, and your progress, either as a file or as a compact JSON block to paste back next time.
+During practice, you answer before seeing the reference answer. "I don't know" is allowed, and questions with a correct answer can ask how confident you are. Feedback names the gap and gives another chance to retrieve the idea. Reading a card or clicking "continue" never counts as mastery.
 
-## What it does
+Terms can use recall cards; concepts can use explanations in your own words; procedures can use prediction followed by verification. You can change the method, ask for plain language or request only a summary.
 
-- **New material in small, checked parts.** One idea per part, concrete example before the rule; worked examples with the reason for each step (on the practice page you think first, then open the "why"), with support fading as you get it. Each part ends with a check on a case it didn't show; a miss gets a different explanation. When teaching from a topic alone it says so and flags facts that change (versions, law, doses) for checking against a current source.
-- **Output first on material you've met.** Diagnose, then give minimal feedback (what's right, what's missing, one example and one principle), then retest closed-book. It never shows the answer to a question you haven't answered, and asks one open question at a time.
-- **Picks the method per knowledge point.** Facts and glossaries get retrieval, flashcards and memory aids, with no forced analogies. Concepts get why-questions and Feynman explanations. Procedures get predict-then-verify. Architectures get a diagram you fill in before seeing it. Contested material gets open arguments judged on coherence, with no answer key and no multiple choice.
-- **Honest feedback.** Encouraging, but a wrong answer is called wrong. A confident wrong answer is flagged and reviewed first.
-- **Spaced review.** Leitner boxes (1 → 3 → 7 → 14 → 30 days), replayed from your answer history, with interleaving and calibration feedback.
-- **Plain Talk Mode (小白模式).** Say "plain talk", "ELI5" or "说人话" for an everyday-language version: a conclusion, an analogy *and where it breaks*, an example and a pitfall, followed by a closed-book recall. Precise definitions get no analogy.
-- **Respects you.** Ask only for a summary and it offers active learning once, in one sentence, then does what you chose. If you insist on a method it thinks fits badly, it explains once, then complies and notes it in your progress.
-- **Scenario modes** for exam prep, coding, language learning and conceptual understanding.
-- **Optional HTML practice page.** A self-contained page with fill-in diagrams, multiple choice with an explanation for every option, flashcards, comparison tables, confidence ratings and an export you can merge back into your progress. It also has forms for particular subjects: code tracing and a simulated terminal for programming, number answers and adjustable graphs for maths and science, parameter labs, ordering tasks and cloze passages.
+## Choose the interaction that fits
 
-## Install
+The same teaching flow can use different interfaces; the [interaction guide](skills/closebook/references/interaction-fit.md) defines their selection order and exceptions.
 
-Download the ready-made [standard ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook.zip) or [Gemini ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook-gemini.zip). Use these directly for the upload steps below.
-
-The copy commands below assume a source checkout. Developers can also build the ZIPs (Python 3.8+, standard library only):
-
-```bash
-python3 tools/package_skill.py   # writes dist/closebook.zip and dist/closebook-gemini.zip
-```
-
-| Platform | How | Guide |
+| Interface | When it is used | How answers are checked |
 |---|---|---|
-| Claude Code | `cp -R skills/closebook ~/.claude/skills/` | [adapters/claude.md](adapters/claude.md) |
-| claude.ai / Claude Desktop | Turn on code execution, then Customize → Skills → upload `dist/closebook.zip` | [adapters/claude.md](adapters/claude.md) |
-| Codex CLI / IDE | `cp -R skills/closebook ~/.agents/skills/`, then `$closebook` | [adapters/chatgpt-codex.md](adapters/chatgpt-codex.md) |
-| Hermes Agent | Install the complete skill under the active profile's `HERMES_HOME/skills/`; documented, not tested hands-on | [adapters/hermes.md](adapters/hermes.md) |
-| ChatGPT (Business, Enterprise, Healthcare, Edu) | Plugins → Skills → Create → upload `dist/closebook.zip` | [adapters/chatgpt-codex.md](adapters/chatgpt-codex.md) |
-| Gemini Apps | Create a skill from `dist/closebook-gemini.zip` | [adapters/gemini.md](adapters/gemini.md) |
-| Gemini CLI | `cp -R skills/closebook ~/.gemini/skills/` | [adapters/gemini.md](adapters/gemini.md) |
-| Anything else | Paste the instruction block into custom instructions, a Gem or a project | [adapters/generic.md](adapters/generic.md) |
+| Built-in components, tools or plugins | First choice when the current agent can use them for the learning task | Depends on the tool; the assistant gives feedback on the learner's answer |
+| Optional closebook MCP cards | Fallback in clients that support MCP Apps | Submission returns to chat; the assistant checks the answer |
+| Offline HTML practice page | When requested, or when a reusable page suits the task | The page checks supported answer types; written answers can be exported for assistant feedback |
+| Plain-text chat | Always available as a fallback | The assistant checks each reply in the conversation |
 
-Install paths were checked against official docs on 2026-10-31 ([log](docs/platform-verification.md)). Platforms change quickly, so each guide marks every claim as verified (with a source) or unverified.
+A tool reserved for clarification, planning or approvals must not be repurposed as a quiz. An explicit request for a particular interface, such as an MCP preview or an offline page, takes priority.
 
-**Try it:** "Teach me Python list comprehensions, I'm a complete beginner", "Quiz me on these notes", "Help me prepare for my exam on Friday", "考考我", or come back with your progress file and say "review". To get a summary without being quizzed, just ask for a summary and decline the offer.
+### Seven MCP components
 
-## Progress you own
+The optional companion currently implements **seven components**:
 
-Progress is a JSON file ([schema](skills/closebook/schemas/progress.schema.json)): knowledge points, every attempt, error types, Leitner boxes and next review dates. In environments with files the skill keeps it in `closebook-progress/<topic>.json` and updates it through a small, dependency-free tool:
+| Component | What the learner does |
+|---|---|
+| Lesson card | Reads one explanation and example, then continues to practice or asks for another example |
+| Multiple choice | Selects an answer and submits it |
+| Written answer | Explains or reasons in their own words |
+| Numeric answer | Enters a value or expression, a unit and an optional calculation |
+| Cloze passage | Fills blanks in the original passage |
+| Ordering | Arranges words, steps or code lines; can leave distractors unused |
+| Recall card | Writes an answer or chooses "I don't know", then submits to reveal the reference |
 
-```bash
-python3 skills/closebook/scripts/progress_tool.py due closebook-progress/http-cache.json --date 2026-11-01
-python3 skills/closebook/scripts/progress_tool.py schedule closebook-progress/http-cache.json
-python3 skills/closebook/scripts/progress_tool.py import-session closebook-progress/http-cache.json export.json
-python3 skills/closebook/scripts/progress_tool.py apply-grading closebook-progress/http-cache.json grading.json
-```
+Exercise cards can also collect confidence. They return the original response to chat and do not grade it or update learning progress themselves. If submission fails, the input remains available to retry or copy. The shared design uses pale cyan accents, system fonts, light and dark themes, and keyboard controls. Chinese and English interface text follows the learner's communication language through `locale`, independently of the language being studied.
 
-In chat-only apps you get a compact JSON block at the end of each session. Paste it back next time. The skill never claims to remember across chats.
+Code tracing, simulated terminals, graphs and parameter labs are currently available through the HTML page, not these MCP cards. Voice interaction depends on the host. See the [MCP setup, tools and verification notes](mcp/README.md) for details.
 
-## The practice page
+### Offline practice pages
 
-<p align="center"><img src="docs/images/lesson-page.jpg" alt="closebook practice page: a request flow with a blank step to predict" width="720"></p>
+<p align="center"><img src="docs/images/lesson-page.jpg" alt="Offline HTML practice page with a request-flow prediction exercise" width="720"></p>
 
-When the environment can produce a file, the skill writes the lesson data and [`build_lesson.py`](skills/closebook/scripts/build_lesson.py) embeds it into a [template](skills/closebook/assets/lesson-template.html). The result is a single offline HTML file with no network requests, light and dark themes, keyboard support and a mobile layout. Open [`examples/http-cache-lesson.html`](examples/http-cache-lesson.html) to try one, or [`examples/new-learner-lesson.html`](examples/new-learner-lesson.html) for the teach-first version. Without file support, the same questions run in plain text.
+*The screenshot shows the HTML practice page. MCP cards use a separate interface.*
 
-The page checks anything with an answer key itself (multiple choice, blanks, numbers, orders, commands, graph targets); flashcards and written answers start as self-checks. Written answers can go through the coach: export "my answers", paste them into the chat, and paste the grading block you get back into the page. Each answer then shows the coach's verdict and feedback, and the mistakes list and review schedule follow it. It's a copy-and-paste round trip rather than live grading, so the page stays offline and needs no API key.
+Ask the agent to make a practice page and it can generate a single HTML file that opens offline, with no API key or network requests. It supports teaching sections, questions, diagrams, recall cards and subject-specific exercises:
 
-### Forms for particular subjects
+| Subject | Examples of exercises |
+|---|---|
+| Programming and Git | Predict code output, step through variables, arrange code lines or practise commands in a simulated terminal |
+| Maths and physics | Enter numbers or fractions, match a target graph, predict a change before exploring parameters |
+| Languages and biology | Complete a passage, arrange a sentence or recall terminology |
 
-<p align="center"><img src="docs/images/subject-widgets.jpg" alt="Two practice forms: matching a parabola with sliders, and stepping through a Python loop after predicting its output" width="720"></p>
+The simulated terminal checks expected commands and shows prepared output; it does not execute shell commands. When building a page, the Python trace checker runs supported teaching code and rejects inconsistent execution steps. Other languages and the answers to natural-language questions still need independent review.
 
-The knowledge type still picks the method; the subject suggests which form to try first. Each form asks you to produce or predict something before it shows the answer:
+The page checks answer-key exercises automatically. Written answers and recall cards can be self-checked, or exported to chat for feedback. Paste the assistant's grading block back into the page to update its results. This is a manual round trip, so the page can stay offline.
 
-| Subject | Form | What you do |
-|---|---|---|
-| Programming | `code_trace` | Predict what the code prints, then step through it line by line with the variables shown |
-| Programming | `order_steps` (Parsons) | Put code lines in order; some lines don't belong |
-| Command line, git | `terminal` | Type each command into a simulated terminal (it only knows the expected commands and runs nothing) |
-| Maths, physics, finance | `numeric` | Type a number or an expression like `3/4`; see the worked solution |
-| Maths, physics, economics | `graph` | Set the sliders to reproduce a target curve (your curve appears only after you check), or predict what a change will do, then explore |
-| Science mechanisms | `simulation` | Predict first; then the sliders, readouts and graph unlock |
-| Biology, law, languages | `cloze_passage` | Fill several blanks in a passage, with an optional word bank |
-| Languages, history, procedures | `order_steps` | Build a sentence from word tiles, or put events or steps in order |
+Download and open an example: [teach-first lesson](examples/new-learner-lesson.html), [HTTP caching practice](examples/http-cache-lesson.html) or [subject exercises](examples/subject-widgets-lesson.html). The [interaction guide](skills/closebook/references/interaction-fit.md) explains how forms are chosen and how they fall back to text.
 
-Open [`examples/subject-widgets-lesson.html`](examples/subject-widgets-lesson.html) for one of each. The research behind each choice, and how every form falls back to plain text, are in [`interaction-fit.md`](skills/closebook/references/interaction-fit.md).
+## Keep your progress
 
-## Repository layout
+closebook records knowledge points, answers, mistakes and next review dates. Spaced review uses 1, 3, 7, 14 and 30-day intervals, adjusted from your answer history. A confident wrong answer gets attention first.
 
-```
-skills/closebook/        the skill (this folder is what gets installed)
-  SKILL.md               lean core: priorities, flow, routing
-  references/            teaching flow, method and interaction fit, modes, Plain Talk, 12 methods
-  schemas/               progress, lesson-data, session-export and grading schemas + examples
-  scripts/               progress_tool.py, build_lesson.py (Python 3.8+, stdlib only)
-  assets/                lesson-template.html
-  agents/openai.yaml     Codex display metadata
-  evals/                 28 behaviour evals (not shipped in the ZIPs)
-adapters/                per-platform install and capability notes
-docs/                    design decisions, platform verification log, validation report, eval results
-examples/                built practice pages
-tests/                   unit, packaging and browser tests
-tools/package_skill.py   builds the upload ZIPs
-```
+In environments with persistent files, the agent maintains a JSON progress file. In chat-only environments, it gives you a compact block to save and paste back next time. You own the record; cross-chat memory is never assumed. See the [progress format](skills/closebook/schemas/progress.schema.json).
+
+## Platform guides and manual installation
+
+The teaching flow works in text. Installation and richer interfaces depend on the host's actual capabilities; connecting an MCP server alone does not prove that the client can display its cards.
+
+| Agent or app | Guide |
+|---|---|
+| Claude Code, Claude Desktop, claude.ai | [Claude](adapters/claude.md) |
+| Codex and ChatGPT | [OpenAI clients](adapters/chatgpt-codex.md) |
+| Hermes Agent | [Hermes](adapters/hermes.md) |
+| Gemini CLI and Gemini Apps | [Gemini](adapters/gemini.md) |
+| Other agents or session-only instructions | [Generic setup](adapters/generic.md) |
+
+Prefer manual installation? Use the [standard skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook.zip) or [Gemini skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook-gemini.zip) with the relevant guide. These packages contain the skill, not the MCP server. Platform claims and their sources are recorded in the [platform verification log](docs/platform-verification.md).
+
+## What has been verified
+
+The [validation report](docs/validation-report.md) records skill behaviour, progress handling and HTML browser tests. The [answer-key audit](docs/answer-key-validation.md) includes independently executed code, formula checks, real Git commands and equivalent-answer tests, including the failures found and their fixes. The [MCP improvement report](docs/mcp-hardening-validation.md) records this version's automated checks, six new tool-selection cases, targeted repairs, desktop submissions and remaining acceptance checks.
+
+For the MCP companion, as of 2026-11-01:
+
+- Automated checks cover protocol, message return, DOM interaction, interface language and startup. The suite is separate from the 34 agent behaviour cases; neither proves that every desktop client works. HTML browser tests were not rerun in this round, and the new CI workflow has not yet run remotely.
+- After reloading the MCP service in Codex desktop, all seven card forms produced nine real submissions in the same chat, including three ordering attempts. Samples preserved the selected option and confidence, multiline Chinese/English text, a fraction and unit, and blank IDs with a curly apostrophe. The user also confirmed that the recall-card reference appeared only after submission; reading acknowledgement and preview answers did not count toward learning progress.
+- The final two-item ordering check returned the requested order, 1 → 2, after instructions to move 1 above 2. The earlier inconclusive attempt and user-reported misclick remain in the record. The click sequence was not independently observed, and this check does not cover every control or failure path. A targeted DOM check passed separately.
+- The current cyan theme and all interface labels have not been independently reviewed visually. Chinese and English return messages were observed; Claude, Hermes and other clients have not been tested hands-on with this companion.
+
+These checks do not guarantee every generated answer key is complete. The assistant still needs to verify answers and accept valid alternatives. See the [MCP verification details](mcp/README.md#检查与验证范围).
 
 ## Development
 
-```bash
-python3 -m unittest discover -s tests
+<details>
+<summary>Source layout and checks</summary>
+
+```text
+skills/closebook/        Installable skill: core instructions, references and optional helpers
+  SKILL.md              Teaching flow and routing
+  references/           Learning methods, interaction rules and platform fallbacks
+  schemas/              Progress, lesson, export and grading formats
+  scripts/              Progress management and HTML builder (Python 3.8+, standard library)
+  assets/               Offline HTML template
+  evals/                34 behaviour cases, excluded from release ZIPs
+mcp/                    Optional MCP Apps companion (Node.js 20+)
+adapters/               Platform installation guides
+docs/                   Validation reports and design decisions
+examples/               Generated HTML practice pages
+tests/                  Skill, packaging, grading and browser tests
+tools/package_skill.py  Release ZIP builder
 ```
 
-The browser tests drive the practice page in headless Chromium and are skipped if Playwright isn't installed:
+From the repository root:
 
-```bash
-pip install playwright && python3 -m playwright install chromium-headless-shell
+```sh
+npm ci --prefix mcp
+python3 tools/check.py
 ```
 
-Behaviour evals live in [`skills/closebook/evals`](skills/closebook/evals) in the skill-creator format. They cover each scenario mode, routing between teaching new material and practice, summary-only requests, returning with a progress file, glossaries, contested material, user overrides, mixed material, architecture diagrams, plain-text-only environments, Plain Talk and chat export. The latest results and what couldn't be verified are in the [validation report](docs/validation-report.md). See [CONTRIBUTING.md](CONTRIBUTING.md) before changing the skill text.
+The full check includes Python, packaging, browser and MCP tests, and fails on skipped tests. Install the browser dependencies as described in [CONTRIBUTING.md](CONTRIBUTING.md). In environments that cannot run browser tests, use `--skip-browser` and report a partial check. GitHub Actions runs the full deterministic command; the 34 [agent behaviour cases](skills/closebook/evals) are run separately.
 
-## License
+For the optional MCP companion:
+
+```sh
+cd mcp
+npm ci
+npm run build
+npm test
+```
+
+See the [MCP guide](mcp/README.md) for server startup and client configuration. The MCP package and skill are both `0.3.0` in this release, but their versions remain independent; UI resource revisions are tracked separately too.
+
+</details>
 
 [MIT](LICENSE) © sheepxux

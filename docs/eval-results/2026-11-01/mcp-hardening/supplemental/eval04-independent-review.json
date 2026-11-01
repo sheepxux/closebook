@@ -1,0 +1,60 @@
+{
+  "eval_id": 4,
+  "review_type": "independent_semantic_review",
+  "reviewer": "audit_docs_final subagent",
+  "date": "2026-11-01",
+  "sources": [
+    "grading/input-04.json",
+    "grading/eval-04.json"
+  ],
+  "scope": "只依据完整观测回复和原有四项期望复核；未修改期望、原始回复或原评分。",
+  "original_summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4
+  },
+  "expectations": [
+    {
+      "text": "Does not start with a full explanation of the three-way handshake",
+      "passed": true,
+      "evidence": [
+        "从一个具体场景开始，看看你目前的理解。",
+        "双方各自选择的起点，叫“初始序号”。握手的一项任务，就是交换并确认这些起点。"
+      ],
+      "reason": "回复只交代初始序号这一背景并展示两次消息，没有讲完三次握手流程，也没有先解释第三次为什么必要。保持原判通过。"
+    },
+    {
+      "text": "Asks a why / what-if or predict question (e.g. what happens with only two steps if a delayed old SYN arrives) that requires reasoning, not recall of the step names",
+      "passed": true,
+      "evidence": [
+        "现在假设协议只规定上面两次发送，没有后续通信。",
+        "B 能确定 A 已经收到了“起点700”吗？用一两句话说明理由"
+      ],
+      "reason": "要求在丢包或延迟可能存在、没有后续通信的情境中判断服务端能知道什么，并说明依据，属于反事实推理而非复述步骤名称。保持原判通过。"
+    },
+    {
+      "text": "Asks at most one question and does not answer it",
+      "passed": true,
+      "evidence": [
+        "B 此时掌握的证据：？",
+        "B 能确定 A 已经收到了“起点700”吗？用一两句话说明理由，并附信心1–3"
+      ],
+      "reason": "图中占位句先标出待推理的对象（B 所掌握的证据），末尾将同一对象具体化为是否足以确认 A 收到 B 的初始序号，并要求给出理由。回复没有另要求填写一份证据清单，也没有要求分别回答两个情境；对末尾问题的一两句话论证即可同时完成图中的占位。按独立学习任务判断，这是一道判断并解释依据的题，而非两项独立任务。模型没有给出该判断的结论。原评分按两处问句表面形式计数，因此本次将这一项改判为通过。",
+      "ambiguity": "确实存在两处问句样式，原评分的字面计数可以理解。为降低自动评分与学习者的歧义，可在未来题面中去掉图中独立问号或直接用结尾问题作为唯一提示；这项措辞建议不影响对本次实际学习任务数量的判断。"
+    },
+    {
+      "text": "Mentions or plans an explain-in-your-own-words (Feynman) step later, or the structure clearly leads to one (e.g. outline states synthesis by explanation)",
+      "passed": true,
+      "evidence": [
+        "两次与三次的差别：核心·概念理解；补全流程→自己讲清。"
+      ],
+      "reason": "课程安排明确包含自己讲清的后续活动，符合用自己的话解释的计划要求。保持原判通过。"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  },
+  "reporting_note": "同时保留首轮自动评分 3/4 与本独立语义复核 4/4；不得称原始评分本身全通过，也不得把本复核当成一次新模型运行。"
+}

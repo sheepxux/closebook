@@ -1,0 +1,1 @@
+Explain why Earth has seasons in your own words in the answer box. Keep your notes closed; explaining from memory helps reveal gaps. I’ll wait for your answer.

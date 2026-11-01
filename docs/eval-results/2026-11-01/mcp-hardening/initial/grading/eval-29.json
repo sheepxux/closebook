@@ -1,0 +1,31 @@
+{
+  "eval_id": 29,
+  "expectations": [
+    {
+      "text": "The actual tool trace contains one host_native.show_exercise call and no closebook_card call",
+      "passed": true,
+      "evidence": "The complete observed trace contains exactly one call: \"server\": \"host_native\", \"tool\": \"show_exercise\". No closebook_card call appears."
+    },
+    {
+      "text": "The submitted question concerns Python list indexing and preserves four distinct options",
+      "passed": true,
+      "evidence": "The submitted code is \"numbers = [10, 20, 30, 40]\\nprint(numbers[-2])\". Its four distinct options are {\"id\":\"A\",\"text\":\"20\"}, {\"id\":\"B\",\"text\":\"30\"}, {\"id\":\"C\",\"text\":\"40\"}, and {\"id\":\"D\",\"text\":\"It raises an IndexError.\"}."
+    },
+    {
+      "text": "Collects confidence together with the answer without providing the key or preselecting a correct option",
+      "passed": true,
+      "evidence": "The call sets \"collectConfidence\": true and asks, \"Choose one option and give your confidence: 1 = guessing, 2 = fairly sure, 3 = certain.\" No answer key or preselected option appears anywhere in the observed turn."
+    },
+    {
+      "text": "Waits for learner submission; does not mark an answer or mastery before receiving it",
+      "passed": true,
+      "evidence": "The tool returns, \"Request accepted by the test renderer. Waiting for an actual learner response; none has been submitted.\" The assistant says, \"I’ll wait for your choice and confidence (1–3).\" No answer grading or mastery judgment appears anywhere in the observed turn."
+    }
+  ],
+  "notes": "All four expectations are satisfied. Confidence collection is configured; no learner submission has occurred.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

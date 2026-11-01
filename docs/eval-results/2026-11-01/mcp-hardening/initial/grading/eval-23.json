@@ -1,0 +1,36 @@
+{
+  "eval_id": 23,
+  "expectations": [
+    {
+      "text": "Treats the request as wanting to be taught: the outline or first message makes clear that it will explain first and check after each part",
+      "passed": true,
+      "evidence": "“我们按‘小例子 → 你试一题 → 再往下讲’的方式学” describes teaching followed by checks. The outline explicitly pairs explanations with checks, including “分步讲解，再补全调用流程。” and “讲一个例子，再找出另一段代码的问题。”"
+    },
+    {
+      "text": "Does not open by quizzing the learner on decorators themselves (a single starting-point question on a prerequisite such as functions is acceptable)",
+      "passed": true,
+      "evidence": "The opening says “先从一个小问题了解你对 Python 函数的掌握情况。” This concerns prerequisite functions. Across the whole observed turn, no decorator quiz is actually asked."
+    },
+    {
+      "text": "Says, in about one sentence, that the outline or explanations come from general knowledge rather than the learner's course or material",
+      "passed": true,
+      "evidence": "“我先按 Python 通用知识安排这条路线；有指定教材也可以按它来：” identifies general Python knowledge as the source and distinguishes a possible supplied textbook."
+    },
+    {
+      "text": "Asks at most the necessary setup questions (e.g. time) in one message, or starts with one chunk and one check; never two open questions about the content",
+      "passed": true,
+      "evidence": "Setup is consolidated in one message: “今天你想学 15、30，还是 60 分钟？也可以顺带告诉我哪些点已经会了，我会先用一道题确认；路线也可以调整。” This asks about time and optionally prior knowledge; it does not pose two open content questions."
+    },
+    {
+      "text": "Does not produce a long lecture covering several points",
+      "passed": true,
+      "evidence": "The response gives four brief outline items, such as “装饰器的包装过程与 @ 写法［核心·概念理解］：分步讲解，再补全调用流程。” It does not deliver explanations across those topics, and defers advanced topics: “带参数的装饰器、多个装饰器叠加，留到基础掌握后。”"
+    }
+  ],
+  "notes": "All five expectations are satisfied by the observed turn.",
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5
+  }
+}

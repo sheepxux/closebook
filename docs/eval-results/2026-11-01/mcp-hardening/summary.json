@@ -1,0 +1,37 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": "ultra",
+  "rounds": {
+    "initial": {
+      "cases": 34,
+      "passed": 145,
+      "graded_expectations": 151,
+      "errors": [
+        {
+          "id": 14,
+          "error": "grader timeout"
+        }
+      ]
+    },
+    "followup": {
+      "cases": 5,
+      "passed": 22,
+      "graded_expectations": 26,
+      "errors": []
+    },
+    "override-recheck": {
+      "cases": 2,
+      "passed": 9,
+      "graded_expectations": 9,
+      "errors": []
+    },
+    "teaching-recheck": {
+      "cases": 3,
+      "passed": 14,
+      "graded_expectations": 14,
+      "errors": []
+    }
+  },
+  "method": "Blind isolated skill snapshot; independent expectation grading; instrumented callable adapters, not native desktop UI.",
+  "sanitization": "Private absolute paths replaced; CLI events, tool-call metadata and machine configuration omitted. Assistant responses, observed arguments and original grading retained."
+}

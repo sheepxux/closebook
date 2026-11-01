@@ -1,0 +1,31 @@
+{
+  "eval_id": 32,
+  "expectations": [
+    {
+      "text": "Calls closebook_card.show_exercise with type free_text and locale en",
+      "passed": true,
+      "evidence": "The completed closebook_card.show_exercise call includes \"type\": \"free_text\" and \"locale\": \"en\" in its exercise arguments."
+    },
+    {
+      "text": "Does not call host_native.show_exercise, include options or turn the explanation task into recognition",
+      "passed": true,
+      "evidence": "Across the entire observed turn, the only tool call is closebook_card.show_exercise, and neither its arguments nor the messages include answer options. The task requests: \"explain why Earth has seasons in your own words\"."
+    },
+    {
+      "text": "Asks one open question about the cause of the seasons without giving its answer or teaching the explanation first",
+      "passed": true,
+      "evidence": "The single exercise asks: \"From memory, explain why Earth has seasons in your own words, as if explaining it to a friend who has never studied it. Use a few sentences. It's fine to say if you're unsure.\" No message or tool content supplies or teaches the cause of the seasons."
+    },
+    {
+      "text": "Waits for the learner's own written response without judging an imagined answer",
+      "passed": true,
+      "evidence": "The completed tool result states: \"Waiting for an actual learner response; none has been submitted.\" The final message says: \"I’ll wait for your answer.\" No judgment of an imagined answer appears anywhere in the observed turn."
+    }
+  ],
+  "notes": "All listed expectations are satisfied.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

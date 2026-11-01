@@ -1,0 +1,18 @@
+{
+  "command": "python3 tools/check.py --skip-browser",
+  "python": {
+    "passed": 124,
+    "failed": 0
+  },
+  "packaging": "passed",
+  "mcp": {
+    "passed": 41,
+    "failed": 0,
+    "skipped": 0
+  },
+  "html_bytes": 372316,
+  "previous_html_bytes": 621848,
+  "browser": "explicitly excluded; prior computer-use restriction respected",
+  "ci": "workflow added; not yet remotely run",
+  "desktop": "awaiting service reload and actual clicks"
+}

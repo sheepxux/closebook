@@ -1,0 +1,31 @@
+{
+  "eval_id": 27,
+  "expectations": [
+    {
+      "text": "Confirms the answer is right, briefly",
+      "passed": true,
+      "evidence": "Briefly confirms: “正确，你把 w.upper() 放在前面、for w in words 放在后面，位置都对。”"
+    },
+    {
+      "text": "Does not give a scored closed-book retest on point 1 in this reply, and does not announce a box or review date for it",
+      "passed": true,
+      "evidence": "Across the whole observed turn, there is no scored retest, box assignment, or review date for point 1. It states “第 1 点的两小步完成了。” and moves to “接着学第 2 点：用 if 筛选。” The subsequent check concerns filtering."
+    },
+    {
+      "text": "Teaches the first chunk of point 2 (filtering with if): one idea, concrete example before the rule",
+      "passed": true,
+      "evidence": "Introduces the concrete example “nums = [1, 2, 3, 4]\n[n for n in nums if n % 2 == 0]” before explaining the filtering rule: “末尾的 if 是一道门：满足条件的元素才进入新列表，不满足的就跳过。” The chunk focuses on filtering with if."
+    },
+    {
+      "text": "Ends with exactly one check question on point 2 using a case the chunk didn't show, and does not answer it",
+      "passed": true,
+      "evidence": "Ends with one unanswered filtering task: “给定 nums = [-2, 0, 3, 7]，写一条列表推导式，只保留大于 0 的数（‘大于’用 > 表示）。” It uses positive-number filtering rather than the demonstrated even-number filtering. The final instruction, “请回复：代码 + 信心 1–3。”, specifies the response format for that same check."
+    }
+  ],
+  "notes": "All four expectations are satisfied by the observed turn.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

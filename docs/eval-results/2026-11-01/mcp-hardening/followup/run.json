@@ -1,0 +1,12 @@
+{
+  "ids": [
+    7,
+    8,
+    11,
+    12,
+    22
+  ],
+  "model": "gpt-6-astra",
+  "reasoning": "ultra",
+  "tool_mode": "instrumented adapters; not real native UI"
+}

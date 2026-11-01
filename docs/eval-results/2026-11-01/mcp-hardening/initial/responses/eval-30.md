@@ -1,0 +1,1 @@
+已调用 `closebook_card.show_exercise`。请在卡片中选择答案和信心程度，点击提交；我会等你提交后再继续。

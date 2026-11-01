@@ -36,6 +36,10 @@ A symlink instead of a copy keeps it in sync with a git checkout.
 | Progress file | `closebook-progress/<topic>.json` in the project, via `progress_tool.py` | Treat as chat-only: compact JSON at the end of each session, pasted back next time. Whether files persist between chats is **unverified** |
 | `localStorage` / downloads in an artifact | n/a | **Unverified**; the page falls back to copy/paste export |
 
+## Optional MCP cards
+
+Use suitable built-in teaching tools first, following the [renderer rules](../skills/closebook/references/interaction-fit.md). The [closebook MCP companion](../mcp/README.md) is an optional fallback configured separately from the skill ZIP. Its cards and submission flow have **not been tested in these clients**. Check the actual client's MCP Apps support; connecting an MCP server does not establish that it can display cards. Plain-text teaching remains available.
+
 ## Quick check after installing
 
 Say: "考考我：HTTP 缓存里的 no-cache 和 no-store" (or "Quiz me on…"). Expected: an outline of 3–5 points with types, plus one question about time and familiarity, and no summary of the material.

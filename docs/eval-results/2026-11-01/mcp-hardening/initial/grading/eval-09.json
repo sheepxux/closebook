@@ -1,0 +1,41 @@
+{
+  "eval_id": 9,
+  "expectations": [
+    {
+      "text": "Classifies the material as factual (事实记忆型)",
+      "passed": true,
+      "evidence": "Explicitly states: “全表分四组，均为必背重点、事实记忆型”。"
+    },
+    {
+      "text": "Plans retrieval practice with spaced repetition, and chunking or a mnemonic aid (e.g. grouping pairs like agonist/antagonist/partial agonist, or potency vs efficacy)",
+      "passed": true,
+      "evidence": "Plans retrieval and spaced retesting: “先闭卷回忆，答后补缺，再隔开复测” and “2026-11-01 补齐后两组并优先复测薄弱项”。Chunks the glossary into four groups, including “受体与药效：激动剂、拮抗剂、部分激动剂、效能、效价强度”。"
+    },
+    {
+      "text": "Does not use a Feynman explanation task or everyday analogies for the definitions",
+      "passed": true,
+      "evidence": "Across the entire observed turn, no Feynman explanation task or everyday analogy appears. The actual task is direct definition recall: “半衰期的定义是什么？”"
+    },
+    {
+      "text": "Uses flashcard-style (term -> definition or reverse) or cloze questions, presented as plain text",
+      "passed": true,
+      "evidence": "Introduces “文字闪卡” and presents the plain-text term-to-definition question: “半衰期的定义是什么？”"
+    },
+    {
+      "text": "Asks only one card / item at a time and hides its answer",
+      "passed": true,
+      "evidence": "The sole card is “半衰期的定义是什么？” Inspection of the entire observed turn confirms that no second card is asked and the half-life definition is not revealed."
+    },
+    {
+      "text": "Asks for confidence along with the answer",
+      "passed": true,
+      "evidence": "Explicitly requests: “回复‘一句话定义＋信心 1–3’（1＝猜测，2＝比较确定，3＝很确定）。”"
+    }
+  ],
+  "notes": "All six expectations are satisfied. No tool calls were observed or needed for these expectations.",
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6
+  }
+}

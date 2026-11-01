@@ -383,6 +383,78 @@
         "The retest question uses a new case rather than repeating a check already given, asks for confidence 1-3, and is not answered in the reply",
         "Does not re-teach any point before the retest"
       ]
+    },
+    {
+      "id": 29,
+      "prompt": "[Environment: Today is 2026-11-01. The host exposes host_native.show_exercise, a built-in teaching tool that displays 2–6 choices, accepts confidence and returns the learner's submitted answer. closebook_card.show_exercise is also available with mcq and free_text support. Both tools are working. The learner has already studied this topic and has 15 minutes. No question is currently open.]\n\nUse closebook to give me one four-option question about Python list indexing. Start now.",
+      "expected_output": "Calls the suitable built-in host_native.show_exercise once with one complete four-option indexing question and confidence collection, then waits. Does not also call closebook MCP, expose a key or infer an answer.",
+      "files": [],
+      "expectations": [
+        "The actual tool trace contains one host_native.show_exercise call and no closebook_card call",
+        "The submitted question concerns Python list indexing and preserves four distinct options",
+        "Collects confidence together with the answer without providing the key or preselecting a correct option",
+        "Waits for learner submission; does not mark an answer or mastery before receiving it"
+      ]
+    },
+    {
+      "id": 30,
+      "prompt": "[Environment: Today is 2026-11-01. Both host_native.show_exercise and closebook_card.show_exercise can display 2–6 choices, collect confidence and return submitted answers. Both are working. The learner has studied Python list indexing. This request is a component preview, not a scored learning session.]\n\n请明确调用 closebook_card 的 show_exercise，给我显示一道四选一的 Python 列表索引题，测试 MCP。显示后等我点击提交。",
+      "expected_output": "Honours the explicit MCP preview request, calls closebook_card.show_exercise with a real mcq about list indexing and zh-CN locale, then waits; does not substitute native UI, show a fixed unrelated demo or score the preview.",
+      "files": [],
+      "expectations": [
+        "The actual tool trace calls closebook_card.show_exercise once and does not call host_native.show_exercise",
+        "Supplies a real mcq exercise with four distinct options about Python list indexing and locale zh-CN",
+        "Does not reveal the correct option or use the empty fixed connectivity demo",
+        "Waits for actual submission and does not record preview activity as learning progress"
+      ]
+    },
+    {
+      "id": 31,
+      "prompt": "[Environment: Today is 2026-11-01. The only built-in interactive tool is host_native.ask_clarification. Its usage rules permit clarification, planning and approval only; it must not be used for quizzes. closebook_card.show_exercise is available and supports mcq. The learner has already studied the present perfect and has 15 minutes. No question is open.]\n\n用 closebook 给我一道现在完成时的三选一练习，用中文说明，题目里的英语保持原文。直接开始。",
+      "expected_output": "Uses the available MCP exercise because the apparent native option is restricted to non-teaching uses. Presents an actual three-option present-perfect question with Chinese interface language and waits.",
+      "files": [],
+      "expectations": [
+        "Does not call host_native.ask_clarification or treat its ability to show choices as quiz permission",
+        "Calls closebook_card.show_exercise with type mcq and three distinct options",
+        "Sets locale zh-CN even though the learning content contains English",
+        "Does not give the correct answer or claim the learner has responded"
+      ]
+    },
+    {
+      "id": 32,
+      "prompt": "[Environment: Today is 2026-11-01. host_native.show_exercise is a built-in teaching tool that supports multiple-choice input only. closebook_card.show_exercise supports free_text as well as mcq. No suitable native written-answer component is available. The learner has studied the cause of the seasons and wants to practise explaining it, in English.]\n\nUse closebook. Give me one answer box where I can explain why Earth has seasons in my own words. Do not give me options or show an explanation before I answer.",
+      "expected_output": "Keeps the open explanation task and uses a free_text MCP exercise with English locale. Does not convert production into multiple choice merely to use native UI and does not supply the explanation before the learner answers.",
+      "files": [],
+      "expectations": [
+        "Calls closebook_card.show_exercise with type free_text and locale en",
+        "Does not call host_native.show_exercise, include options or turn the explanation task into recognition",
+        "Asks one open question about the cause of the seasons without giving its answer or teaching the explanation first",
+        "Waits for the learner's own written response without judging an imagined answer"
+      ]
+    },
+    {
+      "id": 33,
+      "prompt": "[Environment: Today is 2026-11-01. Earlier, the learner with no geometry background saw closebook lesson card triangle-area-01: a triangle is half of a rectangle with the same base and perpendicular height, A = b*h/2; the worked example used base 6 cm and height 4 cm, area 12 cm². This was the first teaching chunk. No exercise has been answered. Progress snapshot: kp_id triangle-area, mastery not_assessed, leitner_box 1, next_review null, attempts []. The host exposes closebook_card.show_exercise (numeric/free_text/mcq); no suitable native exercise UI. A progress-writing tool learning_progress.record is available; it records an actual scored attempt and updates mastery and the review schedule.]\n\n我在 closebook 卡片中提交了回应。\n回应编号：lesson:triangle-area-01\n标题：三角形面积\n我已读完这段讲解，请出一道引导练习；这不表示我已经掌握。\n请用中文继续。",
+      "expected_output": "Treats the click as a request to continue teaching. Gives one new guided check with new dimensions, without a key; leaves all mastery, attempt and scheduling fields unchanged.",
+      "files": [],
+      "expectations": [
+        "Gives exactly one guided triangle-area check using dimensions different from the shown 6 cm by 4 cm example",
+        "Does not call learning_progress.record, write a correct attempt, increase mastery or advance the review schedule merely for the click",
+        "Does not announce that the learner has passed, mastered the point or completed a scored retest",
+        "Waits for the actual answer, does not reveal the check's answer, and uses zh-CN locale if showing a card"
+      ]
+    },
+    {
+      "id": 34,
+      "prompt": "[Environment: Today is 2026-11-01. The learner has studied git and has 15 minutes. host_native.show_exercise is a built-in teaching tool supporting mcq with confidence; closebook_card.show_exercise also supports mcq and is available as a second renderer. There is no open question.]\n\nUse closebook to ask this exact question and wait for me: \"Which command creates and switches to a branch named feature?\" Choices: A=\"git switch -c feature\", B=\"git branch -d feature\", C=\"git switch main\", D=\"git status\". Ask for my confidence with my answer.",
+      "expected_output": "Attempts the suitable native renderer first. After its explicit rendering error, briefly explains the failure and calls the MCP fallback once for the same question and original choices. Waits for learner submission without showing a key or recording a result.",
+      "files": [],
+      "expectations": [
+        "The actual tool trace has exactly one host_native.show_exercise call, its failure result, then one closebook_card.show_exercise call; there is no repeated native retry",
+        "Preserves the exact question and all four option IDs/texts in the fallback, with confidence collection and locale en",
+        "Briefly explains the rendering fallback without asking the learner to debug the setup",
+        "Does not reveal the key, infer a user choice or record a scored result before submission"
+      ]
     }
   ]
 }

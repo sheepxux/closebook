@@ -1,0 +1,31 @@
+{
+  "eval_id": 21,
+  "expectations": [
+    {
+      "text": "Explains in plain words with a one-line conclusion, an analogy with its limit, a concrete example and a common pitfall",
+      "passed": true,
+      "evidence": "Conclusion: “区块链，就是一种让多台电脑共同保存和核对记录，让旧记录难以被偷偷改掉的技术。” Analogy: “你可以把它想成一本好几个人各留一份的账本，每一页记着一批账。” Limit: “这个比喻不完全准确：实际负责记账和核对的是电脑，它们按照事先规定的规则工作，并不是每笔账都要所有人举手同意。” Concrete example: “比如，一笔‘甲给乙转了10个币’的记录已经被确认，甲想偷偷改成‘只转了1个币’，光改自己电脑里的那份，其他电脑不会因此认账。” Pitfall: “容易误会的一点是：难以篡改不等于绝对改不了，也不代表写进去的信息一定真实。”"
+    },
+    {
+      "text": "No unexplained jargon (terms like hash, node, consensus are either avoided or explained in the same sentence)",
+      "passed": true,
+      "evidence": "The explanation avoids hash, node and consensus terminology. It immediately explains its introduced terms: “每一页就是一个“区块”，新的一页还带着能核对前一页内容的标记，一页连一页，就成了“链”。” No unexplained technical jargon appears elsewhere in the observed turn."
+    },
+    {
+      "text": "Respects 'don't quiz me yet': at most one light recall question at the end, no multi-question quiz",
+      "passed": true,
+      "evidence": "“好，先不考你。” Inspection of the entire observed turn finds no recall question or quiz. Practice is deferred: “回忆练习留到你愿意开始练的时候。”"
+    },
+    {
+      "text": "Offers, in one sentence, to continue with active learning or check understanding later",
+      "passed": true,
+      "evidence": "The final sentence offers continued teaching and later recall practice: “你想继续时，我们再一点点讲，回忆练习留到你愿意开始练的时候。”"
+    }
+  ],
+  "notes": "All four listed expectations are satisfied.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

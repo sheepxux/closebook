@@ -1,0 +1,9 @@
+今天先到这里。慢启动复测通过；拥塞避免还有遗漏；超时与快速恢复存在高信心误解。综合自由回忆部分完成。
+
+下次复习：2026-11-01，依次复习“超时与快速恢复 → 拥塞避免 → 慢启动”。
+
+请复制保存下面的进度，下次粘贴回来继续；跨聊天不会自动保留。
+
+```json
+{"schema_version":"1.0","profile":"core","topic":"TCP 拥塞控制","language":"zh-CN","created":"2026-10-31","updated":"2026-10-31","knowledge_points":[{"id":"kp1","title":"慢启动","importance":"core","knowledge_type":"procedural","mastery":"solid","leitner_box":1,"next_review":"2026-11-01","last_reviewed":"2026-10-31","attempts":[{"id":"kp1-1","at":"2026-10-31","phase":"retest","result":"correct","confidence":2}]},{"id":"kp2","title":"拥塞避免","importance":"important","knowledge_type":"procedural","mastery":"fuzzy","leitner_box":1,"next_review":"2026-11-01","last_reviewed":"2026-10-31","attempts":[{"id":"kp2-1","at":"2026-10-31","phase":"retest","result":"partial","confidence":2,"error_type":"memory_lapse"}],"errors":[{"at":"2026-10-31","error_type":"memory_lapse","remedy":"下次闭卷回忆每RTT的窗口增量，再用计算题复测。"}]},{"id":"kp3","title":"超时与快速恢复","importance":"core","knowledge_type":"conceptual","mastery":"weak","leitner_box":1,"next_review":"2026-11-01","last_reviewed":"2026-10-31","priority_flag":true,"attempts":[{"id":"kp3-1","at":"2026-10-31","phase":"diagnostic","result":"dont_know"},{"id":"kp3-2","at":"2026-10-31","phase":"retest","result":"incorrect","confidence":3,"error_type":"misconception"}],"errors":[{"at":"2026-10-31","error_type":"misconception","high_confidence":true,"remedy":"下次对比超时与三次重复ACK的处理过程，解释差别后闭卷复测。"}]}],"weak_points":[{"kp_id":"kp3","note":"误以为三次重复ACK后cwnd降至1；高信心错误，优先复习。"},{"kp_id":"kp2","note":"忘记拥塞避免每RTT增加约1 MSS。另记本次整体综合自由回忆为partial，未逐点归因，未据此改动各点掌握度。"}]}
+```

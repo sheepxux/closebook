@@ -1,0 +1,53 @@
+{
+  "eval_id": 29,
+  "observed_messages": [
+    "I’ll use the closebook skill to start your question.\n",
+    "We’ll go straight to an output prediction to check your indexing from memory.\n",
+    "I’ll wait for your choice and confidence (1–3)."
+  ],
+  "observed_tool_calls": [
+    {
+      "server": "host_native",
+      "tool": "show_exercise",
+      "arguments": {
+        "exercise": {
+          "id": "python-list-indexing-01",
+          "locale": "en",
+          "title": "Python list indexing",
+          "type": "mcq",
+          "question": "Without running the code or checking notes, what does this print?\n\n```python\nnumbers = [10, 20, 30, 40]\nprint(numbers[-2])\n```\n\nChoose one option and give your confidence: 1 = guessing, 2 = fairly sure, 3 = certain. “I don't know” is also fine; you can say so in chat.",
+          "options": [
+            {
+              "id": "A",
+              "text": "20"
+            },
+            {
+              "id": "B",
+              "text": "30"
+            },
+            {
+              "id": "C",
+              "text": "40"
+            },
+            {
+              "id": "D",
+              "text": "It raises an IndexError."
+            }
+          ],
+          "collectConfidence": true
+        }
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Request accepted by the test renderer. Waiting for an actual learner response; none has been submitted."
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  ]
+}

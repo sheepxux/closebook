@@ -1,0 +1,31 @@
+{
+  "eval_id": 16,
+  "expectations": [
+    {
+      "text": "Uses only plain text and tells the learner to answer by typing (e.g. letter + confidence)",
+      "passed": true,
+      "evidence": "The messages use plain text and request a written answer: “Explain what no-cache actually requires in 1–2 sentences.” They also instruct: “Include confidence: 1 = guessing, 2 = fairly sure, 3 = certain.”"
+    },
+    {
+      "text": "Does not mention clicking, buttons, cards, widgets, an HTML page, or an artifact",
+      "passed": true,
+      "evidence": "Neither observed message mentions any prohibited interface or artifact. The diagnostic is introduced directly as “First question, from memory:”. The observed_tool_calls list is empty."
+    },
+    {
+      "text": "Asks one question and does not reveal its answer",
+      "passed": true,
+      "evidence": "One diagnostic asks: “Is that claim correct? Explain what no-cache actually requires in 1–2 sentences.” The correctness judgment and explanation concern the same claim. Neither message supplies the answer."
+    },
+    {
+      "text": "Asks for confidence in the same reply as the answer",
+      "passed": true,
+      "evidence": "Immediately after requesting the answer, the response says: “Include confidence: 1 = guessing, 2 = fairly sure, 3 = certain.” This requests confidence alongside the learner’s answer."
+    }
+  ],
+  "notes": "",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

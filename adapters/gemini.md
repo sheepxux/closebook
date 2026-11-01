@@ -33,6 +33,10 @@ Google has said it plans to remove Gems and recreate them automatically as skill
 | Level 2 HTML page | Canvas previews HTML and React apps (verified), but that means retyping the ~75 KB template, which the skill avoids. Using Canvas from inside a skill is **unverified** | `build_lesson.py` writes a file to open in a browser |
 | Progress file | Chat-only: compact JSON at the end, pasted back next time | `closebook-progress/<topic>.json` via `progress_tool.py` |
 
+## Optional MCP cards
+
+Use suitable built-in teaching tools first, following the [renderer rules](../skills/closebook/references/interaction-fit.md). The [closebook MCP companion](../mcp/README.md) is an optional fallback configured separately from the skill ZIP. Its cards and submission flow have **not been tested in these clients**. Check the actual client's MCP Apps support; connecting an MCP server does not establish that it can display cards. Plain-text teaching remains available.
+
 ## Quick check after installing
 
 "考考我：光合作用的光反应和暗反应" or "Quiz me on these notes". Expected: an outline with knowledge types and one question about time and familiarity, with no summary of the material.

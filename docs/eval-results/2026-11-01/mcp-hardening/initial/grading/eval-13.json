@@ -1,0 +1,36 @@
+{
+  "eval_id": 13,
+  "expectations": [
+    {
+      "text": "Outline has 3-5 points with at least three different knowledge types across them",
+      "passed": true,
+      "evidence": "The outline states “今天重点练这 4 项” and includes three distinct types: “概念理解” for images/containers and caching, “程序技能” for commands, and “判断决策” for volumes versus bind mounts."
+    },
+    {
+      "text": "Default ports are treated as factual, commands as procedural, and volumes vs bind mounts as judgment (or equivalent reasoning)",
+      "passed": true,
+      "evidence": "Explicit classifications are “默认端口号属于事实记忆”, “常用命令与端口映射｜核心·程序技能”, and “volume 与 bind mount｜核心·判断决策”."
+    },
+    {
+      "text": "States per-point method choices that differ by type (e.g. flashcards/retrieval for ports, predict or do-the-command for commands, why/trade-off questions for volumes)",
+      "passed": true,
+      "evidence": "Methods include “预测变化，再用自己的话解释” for images/containers, “按场景写命令” for commands, “选择方案并说明理由” for mounts, and “预测修改后哪些构建步骤需要重做” for caching. Ports receive retrieval practice: “默认端口号属于事实记忆，先列为选学，有余力再逐个回忆。”"
+    },
+    {
+      "text": "Does not apply one identical method to every point",
+      "passed": true,
+      "evidence": "The response varies methods across points: “预测变化，再用自己的话解释”, “按场景写命令”, and “选择方案并说明理由”, with “逐个回忆” reserved for default ports."
+    },
+    {
+      "text": "Asks no more than the necessary opening questions (familiarity and time were given, so it should not re-ask them) and starts or offers to start immediately",
+      "passed": true,
+      "evidence": "Across the whole observed turn, no opening question re-asks familiarity or time. It acknowledges “你学过一点” and “按 30 分钟安排”, then immediately starts a diagnostic exercise: “B 中会有这个文件吗？请回答‘有／没有 + 一句理由 + 信心 1–3’”."
+    }
+  ],
+  "notes": "All five expectations are satisfied. Default-port recall is optional, but its factual classification and practice method are explicit.",
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5
+  }
+}

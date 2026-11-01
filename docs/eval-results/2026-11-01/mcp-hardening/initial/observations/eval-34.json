@@ -1,0 +1,96 @@
+{
+  "eval_id": 34,
+  "observed_messages": [
+    "I’ll use the closebook skill to present the question with a confidence prompt.\n",
+    "The built-in quiz didn’t display, so I’ll use the alternative card for the same question.\n",
+    "Which command creates and switches to a branch named feature?\n\n- A: `git switch -c feature`\n- B: `git branch -d feature`\n- C: `git switch main`\n- D: `git status`\n\nAnswer from memory with your choice and confidence: **1 = guessing, 2 = fairly sure, 3 = certain**. “I don’t know” is fine."
+  ],
+  "observed_tool_calls": [
+    {
+      "server": "host_native",
+      "tool": "show_exercise",
+      "arguments": {
+        "exercise": {
+          "id": "git-create-switch-feature",
+          "type": "mcq",
+          "locale": "en",
+          "title": "Git memory check",
+          "question": "Which command creates and switches to a branch named feature?",
+          "options": [
+            {
+              "id": "A",
+              "text": "git switch -c feature"
+            },
+            {
+              "id": "B",
+              "text": "git branch -d feature"
+            },
+            {
+              "id": "C",
+              "text": "git switch main"
+            },
+            {
+              "id": "D",
+              "text": "git status"
+            }
+          ],
+          "collectConfidence": true
+        }
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Renderer failed before displaying anything. No question is open and no answer was collected."
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "failed"
+    },
+    {
+      "server": "closebook_card",
+      "tool": "show_exercise",
+      "arguments": {
+        "exercise": {
+          "id": "git-create-switch-feature",
+          "type": "mcq",
+          "locale": "en",
+          "title": "Git memory check",
+          "question": "Which command creates and switches to a branch named feature?",
+          "options": [
+            {
+              "id": "A",
+              "text": "git switch -c feature"
+            },
+            {
+              "id": "B",
+              "text": "git branch -d feature"
+            },
+            {
+              "id": "C",
+              "text": "git switch main"
+            },
+            {
+              "id": "D",
+              "text": "git status"
+            }
+          ],
+          "collectConfidence": true
+        }
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Request accepted by the test renderer. Waiting for an actual learner response; none has been submitted."
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  ]
+}

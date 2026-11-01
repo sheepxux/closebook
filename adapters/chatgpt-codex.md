@@ -32,9 +32,11 @@ Standalone skills run in the ChatGPT desktop app; skills bundled in a **plugin**
 | Capability | Codex | ChatGPT |
 |---|---|---|
 | Level 0 plain text | yes | yes |
-| Level 1 clickable options / quiz cards | no | **Unverified** (user reports vary); not assumed |
+| Level 1 clickable options / quiz cards | CLI: no graphical cards. Desktop: local closebook MCP demo displayed, confirmed by the user on 2026-11-01; one flashcard response returned to the same chat. Other component clicks and clients remain unverified | Native quiz capability must be checked in the current session; not assumed |
 | Level 2 HTML page | `build_lesson.py` writes a file to open in a browser | Code blocks can **Preview** HTML pages (verified), but that means retyping the ~75 KB template, which the skill avoids. Whether skill scripts can build the file in ChatGPT is **unverified**. Canvas is gone from GPT-5.5 models (verified) |
 | Progress file | `closebook-progress/<topic>.json` via `progress_tool.py` | Chat-only: compact JSON at the end, pasted back next time. ChatGPT memory is not used as progress storage |
+
+Follow the [renderer rules](../skills/closebook/references/interaction-fit.md): suitable native teaching tools come first; the [MCP companion](../mcp/README.md) is optional and separate from the skill ZIP. Its desktop result does not establish availability on web, mobile or other clients.
 
 ## Quick check after installing
 

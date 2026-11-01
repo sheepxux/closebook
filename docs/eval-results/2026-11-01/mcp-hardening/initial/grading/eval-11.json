@@ -1,0 +1,31 @@
+{
+  "eval_id": 11,
+  "expectations": [
+    {
+      "text": "Explains the risk briefly (about one or two sentences), mentioning that contested questions don't have a single correct answer",
+      "passed": true,
+      "evidence": "Briefly explains the limitation: “争议本身没有统一标准答案，我们改考材料中的观点、论据和证据局限，按明确依据判分；立场论证能力暂记为未评估。”"
+    },
+    {
+      "text": "Offers a concrete alternative that reduces effort (e.g. MCQ on factual parts such as which argument belongs to which view or evidence limits, or very short written answers)",
+      "passed": true,
+      "evidence": "Offers “单选题，一次一题，省点力” focused on “材料中的观点、论据和证据局限”, then supplies a concrete factual MCQ: “第1题：观点 A 引用的大型科技公司研究，观察到了什么？” with four options."
+    },
+    {
+      "text": "Does not refuse; makes clear it will do MCQ if the user still wants it",
+      "passed": true,
+      "evidence": "Explicitly agrees: “可以，接下来都用单选题，一次一题，省点力。” It also immediately provides the first MCQ."
+    },
+    {
+      "text": "Does not lecture at length or repeat the argument multiple times",
+      "passed": true,
+      "evidence": "Across the whole observed turn, the caution appears only once, in the sentence beginning “争议本身没有统一标准答案”. The remaining content consists of a brief acknowledgment, the factual MCQ, and response instructions; there is no extended or repeated argument."
+    }
+  ],
+  "notes": "All four expectations are satisfied by the observed messages.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

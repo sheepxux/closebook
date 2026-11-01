@@ -1,0 +1,31 @@
+{
+  "eval_id": 30,
+  "expectations": [
+    {
+      "text": "The actual tool trace calls closebook_card.show_exercise once and does not call host_native.show_exercise",
+      "passed": true,
+      "evidence": "The trace contains exactly one completed call with \"server\": \"closebook_card\" and \"tool\": \"show_exercise\". No host_native.show_exercise call appears."
+    },
+    {
+      "text": "Supplies a real mcq exercise with four distinct options about Python list indexing and locale zh-CN",
+      "passed": true,
+      "evidence": "Arguments specify \"type\": \"mcq\" and \"locale\": \"zh-CN\". The question includes \"nums = [10, 20, 30, 40]\\nprint(nums[-1])\", with four distinct option texts: \"10\", \"30\", \"40\", and \"抛出 IndexError\"."
+    },
+    {
+      "text": "Does not reveal the correct option or use the empty fixed connectivity demo",
+      "passed": true,
+      "evidence": "The submitted exercise asks \"下面这段 Python 代码会输出什么？\" and supplies concrete list-indexing code and populated options. Neither the tool arguments nor any observed message identifies the correct option or explains the answer."
+    },
+    {
+      "text": "Waits for actual submission and does not record preview activity as learning progress",
+      "passed": true,
+      "evidence": "The tool returned \"Request accepted by the test renderer. Waiting for an actual learner response; none has been submitted.\" The assistant ends with \"我会等你提交后再继续。\" No subsequent evaluation or progress-recording action appears anywhere in the observed turn. It also states \"不计入学习进度。\""
+    }
+  ],
+  "notes": "The preview request was accepted; no actual learner submission was observed.",
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4
+  }
+}

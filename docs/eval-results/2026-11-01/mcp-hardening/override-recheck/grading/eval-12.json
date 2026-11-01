@@ -1,0 +1,36 @@
+{
+  "eval_id": 12,
+  "expectations": [
+    {
+      "text": "Complies: the reply contains a multiple-choice question",
+      "passed": true,
+      "evidence": "The reply asks “以下哪项质疑最直接针对‘测量指标’的局限？” (using double quotation marks around “测量指标” in the original) and provides four options labeled A–D."
+    },
+    {
+      "text": "Does not argue against the choice again (a one-clause acknowledgement is fine)",
+      "passed": true,
+      "evidence": "The replies accept the preference: “题型全部用选择题。” and “好，已在本次会话记下你的选择：全部用选择题，包括立场、理由和反驳。” Neither observed message argues against the choice."
+    },
+    {
+      "text": "Mentions that the choice will be recorded (e.g. user override / 记录为用户指定) or records it in visible progress notes",
+      "passed": true,
+      "evidence": "Explicitly states: “已在本次会话记下你的选择：全部用选择题，包括立场、理由和反驳。” This satisfies the recording-mention requirement without requiring a tool call."
+    },
+    {
+      "text": "The MCQ has one defensible answer grounded in the material (e.g. attributing an argument or evidence limit to a view), not 'which view is correct'",
+      "passed": true,
+      "evidence": "The question uses the material’s finding that “部分研究显示远程团队在专利数量上没有显著下降。” Option B, “专利数量是否能反映创新的质量和实际影响？”, uniquely addresses the requested measurement limitation. The other options concern sample coverage, budget comparability, and work-arrangement distinctions. It does not ask which overall view is correct."
+    },
+    {
+      "text": "Asks for confidence with the answer and does not reveal the answer",
+      "passed": true,
+      "evidence": "Requests: “回复“选项字母＋信心等级”：1＝猜测，2＝较有把握，3＝确定。” Neither observed message identifies the correct option or otherwise reveals the answer."
+    }
+  ],
+  "notes": "All five expectations are satisfied by the observed turn.",
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5
+  }
+}

@@ -2,22 +2,21 @@
 
 <h1 align="center">closebook</h1>
 
-<p align="center"><b>让知识真正进入大脑，用效率最高的方法。</b><br>
-一个 Agent Skill：主动回忆、间隔复习、费曼讲解……按知识类型选出最有效的学法。</p>
+<p align="center"><b>先学明白，再合上资料，自己讲出来。</b><br>
+一个帮助 AI 助手分步教学、带你练习和安排复习的 Agent Skill。</p>
 
 <p align="center"><a href="README.md">English</a> · 简体中文 · <a href="LICENSE">MIT</a></p>
 
----
+closebook 给 AI 助手一套教学流程。发给它一个主题、一份笔记，或上次的学习进度，告诉它你想学什么就能开始。
 
-closebook 只有一个目标：让你学的东西真正记住、真正理解，而且花的时间最少。
+- **学习新知识时**，先讲一小段，示范一个例子，再用一道题检查理解。今天的知识点全部讲完后，再合上资料统一重测。
+- **练习或复习时**，先作答，再针对答案里的漏洞讲解，最后换一道题确认是否掌握。
 
-学习研究里效果最好的方法都有一个共同点：要你自己把答案"想出来"，而不是再读一遍。读 AI 写的总结感觉像在学习，其实多半只是"眼熟"。但完全没学过的东西也没法"想出来"，所以 closebook 按你的意图分两条路：说"教我 / 我想学"，它先分小段讲，每段讲完马上用一道小题检查，讲完再合上资料正式考；说"考考我 / 练习 / 复习"，它直接出题，先让你作答，再针对你的漏洞简短讲解，然后合上资料重测。两条路最后都会把下次复习时间写进一份由你保存的进度文件。不同知识用不同方法：术语用回忆卡片，概念用追问和费曼讲解，操作用先预测再验证，时间花在你还没掌握的地方。
+**无论使用哪个 agent 平台，都优先使用适合教学任务的内置组件、工具或插件。** 可选 MCP 卡片、HTML 和文字遵循统一的[交互选择规则](skills/closebook/references/interaction-fit.md)。
 
-整个 skill 就是一个文件夹（[`skills/closebook`](skills/closebook)），可用于 Claude、ChatGPT / Codex、Gemini，以及任何能粘贴自定义指令的助手。教学流程只需要纯文本；脚本和 HTML 练习页都是可选的增强。
+## 复制提示词，让 agent 安装
 
-## 发给助手，自动配置
-
-复制下面整段发给正在使用的 agent。下载、安装和配置由 agent 完成，过程和结果用中文反馈。
+把下面整段复制给你正在使用的 agent，让它下载、安装、配置并验证 closebook。你无需下载提示词文件，也不用自己研究配置路径。提示词用英文，安装过程和需要你操作的步骤用中文说明。
 
 ```text
 Install and configure closebook for the agent I am using now:
@@ -37,149 +36,151 @@ When I must act, give one concrete step at a time in everyday Chinese: where to 
 Use Simplified Chinese for all progress updates, questions, and the final response. Lead with whether closebook is actually ready to use, any action I still need to take, and one ready-to-copy learning request. Keep version, path, and verification details brief and secondary. Complete installation first; do not begin a lesson yet.
 ```
 
-支持本地技能安装的 agent 可以直接执行；账号平台要求的上传或授权仍需按实际权限完成。[详细安装流程](INSTALL.md)。
+agent 需要有平台支持的安装方式和相应权限。有些应用仍需要你点一下、上传文件或重启；无法持久安装时，它应明确说明，并提供标注清楚的“仅本次会话使用”方式。具体流程见[安装说明](INSTALL.md)。
 
-## 一次学习是什么样的
+**版本范围：** 提示词安装最新稳定版 [v0.3.0](https://github.com/sheepxux/closebook/releases/tag/v0.3.0)，包含本文介绍的新版分段教学流程和内置能力优先规则。可选的中英文 MCP 组件位于该版本源码的 `mcp/` 目录，需要单独配置，不包含在 skill 安装包里。
 
-> **你：** 考考我这份 HTTP 缓存笔记。*（附上笔记）*
->
-> **closebook：** 我把它拆成这几个点：
-> 1. [重要 · 事实型] Cache-Control 指令与 304 状态码：快速回忆
-> 2. [核心 · 概念型] 强缓存 vs 协商缓存：先预测请求流程，再问为什么
-> 3. [核心 · 判断型] 按文件类型选缓存策略：做选择并说理由
->
-> 回一条就行：今天有多少时间（15 / 30 / 60 分钟）？熟悉程度（没学过 / 学过但不牢 / 比较熟）？清单要改吗？
->
-> **你：** 30 分钟，不太牢，开始吧。
->
-> **closebook：** 请先合上笔记。这里答"不知道"完全没问题。
-> `Cache-Control: no-cache` 是在告诉浏览器什么？请回答，并附上把握程度 1–3（1 = 猜的，3 = 很确定）。
->
-> **你：** 完全不缓存。3
->
-> **closebook：** 你很确定，而这恰好是最常见的混淆，值得现在纠正。`no-cache` 其实**会**存下响应，只是每次复用前都要先问服务器；"完全不存"的是 `no-store`。例子：`index.html` 设成 `no-cache`，每次访问都会发一个条件请求，文件没变时服务器只回一个很小的 `304`。
-> 重测，继续合着笔记：某个响应带 `no-store`，用户刷新页面，浏览器能拿到 `304` 吗？为什么？请附上把握程度。
+## 安装后，直接这样说
 
-从零开始学时，流程反过来，先讲后考，但每次只讲一小段：
+| 想做什么 | 可以发送 |
+|---|---|
+| 从零学习 | “用 closebook 教我 Python 列表推导式。我完全没学过，今天有 20 分钟。” |
+| 复习笔记 | “用 closebook 考考我这份笔记，重点练我答错的地方。” |
+| 换个容易懂的讲法 | “用大白话讲一次函数的斜率和截距，先举例，再让我试一道题。” |
+| 接着上次学 | “这是我的 closebook 进度文件，带我复习今天到期的知识点。” |
+| 离线练习 | “把现在完成时做成离线练习页，先讲解，再练习。” |
 
-> **你：** 特征值和特征向量我完全没学过，30 分钟，直接开始。
->
-> **closebook：** 那我先讲一小块，讲完马上考你一题。取矩阵 A = [[2, 0], [0, 3]]，它把 (1, 0) 变成 (2, 0)：方向没变，只是变长了 2 倍；而 (1, 1) 变成 (2, 3)，方向变了。被 A 作用后方向不变、只被放大或缩小的非零向量叫**特征向量**，放大的倍数叫**特征值**：A·v = λ·v。
-> 先别往上看：矩阵 B = [[3, 1], [0, 2]]，(1, 0) 是不是 B 的特征向量？如果是，特征值是多少？附上把握程度 1–3。
+你说明的基础优先于请求里的动词：即使说“考考我”，同时说明完全没学过，也应该先教。学习一整门学科时，closebook 会按先修关系安排路线，把今天来不及学的部分留到后续。
 
-答对就讲下一段，答错就换个例子重讲再查一次。这些小检查不计入复习安排。今天的知识点全部讲完后，才合上讲解做正式重测，从最早讲的那个点开始，这样靠的是记忆，而不是刚读过的印象。想学一整门学科时，它先排出按先修顺序的学习路径，今天只讲时间够的部分，剩下的留到以后。
+练习时先由你作答，再展示参考答案。可以直接回答“不会”；有标准答案的题还可以记录你的把握程度。反馈会指出具体缺口，再给一次回忆和作答的机会。读完卡片、点击“继续”，都不算掌握。
 
-结束时会有一段简短的综合（用自己的话把整个主题讲一遍，或列出你记得的内容），一份带真实日期的复习清单，例如 `2026-11-01：第 1 点（高信心错误优先）`，以及你的进度：要么是一个文件，要么是一段紧凑的 JSON，下次粘贴回来即可。
+术语可以用回忆卡，概念可以用自己的话解释，操作可以先预测再验证。你随时可以换学法、要求说人话，也可以只要总结。
 
-## 它做什么
+## 交互方式怎么选
 
-- **新东西分小段教。** 每段只讲一件事，先给具体例子再说规律；操作类给带理由的例题（练习页上先想再展开"为什么"），之后逐步减少提示。每段讲完立刻用一个讲解里没出现过的例子检查，答错换个讲法。只给主题时会说明讲解来自通用知识，会变的事实（版本、法规、剂量）提示你核对最新来源。
-- **学过的东西先输出。** 诊断，然后是最少的反馈（哪里对、缺了什么、一个例子加一句原理），再合上资料重测。你没答的题，它绝不提前给答案；每次只问一个开放问题。
-- **按知识点选方法。** 事实和术语表用回忆、闪卡和记忆技巧，不硬套类比。概念用"为什么"追问和费曼讲解。操作步骤用先预测再验证。架构先让你填图，再给完整图。有争议的内容用开放论证，按论证是否自洽来评，不设标准答案，也不出选择题。
-- **诚实的反馈。** 语气鼓励，但答错就是答错。高信心答错会被标记，复习时排在最前。
-- **间隔复习。** Leitner 盒子（1 → 3 → 7 → 14 → 30 天），由作答历史重放计算，支持交错练习和信心校准反馈。
-- **小白模式（Plain Talk）。** 说"说人话""简单点""小白模式"，就会切换成大白话：结论、类比**以及类比不成立的地方**、例子、常见坑，讲完一定合上做一次回忆。精确定义不做类比。
-- **尊重你的选择。** 只要总结时，它用一句话提议一次主动学习，然后照你的选择办。你坚持用它认为不合适的方法，它只解释一次，然后照做，并记进进度里。
-- **场景模式：** 备考、编程、语言学习、概念理解。
-- **可选的 HTML 练习页。** 单文件页面，包含填空流程图、每个选项都有解析的选择题、闪卡、对比表、信心评分，以及可以合并回进度文件的导出。还有按学科设计的题型：编程有代码追踪和模拟终端，数学和理科有数值题和可调坐标图，另有参数实验室、排序题和完形填空。
+同一套教学流程可以使用不同界面；选择顺序与例外情况统一写在[交互指南](skills/closebook/references/interaction-fit.md)。
 
-## 安装
-
-直接下载[通用安装包](https://github.com/sheepxux/closebook/releases/latest/download/closebook.zip)或 [Gemini 安装包](https://github.com/sheepxux/closebook/releases/latest/download/closebook-gemini.zip)。下载的 ZIP 可直接用于下表中的上传步骤。
-
-从仓库源码安装时使用下表命令；开发者也可以自行打包（Python 3.8+，只用标准库）：
-
-```bash
-python3 tools/package_skill.py   # 生成 dist/closebook.zip 和 dist/closebook-gemini.zip
-```
-
-| 平台 | 方法 | 说明 |
+| 方式 | 什么时候用 | 谁来核对答案 |
 |---|---|---|
-| Claude Code | `cp -R skills/closebook ~/.claude/skills/` | [adapters/claude.md](adapters/claude.md) |
-| claude.ai / Claude Desktop | 打开代码执行，然后 Customize → Skills → 上传 `dist/closebook.zip` | [adapters/claude.md](adapters/claude.md) |
-| Codex CLI / IDE | `cp -R skills/closebook ~/.agents/skills/`，然后用 `$closebook` | [adapters/chatgpt-codex.md](adapters/chatgpt-codex.md) |
-| Hermes Agent | 按当前 profile 将完整技能安装到其 `HERMES_HOME/skills/`；路径已核实，未实机测试 | [adapters/hermes.md](adapters/hermes.md) |
-| ChatGPT（Business、Enterprise、Healthcare、Edu） | Plugins → Skills → Create → 上传 `dist/closebook.zip` | [adapters/chatgpt-codex.md](adapters/chatgpt-codex.md) |
-| Gemini Apps | 用 `dist/closebook-gemini.zip` 创建 skill | [adapters/gemini.md](adapters/gemini.md) |
-| Gemini CLI | `cp -R skills/closebook ~/.gemini/skills/` | [adapters/gemini.md](adapters/gemini.md) |
-| 其他助手 | 把指令块粘贴到自定义指令、Gem 或项目里 | [adapters/generic.md](adapters/generic.md) |
+| 内置组件、工具或插件 | 当前 agent 有适合教学任务的能力时优先使用 | 依具体工具而定，助手根据学习者的作答反馈 |
+| 可选 closebook MCP 卡片 | 内置能力不适用，且客户端支持 MCP Apps 时 | 提交后回到聊天，由助手核对 |
+| 离线 HTML 练习页 | 你明确要求，或适合制作可重复使用的练习页时 | 支持的题型由页面自动判定，书面回答可导出给助手批改 |
+| 纯文字对话 | 始终可用的备用方式 | 助手在对话中逐题反馈 |
 
-安装路径已在 2026-10-31 对照官方文档核实（[记录](docs/platform-verification.md)）。平台变化很快，所以每份说明都给每条结论标了"已核实（附来源）"或"未核实"。
+仅限澄清、计划或审批的工具不能拿来充当测验。你明确指定某种界面时，例如测试 MCP 卡片或制作离线页面，按你的要求执行。
 
-**试一试：**"教我 Python 列表推导式，我零基础""考考我这份笔记""帮我准备周五的考试""Quiz me on these notes"，或者带着进度文件回来说"复习"。只想要总结的话，直接要总结，然后拒绝它的提议即可。
+### 七种 MCP 组件
 
-## 进度由你保存
+可选 MCP 目前实现了 **7 种组件**：
 
-进度是一个 JSON 文件（[schema](skills/closebook/schemas/progress.schema.json)），记录知识点、每次作答、错误类型、Leitner 盒子和下次复习日期。在能读写文件的环境里，skill 会把它存到 `closebook-progress/<主题>.json`，并通过一个无依赖的小工具更新：
+| 组件 | 你可以做什么 |
+|---|---|
+| 知识讲解卡 | 看一段讲解和示范，然后继续练习，或要求换个例子 |
+| 选择题 | 选择并提交答案 |
+| 简答 | 用自己的话解释、推理或写出回答 |
+| 数值题 | 输入数值或表达式、单位，也可以补充计算过程 |
+| 填空 | 直接在原文位置逐空填写 |
+| 排序 | 排列词块、步骤或代码行，也可以留下干扰项 |
+| 回忆卡 | 先写答案或选择“还不会”，提交成功后再翻面看参考 |
 
-```bash
-python3 skills/closebook/scripts/progress_tool.py due closebook-progress/http-cache.json --date 2026-11-01
-python3 skills/closebook/scripts/progress_tool.py schedule closebook-progress/http-cache.json
-python3 skills/closebook/scripts/progress_tool.py import-session closebook-progress/http-cache.json export.json
-python3 skills/closebook/scripts/progress_tool.py apply-grading closebook-progress/http-cache.json grading.json
+练习卡片也可以收集把握程度。它们把原始作答交回聊天，本身不自动判分、不更新学习进度。提交失败时保留输入，方便重试或复制。七种组件共用浅青蓝配色、系统字体，支持明暗主题和键盘操作。中英文界面通过 `locale` 跟随学习者的交流语言，和正在学习的材料语言分开。
+
+代码追踪、模拟终端、坐标图和参数实验目前走 HTML 页面，尚未移植成 MCP 卡片；语音交互取决于宿主能力。配置方式、工具和验证范围见 [MCP 组件说明](mcp/README.md)。
+
+### 离线练习页
+
+<p align="center"><img src="docs/images/lesson-page.jpg" alt="离线 HTML 练习页：预测请求流程中的缺失步骤" width="720"></p>
+
+*图中是 HTML 练习页；MCP 卡片使用独立界面。*
+
+告诉 agent“做成练习页”，它可以生成一个离线打开的 HTML 文件，无需 API Key，也不发起网络请求。页面支持分段讲解、问答、图解、回忆卡，以及不同学科的练习：
+
+| 学科 | 练习示例 |
+|---|---|
+| 编程、Git | 预测代码输出、逐步看变量变化、排列代码行、在模拟终端练命令 |
+| 数学、物理 | 输入数值或分数、匹配目标曲线、先预测再调整参数观察变化 |
+| 语言、生物 | 补全文段、排列句子、回忆术语 |
+
+模拟终端只核对预设命令、显示准备好的输出，不执行真实命令。生成页面时，Python 代码追踪核对器会运行受支持的教学代码，执行步骤与答案不一致就报错。其他语言，以及自然语言预测题的答案，仍需独立复核。
+
+有答案表的题型由页面自动判定；简答和回忆卡可以自评，也可以把作答导出给聊天中的助手批改，再将批改结果粘贴回页面。这一步需要复制粘贴，因此页面可以保持离线。
+
+下载后用浏览器打开示例：[先教后练](examples/new-learner-lesson.html)、[HTTP 缓存复习](examples/http-cache-lesson.html)、[各学科题型](examples/subject-widgets-lesson.html)。题型选择和纯文字替代方式见[交互指南](skills/closebook/references/interaction-fit.md)。
+
+## 学习进度由你保存
+
+closebook 记录知识点、作答、错误和下次复习日期。间隔复习使用 1、3、7、14、30 天的档位，根据作答记录调整；“很有把握却答错”的知识点优先复习。
+
+能持久保存文件的环境，由 agent 维护 JSON 进度文件。只有聊天的环境，会在结束时给你一小段记录，下次粘贴回来即可。进度属于你，不假定平台能跨对话记住一切。具体字段见[进度格式](skills/closebook/schemas/progress.schema.json)。
+
+## 平台说明与手动安装
+
+文字教学流程不依赖卡片。能否安装、能用哪些交互，取决于宿主实际能力；连接上 MCP 服务也不代表客户端一定能显示卡片。
+
+| Agent 或应用 | 说明 |
+|---|---|
+| Claude Code、Claude Desktop、claude.ai | [Claude 适配](adapters/claude.md) |
+| Codex、ChatGPT | [OpenAI 客户端适配](adapters/chatgpt-codex.md) |
+| Hermes Agent | [Hermes 适配](adapters/hermes.md) |
+| Gemini CLI、Gemini Apps | [Gemini 适配](adapters/gemini.md) |
+| 其他 agent，或仅本次会话使用 | [通用适配](adapters/generic.md) |
+
+想手动安装，可以下载[标准 skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook.zip) 或 [Gemini skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook-gemini.zip)，按对应平台说明安装。安装包包含 skill，不包含 MCP 服务。平台能力的依据和核实日期见[平台核实记录](docs/platform-verification.md)。
+
+## 已经验证到哪一步
+
+[验证报告](docs/validation-report.md) 记录了教学行为、进度管理和 HTML 浏览器测试。[标准答案审计](docs/answer-key-validation.md) 包含独立运行代码、公式重算、真实 Git 操作和等价答案检查，也保留了发现的问题和修复结果。[MCP 改进报告](docs/mcp-hardening-validation.md) 记录了本版自动检查、新增六个工具选择场景、定向修复、桌面回传结果与待完成项。
+
+截至 2026-11-01，可选 MCP 组件的验证情况为：
+
+- 自动化检查覆盖协议、消息回传、DOM 交互、界面语言和启动。它们与 34 道 agent 行为评测分开记录，都不能代替各桌面客户端的真实验收。本轮没有重跑 HTML 浏览器测试，新 CI 工作流也尚未远程执行。
+- 在 Codex 桌面重载 MCP 后，七种卡片累计九次真实提交返回同一聊天，其中排序三次。样本保留了选项与信心、中英文多行文字、分数与单位，以及填空 ID 和弯撇号。用户还确认回忆卡参考答案只在提交后出现；阅读确认和验收作答均未计入学习进度。
+- 最后的两项排序补检要求把 1 上移到 2 前，实际回传为 1 → 2，符合要求。前两次未能核实画面和用户误点的记录仍保留。点击过程未被独立观察，这不代表每个按钮及所有异常分支都已实机验证；另行执行的 DOM 定向检查通过。
+- 当前浅青蓝样式和全部界面标签尚未独立目视复核，中英文回传消息已分别观察。Claude、Hermes 等其他客户端尚未完成这套组件的实机测试。
+
+这些检查不能保证每次生成的标准答案都正确、完整；助手仍需独立核对，并接受合理等价答案。细节见 [MCP 验证范围](mcp/README.md#检查与验证范围)。
+
+## 开发与贡献
+
+<details>
+<summary>查看源码结构和检查命令</summary>
+
+```text
+skills/closebook/        安装的 skill：核心指令、参考资料和可选辅助工具
+  SKILL.md              教学流程与交互选择
+  references/           学习方法、交互规则和平台备用方案
+  schemas/              进度、课程、作答导出和批改格式
+  scripts/              进度管理和 HTML 构建器（Python 3.8+，标准库）
+  assets/               离线 HTML 模板
+  evals/                34 个行为评测用例，不打入发布 ZIP
+mcp/                    可选 MCP Apps 组件（Node.js 20+）
+adapters/               各平台安装说明
+docs/                   验证报告与设计决策
+examples/               生成好的 HTML 练习页
+tests/                  skill、打包、判分和浏览器测试
+tools/package_skill.py  发布 ZIP 构建工具
 ```
 
-在只能聊天的应用里，每次结束时你会拿到一段紧凑的 JSON，下次粘贴回来即可。skill 不会假装能跨对话记住你。
+在仓库根目录执行：
 
-## 练习页
-
-<p align="center"><img src="docs/images/lesson-page.jpg" alt="closebook 练习页：请求流程中有一步空着，等你预测" width="720"></p>
-
-当环境能生成文件时，skill 写出课程数据，由 [`build_lesson.py`](skills/closebook/scripts/build_lesson.py) 嵌入[模板](skills/closebook/assets/lesson-template.html)，得到一个离线可用的单文件 HTML：不发任何网络请求，支持浅色/深色主题、键盘操作和手机布局。可以直接打开 [`examples/http-cache-lesson.html`](examples/http-cache-lesson.html) 试试；零基础先讲后练的版本见 [`examples/new-learner-lesson.html`](examples/new-learner-lesson.html)。没有文件能力时，同样的题目以纯文本进行。
-
-有标准答案的题由页面自己判对错（选择、填空、数值、排序、命令、目标曲线）；闪卡和文字作答先由你自评。文字作答还可以交给教练批改：导出“我的作答”，粘贴到对话；再把教练回复的批改结果粘回页面。每题会显示教练的判定和点评，错题本和复习计划也随之更新。这是一次复制粘贴的来回，不是实时批改，所以页面仍然离线、不需要 API Key。
-
-### 按学科设计的题型
-
-<p align="center"><img src="docs/images/subject-widgets.jpg" alt="两种题型：用滑块调出目标抛物线；先预测输出，再逐行查看 Python 循环的执行" width="720"></p>
-
-决定学法的仍然是知识类型；学科只决定先试哪种题型。每种题型都要你先产出或预测，再给答案：
-
-| 学科 | 题型 | 你要做什么 |
-|---|---|---|
-| 编程 | `code_trace` 代码追踪 | 先预测代码会打印什么，再逐行看执行过程和变量变化 |
-| 编程 | `order_steps`（Parsons 题） | 把代码行排成正确顺序，其中有几行根本不属于这里 |
-| 命令行、git | `terminal` 模拟终端 | 在模拟终端里逐步敲命令（只认预设命令，不会真的执行） |
-| 数学、物理、金融 | `numeric` 数值题 | 填一个数或算式（如 `3/4`），再看解题步骤 |
-| 数学、物理、经济 | `graph` 可调坐标图 | 调滑块复现目标曲线（提交后才显示你的曲线），或先预测改参数的效果再动手验证 |
-| 理科机制 | `simulation` 参数实验室 | 先预测，滑块、读数和图像随后解锁 |
-| 生物、法律、语言 | `cloze_passage` 完形填空 | 在一段话里填多个空，可带词库 |
-| 语言、历史、流程 | `order_steps` 排序 | 用词块拼句子，或把事件、步骤排好顺序 |
-
-打开 [`examples/subject-widgets-lesson.html`](examples/subject-widgets-lesson.html) 可以每种都试一遍。每种选择背后的研究依据，以及每种题型怎样降级成纯文本，见 [`interaction-fit.md`](skills/closebook/references/interaction-fit.md)。
-
-## 仓库结构
-
-```
-skills/closebook/        skill 本体（安装的就是这个文件夹）
-  SKILL.md               精简核心：优先级、流程、路由
-  references/            教学流程、方法与交互适配、场景模式、小白模式、12 种方法
-  schemas/               进度、课程数据、会话导出、批改结果的 schema 和示例
-  scripts/               progress_tool.py、build_lesson.py（Python 3.8+，仅标准库）
-  assets/                lesson-template.html
-  agents/openai.yaml     Codex 展示信息
-  evals/                 28 个行为评测（不打进 ZIP）
-adapters/                各平台安装与能力说明
-docs/                    设计决策、平台核实记录、验证报告、评测结果
-examples/                生成好的练习页
-tests/                   单元测试、打包测试、浏览器测试
-tools/package_skill.py   生成上传用 ZIP
+```sh
+npm ci --prefix mcp
+python3 tools/check.py
 ```
 
-## 开发
+完整命令包含 Python、打包、浏览器和 MCP 检查，测试被跳过时会报失败。浏览器依赖安装见 [CONTRIBUTING.md](CONTRIBUTING.md)。当前环境不能运行浏览器时，可以用 `--skip-browser`，并明确标注只完成部分检查。GitHub Actions 执行完整的确定性检查；34 道 [agent 行为评测](skills/closebook/evals) 单独运行。
 
-```bash
-python3 -m unittest discover -s tests
+可选 MCP 组件的检查：
+
+```sh
+cd mcp
+npm ci
+npm run build
+npm test
 ```
 
-浏览器测试会在无头 Chromium 里操作练习页；没装 Playwright 时自动跳过：
+启动服务和客户端配置见 [MCP 指南](mcp/README.md)。本次发布的 MCP 包与 skill 均为 `0.3.0`，但两者仍独立编号；UI 资源修订号也单独维护。
 
-```bash
-pip install playwright && python3 -m playwright install chromium-headless-shell
-```
-
-行为评测在 [`skills/closebook/evals`](skills/closebook/evals)，采用 skill-creator 格式，覆盖各场景模式、新学与练习的分流、只要总结、带进度文件回来复习、术语表、争议材料、用户坚持不合适的方法、混合材料、架构图、纯文本环境、小白模式和聊天导出。最新结果以及未能核实的部分见[验证报告](docs/validation-report.md)。修改 skill 文本前请先看 [CONTRIBUTING.md](CONTRIBUTING.md)。
-
-## 许可证
+</details>
 
 [MIT](LICENSE) © sheepxux
