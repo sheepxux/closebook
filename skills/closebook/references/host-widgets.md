@@ -63,7 +63,7 @@ At the start of the session (`SKILL.md`, "Detect the environment once"):
 - **Controls:** native `button`, `input`, `select`, `textarea`, `range`; one check button; keyboard reachable; labels in the learner's communication language (zh-CN or en), independent of the subject text.
 - **Validate before checking:** an empty required field shows an inline error and does not check. Keep "I don't know" (不知道) as a legitimate choice on every question; it counts as `dont_know`, never as an error.
 - **Confidence before the check** for questions with a right answer: three pills `1 / 2 / 3`, required before the check button enables. Omit it for contested reasoning and unscored teach checks when it adds nothing.
-- **One line back when the learner moves on.** The feedback panel ends with a **Next** (下一题) button. It sends one line and then disables itself so a double click cannot send twice:
+- **One line back when the learner moves on.** The feedback panel ends with a **Next** (下一题) button. It sends one line:
 
   ```text
   closebook result · <kp_id>/<item_id> · <answer> · correct|partial|incorrect|dont_know · confidence <n>
@@ -76,9 +76,10 @@ At the start of the session (`SKILL.md`, "Detect the environment once"):
   ```
 
   Codex/ChatGPT: `window.openai.sendFollowUpMessage({ prompt: line, title: "Next question" })` (the host shows a confirmation dialog; tell the learner once that a confirm click follows). Claude Code: `sendPrompt(line)`. `<answer>` is the option id, the typed value with unit, the order as ids, or the blanks as `1=…; 2=…`. This line is what lets you record the attempt, classify the error with the confidence, and choose the next question; without it the result exists only on the learner's screen.
+- **The send button never locks for good.** Disable it only while the send is in flight (`await`); when the call settles, re-enable it with the label "Send again" (再发一次), because a cancelled host dialog may resolve just like a sent one and the learner must be able to retry. Keep a copy line (the same text, in a read-only field) under the button as the fallback for a host that blocks the send. Duplicates are harmless: you treat a second result line for the same `<kp_id>/<item_id>` as a repeat, not a new attempt.
 - **Style:** follow the host's own widget guidance; closebook adds no theme. Keep it compact and transparent; the question text is content, not decoration.
 - **Teaching chunks:** on hosts with a widget facility a chunk may be shown as a card (explanation, example, one button "I've read it, ask me" that sends `closebook ready · <kp_id>`). The click is not mastery. On the `section` pace show the section's chunks together, then one check per point (`new-learning.md` section 3).
-- **Nothing is recorded on display.** An attempt exists only when the result line or the written answer has arrived in the chat. Record it, give any feedback the widget could not (the cause of the error, what to practise), and send the next question (another widget).
+- **Nothing is recorded on display.** An attempt exists only when the result line or the written answer has arrived in the chat. A repeated line for the same `<kp_id>/<item_id>` (a retry after a cancelled dialog) is the same attempt: record it once, answer it once. Record it, give any feedback the widget could not (the cause of the error, what to practise), and send the next question (another widget).
 
 ## 5. Recipes per interaction form
 
@@ -124,7 +125,7 @@ Record per knowledge point (`interaction-fit.md` section 6): `interaction_select
 2. After Check: right or wrong, the explanation for the chosen answer, the item locks (no second scoring).
 3. **Next** switches to the next item **inside the widget**: no message, no new widget, no second confirmation. Keep the answered items' answer, result and confidence in the widget's state.
 4. After the last item: a **summary** in the same widget: score (right / N), the wrong items with their point names, weak points (any point missed, and any confident miss first), and one **Finish** button.
-5. Finish sends **one** line and disables itself:
+5. Finish sends **one** line (same button rule as section 4: disabled only while sending, "Send again" afterwards, copy line as fallback):
 
    ```text
    closebook section · <section_id> · <right>/<N> · <item_id> <answer> <result> c<n>; <item_id> <answer> <result> c<n>; …

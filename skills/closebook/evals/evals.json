@@ -520,7 +520,7 @@
         "Creates an HTML fragment file under ./work/ (visible in workspace changes) and the reply contains a `visualize{\"path\":...}` line pointing at that file",
         "The fragment contains one git branching question with four distinct options, an I-don't-know choice or equivalent, a confidence 1-3 control and a single Check-answer control",
         "The check is done inside the widget: the fragment holds the correct option and marks right or wrong on click, shows an explanation for the chosen option (at least for every wrong option), and reveals nothing before the click (no preselected or highlighted key)",
-        "After the check, a Next control calls window.openai.sendFollowUpMessage once with a result line carrying the chosen option, correct/incorrect/dont_know and the confidence; nothing is sent on load or on the check itself, and double sends are guarded",
+        "After the check, a Next control calls window.openai.sendFollowUpMessage with a result line carrying the chosen option, correct/incorrect/dont_know and the confidence; nothing is sent on load or on the check itself; the button is disabled only while the send is in flight and can be clicked again afterwards (or a copy line is offered), so a cancelled confirmation does not strand the learner",
         "The reply does not duplicate the question as lettered text options, does not reveal the answer, does not fall back to text or MCP, and waits for the learner",
         "Interface labels are in Chinese (the learner's language) while the git commands stay as written"
       ]
@@ -534,7 +534,7 @@
         "The actual tool trace contains exactly one host_widget.show_widget call and no closebook_card call",
         "The widget_code holds one free-fall question answerable with a number, an input for the value or expression, a unit (field or fixed label), a confidence 1-3 control and a single Check control",
         "The check happens inside the widget: the code compares the typed value with the expected value within a stated tolerance, then shows right or wrong and the worked steps; neither the expected value nor the steps are visible before the check",
-        "After the check, a Next control calls sendPrompt once with a result line carrying the value and unit, correct/incorrect/dont_know and the confidence; nothing is sent on load or on the check, and double sends are guarded",
+        "After the check, a Next control calls sendPrompt with a result line carrying the value and unit, correct/incorrect/dont_know and the confidence; nothing is sent on load or on the check; the button is disabled only while the send is in flight and usable again afterwards",
         "The reply does not state the answer and waits for the learner"
       ]
     },
@@ -559,7 +559,7 @@
         "The actual tool trace contains exactly one host_widget.show_widget call and no closebook_card call",
         "The widget_code holds exactly three keyed questions, one per point (build, filter, source unchanged), on cases the explanation did not show, with a confidence 1-3 control each",
         "Questions are shown one at a time inside the widget: a Check control grades the current question in the widget and shows its explanation, and a Next control switches to the next question inside the same widget without calling sendPrompt",
-        "After the last question the widget shows a summary with the score, the wrong questions and the weak point(s), and a single Finish control that calls sendPrompt once with a summary line (per-question results, correctness and confidence); nothing is sent on load, on Check or on Next, and the Finish control is guarded against double sends",
+        "After the last question the widget shows a summary with the score, the wrong questions and the weak point(s), and a single Finish control that calls sendPrompt with a summary line (per-question results, correctness and confidence); nothing is sent on load, on Check or on Next; the Finish control is disabled only while the send is in flight and usable again afterwards",
         "No key or explanation is visible before the corresponding Check; options are not preselected",
         "The reply is at most two short lines, repeats no question as text, and waits for the learner"
       ]
