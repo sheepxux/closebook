@@ -38,7 +38,7 @@ Use Simplified Chinese for all progress updates, questions, and the final respon
 
 agent 需要有平台支持的安装方式和相应权限。有些应用仍需要你点一下、上传文件或重启；无法持久安装时，它应明确说明，并提供标注清楚的“仅本次会话使用”方式。具体流程见[安装说明](INSTALL.md)。
 
-**版本范围：** 提示词安装最新稳定版 [v0.3.0](https://github.com/sheepxux/closebook/releases/tag/v0.3.0)，包含本文介绍的新版分段教学流程和内置能力优先规则。可选的中英文 MCP 组件位于该版本源码的 `mcp/` 目录，需要单独配置，不包含在 skill 安装包里。
+**版本范围：** 提示词安装最新稳定版 [v0.4.0](https://github.com/sheepxux/closebook/releases/tag/v0.4.0)，包含本文介绍的三级学习与考核流程（单点检查、小节题卡、考试模式考核页）、agent 自带组件优先的渲染顺序和单一上传包。可选的中英文 MCP 组件位于该版本源码的 `mcp/` 目录，需要单独配置，不包含在 skill 安装包里。
 
 ## 安装后，直接这样说
 
@@ -179,7 +179,7 @@ npm run build
 npm test
 ```
 
-启动服务和客户端配置见 [MCP 指南](mcp/README.md)。本次发布的 MCP 包与 skill 均为 `0.3.0`，但两者仍独立编号；UI 资源修订号也单独维护。
+启动服务和客户端配置见 [MCP 指南](mcp/README.md)。本次发布 skill 为 `0.4.0`，MCP 包未改动仍为 `0.3.0`；两者独立编号，UI 资源修订号也单独维护。
 
 </details>
 

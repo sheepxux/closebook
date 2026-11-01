@@ -121,7 +121,7 @@ codex features enable enable_mcp_apps
 
 ## 版本与卸载
 
-包名为 `closebook-mcp`；本次 MCP 与 skill 的版本均为 `0.3.0`，但仍独立编号。UI 资源后缀用于更新缓存，也不是 skill 版本。MCP 随 [v0.3.0 Release](https://github.com/sheepxux/closebook/releases/tag/v0.3.0) 的源码提供，不包含在 skill ZIP 中，需单独配置。现有客户端注册名 `closebook_card` 和工具名保持兼容。
+包名为 `closebook-mcp`；MCP 版本为 `0.3.0`（v0.4.0 发布未改动），skill 为 `0.4.0`，两者独立编号。UI 资源后缀用于更新缓存，也不是 skill 版本。MCP 随 [v0.4.0 Release](https://github.com/sheepxux/closebook/releases/tag/v0.4.0) 的源码提供，不包含在 skill ZIP 中，需单独配置。现有客户端注册名 `closebook_card` 和工具名保持兼容。
 
 在使用上述 Codex 注册方式的环境中可移除服务：
 

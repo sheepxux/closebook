@@ -88,7 +88,7 @@ Use Simplified Chinese for all progress updates, questions, and the final respon
 
 上面的复制提示词只安装稳定版 skill，不会顺带安装 MCP 服务。纯文字教学无需 MCP；先使用 agent 自带的交互组件（见[宿主组件](skills/closebook/references/host-widgets.md)），选择顺序见[交互规则](skills/closebook/references/interaction-fit.md)。
 
-用户需要可选卡片时，再按 [MCP 组件说明](mcp/README.md)配置当前客户端支持的连接方式。这部分是 [v0.3.0 源码中的可选组件](https://github.com/sheepxux/closebook/tree/v0.3.0/mcp)，不在 skill ZIP 中。确认 Node.js、构建、服务握手和实际卡片显示，再用一次真实提交验证回传；不能把“服务已连接”当作“所有卡片可用”。各客户端的已验证范围见适配说明，Claude、Hermes、Gemini 的这套组件尚未实机验证。不要为了普通文字学习自动改动全局 MCP 设置。
+用户需要可选卡片时，再按 [MCP 组件说明](mcp/README.md)配置当前客户端支持的连接方式。这部分是 [v0.4.0 源码中的可选组件](https://github.com/sheepxux/closebook/tree/v0.4.0/mcp)，不在 skill ZIP 中。确认 Node.js、构建、服务握手和实际卡片显示，再用一次真实提交验证回传；不能把“服务已连接”当作“所有卡片可用”。各客户端的已验证范围见适配说明，Claude、Hermes、Gemini 的这套组件尚未实机验证。不要为了普通文字学习自动改动全局 MCP 设置。
 
 ## 验证范围
 
