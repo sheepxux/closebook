@@ -97,4 +97,6 @@ Use Simplified Chinese for all progress updates, questions, and the final respon
 
 本页是供 agent 执行的安装流程，不是绕过平台权限的统一安装器。Codex 的技能目录和发现方式已依据 OpenAI 官方文档核对，Hermes 的目录、profile 和技能管理方式已依据其官方文档与源码核对，但未进行 Hermes 实机安装；其他平台的依据与边界见上方适配说明及[平台核实记录](docs/platform-verification.md)。不能据此声称这段提示词已经在所有 agent、操作系统和账号上实测成功。
 
+2026-11-01 在 ChatGPT 桌面端的 Codex 模式里把上面的安装提示词原样发给 agent（事先移走了本机的 `~/.agents/skills/closebook`）：它读取本页，识别最新正式版 v0.4.1，按目录安装路径取源码目录装到 `~/.agents/skills/closebook/`（真实目录，含 `assets/lesson-template.html` 和 `agents/openai.yaml`，`metadata.version` 0.4.1），脚本检查通过，宿主报告已启用。
+
 2026-10-31 使用已发布的 v0.2.0 ZIP，在独立临时目录中核对了目录结构并执行第 3 节的两条检查命令，均通过。这项检查没有安装到任何宿主，也不验证技能的自动发现或触发。

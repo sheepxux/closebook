@@ -230,6 +230,10 @@ python3 -m unittest discover -s tests
 - 文件保存到了用户全局 `AGENTS.md` 指定的位置，而非临时仓库。这符合预期：用户指令优先于 skill。
 - 第 3 轮耗时约 7.5 分钟，大部分时间用于 Codex 自行进行 Safari 检查；该检查由用户安装的其他 skill 触发，并非 closebook 要求。
 
+## 7b. 实机测试：安装提示词（2026-11-01）
+
+2026-11-01 在 ChatGPT 桌面端的 Codex 模式里把上面的安装提示词原样发给 agent（事先移走了本机的 `~/.agents/skills/closebook`）：它读取本页，识别最新正式版 v0.4.1，按目录安装路径取源码目录装到 `~/.agents/skills/closebook/`（真实目录，含 `assets/lesson-template.html` 和 `agents/openai.yaml`，`metadata.version` 0.4.1），脚本检查通过，宿主报告已启用。 这是安装提示词第一次在真实宿主上端到端验证；ChatGPT 模式的上传路径另见第 2 节的真实客户端记录。
+
 ## 8. 尚未验证的内容
 
 - **其他平台的真实安装：**
