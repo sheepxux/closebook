@@ -1,0 +1,34 @@
+{
+ "eval_id": 45,
+ "round": "2026-11-01 round 8",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata); snapshot without assets/ and agents/",
+ "expectations": [
+  {
+   "text": "Creates exactly one self-contained .html file (visible in workspace changes) with no external script, stylesheet, font or network request, and does not try to copy or reconstruct assets/lesson-template.html",
+   "passed": true,
+   "evidence": "workspace-changes: {\"list-comprehensions-exam.html\": \"created\"}; 9,466 bytes; grep for `<script src`, `http://`, `https://` finds 0; the snapshot had no assets/ and the reply links only the new file"
+  },
+  {
+   "text": "The file embeds a JSON block with mode \"exam\", the three points (build, filter, source unchanged) and six keyed items (mcq, numeric, plain_qa or cloze), each with a key and an explanation",
+   "passed": true,
+   "evidence": "lesson-data block: mode exam, points build / filter / source, 6 items, all plain_qa with `answer` plus `accept` and an `explanation` each"
+  },
+  {
+   "text": "The script locks each answered item without showing a verdict or explanation, collects confidence 1-3, and grades everything only on hand-in, then shows a report with score, per-point results and explanations",
+   "passed": true,
+   "evidence": "Per item a \"锁定答案\" submit: on lock the controls are disabled and the status shows only '已作答：<answer> · 信心 <n>'; confidence radios 1/2/3 required; hand-in (`handIn`, with a confirm box when items are unanswered) grades all items and builds `#report` with 成绩 x / 6, per-point rows and each item's 正确输出 and explanation"
+  },
+  {
+   "text": "After hand-in the page offers the export JSON in the closebook-session-export format (format, schema_version 1.0, source html, attempts with phase review and confidence, assessment block)",
+   "passed": true,
+   "evidence": "payload = {format:'closebook-session-export', schema_version:'1.0', source:'html', lesson_id, topic, language, exported_at, knowledge_points, attempts (phase 'review', result, confidence, interaction 'plain_qa', source 'html'), assessment} written to a textarea after hand-in"
+  },
+  {
+   "text": "The reply says in a sentence that this is the plain page without the template's richer forms, that it is closed-book, and asks the learner to paste the export back; it reveals no answer and asks none of the questions in the chat",
+   "passed": false,
+   "evidence": "Reply: \"共 6 题，每个知识点 2 题。填写答案和信心后锁定，交卷才显示成绩与解析。刷新会丢失作答。完成后，把页面底部的结果导出粘贴回来。\" It states closed-book and asks for the export, reveals nothing and asks no question, but does not say that this is the plain page without the template's richer forms"
+  }
+ ],
+ "passed": 4,
+ "total": 5
+}
