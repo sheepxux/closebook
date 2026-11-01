@@ -473,12 +473,12 @@
     {
       "id": 36,
       "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01. Earlier in this chat: the learner (has used Python for a few months, never used list comprehensions, 30 minutes) asked to learn Python list comprehensions. The learner chose the section pace (settings.teach_pace = \"section\"). Your outline for today, one section: 1) building a new list in one line, [n * n for n in nums]; 2) filtering with if, [n for n in nums if n % 2 == 0]; 3) nested loops in a comprehension. Nothing has been taught yet.]\n\n开始。",
-      "expected_output": "One reply that explains the whole section: all three points in order, each with a minimal real code example before the rule, no check question between the points, within roughly 600 words / 1200 Chinese characters in total; then a sentence that the explanation is closed and exactly one check question on point 1 using a case not shown, unanswered. No scored retest, no box or review date.",
+      "expected_output": "One reply that explains the whole section: all three points in order, each with a minimal real code example before the rule, no check question between the points, each point in 1-3 chunks of about 80-200 words (400 Chinese characters) with nothing extra; then a sentence that the explanation is closed and exactly one check question on point 1 using a case not shown, unanswered. No scored retest, no box or review date.",
       "files": [],
       "expectations": [
         "Explains all three points of the section in this one reply, in order, each with a minimal actual code example before the general rule",
         "Puts no check question between the points; the only question comes after the whole section",
-        "Keeps the whole explanation to roughly 600 words or 1200 Chinese characters or fewer, without history, caveat lists or a summary",
+        "Keeps each point to 1-3 short chunks (about 80-200 words or 400 Chinese characters each), without history, caveat lists, a summary or a preview of later points",
         "Says the explanation is now closed and asks exactly one check question, on point 1 (building a list), using a case the explanation didn't show, and does not answer it",
         "Does not announce a scored retest, a Leitner box or a review date for any point"
       ]
