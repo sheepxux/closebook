@@ -455,6 +455,61 @@
         "Briefly explains the rendering fallback without asking the learner to debug the setup",
         "Does not reveal the key, infer a user choice or record a scored result before submission"
       ]
+    },
+    {
+      "id": 35,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-11-02.]\n\n我想学 Rust 的所有权（ownership）。写过两年 Python，Rust 完全没碰过。30 分钟。",
+      "expected_output": "Teach-route opening in one message: a short outline of today's points (approach notes show explain → check), a note that the explanations come from general knowledge, an invitation to name points already known, and the pace question (step by step vs by section) asked once with a one-line description of each option; no time question (given), no separate familiarity question, no quiz on ownership itself.",
+      "files": [],
+      "expectations": [
+        "Proposes a short outline for today's 30 minutes whose approach notes make clear that each point is explained before it is checked",
+        "Asks, inside the same opening message, whether the learner wants step by step (short explanation, then a question) or by section (2-4 points explained together, then the questions), describing each option in about one line",
+        "Does not ask for the time budget again and does not ask a separate familiarity question (the learner already said they have never touched Rust)",
+        "Does not quiz the learner on ownership itself; at most one starting-point question on a prerequisite (e.g. what a Python variable refers to) is acceptable",
+        "Says in about one sentence that the outline or explanations come from general knowledge",
+        "Writes in Chinese"
+      ]
+    },
+    {
+      "id": 36,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01. Earlier in this chat: the learner (has used Python for a few months, never used list comprehensions, 30 minutes) asked to learn Python list comprehensions. The learner chose the section pace (settings.teach_pace = \"section\"). Your outline for today, one section: 1) building a new list in one line, [n * n for n in nums]; 2) filtering with if, [n for n in nums if n % 2 == 0]; 3) nested loops in a comprehension. Nothing has been taught yet.]\n\n开始。",
+      "expected_output": "One reply that explains the whole section: all three points in order, each with a minimal real code example before the rule, no check question between the points, within roughly 600 words / 1200 Chinese characters in total; then a sentence that the explanation is closed and exactly one check question on point 1 using a case not shown, unanswered. No scored retest, no box or review date.",
+      "files": [],
+      "expectations": [
+        "Explains all three points of the section in this one reply, in order, each with a minimal actual code example before the general rule",
+        "Puts no check question between the points; the only question comes after the whole section",
+        "Keeps the whole explanation to roughly 600 words or 1200 Chinese characters or fewer, without history, caveat lists or a summary",
+        "Says the explanation is now closed and asks exactly one check question, on point 1 (building a list), using a case the explanation didn't show, and does not answer it",
+        "Does not announce a scored retest, a Leitner box or a review date for any point"
+      ]
+    },
+    {
+      "id": 37,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01. Earlier in this chat: the learner (section pace, some linear algebra from school) asked to learn eigenvalues. You taught one section with two points: 1) eigenvectors keep their direction under A, A·v = λ·v; 2) eigenvalues come from det(A − λI) = 0, with the worked example A = [[2, 1], [1, 2]] giving λ = 1 and λ = 3. The point-1 check was answered correctly. The point-2 check (eigenvalues of [[4, 0], [0, 1]]) was missed: the learner solved det(A) = 0. You re-explained from a different angle (subtracting λ from the diagonal before taking the determinant) and asked a new check: the eigenvalues of [[2, 0], [0, 5]].]\n\n0 和 7？信心 1",
+      "expected_output": "Says the answer is wrong and why (the diagonal entries 2 and 5 solve (2 − λ)(5 − λ) = 0), notes that this is the second miss on this point and that it will slow down to one small step at a time for it, then teaches exactly one small chunk (one idea, e.g. what (A − λI) looks like for a diagonal matrix) and asks one check on it. No scored retest, no restart of point 1, no change announced for other points.",
+      "files": [],
+      "expectations": [
+        "States that 0 and 7 is wrong and gives the right answer with the reason: (2 − λ)(5 − λ) = 0, so λ = 2 and λ = 5",
+        "Says in about one line that it will slow down and teach this point in smaller steps (step pace) because it was missed twice",
+        "Teaches exactly one small chunk on point 2 (one idea, concrete example first) and ends with exactly one check question on a case not shown, unanswered",
+        "Does not re-teach or re-check point 1, and does not say the pace changes for other points or sections",
+        "Treats the missed checks as unscored: no Leitner box, review date or high-confidence-error flag is announced"
+      ]
+    },
+    {
+      "id": 38,
+      "prompt": "[Environment: Codex CLI in a repository; you can read and write files and run commands. Today is 2026-11-02.]\n\n继续学推导式，进度文件在附件。30 分钟。",
+      "expected_output": "Reads the progress file, reviews first (kp1 and kp2 are due today: one retest question before any teaching), and plans to teach the next planned point(s) afterwards on the stored section pace without asking the pace question again. The first question is a retest, asked alone.",
+      "files": [
+        "evals/files/progress.teach-pace.json"
+      ],
+      "expectations": [
+        "Recognizes the progress file and does not re-run an opening outline or ask about familiarity",
+        "Does not ask whether the learner wants step by step or by section: settings.teach_pace is already stored as section",
+        "Retests first: the first question is a closed-book retest on kp1 or kp2 (both due 2026-11-02), asked before any new teaching, with confidence 1-3",
+        "Says that after the review it will teach the next planned point(s) (kp3 nested loops, then kp4) as a section, or otherwise shows it will follow the stored section pace",
+        "Asks only one question in this reply and does not answer it"
+      ]
     }
   ]
 }

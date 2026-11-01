@@ -9,7 +9,7 @@ An agent skill for guided lessons, recall practice and spaced review.</p>
 
 closebook gives your AI assistant a teaching flow. Bring a topic, your notes or a progress file, and tell it what you want to learn.
 
-- **For new material**, it explains one small part, shows an example and checks your understanding. After all of today's points are taught, it tests them again with the notes closed.
+- **For new material**, it explains one small part, shows an example and checks your understanding. If you prefer, it explains a whole section of 2–4 points first and asks the checks afterwards. After all of today's points are taught, it tests them again with the notes closed.
 - **For practice and review**, it starts with a question, explains the gap in your answer and gives you a new question to check it.
 
 **On every agent platform, suitable built-in components, tools and plugins come first.** Optional MCP cards, HTML and text follow the same [renderer rules](skills/closebook/references/interaction-fit.md).

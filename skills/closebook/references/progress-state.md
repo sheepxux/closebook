@@ -46,7 +46,7 @@ Compact rules: drop extension fields; drop core fields that are empty or default
 
 | Event | Write |
 |---|---|
-| Opening confirmed | Create the file / state: topic, points with type and importance, `status` (`optional_extension` for trimmed points, `planned` for later points on a learning path), `created`, `settings` |
+| Opening confirmed | Create the file / state: topic, points with type and importance, `status` (`optional_extension` for trimmed points, `planned` for later points on a learning path), `created`, `settings` (on the teach route, `teach_pace` once the learner has chosen `step` or `section`; it is then never asked again) |
 | Check after a teaching chunk | attempt with `phase: "teach_check"`; no box, mastery or error update; until the point's first retest, it is due the next day |
 | Each answer | Append an attempt (`at`, `phase`, `result`, `hint_level`, `confidence` for right/wrong questions, `error_type` if wrong). Then update box, `next_review`, `mastery`, `priority_flag` |
 | Error | Append to `errors[]` with remedy |
@@ -54,6 +54,7 @@ Compact rules: drop extension fields; drop core fields that are empty or default
 | Plain Talk recall | attempt with `phase: "plain_talk_recall"`, `plain_talk_used`, `plain_talk_recall_result` |
 | Method / interaction decisions | extension fields (section 2) |
 | User overrides | the point's `*_override_by_user` and an entry in `user_overrides` |
+| Pace changed mid-session ("slow down", "bigger chunks") | `settings.teach_pace` and a `user_overrides` entry with `scope: "flow"` |
 | Session end | `weak_points` (with a specific note), `updated`, a `sessions` entry |
 
 Attempt ids: `<kp_id>-<n>`, continuing the numbering already in the file. They let merges recognise the same attempt in two copies.

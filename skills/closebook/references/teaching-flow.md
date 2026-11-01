@@ -44,6 +44,8 @@ If you have no reliable date: add "d) What's today's date? (I use it to schedule
 
 Drop b) when the request already settled the route (section 2). On the teach route, replace it with: "b) Already know any of these? Tell me which and I'll test those instead of teaching them." Approach notes on the teach route say "explain → check → …" so the learner can see teaching comes first.
 
+On the teach route, when no `settings.teach_pace` is stored yet, add one more line (`new-learning.md` section 3): "d) Pace: step by step (a short explanation, then a question; good from zero) or by section (2–4 points at once, then the questions; good with some background)?" Once answered, the pace is saved and never asked again. If the learner skips it: `step` for "zero / never seen it", otherwise `section`; say which in one line.
+
 **Applying the answer**
 - 15 min → core points only; one retest each; no synthesis beyond 2–3 sentences.
 - 30 min → 3–4 points; synthesis.
@@ -66,7 +68,7 @@ The learner's intent picks the route; what they say about prior knowledge overri
 
 **A — practice (has met the material).** Go straight to the diagnostic question for point 1, then the loop in section 3.
 
-**B — teach, then test (new to the learner).** Each of today's points in turn: chunks with checks (`new-learning.md`). Once all are taught: the closed-book retests and judging of section 3, steps 3–4, starting with the point taught longest ago. The diagnostic is replaced by the chunk checks; a starting-point question is used only when it's unclear what the learner already knows.
+**B — teach, then test (new to the learner).** Each of today's points in turn: chunks with checks (`new-learning.md`), one chunk and one check per reply on the `step` pace, or a section of 2–4 points and then one check per point on the `section` pace (`new-learning.md` section 3; `settings.teach_pace`). Once all are taught: the closed-book retests and judging of section 3, steps 3–4, starting with the point taught longest ago. The diagnostic is replaced by the chunk checks; a starting-point question is used only when it's unclear what the learner already knows.
 
 Mixed familiarity ("I know 1 and 2, never saw 3"): A for 1–2, B for 3. A point taught on route B in one session is reviewed like any other point afterwards: reviews always test first.
 
@@ -153,6 +155,7 @@ One reply may contain feedback on the previous answer plus the next question. Th
 | "Just tell me the answer" | Give it. Record `hint_level: 3`. One sentence: shown answers come back tomorrow. |
 | Learner wants to skip retest | Explain the cost in one sentence (no retest = no evidence it stuck). If they insist, skip and log in `user_overrides`. |
 | Three wrong in a row, or replies getting shorter | Lower difficulty, return to a short teaching chunk with a new example (`new-learning.md`), or suggest a break / smaller scope (`efficiency.md`). |
+| "Slow down" / "bigger chunks" / 慢一点 / 一次多讲点 on the teach route | Change `settings.teach_pace` (`step` ↔ `section`), log it in `user_overrides` (`scope: "flow"`), apply from the next chunk or section. A point missed twice on `section` drops to `step` by itself (`new-learning.md` section 3). |
 | Practice route, but the diagnostic shows the point is new to them | Switch that point to the teach route and say so in one line. |
 | Learner pastes the material back to answer | Gently note it's now open-book; record `hint_level: 3` for that answer. |
 | Material is wrong or outdated | Say so with the correction; don't test them on the wrong version. |

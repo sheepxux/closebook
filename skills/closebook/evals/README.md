@@ -42,12 +42,16 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 32 | open explanation | Preserves written production when native supports only choices |
 | 33 | lesson acknowledgement | Gives a fresh guided check; no scored attempt, mastery or schedule change |
 | 34 | failed native display | Attempts native once, then preserves the question in the MCP fallback |
+| 35 | teach route · pace asked once | Opening asks step-by-step vs by-section in the same message; no repeated setup questions |
+| 36 | teach route · section pace | One reply explains the whole section (2–4 points), no check in between, one check after |
+| 37 | teach route · second miss on section pace | Says it slows down; one small chunk and one check for that point only; still unscored |
+| 38 | teach route · stored pace | Progress file holds `teach_pace`; no pace question; retest first, then the next planned points |
 
 ## Running
 
 **With skill-creator** (if your environment has it): point it at this folder; it reads `evals/evals.json`.
 
-**With the repository runner:** an authenticated Codex CLI can execute `python3 tools/run_behavior_evals.py --out /absolute/path/to/new-eval-run` from the repository root. Use a fresh output directory outside the repository. It runs all 34 cases by default; `--ids 29,30,31,32,33,34` selects the renderer cases. It saves raw responses and tool logs but does not replace independent grading. This uses model calls and is separate from deterministic CI.
+**With the repository runner:** an authenticated Codex CLI can execute `python3 tools/run_behavior_evals.py --out /absolute/path/to/new-eval-run` from the repository root. Use a fresh output directory outside the repository. It runs all 38 cases by default; `--ids 29,30,31,32,33,34` selects the renderer cases. It saves raw responses and tool logs but does not replace independent grading. This uses model calls and is separate from deterministic CI.
 
 **Without it** (how the 2026-10-31 run was done): for each eval, a fresh agent gets the skill folder, reads `SKILL.md` and only the references it routes to, and writes the next assistant reply. It never sees `evals/`. A separate grader marks every expectation pass/fail with quoted evidence. For eval 22, the grader extracts the JSON block and runs `scripts/progress_tool.py validate` on it. Results and responses: `docs/eval-results/<date>/iteration-<n>/`.
 

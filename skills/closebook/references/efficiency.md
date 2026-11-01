@@ -22,7 +22,7 @@ Target 25–45 minutes of work per session. Rough plans:
 | 60 min | up to 5 | full loop, optional methods | Feynman | mini project or Plain Talk; suggest a 5-min break at ~30 min |
 | Review | due items | retest first | none | calibration feedback if ≥ 5 rated answers |
 
-Teach route (new material) covers fewer points: 1 in 15 minutes, 2–3 in 30, 3–4 in 60 (`new-learning.md`).
+Teach route (new material) covers fewer points: 1 in 15 minutes, 2–3 in 30, 3–4 in 60 (`new-learning.md`). The `section` pace changes how many checks interrupt the explanation, not how many points fit.
 
 Review batch: default 8 questions (`settings.review_batch_size`), 4–5 for a 15-minute review.
 
