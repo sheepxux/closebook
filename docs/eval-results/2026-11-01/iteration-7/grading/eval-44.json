@@ -1,0 +1,29 @@
+{
+ "eval_id": 44,
+ "round": "2026-11-01 round 7",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "States in one line that no interactive card is available here and that the checks will be asked in text, one per reply, with an answer format such as `B 2`",
+   "passed": true,
+   "evidence": "\"这里没有交互卡片，我们用文字逐题检查，共 3 题，每次一题\" and the answer format: fill the ？, one-sentence reason, confidence 1–3"
+  },
+  {
+   "text": "Asks exactly one check question (the first of the section) on a case not shown in the explanation, with confidence 1-3 requested in the same reply",
+   "passed": true,
+   "evidence": "Exactly one question (第 1 题｜强缓存): max-age=600, age 120 s, \"再次请求图片 → 浏览器下一步：？\" with confidence 1–3 requested; the explanation did not use this case"
+  },
+  {
+   "text": "Does not list all three checks at once and does not reveal the answer or hint at it in the format example",
+   "passed": true,
+   "evidence": "Only question 1 is asked; the ？ placeholder reveals nothing"
+  },
+  {
+   "text": "Does not pretend a card was shown and does not ask the learner to install or configure anything",
+   "passed": true,
+   "evidence": "No claim of a card; no install or settings advice"
+  }
+ ],
+ "passed": 4,
+ "total": 4
+}

@@ -63,6 +63,12 @@ header.top h1 { font-size: 1.65rem; font-weight: 650; line-height: 1.3; letter-s
 .stepper button[data-status="inprog"] { border-style: dashed; border-color: var(--text); color: var(--text); }
 .stepper button[data-status="done"] { background: var(--ink); border-color: var(--ink); color: var(--ink-text); }
 .stepper button[data-status="mixed"] { background: var(--mid-bg); border-color: var(--mid); color: var(--mid); }
+.stepper button[data-status="answered"] { border-color: var(--text); color: var(--text); }
+.report .score { font-size: 1.4rem; font-weight: 600; margin: 8px 0; }
+.report-table { width: 100%; border-collapse: collapse; margin: 12px 0 16px; }
+.report-table th, .report-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule); font-size: .95rem; vertical-align: top; }
+.report-table td .badge { margin-left: 8px; }
+.exam-head .badge { font-variant-numeric: tabular-nums; }
 .stepper button[aria-current="step"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--mark-ring); color: var(--text); border-color: var(--text); }
 .stepper button[aria-current="step"][data-status="done"] { color: var(--ink-text); }
 
@@ -685,7 +691,15 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       importance: { core: 'core', important: 'important', minor: 'minor' },
       types: { factual: 'factual', conceptual: 'conceptual', procedural: 'procedural', judgment: 'judgment', language_production: 'language production', contested: 'contested' },
       whyForm: 'Why this format', pointsNav: 'Knowledge points', kpOf: 'Point {n} of {total}',
-      kpStatus: { todo: 'not started', inprog: 'in progress', done: 'all correct', mixed: 'done, with mistakes' },
+      kpStatus: { todo: 'not started', inprog: 'in progress', done: 'all correct', mixed: 'done, with mistakes', answered: 'answered' },
+      tabExam: 'Exam', examMode: 'Exam mode', examIntro: 'Closed-book: answers are checked only after you hand in. {n} questions.',
+      examTimeLeft: 'Time left {t}', examTimeUp: 'Time is up; the exam was handed in automatically.', submitExam: 'Hand in',
+      submitConfirm: '{n} questions are still unanswered. Hand in anyway?', examLocked: 'Answered. The result appears after you hand in.', examYour: 'Your answer: {a}',
+      examMistakesHidden: 'Mistakes appear after you hand in.', reportTitle: 'Result', reportScore: '{right} of {total} correct ({pct}%)',
+      reportHandedIn: 'Handed in {t}', reportByPoint: 'Knowledge point', reportScoreCol: 'Correct', weakBadge: 'weak', reportUnanswered: '{n} unanswered',
+      reportHighConf: '{n} confident but wrong: review these first', reportWeak: 'Weak points: {list}', reportNoWeak: 'No weak point: every point was at least half right.',
+      reportWrong: 'Questions to review', unansweredBadge: 'unanswered', viewItem: 'Open', listSep: ', ',
+      reportExport: 'Save the result: export it from the Save & load tab, or paste the export to your coach so the review schedule is updated.',
       teachTitle: 'Quick explanation', example: 'Example', principle: 'Principle', nextStep: 'Next step',
       startQuestions: 'Close the explanation and answer from memory', showTeach: 'Show the explanation again',
       teachNext: 'Go on to the next point', allTaught: 'All points taught: close the explanations and start the questions',
@@ -769,7 +783,15 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       importance: { core: '核心', important: '重要', minor: '次要' },
       types: { factual: '事实记忆型', conceptual: '概念理解型', procedural: '程序技能型', judgment: '判断决策型', language_production: '语言产出型', contested: '主观/有争议型' },
       whyForm: '为什么这样练', pointsNav: '知识点', kpOf: '知识点 {n} / {total}',
-      kpStatus: { todo: '未开始', inprog: '进行中', done: '全对', mixed: '已完成，有错' },
+      kpStatus: { todo: '未开始', inprog: '进行中', done: '全对', mixed: '已完成，有错', answered: '已作答' },
+      tabExam: '考试', examMode: '考试模式', examIntro: '闭卷：交卷后才统一判分和显示解析。共 {n} 题。',
+      examTimeLeft: '剩余 {t}', examTimeUp: '时间到，已自动交卷。', submitExam: '交卷',
+      submitConfirm: '还有 {n} 题未作答，确定交卷？', examLocked: '已作答，交卷后显示结果。', examYour: '你的答案：{a}',
+      examMistakesHidden: '交卷后才显示错题。', reportTitle: '成绩', reportScore: '答对 {right} / {total} 题（{pct}%）',
+      reportHandedIn: '交卷时间 {t}', reportByPoint: '知识点', reportScoreCol: '答对', weakBadge: '薄弱', reportUnanswered: '{n} 题未作答',
+      reportHighConf: '{n} 题高把握答错：优先复习', reportWeak: '薄弱知识点：{list}', reportNoWeak: '没有薄弱知识点：每个点都至少对了一半。',
+      reportWrong: '需要复习的题', unansweredBadge: '未作答', viewItem: '查看', listSep: '、',
+      reportExport: '保存成绩：到“保存与导入”页导出，或把导出粘给你的教练，复习安排会据此更新。',
       teachTitle: '最小讲解', example: '例子', principle: '原理', nextStep: '下一步',
       startQuestions: '合上讲解，凭记忆作答', showTeach: '再看一遍讲解',
       teachNext: '继续讲下一个点', allTaught: '全部讲完了，合上讲解开始做题',
@@ -860,7 +882,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   var RESULTS = ['correct', 'partial', 'incorrect', 'dont_know', 'coherent', 'partly_coherent', 'incoherent'];
 
   var data, T, storeKey, uid = 0;
-  var state = { attempts: [], seq: 0, ui: {}, tab: 'learn', kp: 0, ptViewed: {}, teach: {}, sec: {}, recall: {}, pt: {}, storage: false };
+  var state = { attempts: [], seq: 0, ui: {}, tab: 'learn', kp: 0, ptViewed: {}, teach: {}, sec: {}, recall: {}, pt: {}, exam: {}, storage: false };
 
   // ---------- helpers ----------
   function h(tag, attrs) {
@@ -947,6 +969,15 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   function announce(msg) { var live = document.getElementById('live'); live.textContent = ''; setTimeout(function () { live.textContent = msg; }, 30); }
   function kpById(id) { return data.knowledge_points.filter(function (k) { return k.id === id; })[0]; }
   function isContested(kp) { return kp && kp.knowledge_type === 'contested'; }
+  function examMode() { return data.mode === 'exam'; }
+  function examOpen() { return examMode() && !state.exam.submitted; }
+  function answerSummary(u, it) {
+    if (!u) return '';
+    if (u.answerText) return u.answerText;
+    if (u.choice !== undefined && it.options && it.options[u.choice]) return String.fromCharCode(65 + u.choice) + '. ' + strip(it.options[u.choice].text);
+    if (u.vals && u.vals.length) return u.vals.map(function (v) { return v || '—'; }).join(' / ');
+    return '';
+  }
   function keyOf(kp, item) { return kp.id + '/' + item.id; }
   function uiOf(key) { if (!state.ui[key]) state.ui[key] = {}; return state.ui[key]; }
   function findAttempt(id) { return state.attempts.filter(function (a) { return a.id === id; })[0]; }
@@ -955,7 +986,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   function save() {
     try {
       window.localStorage.setItem(storeKey, JSON.stringify({ v: 1, attempts: state.attempts, seq: state.seq, ui: state.ui,
-        ptViewed: state.ptViewed, teach: state.teach, sec: state.sec, recall: state.recall, pt: state.pt }));
+        ptViewed: state.ptViewed, teach: state.teach, sec: state.sec, recall: state.recall, pt: state.pt, exam: state.exam }));
       state.storage = true;
     } catch (e) { state.storage = false; }
   }
@@ -966,7 +997,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       if (!raw) return;
       var saved = JSON.parse(raw);
       if (!saved || saved.v !== 1) return;
-      ['attempts', 'seq', 'ui', 'ptViewed', 'teach', 'sec', 'recall', 'pt'].forEach(function (k) { if (saved[k] !== undefined) state[k] = saved[k]; });
+      ['attempts', 'seq', 'ui', 'ptViewed', 'teach', 'sec', 'recall', 'pt', 'exam'].forEach(function (k) { if (saved[k] !== undefined) state[k] = saved[k]; });
     } catch (e) { state.storage = false; }
   }
   function themePref(value) {
@@ -984,7 +1015,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       kp_id: kp.id,
       id: [data.lesson_id, kp.id, itemId, state.seq].join('~'),
       at: isoNow(),
-      phase: kp.teachCheck ? 'teach_check' : (data.mode === 'review' ? 'review' : 'retest'),
+      phase: kp.teachCheck ? 'teach_check' : (data.mode === 'learn' ? 'retest' : 'review'),
       hint_level: 0,
       source: 'html'
     };
@@ -1067,6 +1098,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     return wrap;
   }
   function retryButton(ui, rerender) {
+    if (examMode()) return null;
     return h('button', { type: 'button', class: 'btn quiet', onclick: function () {
       var keep = { draft: '' };
       Object.keys(ui).forEach(function (k) { delete ui[k]; });
@@ -1089,6 +1121,12 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     var type = TYPES.indexOf(kp.interaction_type) >= 0 ? kp.interaction_type : 'unknown';
     var card = h('section', { class: 'card' + (ui.done ? '' : ' open'), 'data-key': key, 'aria-label': strip(item.question || item.prompt || item.front || kp.title) });
     var own = function (focusItem) { state.focusKey = key; rerender(focusItem); };
+    if (ui.done && examOpen()) {
+      card.appendChild(h('p', null, rich(item.question || item.prompt || item.front || (item.fallback && item.fallback.question) || '')));
+      var summary = answerSummary(ui, item);
+      card.appendChild(h('p', { class: 'notice' }, T.examLocked, summary ? ' ' + fmt(T.examYour, { a: summary }) : ''));
+      return card;
+    }
     if (ui.done && ui.restored) {
       card.appendChild(h('p', null, rich(item.question || item.prompt || item.front || (item.fallback && item.fallback.question) || '')));
       card.appendChild(resultBanner(ui.result, ui.conf, h('p', { class: 'small' }, fmt(T.answeredAs, { result: T[ui.result] || ui.result }))));
@@ -2121,13 +2159,108 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     var res = kp.items.map(function (it) { var u = state.ui[keyOf(kp, it)]; return u && u.done ? u.result : null; });
     if (res.every(function (r) { return r === null; })) return 'todo';
     if (res.some(function (r) { return r === null; })) return 'inprog';
+    if (examOpen()) return 'answered';
     return res.every(function (r) { return r === 'correct' || r === 'coherent'; }) ? 'done' : 'mixed';
+  }
+
+  // ---------- exam mode ----------
+  var examTick = null;
+  function sectionTitleOf(kpId) {
+    var hit = (data.sections || []).filter(function (sec) { return (sec.points || []).indexOf(kpId) >= 0; })[0];
+    return hit ? hit.title : '';
+  }
+  function examItems() {
+    var rows = [];
+    data.knowledge_points.forEach(function (kp, i) { kp.items.forEach(function (it) { rows.push({ kp: kp, idx: i, item: it, ui: state.ui[keyOf(kp, it)] }); }); });
+    return rows;
+  }
+  function examLimitMs() { return data.exam && data.exam.time_limit_min ? data.exam.time_limit_min * 60000 : 0; }
+  function examRemainingMs() { return Math.max(0, (state.exam.startedAt || Date.now()) + examLimitMs() - Date.now()); }
+  function clock(ms) { var sec = Math.ceil(ms / 1000); return pad(Math.floor(sec / 60)) + ':' + pad(sec % 60); }
+  function submitExam(auto) {
+    if (state.exam.submitted) return;
+    state.exam.submitted = true; state.exam.submittedAt = isoNow();
+    if (auto) state.exam.auto = true;
+    if (examTick) { clearInterval(examTick); examTick = null; }
+    save();
+    state.tab = 'learn';
+    render(true);
+    announce(auto ? T.examTimeUp : T.reportTitle);
+  }
+  function renderExamHeader(panel) {
+    var rows = examItems(), total = rows.length, answered = rows.filter(function (r) { return r.ui && r.ui.done; }).length;
+    if (state.exam.submitted) { panel.appendChild(renderReport(rows)); return; }
+    if (!state.exam.startedAt) { state.exam.startedAt = Date.now(); state.exam.startedIso = isoNow(); save(); }
+    var card = h('section', { class: 'card exam-head' }, h('p', null, h('strong', null, T.examMode), ' · ' + fmt(T.examIntro, { n: total })));
+    if (data.exam && data.exam.scope) card.appendChild(h('p', { class: 'small muted' }, data.exam.scope));
+    var row = h('div', { class: 'row' });
+    if (examLimitMs()) {
+      row.appendChild(h('span', { class: 'badge', id: 'exam-timer' }, fmt(T.examTimeLeft, { t: clock(examRemainingMs()) })));
+      if (!examTick) examTick = setInterval(function () {
+        var el = document.getElementById('exam-timer');
+        var left = examRemainingMs();
+        if (el) el.textContent = fmt(T.examTimeLeft, { t: clock(left) });
+        if (left <= 0) submitExam(true);
+      }, 1000);
+    }
+    row.appendChild(h('button', { type: 'button', class: 'btn', onclick: function () {
+      var left = total - answered;
+      if (left > 0 && !window.confirm(fmt(T.submitConfirm, { n: left }))) return;
+      submitExam(false);
+    } }, T.submitExam));
+    card.appendChild(row);
+    panel.appendChild(card);
+  }
+  function renderReport(rows) {
+    var right = 0, wrong = [], unanswered = [], hot = 0, perKp = {}, order = [];
+    rows.forEach(function (r) {
+      var k = perKp[r.kp.id];
+      if (!k) { k = perKp[r.kp.id] = { kp: r.kp, total: 0, right: 0, hot: 0 }; order.push(k); }
+      k.total += 1;
+      if (!r.ui || !r.ui.done) { unanswered.push(r); return; }
+      if (r.ui.result === 'correct' || r.ui.result === 'coherent') { right += 1; k.right += 1; return; }
+      wrong.push(r);
+      if (r.ui.result === 'incorrect' && r.ui.conf === 3) { hot += 1; k.hot += 1; }
+    });
+    var total = rows.length, pct = total ? Math.round(right * 100 / total) : 0;
+    var card = h('section', { class: 'card report' }, h('h2', null, T.reportTitle),
+      h('p', { class: 'score', 'data-focus': '1', tabindex: '-1' }, fmt(T.reportScore, { right: right, total: total, pct: pct })),
+      h('p', { class: 'small muted' }, fmt(T.reportHandedIn, { t: state.exam.submittedAt || '' }) + (state.exam.auto ? ' · ' + T.examTimeUp : '')));
+    if (unanswered.length) card.appendChild(h('p', { class: 'notice' }, fmt(T.reportUnanswered, { n: unanswered.length })));
+    if (hot) card.appendChild(h('p', { class: 'notice' }, fmt(T.reportHighConf, { n: hot })));
+    var weak = [];
+    var tbody = h('tbody', null);
+    order.forEach(function (k) {
+      var isWeak = k.hot > 0 || k.right * 2 < k.total;
+      if (isWeak) weak.push(k.kp.title);
+      var sec = sectionTitleOf(k.kp.id);
+      tbody.appendChild(h('tr', null, h('td', null, k.kp.title, sec ? h('span', { class: 'small muted' }, ' · ' + sec) : null),
+        h('td', null, k.right + ' / ' + k.total, isWeak ? h('span', { class: 'badge hot' }, T.weakBadge) : null)));
+    });
+    card.appendChild(h('table', { class: 'report-table' }, h('thead', null, h('tr', null, h('th', null, T.reportByPoint), h('th', null, T.reportScoreCol))), tbody));
+    card.appendChild(h('p', null, weak.length ? fmt(T.reportWeak, { list: weak.join(T.listSep) }) : T.reportNoWeak));
+    if (wrong.length || unanswered.length) {
+      var list = h('div', { class: 'report-wrong' }, h('h3', null, T.reportWrong));
+      wrong.concat(unanswered).forEach(function (r) {
+        var q = r.item.question || r.item.prompt || r.item.front || (r.item.fallback && r.item.fallback.question) || r.item.id;
+        var answered = r.ui && r.ui.done;
+        list.appendChild(h('div', { class: 'mistake' },
+          h('div', { class: 'badges' }, h('span', { class: 'badge' }, r.kp.title), h('span', { class: 'badge' + (answered && r.ui.result === 'incorrect' && r.ui.conf === 3 ? ' hot' : '') }, answered ? (T[r.ui.result] || r.ui.result) : T.unansweredBadge),
+            answered && r.ui.conf ? h('span', { class: 'badge' }, fmt(T.confShort, { c: r.ui.conf })) : null),
+          h('p', null, rich(q)),
+          h('button', { type: 'button', class: 'btn quiet', onclick: function () { state.kp = r.idx; state.focusKey = keyOf(r.kp, r.item); render(true); } }, T.viewItem)));
+      });
+      card.appendChild(list);
+    }
+    card.appendChild(h('p', { class: 'small muted' }, T.reportExport));
+    return card;
   }
 
   function renderLearn(panel) {
     var kps = data.knowledge_points;
     syncSection();
     var kp = kps[state.kp] || kps[0];
+    if (examMode()) renderExamHeader(panel);
     panel.appendChild(h('nav', { 'aria-label': T.pointsNav }, h('ol', { class: 'stepper' }, kps.map(function (k, i) {
       var status = kpStatus(k), label = (i + 1) + '. ' + k.title + ' · ' + T.kpStatus[status];
       return h('li', null, h('button', { type: 'button', 'aria-current': i === state.kp ? 'step' : null, 'data-status': status,
@@ -2144,7 +2277,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     var allDone = kp.items.every(function (it) { var u = state.ui[keyOf(kp, it)]; return u && u.done; });
     var teach = kp.teach;
     var tstate = state.teach[kp.id] || (state.teach[kp.id] = { step: 0, closed: false });
-    var review = data.mode === 'review';
+    var review = data.mode !== 'learn';
     if (chunked(kp) && !tstate.closed) {
       if (sectionPace() && !tstate.stepped && renderSection(panel, kp)) return;
       if (tstate.stepped) panel.appendChild(h('p', { class: 'small muted' }, T.slowDown));
@@ -2160,7 +2293,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       head.appendChild(renderTeach(teach, tstate, true));
       return;
     }
-    if (teach && (allDone || (!review && tstate.show))) {
+    if (teach && !examOpen() && (allDone || (!review && tstate.show))) {
       if (tstate.show) head.appendChild(renderTeach(teach, tstate, false));
       else head.appendChild(h('button', { type: 'button', class: 'btn quiet', onclick: function () { tstate.show = true; render(); } }, T.showTeach));
     }
@@ -2200,7 +2333,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   }
 
   function chunked(k) {
-    return data.mode !== 'review' && !!(k.teach && k.teach.chunks && k.teach.chunks.length);
+    return data.mode === 'learn' && !!(k.teach && k.teach.chunks && k.teach.chunks.length);
   }
 
   function untaught() {
@@ -2253,7 +2386,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   }
 
   // ---------- section pace: read a section of points, then one check per point ----------
-  function sectionPace() { return data.mode !== 'review' && data.teach_pace === 'section'; }
+  function sectionPace() { return data.mode === 'learn' && data.teach_pace === 'section'; }
 
   function sectionsOf() {
     var kps = data.knowledge_points, out = [], used = {};
@@ -2507,6 +2640,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   }
 
   function renderMistakes(panel) {
+    if (examOpen()) { panel.appendChild(h('p', { class: 'card' }, T.examMistakesHidden)); return; }
     var bad = state.attempts.filter(function (a) { return BAD.indexOf(a.result) >= 0 && a.phase !== 'teach_check'; });
     if (!bad.length) { panel.appendChild(h('p', { class: 'card' }, T.mistakesEmpty)); return; }
     panel.appendChild(h('p', { class: 'muted' }, fmt(T.mistakesSummary, { n: bad.length })));
@@ -2548,12 +2682,22 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       knowledge_points: data.knowledge_points.map(function (k) {
         var d = { id: k.id, title: k.title, importance: k.importance, knowledge_type: k.knowledge_type };
         if (k.secondary_types && k.secondary_types.length) d.secondary_types = k.secondary_types;
+        var sec = sectionTitleOf(k.id);
+        if (sec) d.section = sec;
         return d;
       }),
       attempts: state.attempts.map(function (a) { return JSON.parse(JSON.stringify(a)); })
     };
     if (data.language) out.language = data.language;
     if (viewed.length) out.plain_talk_viewed_kp_ids = viewed;
+    if (examMode()) {
+      out.assessment = { mode: 'exam', submitted: !!state.exam.submitted };
+      if (data.exam && data.exam.time_limit_min) out.assessment.time_limit_min = data.exam.time_limit_min;
+      if (data.exam && data.exam.scope) out.assessment.scope = data.exam.scope;
+      if (state.exam.startedIso) out.assessment.started_at = state.exam.startedIso;
+      if (state.exam.submittedAt) out.assessment.submitted_at = state.exam.submittedAt;
+      if (state.exam.auto) out.assessment.auto_submitted = true;
+    }
     return JSON.stringify(out, null, 2);
   }
 
@@ -2566,8 +2710,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
         var u = state.ui[keyOf(kp, it)];
         if (!u || !u.done) return;
         var q = it.question || it.prompt || it.front || (it.fallback && it.fallback.question) || it.id;
-        var row = ['**Q:** ' + q, '**' + T.yourAnswer + ':** ' + (u.answerText || (u.choice !== undefined && it.options ? String.fromCharCode(65 + u.choice) + '. ' + it.options[u.choice].text
-            : (u.vals && u.vals.length ? u.vals.map(function (v) { return v || '—'; }).join(' / ') : T.noText))),
+        var row = ['**Q:** ' + q, '**' + T.yourAnswer + ':** ' + (answerSummary(u, it) || T.noText),
           '**' + T.gradeSelf + '** ' + (T[u.result] || u.result) + (u.conf ? ' · ' + fmt(T.confShort, { c: u.conf }) : '')];
         if (u.attemptId) row.unshift(idLine(u.attemptId));
         if (u.ticks && it.reference_points) {
@@ -2685,17 +2828,18 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     panel.appendChild(h('section', { class: 'card' }, h('p', { class: 'small muted' }, state.storage ? T.storageOn : T.storageOff),
       h('button', { type: 'button', class: 'btn quiet', onclick: function () {
         if (!window.confirm(T.resetConfirm)) return;
-        state.attempts = []; state.seq = 0; state.ui = {}; state.teach = {}; state.recall = {}; state.pt = {}; state.ptViewed = {};
+        state.attempts = []; state.seq = 0; state.ui = {}; state.teach = {}; state.sec = {}; state.recall = {}; state.pt = {}; state.ptViewed = {}; state.exam = {};
         save(); render();
       } }, T.reset)));
   }
 
   // ---------- frame ----------
   function tabs() {
-    var list = [['learn', T.tabLearn]];
+    var list = [['learn', examMode() ? T.tabExam : T.tabLearn]];
     if (data.free_recall) list.push(['recall', T.tabRecall]);
     if (data.plain_talk) list.push(['plain', T.tabPlain]);
-    list.push(['mistakes', T.tabMistakes], ['data', T.tabData]);
+    if (!examOpen()) list.push(['mistakes', T.tabMistakes]);
+    list.push(['data', T.tabData]);
     return list;
   }
   function renderTabs() {
@@ -2727,6 +2871,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     el.appendChild(h('p', { class: 'small muted' }, fmt(T.progress, { done: done, total: total })));
   }
   function render(moveFocus) {
+    if (state.tab === 'mistakes' && examOpen()) state.tab = 'learn';
     renderTabs();
     renderProgress();
     var panel = document.getElementById('panel');
@@ -2759,6 +2904,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       data = JSON.parse(document.getElementById('lesson-data').textContent);
       if (!data || !Array.isArray(data.knowledge_points) || !data.knowledge_points.length || !data.lesson_id) throw new Error('missing lesson_id or knowledge_points');
       data.knowledge_points.forEach(function (kp) { if (!Array.isArray(kp.items) || !kp.items.length) throw new Error('point ' + kp.id + ' has no items'); });
+      if (['learn', 'review', 'exam'].indexOf(data.mode) < 0) data.mode = 'learn';
     } catch (e) {
       fail(T.dataError + e.message);
       return;

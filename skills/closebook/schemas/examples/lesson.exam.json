@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "list-comp-exam-2026-11-01",
+  "topic": "Python 列表推导式",
+  "language": "zh-CN",
+  "created": "2026-11-01",
+  "mode": "exam",
+  "intro": "当日考核：今天学过的三个点，闭卷作答，交卷后统一判分并显示解析。",
+  "exam": {
+    "time_limit_min": 10,
+    "scope": "范围：2026-11-01 学过的「用一行写出新列表」「只留下满足条件的元素」「推导式和原列表的关系」。"
+  },
+  "sections": [
+    {
+      "title": "写法",
+      "points": [
+        "kp-build",
+        "kp-filter"
+      ]
+    },
+    {
+      "title": "理解",
+      "points": [
+        "kp-result"
+      ]
+    }
+  ],
+  "knowledge_points": [
+    {
+      "id": "kp-build",
+      "title": "用一行写出新列表",
+      "importance": "core",
+      "knowledge_type": "procedural",
+      "method": "predict_verify",
+      "interaction_type": "mcq",
+      "interaction_reason": "考核只看结果是否正确，四个选项分别对应一种常见写错的位置。",
+      "items": [
+        {
+          "id": "upper-words",
+          "question": "words 是一个字符串列表。想得到每个单词的大写形式组成的新列表，哪一种写法对？",
+          "options": [
+            {
+              "text": "`[w.upper() for w in words]`",
+              "correct": true,
+              "explanation": "最前面写每次要放进新列表的值 w.upper()，后面写 for w in words。"
+            },
+            {
+              "text": "`[for w in words: w.upper()]`",
+              "correct": false,
+              "explanation": "推导式里没有冒号，for 也不能放在最前面。"
+            },
+            {
+              "text": "`[w in words for w.upper()]`",
+              "correct": false,
+              "explanation": "两部分位置颠倒了：要放的值在前，for 变量 in 来源在后。"
+            },
+            {
+              "text": "`words.upper()`",
+              "correct": false,
+              "explanation": "列表没有 upper 方法；要对每个元素分别调用，所以需要遍历。"
+            }
+          ]
+        },
+        {
+          "id": "scores-trace",
+          "question": "下面代码最后打印出什么？",
+          "code": "scores = [3, 7, 5]\nbonus = [s + 1 for s in scores]\nprint(bonus)",
+          "options": [
+            {
+              "text": "`[4, 8, 6]`",
+              "correct": true,
+              "explanation": "每个分数加 1，顺序不变。"
+            },
+            {
+              "text": "`[3, 7, 5, 1]`",
+              "correct": false,
+              "explanation": "推导式不是追加元素，而是对每个元素算一个新值。"
+            },
+            {
+              "text": "`16`",
+              "correct": false,
+              "explanation": "没有 sum，不会求和；结果仍是一个列表。"
+            },
+            {
+              "text": "`[4, 8, 6, 1]`",
+              "correct": false,
+              "explanation": "新列表的长度和原列表一样，不会多出一个元素。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kp-filter",
+      "title": "只留下满足条件的元素",
+      "importance": "core",
+      "knowledge_type": "procedural",
+      "method": "retrieval",
+      "interaction_type": "cloze_passage",
+      "interaction_reason": "筛选条件的位置是最常错的地方，让学习者自己把 if 填到正确位置。",
+      "items": [
+        {
+          "id": "filter-cloze",
+          "prompt": "补全这个推导式，得到 nums 里所有负数的绝对值：",
+          "text": "result = [ [[abs(n)|abs( n )]] for n in nums [[if n < 0|if n<0]] ]",
+          "explanation": "要放进新列表的值 abs(n) 写在最前面；筛选条件 if n < 0 跟在 for 后面。"
+        },
+        {
+          "id": "filter-cloze-2",
+          "prompt": "补全条件，只留下小于 10 的偶数：",
+          "text": "small = [n for n in nums [[if n % 2 == 0 and n < 10|if n%2==0 and n<10|if n < 10 and n % 2 == 0|if n<10 and n%2==0]] ]",
+          "explanation": "两个条件都要满足用 and；筛选用的 if 跟在 for 后面。"
+        }
+      ]
+    },
+    {
+      "id": "kp-result",
+      "title": "推导式和原列表的关系",
+      "importance": "important",
+      "knowledge_type": "conceptual",
+      "method": "retrieval",
+      "interaction_type": "mcq",
+      "interaction_reason": "两个干扰项分别来自「推导式会改原列表」和「推导式会少元素」这两个真实误解。",
+      "items": [
+        {
+          "id": "original-kept",
+          "question": "nums = [1, 2, 3]，执行 squares = [n * n for n in nums] 之后，nums 是什么？",
+          "options": [
+            {
+              "text": "`[1, 2, 3]`，没有变化",
+              "correct": true,
+              "explanation": "推导式只读取 nums，产生一个新列表 squares，不改动来源。"
+            },
+            {
+              "text": "`[1, 4, 9]`",
+              "correct": false,
+              "explanation": "平方结果放在新列表 squares 里，nums 本身不变。"
+            },
+            {
+              "text": "`[]`",
+              "correct": false,
+              "explanation": "推导式不会「取走」元素，来源列表完整保留。"
+            },
+            {
+              "text": "报错，因为 nums 被占用",
+              "correct": false,
+              "explanation": "读取列表不会锁定它，不存在占用。"
+            }
+          ]
+        },
+        {
+          "id": "same-length",
+          "question": "没有 if 的推导式 [f(x) for x in items]，结果列表的长度和 items 相比？",
+          "options": [
+            {
+              "text": "总是相等",
+              "correct": true,
+              "explanation": "每个元素恰好产生一个新值；只有加了 if 才可能变短。"
+            },
+            {
+              "text": "可能更长",
+              "correct": false,
+              "explanation": "一个元素只对应一个值，不会多出来。"
+            },
+            {
+              "text": "可能更短",
+              "correct": false,
+              "explanation": "没有 if 就没有筛选，不会少。"
+            },
+            {
+              "text": "取决于 f 的返回值",
+              "correct": false,
+              "explanation": "f 返回什么都会被放进去一个，长度和返回值无关。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

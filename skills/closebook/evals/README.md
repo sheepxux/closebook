@@ -49,16 +49,19 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 39 | host widget · Codex Visualize | Writes an HTML fragment that checks the four-option answer itself (key + per-option explanation inside), confidence first, `sendFollowUpMessage` result line only on Next; `visualize{...}` line in the reply |
 | 40 | host widget · `show_widget` + `sendPrompt` | One `show_widget` call with a numeric widget that checks the value within a tolerance and then shows the worked steps; `sendPrompt` result line on Next; no MCP duplicate |
 | 41 | host question tool · `request_user_input` | One call: three options plus a confidence question; no text duplicate; no hint at the key |
+| 42 | section review widget | One `show_widget` with three keyed questions stepped inside the widget, graded there, one summary `sendPrompt` at the end |
+| 43 | daily assessment page | Builds an exam-mode HTML page from the progress file's points with `build_lesson.py`; closed-book; no questions in chat |
+| 44 | no renderer at all | Says so in one line, asks the section's checks in text one per reply (`B 2`) |
 
 ## Running
 
 **With skill-creator** (if your environment has it): point it at this folder; it reads `evals/evals.json`.
 
-**With the repository runner:** an authenticated Codex CLI can execute `python3 tools/run_behavior_evals.py --out /absolute/path/to/new-eval-run` from the repository root. Use a fresh output directory outside the repository. It runs all 41 cases by default; `--ids 29,30,31,32,33,34,39,40,41` selects the renderer cases. It saves raw responses and tool logs but does not replace independent grading. This uses model calls and is separate from deterministic CI.
+**With the repository runner:** an authenticated Codex CLI can execute `python3 tools/run_behavior_evals.py --out /absolute/path/to/new-eval-run` from the repository root. Use a fresh output directory outside the repository. It runs all 44 cases by default; `--ids 29,30,31,32,33,34,39,40,41,42,43,44` selects the renderer and assessment cases. It saves raw responses and tool logs but does not replace independent grading. This uses model calls and is separate from deterministic CI.
 
 **Without it** (how the 2026-10-31 run was done): for each eval, a fresh agent gets the skill folder, reads `SKILL.md` and only the references it routes to, and writes the next assistant reply. It never sees `evals/`. A separate grader marks every expectation pass/fail with quoted evidence. For eval 22, the grader extracts the JSON block and runs `scripts/progress_tool.py validate` on it. Results and responses: `docs/eval-results/<date>/iteration-<n>/`.
 
-## Tool-call cases (29–34, 39–41)
+## Tool-call cases (29–34, 39–44)
 
 These cases require executable tool doubles and recorded calls, not just a reply saying which renderer the agent would choose. Expose the names and capabilities described in each environment. Keep the test runner and expectations outside the runner's readable skill snapshot.
 
@@ -68,10 +71,11 @@ These cases require executable tool doubles and recorded calls, not just a reply
 - In case 34, the first native call must return an explicit rendering error stating that no card appeared and no answer was collected. The MCP double then succeeds. Do not tell the runner about the planned failure before it occurs.
 - Case 39 has no tool double: the environment describes a Visualize-style skill, and the grader checks the created fragment file (workspace changes) and the `visualize{...}` line in the reply.
 - `host_widget.show_widget` (case 40) renders HTML/SVG inline with a global `sendPrompt(text)`; grade the recorded `widget_code` for the controls, the `sendPrompt` submit and the absence of a key. `host_question.request_user_input` (case 41) follows Codex's schema: 1–3 questions, 2–3 options each.
+- Case 42 grades the recorded `widget_code` of the section-review widget (three questions stepped inside, one summary send). Case 43 has no double: grade the created lesson JSON and HTML in the workspace. Case 44 has no tools at all.
 
 Grade actual call names, order, arguments and progress writes, together with the final reply. A separate grader must see the recorded evidence and cite it. These doubles test an agent's decisions with real tool calls; they do not establish that a client's built-in UI, MCP display or desktop click path works. Real-client submission checks remain separate.
 
-The suite now contains 41 cases. New cases need results before a behaviour change is declared validated; defining an expectation does not prove it passed. See the [2026-11-01 MCP validation report](../../../docs/mcp-hardening-validation.md) for actual tool-call evidence, original failures, targeted repairs and validation limits.
+The suite now contains 44 cases. New cases need results before a behaviour change is declared validated; defining an expectation does not prove it passed. See the [2026-11-01 MCP validation report](../../../docs/mcp-hardening-validation.md) for actual tool-call evidence, original failures, targeted repairs and validation limits.
 
 ## Trigger queries
 

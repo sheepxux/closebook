@@ -12,13 +12,22 @@
     "topic": { "type": "string", "minLength": 1 },
     "language": { "type": "string", "description": "BCP 47 tag. zh* shows a Chinese interface, anything else English." },
     "created": { "$ref": "progress.schema.json#/$defs/date" },
-    "mode": { "type": "string", "enum": ["learn", "review"], "description": "learn = teaching (if any) before questions; review = questions first, explanation only afterwards." },
+    "mode": { "type": "string", "enum": ["learn", "review", "exam"], "description": "learn = teaching (if any) before questions; review = questions first, explanation after each answer (training); exam = closed-book assessment: answers lock without feedback, everything is checked at hand-in, then a report (references/html-lesson.md)." },
+    "exam": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Exam mode settings (mode exam only).",
+      "properties": {
+        "time_limit_min": { "type": "integer", "minimum": 1, "maximum": 600, "description": "Optional countdown; the page hands in automatically when it ends." },
+        "scope": { "type": "string", "maxLength": 300, "description": "What the assessment covers, shown under the title (e.g. the dates and sections learned)." }
+      }
+    },
     "intro": { "type": "string" },
     "teach_pace": { "type": "string", "enum": ["step", "section"], "description": "Teach route only. step (default): one chunk is read, then its check. section: all chunks of a section's points are read together, then one check per point (the point's last chunk's check); a point missed twice drops to step. See references/new-learning.md section 3." },
     "sections": {
       "type": "array",
       "minItems": 1,
-      "description": "Optional grouping for teach_pace section: 2-4 related points per section, by knowledge point id, in teaching order. Without it, consecutive points with chunks are grouped automatically, up to 4 per section.",
+      "description": "Optional grouping of points into named sections by knowledge point id, in order. teach_pace section reads a section's chunks together (2-4 points; without it, consecutive points with chunks are grouped automatically, up to 4). Exam mode shows the section title in the report and exports it as each point's section.",
       "items": {
         "type": "object",
         "required": ["title", "points"],

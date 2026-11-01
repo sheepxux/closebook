@@ -125,6 +125,7 @@
           "type": "array",
           "items": { "$ref": "#/$defs/knowledge_type" }
         },
+        "section": { "x-tier": "extension", "type": "string", "maxLength": 80, "description": "Section or module id/title the point belongs to (learning path grouping; set by the coach or imported from a page export)." },
         "status": {
           "x-tier": "core",
           "type": "string",
@@ -263,7 +264,7 @@
         "duration_sec": { "x-tier": "extension", "type": "integer", "minimum": 0, "description": "Only when measured; never estimated." },
         "self_assessed": { "x-tier": "extension", "type": "boolean", "description": "Learner graded it (e.g. free text in a static HTML page)." },
         "coach_graded": { "x-tier": "extension", "type": "boolean", "description": "The coach graded it after the learner pasted the answer back (see grading.schema.json); `note` holds the feedback." },
-        "source": { "x-tier": "extension", "type": "string", "enum": ["chat", "file", "html"] },
+        "source": { "x-tier": "extension", "type": "string", "enum": ["chat", "file", "html", "widget"], "description": "Where the answer was given: chat text, a file tool, the HTML page, or a host widget / card." },
         "note": { "x-tier": "extension", "type": "string" }
       }
     },

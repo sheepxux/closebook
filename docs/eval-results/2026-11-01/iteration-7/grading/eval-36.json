@@ -1,0 +1,34 @@
+{
+ "eval_id": 36,
+ "round": "2026-11-01 round 7",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "Explains all three points of the section in this one reply, in order, each with a minimal actual code example before the general rule",
+   "passed": true,
+   "evidence": "Three numbered parts in one reply: 1) 用一行建立新列表 (loop then `squares = [n * n for n in nums]`), 2) 用 if 筛选 (`evens = [n for n in nums if n % 2 == 0]`), 3) 把嵌套循环写进去 (`pairs = [...]`), each with code before the rule"
+  },
+  {
+   "text": "Puts no check question between the points; the only question comes after the whole section",
+   "passed": true,
+   "evidence": "No question appears between the parts; the only question follows \"现在把上面的讲解移出视线，不回看，先做第一题\""
+  },
+  {
+   "text": "Keeps each point to 1-3 short chunks (about 80-200 words or 400 Chinese characters each), without history, caveat lists, a summary or a preview of later points",
+   "passed": true,
+   "evidence": "Each part is one or two short chunks: a loop, its one-line form and one or two sentences of rule; no history, no caveat list, no summary, no preview"
+  },
+  {
+   "text": "Says the explanation is now closed and asks exactly one check question, on point 1 (building a list), using a case the explanation didn't show, and does not answer it",
+   "passed": true,
+   "evidence": "\"现在把上面的讲解移出视线，不回看，先做第一题。这里只检查“建立新列表”\" then `result = [n + 3 for n in nums]` with nums = [2, 5, 7] (not shown in the explanation), asking for result and confidence 1-3; unanswered"
+  },
+  {
+   "text": "Does not announce a scored retest, a Leitner box or a review date for any point",
+   "passed": true,
+   "evidence": "No retest, box or review date is mentioned"
+  }
+ ],
+ "passed": 5,
+ "total": 5
+}

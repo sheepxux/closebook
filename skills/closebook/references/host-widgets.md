@@ -10,6 +10,8 @@ closebook ships no UI of its own that an agent must install. Many agent hosts al
 5. Recipes per interaction form
 6. Question tools with options
 7. Fallbacks and recording
+8. Section review widget: 3–5 questions in one widget
+9. Teaching with visuals
 
 ---
 
@@ -54,7 +56,7 @@ At the start of the session (`SKILL.md`, "Detect the environment once"):
 
 ## 4. Building a question widget (contract shared by every form)
 
-- **One question per widget**, and never two open questions in the chat at once. The widget *is* the question; do not repeat it as lettered options in text (the host may ask you not to narrate the widget at all: Visualize does).
+- **One question per widget**, and never two open questions in the chat at once. The widget *is* the question; do not repeat it as lettered options in text (the host may ask you not to narrate the widget at all: Visualize does). The one exception is the section review widget (section 8): it holds 3–5 questions but shows one at a time and sends one summary.
 - **The widget checks keyed answers itself.** For forms with a stored key (`mcq`, `flashcard`, `numeric`, `cloze_passage`, `order_steps`, `diagram_fill`, `timeline_fill`, `compare_table_fill`, `code_trace`, `terminal`, `graph` targets) the fragment carries the key and the feedback, exactly as the HTML practice page does: a **Check answer** (检查答案) button marks the answer right or wrong on the spot, shows the explanation for the chosen option or the worked steps, and reveals what was hidden (the flashcard back, the full diagram, the trace, the sliders). Until that click nothing is revealed and the options stay editable; after it they lock.
 - **Written answers are not graded in the widget.** `free_text`, Feynman explanations, free recall and contested reasoning have no key: the widget collects the text and sends it to the chat, and you judge it there (recipes below).
 - **Honesty about the key.** A key in the widget can be read in the page source. Closed-book means the learner does not look, as with the practice page; say so once if they ask, and never present the check as proof of retrieval. Grading is exact-match or tolerance-based: for numbers set a tolerance and accept listed equivalent forms; for orders list `alternatives`; for blanks accept listed variants. When equivalents cannot be listed, send the answer to the chat instead.
@@ -111,3 +113,43 @@ Use a host question tool only when **all** of these hold: it is listed in this t
 Renderer order (same as `interaction-fit.md`): explicit learner request → host widget facility → host question tool → closebook MCP card → HTML page when it clearly pays off → plain text. A missing or failed renderer moves to the next one with the **same question**; options are never dropped, open questions never become choices. The closebook MCP cards keep their own contract (`mcp-cards.md`): they return the raw answer and you grade it in chat.
 
 Record per knowledge point (`interaction-fit.md` section 6): `interaction_selected` (the form) and, on a forced change, `interaction_downgraded_from: {from, reason}` with a reason such as `"no host widget; MCP absent; text"`. Attempts may carry `interaction`, so `progress_tool.py interaction-stats` keeps working.
+
+## 8. Section review widget: 3–5 questions in one widget
+
+**When.** The learner has just finished a section of 2–4 related points on the `section` pace (`new-learning.md` section 3), or asks for a quick check on 3–5 points learned in one sitting, and the host has an inline widget facility. The task decides this, not the question count (`interaction-fit.md` section 3): a single point's check stays a single widget; a day's or several days' points go to the HTML assessment page (`html-lesson.md`, exam mode).
+
+**One widget, stepped inside.** Build one fragment that holds all the items (3–5, one per point, each on a case the explanation did not show) with their keys and explanations, and shows **one at a time**:
+
+1. Question *n* of *N*: stem, options or input, confidence pills, **Check answer**. Nothing of the key or explanation is in view before the click.
+2. After Check: right or wrong, the explanation for the chosen answer, the item locks (no second scoring).
+3. **Next** switches to the next item **inside the widget**: no message, no new widget, no second confirmation. Keep the answered items' answer, result and confidence in the widget's state.
+4. After the last item: a **summary** in the same widget: score (right / N), the wrong items with their point names, weak points (any point missed, and any confident miss first), and one **Finish** button.
+5. Finish sends **one** line and disables itself:
+
+   ```text
+   closebook section · <section_id> · <right>/<N> · <item_id> <answer> <result> c<n>; <item_id> <answer> <result> c<n>; …
+   ```
+
+   On Codex this is the only confirmation dialog of the whole section; on Claude Code there is none.
+
+**Stop early.** Mark each item with its point's importance. When a `core` item is answered wrong with confidence 3, show, next to Next, a button **Stop and explain this** (先讲这个); it sends the same summary line with ` · stopped_at <item_id>` for the items done so far. Otherwise the review runs to the end and the misconception is taught right after it.
+
+**Never:** a message per question; a new widget to simulate switching; a new chat message to simulate updating the widget; a visible key before Check; re-scoring an answered item; dropping a question to keep a fixed count when the learner is clearly lost.
+
+**What the agent does with the summary.** Record one attempt per item (`phase: "teach_check"` for a section's checks, `review` for a review batch; `source: "widget"`; confidence and result as sent; `interaction` as the form). Then teach the weakest point first with a *different* example, starting with any confident miss, before going on; the section's scored retests still come only after all of today's points are taught. Say in one line what the summary showed; do not repeat the questions.
+
+**Without a widget facility:** one check per reply as before (`new-learning.md` section 3), or the closebook MCP cards one at a time; never pretend a stepped widget exists.
+
+## 9. Teaching with visuals
+
+When the learner asked to **learn**, teaching comes before any question, and the host's widgets are for teaching as much as for checking. The words stay in the chat (concrete case first, then the rule: `new-learning.md` sections 4–5); a widget shows the **structure the words describe**:
+
+| The chunk explains | Visual in the chunk | Interaction inside it |
+|---|---|---|
+| A flow, pipeline, lifecycle, architecture (3+ parts) | SVG diagram with labelled boxes and arrows, drawn **after** the predict-first version with `?` boxes has been answered | none, or hover labels |
+| A procedure or a run of code | Step-through: one step or one line at a time, the state after it, a Next button inside the widget | Next, Back |
+| A mechanism where a quantity drives another (physics law, interest, supply and demand) | Explainer: one or two sliders, a readout, a small plot; the prediction question comes **first**, the sliders unlock after it | slider, readout |
+| Two or three things often confused | Comparison table, filled in; or the fill-first version as the check | none |
+| A taught example worth keeping | Lesson card: the explanation's example and one takeaway line, with a button "I've read it, ask me" that sends `closebook ready · <kp_id>` | one button |
+
+Rules: one visual per chunk at most, and only when the picture shows something a sentence cannot (order, flow, scale, change over a parameter). No walls of text inside a widget; no decoration; the visual never contains the answer of the check that follows. Reading or clicking through a visual is not mastery: the check still comes, on a case the visual did not show. Without a widget facility, the same chunk uses the text forms: numbered steps, ASCII arrows, a markdown table, 2–3 concrete parameter values.

@@ -407,8 +407,12 @@ def check_lesson(lesson: Any) -> List[Issue]:
             _check_item(kind, item, ipath, err, warn)
         if len(chunks) > 3:
             warn(base + ".teach.chunks", "more than 3 chunks; split the point into two points")
-        if chunks and lesson.get("mode") == "review":
+        if chunks and lesson.get("mode") in ("review", "exam"):
             warn(base + ".teach.chunks", "teaching chunks are shown only in learn mode")
+        if lesson.get("mode") == "exam" and kind in ("flashcard", "free_text"):
+            warn(base + ".interaction_type", "exam mode: %s is self-graded and shows its reference when answered; prefer a keyed form (mcq, numeric, cloze_passage, order_steps) or accept a self-assessed score" % kind)
+        if lesson.get("mode") == "exam" and kind == "plain_qa" and any(not it.get("answer") for it in kp["items"]):
+            warn(base + ".items", "exam mode: a plain_qa item without an answer key is self-graded")
         for c, chunk in enumerate(chunks):
             cpath = "%s.teach.chunks[%d]" % (base, c)
             text = [chunk["explain"], chunk.get("example", ""), chunk.get("analogy", ""), chunk.get("analogy_limit", "")]
@@ -431,11 +435,15 @@ def check_lesson(lesson: Any) -> List[Issue]:
     chunk_count = {kp["id"]: len((kp.get("teach") or {}).get("chunks") or []) for kp in lesson["knowledge_points"]}
     chunked_ids = [kp_id for kp_id, count in chunk_count.items() if count]
     sections = lesson.get("sections") or []
-    if sections and pace != "section":
-        warn("$.sections", "sections are used only with teach_pace section")
+    if sections and pace != "section" and lesson.get("mode") != "exam":
+        warn("$.sections", "sections are used only with teach_pace section (or in exam mode, for the report)")
+    if lesson.get("exam") and lesson.get("mode") != "exam":
+        warn("$.exam", "exam settings are used only with mode exam")
+    if lesson.get("mode") == "exam" and (lesson.get("free_recall") or lesson.get("plain_talk")):
+        warn("$.mode", "exam mode: free recall and Plain Talk tabs stay self-assessed and open during the exam")
     if pace == "section" and not chunked_ids:
         warn("$.teach_pace", "section pace needs points with teach.chunks; nothing to read as a section")
-    if pace == "section" and lesson.get("mode") == "review":
+    if pace == "section" and lesson.get("mode") in ("review", "exam"):
         warn("$.teach_pace", "teaching chunks are shown only in learn mode")
     placed = set()
     for s, sec in enumerate(sections):
@@ -445,7 +453,7 @@ def check_lesson(lesson: Any) -> List[Issue]:
                 err(spath, "unknown knowledge point id %s" % kp_id)
             elif kp_id in placed:
                 err(spath, "point %s appears in two sections" % kp_id)
-            elif not chunk_count[kp_id]:
+            elif not chunk_count[kp_id] and lesson.get("mode") != "exam":
                 warn(spath, "point %s has no teach.chunks, so the page has nothing to read for it in this section" % kp_id)
             placed.add(kp_id)
         total = sum(chunk_count.get(kp_id, 0) for kp_id in sec["points"])

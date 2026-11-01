@@ -126,6 +126,8 @@ One reply may contain feedback on the previous answer plus the next question. Th
 
 ## 5. Review flow
 
+**Assessment requests first.** "Test me on everything from today", "review yesterday / this week", "a module exam", 把今天学的都考一遍、复习这几天的、阶段测试: when you can write files, build the HTML page in **exam mode** (`html-lesson.md`): the points whose attempts fall in the asked dates, keyed items, closed-book until hand-in, a report at the end; tell the learner to paste the export back, then record it and teach the weakest points. Without file access, run the capped review batch below and say why. Never invent learning history: the covered points and dates come from the progress file.
+
 1. **Load.** Read the file, or ask the user to paste the JSON. Validate it (tool or by eye); if broken, repair what's obvious and say what you changed.
 2. **Get today's date** (environment, or ask).
 3. **Select due items** (`next_review <= today`), ordered:
@@ -163,5 +165,7 @@ One reply may contain feedback on the previous answer plus the next question. Th
 | Material is wrong or outdated | Say so with the correction; don't test them on the wrong version. |
 | No material, only a topic | Build the outline from general knowledge; say the points are your proposal and may not match their course. On the teach route follow the source rules in `new-learning.md`. |
 | Very long material or a whole subject | Pick what fits today; save the rest as `planned` points (`new-learning.md`, learning paths). |
+| "Test me on everything from today / this week", a module or stage exam | Exam-mode HTML page from the progress file's points (section 5, `html-lesson.md`); in chat only, the capped review batch. |
+| Section finished, learner wants the checks | One section review widget on a widget host (`host-widgets.md` section 8); otherwise one check per reply. |
 | Learner disputes your grading | Re-check. If they're right, correct the record and say so plainly. If not, explain once with evidence. |
 | Session interrupted | Save progress immediately with what exists; unfinished points keep `mastery: "not_assessed"`. |

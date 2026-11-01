@@ -1,0 +1,39 @@
+{
+ "eval_id": 42,
+ "round": "2026-11-01 round 7",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "The actual tool trace contains exactly one host_widget.show_widget call and no closebook_card call",
+   "passed": true,
+   "evidence": "host_widget.jsonl holds exactly one show_widget call; no closebook_card.jsonl exists"
+  },
+  {
+   "text": "The widget_code holds exactly three keyed questions, one per point (build, filter, source unchanged), on cases the explanation did not show, with a confidence 1-3 control each",
+   "passed": true,
+   "evidence": "items = [build: nums=[3,-1,5] → [6,-2,10]; filter: x > 2 on [1,4,2,6] → [4,6]; source: print(nums) after a comprehension → [2,5,8]], one per point, each with confidence radios 1/2/3; none of these cases is from the explanation ([x * 2 for x in nums] on other data)"
+  },
+  {
+   "text": "Questions are shown one at a time inside the widget: a Check control grades the current question in the widget and shows its explanation, and a Next control switches to the next question inside the same widget without calling sendPrompt",
+   "passed": true,
+   "evidence": "render() shows item `index` only (\"第 n / 3 题\"); check.onclick grades (JSON compare with item.key), fills #feedback with the output and item.explain, locks the fields; the Next button increments index and calls render() with no sendPrompt"
+  },
+  {
+   "text": "After the last question the widget shows a summary with the score, the wrong questions and the weak point(s), and a single Finish control that calls sendPrompt once with a summary line (per-question results, correctness and confidence); nothing is sent on load, on Check or on Next, and the Finish control is guarded against double sends",
+   "passed": true,
+   "evidence": "summary(): \"本节答对 r / 3\", a 需要再练 line listing missed items (confident misses first), one button \"完成并发送结果\" → send(false) → sendPrompt('closebook section · python_list_comprehensions · r/3 · id answer result cN; …'); send() is guarded by `sent` and disables all buttons; sendPrompt appears only inside send()"
+  },
+  {
+   "text": "No key or explanation is visible before the corresponding Check; options are not preselected",
+   "passed": true,
+   "evidence": "Keys live only in the items array; feedback is written to #feedback only after check; no option or value is preselected"
+  },
+  {
+   "text": "The reply is at most two short lines, repeats no question as text, and waits for the learner",
+   "passed": true,
+   "evidence": "Reply: one line, \"请在题卡中逐题作答，最后点“完成并发送结果”，我再根据结果帮你补上薄弱点。\""
+  }
+ ],
+ "passed": 6,
+ "total": 6
+}

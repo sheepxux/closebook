@@ -21,9 +21,11 @@ EXAMPLE_HTML = os.path.join(ROOT, "examples", "http-cache-lesson.html")
 SHOWCASE = os.path.join(ROOT, "tests", "fixtures", "showcase.lesson.json")
 SUBJECTS = os.path.join(ROOT, "skills", "closebook", "schemas", "examples", "lesson.subjects.json")
 NEW_LEARNER = os.path.join(ROOT, "skills", "closebook", "schemas", "examples", "lesson.new-learner.json")
+EXAM = os.path.join(ROOT, "skills", "closebook", "schemas", "examples", "lesson.exam.json")
 BUILT_EXAMPLES = [(EXAMPLE, EXAMPLE_HTML),
                   (SUBJECTS, os.path.join(ROOT, "examples", "subject-widgets-lesson.html")),
-                  (NEW_LEARNER, os.path.join(ROOT, "examples", "new-learner-lesson.html"))]
+                  (NEW_LEARNER, os.path.join(ROOT, "examples", "new-learner-lesson.html")),
+                  (EXAM, os.path.join(ROOT, "examples", "daily-assessment.html"))]
 
 
 def errors(lesson):
@@ -503,6 +505,42 @@ class SubjectWidgets(unittest.TestCase):
         kp = [k for k in self.lesson["knowledge_points"] if k["id"] == "kp-sine"][0]
         kp["knowledge_type"] = "factual"
         self.assertIn("graph doesn't fit factual", str(warnings(self.lesson)))
+
+
+class ExamMode(unittest.TestCase):
+    def exam(self):
+        return load_json(EXAM)
+
+    def test_exam_example_is_clean(self):
+        issues = build_lesson.check_lesson(self.exam())
+        self.assertEqual([i.message for i in issues], [])
+
+    def test_exam_warnings(self):
+        lesson = self.exam()
+        lesson["knowledge_points"][0]["interaction_type"] = "flashcard"
+        lesson["knowledge_points"][0]["items"] = [{"id": "fc", "front": "推导式的方括号里先写什么？", "back": "每次要放进新列表的值"}]
+        lesson["knowledge_points"][0]["teach"] = {"example": "x", "principle": "y"}
+        lesson["free_recall"] = {"prompt": "说说推导式", "reference_points": [{"kp_id": "kp-build", "text": "值在前"}]}
+        messages = [i.message for i in build_lesson.check_lesson(lesson) if i.severity == "warning"]
+        self.assertTrue(any("self-graded" in m for m in messages), messages)
+        self.assertTrue(any("free recall and Plain Talk" in m for m in messages), messages)
+        self.assertEqual(errors(lesson), [])
+
+    def test_exam_settings_need_exam_mode(self):
+        lesson = self.exam()
+        lesson["mode"] = "review"
+        messages = [i.message for i in build_lesson.check_lesson(lesson) if i.severity == "warning"]
+        self.assertTrue(any("exam settings are used only with mode exam" in m for m in messages), messages)
+        self.assertTrue(any("sections are used only" in m for m in messages), messages)
+
+    def test_exam_sections_without_pace_are_fine(self):
+        messages = [i.message for i in build_lesson.check_lesson(self.exam()) if "sections" in i.message]
+        self.assertEqual(messages, [])
+
+    def test_time_limit_is_validated(self):
+        lesson = self.exam()
+        lesson["exam"]["time_limit_min"] = 0
+        self.assertTrue(errors(lesson))
 
 
 if __name__ == "__main__":

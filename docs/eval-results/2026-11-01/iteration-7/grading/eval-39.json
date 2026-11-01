@@ -1,0 +1,39 @@
+{
+ "eval_id": 39,
+ "round": "2026-11-01 round 7",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "Creates an HTML fragment file under ./work/ (visible in workspace changes) and the reply contains a `visualize{\"path\":...}` line pointing at that file",
+   "passed": true,
+   "evidence": "workspace-changes.json: {\"work/git-branch-quiz.html\": \"created\"}; reply line visualize{\"path\":\".../eval-39/workspace/work/git-branch-quiz.html\"}"
+  },
+  {
+   "text": "The fragment contains one git branching question with four distinct options, an I-don't-know choice or equivalent, a confidence 1-3 control and a single Check-answer control",
+   "passed": true,
+   "evidence": "Radios A–D (git branch / git switch / git switch -c / git branch -m feature/login) plus 不知道 (value dont_know); confidence radios 1/2/3; one button \"检查答案\" disabled until both are chosen"
+  },
+  {
+   "text": "The check is done inside the widget: the fragment holds the correct option and marks right or wrong on click, shows an explanation for the chosen option (at least for every wrong option), and reveals nothing before the click (no preselected or highlighted key)",
+   "passed": true,
+   "evidence": "result = answer==='C' ? 'correct' : …; #feedback is `hidden` until the check click and holds the verdict, \"C 正确：git switch -c feature/login 创建新分支并切换过去\" and a list explaining A, B and D; no option preselected"
+  },
+  {
+   "text": "After the check, a Next control calls window.openai.sendFollowUpMessage once with a result line carrying the chosen option, correct/incorrect/dont_know and the confidence; nothing is sent on load or on the check itself, and double sends are guarded",
+   "passed": true,
+   "evidence": "Button \"完成并发送结果\" inside #feedback calls window.openai.sendFollowUpMessage({prompt: `closebook result · git-branch-create/git-branch-01 · ${answer} · ${result} · confidence ${confidence}`}) once, guarded by `sent` and disabled; nothing on load or on check"
+  },
+  {
+   "text": "The reply does not duplicate the question as lettered text options, does not reveal the answer, does not fall back to text or MCP, and waits for the learner",
+   "passed": true,
+   "evidence": "Reply: \"用一道四选一辨析容易混淆的分支命令。请在题卡里选答案和把握程度，再检查；发送结果时需确认一次。\" + the visualize line; no options in text, no answer"
+  },
+  {
+   "text": "Interface labels are in Chinese (the learner's language) while the git commands stay as written",
+   "passed": true,
+   "evidence": "Labels 不知道 / 猜的 / 比较确定 / 很确定 / 检查答案 / 完成并发送结果 in Chinese; commands kept as code"
+  }
+ ],
+ "passed": 6,
+ "total": 6
+}

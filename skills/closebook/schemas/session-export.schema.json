@@ -9,7 +9,7 @@
   "properties": {
     "format": { "const": "closebook-session-export" },
     "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+$" },
-    "source": { "type": "string", "enum": ["html", "chat"] },
+    "source": { "type": "string", "enum": ["html", "chat", "widget"] },
     "lesson_id": { "type": "string" },
     "topic": { "type": "string", "minLength": 1 },
     "language": { "type": "string" },
@@ -26,8 +26,24 @@
           "title": { "type": "string", "minLength": 1 },
           "importance": { "$ref": "progress.schema.json#/$defs/importance" },
           "knowledge_type": { "$ref": "progress.schema.json#/$defs/knowledge_type" },
-          "secondary_types": { "type": "array", "items": { "$ref": "progress.schema.json#/$defs/knowledge_type" } }
+          "secondary_types": { "type": "array", "items": { "$ref": "progress.schema.json#/$defs/knowledge_type" } },
+          "section": { "type": "string", "maxLength": 80, "description": "Section or module the point belongs to (from the lesson's sections)." }
         }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "submitted"],
+      "description": "Present when the page ran in exam mode: attempts are an assessment, not practice.",
+      "properties": {
+        "mode": { "type": "string", "enum": ["exam"] },
+        "submitted": { "type": "boolean" },
+        "time_limit_min": { "type": "integer", "minimum": 1 },
+        "scope": { "type": "string" },
+        "started_at": { "type": "string" },
+        "submitted_at": { "type": "string" },
+        "auto_submitted": { "type": "boolean" }
       }
     },
     "plain_talk_viewed_kp_ids": {
@@ -57,7 +73,7 @@
           "duration_sec": { "type": "integer", "minimum": 0 },
           "self_assessed": { "type": "boolean" },
           "coach_graded": { "type": "boolean" },
-          "source": { "type": "string", "enum": ["chat", "file", "html"] },
+          "source": { "type": "string", "enum": ["chat", "file", "html", "widget"] },
           "note": { "type": "string" }
         }
       }

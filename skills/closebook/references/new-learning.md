@@ -30,7 +30,7 @@ Why not just ask questions from the start: novices have nothing to retrieve, and
 A knowledge point is taught in **1–3 chunks**; a chunk is **one idea**. The loop below is the `step` pace: a check after every chunk. Section 3 describes the `section` pace, which keeps the chunks and moves the checks to the end of a section of points.
 
 1. **Optional guess first.** For a conceptual, procedural or judgment point, one quick "What do you think happens if …?" before the first chunk. A wrong guess is fine: an attempted answer before study improves what is learned from the study that follows (Richland, Kornell & Kao, 2009). Unscored (`phase: "diagnostic"`). Skip it when the learner has nothing to reason from, and for arbitrary facts.
-2. **Explain the chunk** (section 4 for its shape, section 5 for the rules).
+2. **Explain the chunk** (section 4 for its shape, section 5 for the rules). On a host with a widget facility, a chunk about a flow, a procedure or a mechanism carries a teaching visual (`host-widgets.md` section 9); the words stay in the chat.
 3. **Check.** One question on this chunk only, answered without scrolling back. It must make the learner *use* the idea (apply it to a slightly different case, predict, pick the non-example, do one step), not copy the sentence they just read. Right-answer checks take confidence 1–3 in the same reply. Record as `phase: "teach_check"`: answers given seconds after reading overstate learning, so checks never touch the box, mastery or error list.
 4. **Adapt.**
    - Right → next chunk. Right and confident on two checks in a row → compress: drop the remaining worked examples for this point and go on to the next point.
@@ -58,6 +58,8 @@ A check after every chunk suits a learner with nothing to build on. For a learne
 **Asking once.** On the teach route, when the progress file or state has no `settings.teach_pace`, add one line to the opening (`teaching-flow.md` section 1): "Pace: step by step (a short explanation, then a question; good from zero) or by section (2–4 points at once, then the questions; good with some background)?" Store the answer as `settings.teach_pace` and never ask again; later sessions read it. If the learner skips the question or says "start": `step` for "zero / never seen it", otherwise `section`; say which in one line. The practice route never asks.
 
 **Changing it.** The learner can switch at any time in one sentence ("slow down", "bigger chunks", 慢一点、一次多讲点、讲完一节再考). Update `settings.teach_pace`, log a `user_overrides` entry (`scope: "flow"`, `requested: "teach_pace: section"`), and apply it from the next chunk or section. On `step`, after "right, confident" on two checks in a row, you may offer `section` once per session, in one sentence inside the feedback; never again after a no.
+
+**Section checks in one widget.** On a host with an inline widget facility (`host-widgets.md` section 8), the section's checks are one **section review widget**: 3–5 questions, one per point, stepped inside the widget, each graded there with its explanation, and one summary line back when the learner finishes. Teach the weakest point first from the summary, then go on. Without a widget facility, ask them one per reply as above.
 
 **What the pace never changes.** Chunk shape and length (sections 4–5), the anti-spoiler rule, and the retests: every point's scored retest still comes only after all of today's points are taught, starting with the point taught longest ago (section 2, step 6). The pace decides how much is explained between checks, never whether a point is retested.
 
@@ -129,6 +131,8 @@ The check uses a matrix the chunk didn't show, and the answer format uses placeh
 ## 10. On the practice page
 
 In lesson data, a point's `teach.chunks` holds the chunks; each has `explain`, optional `example`, `code`, `worked` steps (`do` + `why`), `analogy` with `analogy_limit`, an optional `reteach` for a missed check, and a required `check` (an `mcq`, `plain_qa` with `accept`, `cloze_passage` or `numeric` item). The page shows one chunk and its check at a time, hides each worked step's *why* until the learner has thought about it, shows `reteach` after a miss, goes on to the next point's chunks, and unlocks the retest items only when every point with chunks is taught, starting at the first point. Rules: `html-lesson.md`. The page follows the pace through the lesson's `teach_pace` field (copy `settings.teach_pace`): on `section` it shows a section's chunks together, then asks one check per point (the last chunk's check), and a point missed twice drops to one chunk at a time.
+
+Assessments that cover a day's or several days' points use the page's **exam mode** (`html-lesson.md`): answers lock without feedback, everything is checked at hand-in, then a report.
 
 ## 11. Records
 

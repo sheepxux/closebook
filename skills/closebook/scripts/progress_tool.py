@@ -721,6 +721,8 @@ def import_session(progress: Optional[Dict[str, Any]], export: Dict[str, Any]) -
                         definition["knowledge_type"], definition.get("secondary_types"))
             progress["knowledge_points"].append(kp)
             index[kp["id"]] = kp
+        if definition.get("section"):
+            index[definition["id"]]["section"] = definition["section"]
     missing = sorted({a["kp_id"] for a in export["attempts"] if a["kp_id"] not in index})
     if missing:
         raise ToolError("export refers to unknown knowledge points: %s" % ", ".join(missing))

@@ -549,6 +549,47 @@
         "No option is marked, ordered or described as correct, and the reply does not reveal the answer",
         "The reply does not write the multiple-choice question as text, does not ask the learner to change settings, and waits for the tool result"
       ]
+    },
+    {
+      "id": 42,
+      "prompt": "[Environment: Claude Code desktop app. Today is 2026-11-01. The host exposes host_widget.show_widget: it renders the given HTML or SVG inline in the conversation, and a global sendPrompt(text) inside the widget sends text to the chat as the learner's next message. closebook_card.show_exercise is also configured. The learner chose the section pace. In this session you have just finished explaining a section of three points about Python list comprehensions: building a new list ([x * 2 for x in nums]), filtering with a trailing if, and the fact that the source list is unchanged. No check has been asked yet. 25 minutes remain.]\n\n好，这一节我读完了，开始检查吧。",
+      "expected_output": "Calls host_widget.show_widget once with a section-review widget holding three keyed questions (one per point) shown one at a time inside the widget: each has confidence 1-3 and a Check button that grades inside the widget and shows the explanation, then a Next button that switches to the next question inside the same widget; after the last question the widget shows a summary (score, wrong items, weak points) and one Finish button that calls sendPrompt once with a summary line. Nothing is sent per question. The reply is one short line and waits.",
+      "files": [],
+      "expectations": [
+        "The actual tool trace contains exactly one host_widget.show_widget call and no closebook_card call",
+        "The widget_code holds exactly three keyed questions, one per point (build, filter, source unchanged), on cases the explanation did not show, with a confidence 1-3 control each",
+        "Questions are shown one at a time inside the widget: a Check control grades the current question in the widget and shows its explanation, and a Next control switches to the next question inside the same widget without calling sendPrompt",
+        "After the last question the widget shows a summary with the score, the wrong questions and the weak point(s), and a single Finish control that calls sendPrompt once with a summary line (per-question results, correctness and confidence); nothing is sent on load, on Check or on Next, and the Finish control is guarded against double sends",
+        "No key or explanation is visible before the corresponding Check; options are not preselected",
+        "The reply is at most two short lines, repeats no question as text, and waits for the learner"
+      ]
+    },
+    {
+      "id": 43,
+      "prompt": "[Environment: Codex CLI in a repository; you can read and write files and run Python. Today is 2026-11-02. The progress file is attached; its topic has five knowledge points, kp1-kp5, all taught on 2026-11-01 (see attempts). No host widget facility, no closebook MCP.]\n\n帮我把昨天学的列表推导式全部考一遍，闭卷，做成考核页。",
+      "expected_output": "Builds an HTML assessment page: writes a lesson JSON with mode exam (optionally exam.time_limit_min and exam.scope naming 2026-11-01), the same topic and the kp ids from the progress file, keyed items for the taught points, sections if useful, then runs scripts/build_lesson.py to produce the HTML. Tells the learner in two or three sentences that it is closed-book (results after hand-in), how to open it and to paste the export back. Does not ask the questions in chat and does not reveal answers in the reply.",
+      "files": [
+        "evals/files/progress.teach-pace.json"
+      ],
+      "expectations": [
+        "Creates a lesson JSON with \"mode\": \"exam\" whose topic equals the progress file's topic and whose knowledge point ids come from the progress file (kp1-kp5 or the subset taught on 2026-11-01)",
+        "Builds the page with scripts/build_lesson.py (workspace changes show the generated .html, or the reply reports the builder's result); the build has no errors",
+        "Every item has a key the page can check (mcq, numeric, cloze_passage, order_steps, code_trace or plain_qa with answer); the reply does not state any answer",
+        "The reply tells the learner the page is closed-book (results and explanations only after hand-in) and asks them to paste the export back afterwards; it does not ask the exam questions in the chat",
+        "Does not invent learning history: the covered points and dates come from the attached progress file"
+      ]
+    },
+    {
+      "id": 44,
+      "prompt": "[Environment: plain chat web app. Today is 2026-11-01. No tools at all: no widget facility, no question tool, no MCP, no file access. The learner has just finished studying three points about HTTP caching (strong cache, conditional requests with ETag, Cache-Control directives) with you on the section pace and asks for the section check.]\n\n讲完了，这一节考考我吧。",
+      "expected_output": "Says in one line that this chat has no interactive cards, so the section check runs in text, one question per reply, answered like B 2 (option plus confidence). Asks the first check only, on a case the explanation did not show, without the answer.",
+      "files": [],
+      "expectations": [
+        "States in one line that no interactive card is available here and that the checks will be asked in text, one per reply, with an answer format such as `B 2`",
+        "Asks exactly one check question (the first of the section) on a case not shown in the explanation, with confidence 1-3 requested in the same reply",
+        "Does not list all three checks at once and does not reveal the answer or hint at it in the format example",
+        "Does not pretend a card was shown and does not ask the learner to install or configure anything"
+      ]
     }
   ]
 }

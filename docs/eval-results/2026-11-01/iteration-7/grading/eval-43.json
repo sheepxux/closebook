@@ -1,0 +1,34 @@
+{
+ "eval_id": 43,
+ "round": "2026-11-01 round 7",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "Creates a lesson JSON with \"mode\": \"exam\" whose topic equals the progress file's topic and whose knowledge point ids come from the progress file (kp1-kp5 or the subset taught on 2026-11-01)",
+   "passed": true,
+   "evidence": "lesson.json: \"mode\": \"exam\", \"topic\": \"Python 列表推导式\" (equals the progress file's topic), points kp1 建新列表 and kp2 条件过滤 with the progress file's ids; exam.scope names 2026-11-01 and says kp3–kp5 had no attempts that day"
+  },
+  {
+   "text": "Builds the page with scripts/build_lesson.py (workspace changes show the generated .html, or the reply reports the builder's result); the build has no errors",
+   "passed": true,
+   "evidence": "assessment.html (166 KB) exists next to lesson.json; `build_lesson.py --check lesson.json` → VALID, 0 warnings. Caveat: the files were saved to /private/tmp instead of the workspace; the reply says why (write permission) and gives the path"
+  },
+  {
+   "text": "Every item has a key the page can check (mcq, numeric, cloze_passage, order_steps, code_trace or plain_qa with answer); the reply does not state any answer",
+   "passed": true,
+   "evidence": "All four items are code_trace with Python code and a predicted output (keyed); the reply gives no outputs"
+  },
+  {
+   "text": "The reply tells the learner the page is closed-book (results and explanations only after hand-in) and asks them to paste the export back afterwards; it does not ask the exam questions in the chat",
+   "passed": true,
+   "evidence": "Reply: \"闭卷考核页…共 4 题，交卷后统一显示成绩与解析\" and \"完成后点击「交卷」，再将导出的进度贴回来\"; no question text in the chat"
+  },
+  {
+   "text": "Does not invent learning history: the covered points and dates come from the attached progress file",
+   "passed": true,
+   "evidence": "Reply: \"附件实际只记录了昨天学过 kp1、kp2；kp3–kp5 标为未学，因此本页暂未纳入\": matches the fixture (kp3–kp5 planned, no attempts)"
+  }
+ ],
+ "passed": 5,
+ "total": 5
+}

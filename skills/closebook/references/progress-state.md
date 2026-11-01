@@ -55,6 +55,8 @@ Compact rules: drop extension fields; drop core fields that are empty or default
 | Method / interaction decisions | extension fields (section 2) |
 | User overrides | the point's `*_override_by_user` and an entry in `user_overrides` |
 | Pace changed mid-session ("slow down", "bigger chunks") | `settings.teach_pace` and a `user_overrides` entry with `scope: "flow"` |
+| Section review widget summary comes back (`host-widgets.md` section 8) | One attempt per item from the summary line: `phase: "teach_check"` (section checks) or `"review"` (review batch), `source: "widget"`, `result`, `confidence`, `interaction`; teach checks change no schedule |
+| Exam page export comes back (`html-lesson.md`, exam mode) | `import-session` (or merge by hand): attempts `phase: "review"`, `source: "html"`; confident misses set `priority_flag`; each point gets `section` from the export; then `weak_points` from the report |
 | Session end | `weak_points` (with a specific note), `updated`, a `sessions` entry |
 
 Attempt ids: `<kp_id>-<n>`, continuing the numbering already in the file. They let merges recognise the same attempt in two copies.

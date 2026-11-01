@@ -87,6 +87,18 @@ Shared with the HTML lesson template and the progress schema.
 6. **Not covered by the matrix** → `plain_qa`.
 7. **User asks for an unfit form** (e.g. MCQ for a contested question): one sentence of risk and an alternative ("Options would make one view look 'correct'; a short written answer keeps the trade-off. Still want options?"). If they still choose it after that explanation, honor it and record `interaction_override_by_user`. A previous suggestion of a format does not establish that its trade-off was explained. In chat-only mode, include a short visible session note now (for example, "Recorded as your chosen format"), then proceed; carry it into the next progress export. Do not repeat a warning already given.
 
+### Which renderer for which learning task
+
+The **task** decides the renderer, not the number of questions. Within a task, the renderer order of section 4 still applies.
+
+| Learning task | First choice | Then |
+|---|---|---|
+| Teaching a new point | Explanation in the chat, plus a teaching visual when the point has structure (`host-widgets.md` section 9) | text forms of the same visual |
+| One check on one point (teach check, diagnostic, retest) | One question widget or a host question tool (`host-widgets.md` sections 4–6) | closebook MCP card → text |
+| A section just finished (3–5 points, section pace) | The section review widget: 3–5 questions stepped inside one widget, graded there, one summary back (`host-widgets.md` section 8) | one check per reply |
+| Today's points all together, one or several days' review, a module or stage exam | The HTML page in **exam mode** (`html-lesson.md`), when files can be written | a capped in-chat review batch (`teaching-flow.md` section 5) |
+| Free recall, Feynman, contested reasoning | The chat (a `free_text` widget when it helps) | — |
+
 ## 4. Platform levels and capability detection
 
 | Level | What it means | Examples of forms |

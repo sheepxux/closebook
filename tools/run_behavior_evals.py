@@ -74,7 +74,8 @@ def main():
             command += ['-c', 'model_reasoning_effort=' + json.dumps(args.reasoning)]
         tool_cases = {29: ['closebook_card', 'host_native'], 30: ['closebook_card', 'host_native'], 31: ['closebook_card', 'host_native'],
                       32: ['closebook_card', 'host_native'], 33: ['closebook_card', 'learning_progress'], 34: ['closebook_card', 'host_native'],
-                      39: [], 40: ['closebook_card', 'host_widget'], 41: ['host_question']}
+                      39: [], 40: ['closebook_card', 'host_widget'], 41: ['host_question'],
+                      42: ['closebook_card', 'host_widget'], 43: [], 44: []}
         servers = tool_cases.get(case['id'], [])
         for server in servers:
             prefix = 'mcp_servers.' + server

@@ -9,7 +9,7 @@ An agent skill for guided lessons, recall practice and spaced review.</p>
 
 closebook gives your AI assistant a teaching flow. Bring a topic, your notes or a progress file, and tell it what you want to learn.
 
-- **For new material**, it explains one small part, shows an example and checks your understanding. If you prefer, it explains a whole section of 2–4 points first and asks the checks afterwards. After all of today's points are taught, it tests them again with the notes closed.
+- **For new material**, it explains one small part, shows an example (with a diagram, step-through or explainer where the agent can draw one) and checks your understanding. If you prefer, it explains a whole section of 2–4 points first and then runs the checks as one card with 3–5 questions graded on the spot. After all of today's points are taught, it tests them again with the notes closed, and a day's or several days' points become a closed-book exam page.
 - **For practice and review**, it starts with a question, explains the gap in your answer and gives you a new question to check it.
 
 **On every agent platform, suitable built-in components, tools and plugins come first.** Optional MCP cards, HTML and text follow the same [renderer rules](skills/closebook/references/interaction-fit.md).
@@ -95,7 +95,7 @@ Code tracing, simulated terminals, graphs and parameter labs are currently avail
 
 *The screenshot shows the HTML practice page. MCP cards use a separate interface.*
 
-Ask the agent to make a practice page and it can generate a single HTML file that opens offline, with no API key or network requests. It supports teaching sections (one chunk at a time, or a whole section before its checks), questions, diagrams, recall cards and subject-specific exercises:
+Ask the agent to make a practice page and it can generate a single HTML file that opens offline, with no API key or network requests. It supports teaching sections (one chunk at a time, or a whole section before its checks), questions, diagrams, recall cards and subject-specific exercises. In **exam mode** it becomes a closed-book assessment: answers lock without feedback, a countdown is optional, and handing in produces a report with per-point results, weak points and every explanation:
 
 | Subject | Examples of exercises |
 |---|---|
@@ -107,7 +107,7 @@ The simulated terminal checks expected commands and shows prepared output; it do
 
 The page checks answer-key exercises automatically. Written answers and recall cards can be self-checked, or exported to chat for feedback. Paste the assistant's grading block back into the page to update its results. This is a manual round trip, so the page can stay offline.
 
-Download and open an example: [teach-first lesson](examples/new-learner-lesson.html), [HTTP caching practice](examples/http-cache-lesson.html) or [subject exercises](examples/subject-widgets-lesson.html). The [interaction guide](skills/closebook/references/interaction-fit.md) explains how forms are chosen and how they fall back to text.
+Download and open an example: [teach-first lesson](examples/new-learner-lesson.html), [HTTP caching practice](examples/http-cache-lesson.html), [subject exercises](examples/subject-widgets-lesson.html) or a [daily assessment in exam mode](examples/daily-assessment.html). The [interaction guide](skills/closebook/references/interaction-fit.md) explains how forms are chosen and how they fall back to text.
 
 ## Keep your progress
 

@@ -32,7 +32,7 @@ When browser access is unavailable or prohibited in the current environment, run
 
 Model behaviour evaluations and real-client clicks are separate from deterministic CI. Protocol/DOM tests do not prove correct renderer selection, learning-state updates or successful interaction in a desktop app.
 
-If you change `skills/closebook/assets/lesson-template.html`, rebuild the three example pages (a test compares them with the template):
+If you change `skills/closebook/assets/lesson-template.html`, rebuild the four example pages (a test compares them with the template):
 
 ```bash
 python3 skills/closebook/scripts/build_lesson.py skills/closebook/schemas/examples/lesson.http-cache.json --out examples/http-cache-lesson.html
@@ -46,6 +46,10 @@ python3 skills/closebook/scripts/build_lesson.py skills/closebook/schemas/exampl
 python3 skills/closebook/scripts/build_lesson.py skills/closebook/schemas/examples/lesson.new-learner.json --out examples/new-learner-lesson.html
 ```
 
+```bash
+python3 skills/closebook/scripts/build_lesson.py skills/closebook/schemas/examples/lesson.exam.json --out examples/daily-assessment.html
+```
+
 If you change a schema, update the examples in `skills/closebook/schemas/examples/` and keep `schema_version` handling backward compatible, or add a migration note in `references/progress-state.md`.
 
 ## Changing the skill's behaviour
@@ -55,7 +59,7 @@ Behaviour is tested with the evals in [`skills/closebook/evals`](skills/closeboo
 1. Find or add the eval for the behaviour you're changing. Each expectation should be checkable from a single reply.
 2. Run the eval **blind**: the runner gets only the skill folder, the prompt and the attached files, never the expectations. The grader gets the expectations and the reply, and must quote evidence for each pass.
 3. Save replies and grading under `docs/eval-results/<date>/iteration-<n>/` and report before/after numbers in the pull request.
-4. For renderer cases 29–34 and 39–41, record actual calls, arguments and created widget files using the tool doubles described in [`evals/README.md`](skills/closebook/evals/README.md). Check progress-writing calls too. A textual promise to use a tool is not a passing tool-selection test.
+4. For renderer cases 29–34 and 39–44, record actual calls, arguments and created widget files using the tool doubles described in [`evals/README.md`](skills/closebook/evals/README.md). Check progress-writing calls too. A textual promise to use a tool is not a passing tool-selection test.
 5. Prefer fixing the skill text over loosening an expectation. If the eval itself was wrong (e.g. the prompt didn't contain what the expectation assumed), fix the eval and say so explicitly.
 
 The repository provides an opt-in runner for an authenticated Codex CLI:

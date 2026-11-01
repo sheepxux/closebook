@@ -31,6 +31,7 @@ SHOWCASE = os.path.join(ROOT, "tests", "fixtures", "showcase.lesson.json")
 PROGRESS = os.path.join(SKILL, "schemas", "examples", "progress.full.json")
 SUBJECTS = os.path.join(SKILL, "schemas", "examples", "lesson.subjects.json")
 NEW_LEARNER = os.path.join(SKILL, "schemas", "examples", "lesson.new-learner.json")
+EXAM = os.path.join(SKILL, "schemas", "examples", "lesson.exam.json")
 
 
 def _build(lesson, directory, name):
@@ -803,6 +804,64 @@ class LessonPageE2E(unittest.TestCase):
         self.tab(page, "学习").click()
         page.locator("ol.stepper button").nth(1).click()
         self.assertNotIn("第 1/1 节", body(), "the section stays closed after a reload")
+
+    def test_exam_mode_locks_answers_until_hand_in(self):
+        url = _build(progress_tool.load_json(EXAM), self.tmp.name, "exam.html")
+        page = self.open(url)
+        body = lambda: page.locator("body").inner_text()  # noqa: E731
+        conf = lambda c: page.locator("label.chip", has_text=c).click()  # noqa: E731
+        self.assertEqual(self.progress(page), "已作答 0 / 6 题")
+        self.assertIn("考试模式", body())
+        self.assertIn("剩余", body(), "the time limit shows a countdown")
+        self.assertEqual(self.tab(page, "错题").count(), 0, "mistakes stay hidden during the exam")
+        self.assertEqual(self.tab(page, "考试").count(), 1)
+
+        # kp1: a wrong answer with high confidence, then a right one; neither is revealed
+        page.locator("label.option", has_text="words.upper()").click()
+        conf("3 · 很确定")
+        self.btn(page, "提交").click()
+        self.assertEqual(page.locator(".result").count(), 0, "no verdict before hand-in")
+        self.assertIn("已作答，交卷后显示结果", body())
+        self.assertIn("你的答案：D.", body())
+        self.assertNotIn("最前面写每次要放进新列表的值", body(), "explanations stay hidden")
+        self.assertEqual(self.btn(page, "再试一次").count(), 0, "no retries in an exam")
+        page.locator("label.option", has_text="[4, 8, 6]").first.click()
+        conf("2 · 比较确定")
+        self.btn(page, "提交").click()
+        self.assertEqual(page.locator("ol.stepper button").nth(0).get_attribute("data-status"), "answered")
+        self.assertEqual(self.progress(page), "已作答 2 / 6 题")
+
+        # hand in early: the confirm dialog is auto-accepted by the test harness
+        self.btn(page, "交卷").click()
+        self.assertIn("成绩", body())
+        self.assertIn("答对 1 / 6 题", body())
+        self.assertIn("4 题未作答", body())
+        self.assertIn("1 题高把握答错", body())
+        self.assertIn("薄弱知识点", body())
+        self.assertIn("写法", body(), "section titles appear in the report")
+        self.assertIn("最前面写每次要放进新列表的值", body(), "explanations appear after hand-in")
+        self.assertEqual(page.locator(".result").count(), 2)
+        self.assertEqual(self.btn(page, "交卷").count(), 0)
+        self.assertEqual(self.tab(page, "错题").count(), 1)
+        self.btn(page, "查看").first.click()
+
+        export = self.export_json(page)
+        self.assertEqual(progress_tool.validate_export(export), [])
+        self.assertEqual(export["assessment"]["mode"], "exam")
+        self.assertTrue(export["assessment"]["submitted"])
+        self.assertEqual([a["phase"] for a in export["attempts"]], ["review", "review"])
+        self.assertEqual([k.get("section") for k in export["knowledge_points"]], ["写法", "写法", "理解"])
+        progress = progress_tool.import_session(None, export)
+        self.assertEqual([i for i in progress_tool.validate_progress(progress) if i.severity == "error"], [])
+        kps = {kp["id"]: kp for kp in progress["knowledge_points"]}
+        self.assertEqual(kps["kp-build"]["section"], "写法")
+        self.assertTrue(kps["kp-build"]["priority_flag"], "a confident error is flagged for review")
+
+        # reload keeps the handed-in state
+        page.reload()
+        self.tab(page, "考试").click()
+        self.assertIn("成绩", body())
+        self.assertEqual(self.btn(page, "交卷").count(), 0)
 
     def test_works_when_storage_is_blocked(self):
         context = self.browser.new_context()
