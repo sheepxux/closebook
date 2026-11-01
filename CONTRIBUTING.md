@@ -26,7 +26,7 @@ Then run all deterministic checks from the repository root:
 python3 tools/check.py
 ```
 
-This runs the Python suite, packaging checks and MCP tests. The full command fails if tests are skipped, so a missing browser cannot silently look like a complete pass. GitHub Actions runs the same command on pushes and pull requests.
+This runs the Python suite, packaging checks (three ZIPs: standard, Gemini without `agents/`, ChatGPT without `assets/`) and MCP tests. The full command fails if tests are skipped, so a missing browser cannot silently look like a complete pass. GitHub Actions runs the same command on pushes and pull requests.
 
 When browser access is unavailable or prohibited in the current environment, run `python3 tools/check.py --skip-browser` and label the result as partial. Do not bypass a host's browser restrictions. For focused work, `npm --prefix mcp test` runs only MCP checks.
 
@@ -77,6 +77,7 @@ One run per eval is noisy. A pull request that changes `SKILL.md` should rerun a
 - On macOS, external drives create `._*` and `.DS_Store` files. They're ignored by git and excluded from the ZIPs, but don't commit them.
 - `evals/` stays in the repo but is never shipped in the ZIPs.
 - The Gemini ZIP leaves out `agents/openai.yaml` on purpose (see [`adapters/gemini.md`](adapters/gemini.md)).
+- The ChatGPT ZIP leaves out `assets/lesson-template.html` on purpose: ChatGPT's skill scan refuses any file containing JavaScript (see [`adapters/chatgpt-codex.md`](adapters/chatgpt-codex.md)).
 
 ## Pull requests
 

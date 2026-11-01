@@ -127,7 +127,7 @@ The teaching flow works in text. Installation and richer interfaces depend on th
 | Gemini CLI and Gemini Apps | [Gemini](adapters/gemini.md) |
 | Other agents or session-only instructions | [Generic setup](adapters/generic.md) |
 
-Prefer manual installation? Use the [standard skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook.zip) or [Gemini skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook-gemini.zip) with the relevant guide. These packages contain the skill, not the MCP server. Platform claims and their sources are recorded in the [platform verification log](docs/platform-verification.md).
+Prefer manual installation? Use the [standard skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook.zip), the [Gemini skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook-gemini.zip) or the [ChatGPT skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook-chatgpt.zip) (no offline page template: ChatGPT's skill scan refuses JavaScript) with the relevant guide. These packages contain the skill, not the MCP server. Platform claims and their sources are recorded in the [platform verification log](docs/platform-verification.md).
 
 ## What has been verified
 

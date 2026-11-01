@@ -49,7 +49,7 @@ Use Simplified Chinese for all progress updates, questions, and the final respon
 ### 2. 下载并安装完整的正式版本
 
 1. 查询本仓库的[最新正式 Release](https://github.com/sheepxux/closebook/releases/latest)（也可读取 `https://api.github.com/repos/sheepxux/closebook/releases/latest`），记录确定的 tag；若用户指定版本则使用指定版本。后续下载都固定到这个 tag，不能把 `main` 的开发代码当作正式版本。
-2. 从该 Release 下载 `closebook.zip`；Gemini Apps 使用 `closebook-gemini.zip`。公开下载无需向用户索取 API Key。若原生安装器从源码安装，指定同一 tag 下的 `skills/closebook` 子目录；不要只复制 `SKILL.md`。
+2. 从该 Release 下载 `closebook.zip`；Gemini Apps 使用 `closebook-gemini.zip`；ChatGPT（含 macOS 上的 Codex 桌面端 app）使用 `closebook-chatgpt.zip`，它不含离线练习页模板，因为 ChatGPT 的技能安全扫描拒绝任何含 JavaScript 的文件。公开下载无需向用户索取 API Key。若原生安装器从源码安装，指定同一 tag 下的 `skills/closebook` 子目录；不要只复制 `SKILL.md`。
 3. 在临时位置解压并检查。Release ZIP 的根目录已是 `closebook/`；最终应为 `<技能目录>/closebook/SKILL.md`，不是再套一层 `closebook/closebook/`。确认 `references/`、`schemas/`、`scripts/`、`assets/` 一起存在。若 Release 提供附件摘要，核对下载文件的摘要。
 4. 安装前检查同名技能和符号链接。版本、文件均相同就复用；能确认是未修改的旧官方版本时，在宿主扫描范围之外备份旧版再更新。存在本地修改、来源不明或链接目标不清楚时保留原件，说明具体冲突后再决定。不要改动学习进度或其他技能，也不要把备份留在会被当成第二份技能发现的位置。
 5. 使用宿主支持的安装、扫描或启用机制。当前会话不能刷新时，标记“文件已安装，待重新加载”，给出该宿主需要的新对话或重启步骤；不要中断用户正在进行的会话。

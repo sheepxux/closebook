@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """Package skills/closebook into upload-ready ZIPs (Python 3.8+, standard library only).
 
-    python3 tools/package_skill.py            # writes dist/closebook.zip and dist/closebook-gemini.zip
+    python3 tools/package_skill.py            # writes dist/closebook.zip, dist/closebook-gemini.zip and dist/closebook-chatgpt.zip
     python3 tools/package_skill.py --check    # list what would be packaged, write nothing
 
 The ZIP root is the `closebook/` folder (required by claude.ai). Development-only
 files (evals, caches, macOS metadata) are left out. The Gemini build also drops
-`agents/` because `.yaml` isn't on Gemini's documented list of upload types.
+`agents/` because `.yaml` isn't on Gemini's documented list of upload types. The
+ChatGPT build drops `assets/` (the HTML page template) because ChatGPT's skill
+scan refuses any file containing JavaScript (checked 2026-11-01); that package
+teaches in chat and with the host's widgets, without the offline practice page.
 Timestamps are fixed so the same sources always produce the same bytes.
 """
 from __future__ import annotations
@@ -76,7 +79,8 @@ def main(argv=None) -> int:
     parser.add_argument("--out", default=DIST, help="output directory (default: dist/)")
     args = parser.parse_args(argv)
     check_frontmatter()
-    builds = [("closebook.zip", collect()), ("closebook-gemini.zip", collect(skip_dirs={"agents"}))]
+    builds = [("closebook.zip", collect()), ("closebook-gemini.zip", collect(skip_dirs={"agents"})),
+              ("closebook-chatgpt.zip", collect(skip_dirs={"assets"}))]
     for filename, files in builds:
         if args.check:
             print("%s (%d files)" % (filename, len(files)))

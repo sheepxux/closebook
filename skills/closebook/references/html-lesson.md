@@ -10,7 +10,7 @@ A **closed-book assessment** of several learned points (today's points, one or s
 
 ## How to produce the page
 
-Pick the first route that works in this environment:
+Pick the first route that works in this environment. If `assets/lesson-template.html` is not present in this installation (the ChatGPT package ships without it, because that platform's skill scan refuses files that contain JavaScript), the page renderer is unavailable here: say so in one sentence and use the next renderer in `interaction-fit.md`; never retype the page from memory.
 
 1. **You can run Python:** write `lesson.json`, then
    `python3 scripts/build_lesson.py lesson.json --out <topic-slug>.html`
