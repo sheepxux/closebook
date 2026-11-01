@@ -20,7 +20,7 @@ Symlinks work too. Invoke with `$closebook` or `/skills`, or just ask to be quiz
 2. Plugins → Skills → Create → Upload. Uploads are scanned before use.
 3. Mention it with `@closebook`, or let ChatGPT pick it from the description.
 
-Standalone skills run in the ChatGPT desktop app; skills bundled in a **plugin** also work on web and mobile (verified). Availability on Free, Plus and Pro plans is **unverified** (not stated on the help page). Without skills, use the paste-in in [`generic.md`](generic.md).
+On macOS the Codex desktop app and the ChatGPT desktop app are the same bundle (`com.openai.codex`): skills are installed inside it (Customize → Skills, or by attaching the ZIP in a Skill Creator chat), not from `~/.agents/skills`, and its chat runs in a sandbox without access to the Mac's files. Uploads pass a safety scan; on 2026-11-01 the current ZIP was refused with `skill did not pass the safety scan` and no further detail (see `docs/platform-verification.md`). Standalone skills run in the ChatGPT desktop app; skills bundled in a **plugin** also work on web and mobile (verified). Availability on Free, Plus and Pro plans is **unverified** (not stated on the help page). Without skills, use the paste-in in [`generic.md`](generic.md).
 
 ## Compatibility notes
 
