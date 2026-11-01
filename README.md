@@ -95,7 +95,7 @@ Code tracing, simulated terminals, graphs and parameter labs are currently avail
 
 *The screenshot shows the HTML practice page. MCP cards use a separate interface.*
 
-Ask the agent to make a practice page and it can generate a single HTML file that opens offline, with no API key or network requests. It supports teaching sections, questions, diagrams, recall cards and subject-specific exercises:
+Ask the agent to make a practice page and it can generate a single HTML file that opens offline, with no API key or network requests. It supports teaching sections (one chunk at a time, or a whole section before its checks), questions, diagrams, recall cards and subject-specific exercises:
 
 | Subject | Examples of exercises |
 |---|---|

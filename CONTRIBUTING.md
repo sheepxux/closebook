@@ -32,10 +32,18 @@ When browser access is unavailable or prohibited in the current environment, run
 
 Model behaviour evaluations and real-client clicks are separate from deterministic CI. Protocol/DOM tests do not prove correct renderer selection, learning-state updates or successful interaction in a desktop app.
 
-If you change `skills/closebook/assets/lesson-template.html`, rebuild the example page (a test compares them):
+If you change `skills/closebook/assets/lesson-template.html`, rebuild the three example pages (a test compares them with the template):
 
 ```bash
 python3 skills/closebook/scripts/build_lesson.py skills/closebook/schemas/examples/lesson.http-cache.json --out examples/http-cache-lesson.html
+```
+
+```bash
+python3 skills/closebook/scripts/build_lesson.py skills/closebook/schemas/examples/lesson.subjects.json --out examples/subject-widgets-lesson.html
+```
+
+```bash
+python3 skills/closebook/scripts/build_lesson.py skills/closebook/schemas/examples/lesson.new-learner.json --out examples/new-learner-lesson.html
 ```
 
 If you change a schema, update the examples in `skills/closebook/schemas/examples/` and keep `schema_version` handling backward compatible, or add a migration note in `references/progress-state.md`.

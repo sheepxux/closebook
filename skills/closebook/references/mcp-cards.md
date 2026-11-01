@@ -20,7 +20,7 @@ Pass `locale` on lessons, exercises and legacy quizzes: `zh-CN` for Simplified C
 
 ## Teach before testing new material
 
-`show_lesson` takes `id`, `title`, `explanation`, optional `example: {title, text}`, and optional `takeaway`. Keep one short chunk per card, shaped by knowledge type. Use the example to demonstrate reasoning, not just list facts. On `continue`, ask a fresh guided check; on `explain_again`, use a different example or smaller step. Do not record either click as mastery. Ordinary chat explanation is equally valid when a card offers no benefit.
+`show_lesson` takes `id`, `title`, `explanation`, optional `example: {title, text}`, and optional `takeaway`. Keep one short chunk per card, shaped by knowledge type. Use the example to demonstrate reasoning, not just list facts. On the `step` pace, `continue` leads to a fresh guided check; on `explain_again`, use a different example or smaller step. On the `section` pace (`new-learning.md` section 3), `continue` opens the next chunk's card instead, and the checks follow the whole section, one per point and one per reply. Do not record either click as mastery. Ordinary chat explanation is equally valid when a card offers no benefit.
 
 ## Exercise types
 
