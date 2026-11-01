@@ -1,6 +1,6 @@
 interface:
   display_name: "closebook"
   short_description: "Make knowledge stick with the most efficient methods"
-  default_prompt: "Use $closebook to quiz me on these notes until they stick."
+  default_prompt: "Use $closebook to teach me [topic]; I have [minutes] minutes and [no background / some background]."
 policy:
   allow_implicit_invocation: true

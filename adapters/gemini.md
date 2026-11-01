@@ -39,4 +39,4 @@ Use the agent's own components first ([host widgets](../skills/closebook/referen
 
 ## Quick check after installing
 
-"考考我：光合作用的光反应和暗反应" or "Quiz me on these notes". Expected: an outline with knowledge types and one question about time and familiarity, with no summary of the material.
+"考考我：［主题］" (or "Quiz me on [topic]") with a topic of your own, or "Quiz me on these notes" with notes attached. Expected: an outline with knowledge types and one question about time and familiarity, with no summary of the material.

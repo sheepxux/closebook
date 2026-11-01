@@ -42,4 +42,4 @@ Use the agent's own components first ([host widgets](../skills/closebook/referen
 
 ## Quick check after installing
 
-Say: "考考我：HTTP 缓存里的 no-cache 和 no-store" (or "Quiz me on…"). Expected: an outline of 3–5 points with types, plus one question about time and familiarity, and no summary of the material.
+Say: "考考我：［主题］" (or "Quiz me on [topic]"), with a topic of your own. Expected: an outline of 3–5 points with types, plus one question about time and familiarity, and no summary of the material.

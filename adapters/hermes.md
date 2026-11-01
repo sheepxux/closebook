@@ -28,7 +28,7 @@ Hermes 提供 `hermes skills install <identifier-or-url>`，GitHub 子目录标�
 
 在同一 profile 中使用 `hermes skills list` 或宿主的 `skills_list()`，确认能找到 `closebook`；再用 `skill_view("closebook")` 确认正文能读取。手动复制的技能不要用仅筛选 Hub 安装项的 `--source hub` 来验证。
 
-安装后可使用 `/closebook` 或自然语言请求，例如“用 closebook 帮我学 Python 列表推导式”。这些是 Hermes 文档支持的调用方式，尚未作为本项目的实测结果。
+安装后可使用 `/closebook` 或自然语言请求，例如“用 closebook 帮我学［主题］，我有［多少］分钟”。这些是 Hermes 文档支持的调用方式，尚未作为本项目的实测结果。
 
 最新技能文档说明对话中的技能变化会在下一条消息通知，`/reload-skills` 刷新斜杠命令；较早的使用指南仍描述新会话的方式。以当前版本的实际发现结果为准，未加载时给用户相应重载步骤，不要自动 `/reset` 清空聊天。
 

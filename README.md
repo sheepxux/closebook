@@ -42,15 +42,19 @@ The agent needs a supported installation mechanism and permission to use it. Som
 
 ## Start learning
 
-After installation, send a request like one of these. You can use your own language.
+After installation, fill in the brackets and send. You can use your own language.
 
 | What you want | What to send |
 |---|---|
-| Start from zero | "Use closebook to teach me Python list comprehensions. I'm a complete beginner and have 20 minutes." |
-| Review notes | "Use closebook to quiz me on these notes. Focus on anything I get wrong." |
-| Get a simpler explanation | "Explain slope and intercept in everyday language, with an example, then let me try." |
-| Continue later | "Here is my closebook progress file. Review what's due today." |
-| Practise offline | "Make an offline practice page for the present perfect, with explanations before the exercises." |
+| Start from zero | "Use closebook to teach me [topic]. I'm a complete beginner and have [minutes] minutes." |
+| Learn something you half know | "Use closebook to help me learn [topic]. I've studied it but it's shaky; I have [minutes] minutes." |
+| Review notes | "Use closebook to quiz me on these notes. Focus on anything I get wrong." (attach or paste the notes) |
+| Get a simpler explanation | "Explain [concept] in everyday language, with an example, then let me try." |
+| Continue later | "Here is my closebook progress file. Review what's due today." (attach the file) |
+| Test a whole day | "Use closebook to test me on everything I learned today, closed-book, as an exam page." |
+| Practise offline | "Make an offline practice page for [topic], with explanations before the exercises." |
+
+Filled in, the first one reads: "Use closebook to teach me the present perfect. I'm a complete beginner and have 20 minutes."
 
 Your stated background takes priority: saying "quiz me" while explaining that you have never studied the topic still calls for teaching first. For a large subject, closebook proposes a path in prerequisite order and saves the unfinished points for later.
 
