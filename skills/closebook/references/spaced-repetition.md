@@ -18,7 +18,7 @@ Box `0` means "not scheduled yet" (new or only diagnosed); `next_review` is then
 | `phase` | Updates the schedule? |
 |---|---|
 | `diagnostic` | **No.** Diagnosis is low-stakes by design. |
-| `teach_check` | **No.** Answered seconds after reading the explanation, so it overstates learning. |
+| `teach_check` | **No.** Answered seconds after reading the explanation, so it overstates learning. A point with only checks (taught, not yet retested) stays in box 0 but is due the next day, so its retest isn't lost. |
 | `verify_known` | Yes, special rule below |
 | `retest`, `review`, `synthesis`, `plain_talk_recall`, `project` | Yes |
 

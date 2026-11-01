@@ -1,0 +1,32 @@
+{
+  "eval_id": 27,
+  "expectations": [
+    {
+      "text": "Confirms the answer is right, briefly",
+      "passed": true,
+      "evidence": "\"对。你把 w.upper() 放在最前面，for w in words 放在后面\"."
+    },
+    {
+      "text": "Does not give a scored closed-book retest on point 1 in this reply, and does not announce a box or review date for it",
+      "passed": true,
+      "evidence": "\"它的闭卷复测要等今天几点都讲完再做，现在先往下学\"; no box or date."
+    },
+    {
+      "text": "Teaches the first chunk of point 2 (filtering with if): one idea, concrete example before the rule",
+      "passed": true,
+      "evidence": "Loop over [1..6] keeping evens, then the comprehension, then the rule \"[要放的东西 for 变量 in 列表 if 条件]\"."
+    },
+    {
+      "text": "Ends with exactly one check question on point 2 using a case the chunk didn't show, and does not answer it",
+      "passed": true,
+      "evidence": "scores = [55, 80, 92, 40], keep >= 60; placeholder format \"[...] 2\"."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "New eval for teaching every point before any retest. The code block's indentation was lost in the reply as returned (the if and append lines are flush); a real reply should keep it."
+}

@@ -242,7 +242,7 @@
           "x-tier": "core",
           "type": "string",
           "enum": ["diagnostic", "teach_check", "verify_known", "retest", "review", "synthesis", "plain_talk_recall", "project"],
-          "description": "diagnostic and teach_check (the check after a teaching chunk) never affect scheduling."
+          "description": "diagnostic and teach_check (the check after a teaching chunk) never change the box or mastery. A point with teach_check attempts but no scored attempt is due the day after its last check."
         },
         "result": { "x-tier": "core", "$ref": "#/$defs/result" },
         "hint_level": { "x-tier": "core", "type": "integer", "minimum": 0, "maximum": 3, "description": "0 none, 1 keyword, 2 structure, 3 answer shown. Default 0." },

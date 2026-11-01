@@ -687,6 +687,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       kpStatus: { todo: 'not started', inprog: 'in progress', done: 'all correct', mixed: 'done, with mistakes' },
       teachTitle: 'Quick explanation', example: 'Example', principle: 'Principle', nextStep: 'Next step',
       startQuestions: 'Close the explanation and answer from memory', showTeach: 'Show the explanation again',
+      teachNext: 'Go on to the next point', allTaught: 'All points taught: close the explanations and start the questions',
+      teachWait: 'This point is taught. The questions come once every point is taught, so you answer from memory rather than from what you just read.',
       chunkOf: 'Part {n} of {total}', readDone: 'Done reading: hide it and check me', checkTitle: 'Quick check',
       checkNote: 'Checks don\'t count toward your review schedule; they show whether this part landed.',
       chunkHidden: 'explanation hidden', workedTitle: 'Worked example', whyStep: 'Why this step? Think first, then open',
@@ -766,6 +768,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       kpStatus: { todo: '未开始', inprog: '进行中', done: '全对', mixed: '已完成，有错' },
       teachTitle: '最小讲解', example: '例子', principle: '原理', nextStep: '下一步',
       startQuestions: '合上讲解，凭记忆作答', showTeach: '再看一遍讲解',
+      teachNext: '继续讲下一个点', allTaught: '全部讲完了，合上讲解开始做题',
+      teachWait: '这个点讲完了。所有点都讲完后再统一做题，那时靠的是记忆，不是刚读过的印象。',
       chunkOf: '第 {n}/{total} 段', readDone: '读完了，合上讲解做一题', checkTitle: '小检查',
       checkNote: '小检查不计入复习安排，只看这一段讲明白没有。',
       chunkHidden: '讲解已合上', workedTitle: '例题拆解', whyStep: '为什么要这一步？先想一想再展开',
@@ -2133,8 +2137,13 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     var teach = kp.teach;
     var tstate = state.teach[kp.id] || (state.teach[kp.id] = { step: 0, closed: false });
     var review = data.mode === 'review';
-    if (teach && teach.chunks && teach.chunks.length && !review && !tstate.closed) {
+    if (chunked(kp) && !tstate.closed) {
       renderChunks(panel, kp, teach.chunks, tstate);
+      return;
+    }
+    if (chunked(kp) && untaught().length) {
+      panel.appendChild(h('section', { class: 'card' }, h('p', null, T.teachWait), h('div', { class: 'row' },
+        h('button', { type: 'button', class: 'btn', 'data-focus': '1', onclick: function () { state.kp = untaught()[0]; render(true); } }, T.teachNext))));
       return;
     }
     if (teach && !review && !tstate.closed) {
@@ -2180,6 +2189,18 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     return box;
   }
 
+  function chunked(k) {
+    return data.mode !== 'review' && !!(k.teach && k.teach.chunks && k.teach.chunks.length);
+  }
+
+  function untaught() {
+    var out = [];
+    data.knowledge_points.forEach(function (k, i) {
+      if (chunked(k) && !(state.teach[k.id] && state.teach[k.id].closed)) out.push(i);
+    });
+    return out;
+  }
+
   function renderChunks(panel, kp, chunks, tstate) {
     var n = Math.min(tstate.chunk || 0, chunks.length - 1), chunk = chunks[n];
     if (!tstate.checking) {
@@ -2208,11 +2229,16 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
         : chunkBody(chunk, n + 1, chunks.length));
     }
     var last = n >= chunks.length - 1;
+    var others = untaught().filter(function (i) { return data.knowledge_points[i] !== kp; });
     after.appendChild(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', onclick: function () {
-      if (last) tstate.closed = true;
-      else { tstate.chunk = n + 1; tstate.checking = false; }
+      if (last) {
+        tstate.closed = true;
+        var left = untaught();
+        if (left.length) state.kp = left[0];
+        else data.knowledge_points.some(function (k, i) { return chunked(k) && ((state.kp = i), true); });
+      } else { tstate.chunk = n + 1; tstate.checking = false; }
       save(); render(true);
-    } }, last ? T.startQuestions : T.nextChunk)));
+    } }, !last ? T.nextChunk : others.length ? T.teachNext : T.allTaught)));
     panel.appendChild(after);
   }
 

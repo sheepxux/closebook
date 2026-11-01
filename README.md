@@ -67,7 +67,7 @@ Starting from zero, the order flips: teach first, then test, one small part at a
 > **closebook:** Then I'll explain one small piece and check it straight away. Take A = [[2, 0], [0, 3]]. It turns (1, 0) into (2, 0): same direction, twice as long. It turns (1, 1) into (2, 3): the direction changes. A nonzero vector whose direction A doesn't change, only stretches or shrinks, is an **eigenvector** of A, and the stretch factor is its **eigenvalue**: A·v = λ·v.
 > Without scrolling up: for B = [[3, 1], [0, 2]], is (1, 0) an eigenvector of B? If so, with which eigenvalue? Add your confidence 1–3.
 
-A right answer moves on to the next part; a wrong one gets a different example and a new check. These checks don't count toward your review schedule; once a point is taught, the explanation closes and the real retest follows. Ask to learn a whole subject and it first lays out a path in prerequisite order, teaches what fits today and keeps the rest for later sessions.
+A right answer moves on to the next part; a wrong one gets a different example and a new check. These checks don't count toward your review schedule. Once all of today's points are taught, the explanations close and the real retests follow, starting with the point taught first, so you answer from memory rather than from what you just read. Ask to learn a whole subject and it first lays out a path in prerequisite order, teaches what fits today and keeps the rest for later sessions.
 
 At the end you get a short synthesis (explain the topic in your own words, or list what you remember), a review list with real dates such as `2026-11-01: point 1 (high-confidence error first)`, and your progress, either as a file or as a compact JSON block to paste back next time.
 
@@ -158,7 +158,7 @@ skills/closebook/        the skill (this folder is what gets installed)
   scripts/               progress_tool.py, build_lesson.py (Python 3.8+, stdlib only)
   assets/                lesson-template.html
   agents/openai.yaml     Codex display metadata
-  evals/                 26 behaviour evals (not shipped in the ZIPs)
+  evals/                 28 behaviour evals (not shipped in the ZIPs)
 adapters/                per-platform install and capability notes
 docs/                    design decisions, platform verification log, validation report, eval results
 examples/                built practice pages

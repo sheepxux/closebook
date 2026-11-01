@@ -1,0 +1,37 @@
+{
+  "eval_id": 25,
+  "expectations": [
+    {
+      "text": "States that the answer is wrong and why, showing or describing B·(1, 0) = (3, 0) = 3·(1, 0), so (1, 0) is an eigenvector with eigenvalue 3",
+      "passed": true,
+      "evidence": "Row-by-row computation ending \"B·(1, 0) = (3, 0) = 3·(1, 0)\"."
+    },
+    {
+      "text": "Addresses the misconception that only diagonal matrices have eigenvectors",
+      "passed": true,
+      "evidence": "\"不是对角矩阵也可以有特征向量\"."
+    },
+    {
+      "text": "Re-explains with a different example or angle instead of repeating the first chunk's wording",
+      "passed": true,
+      "evidence": "New angle: how to compute B·v, plus a contrast vector (0, 1) that is not an eigenvector."
+    },
+    {
+      "text": "Ends with exactly one new check question on a case not shown before, and does not answer it",
+      "passed": true,
+      "evidence": "D = [[4, 1], [2, 3]], v = (1, 1); D·v = (5, 5) = 5·v."
+    },
+    {
+      "text": "Does not treat this check as a scored retest (no box or schedule change announced, no high-confidence-error flag) and does not move on to the next point yet",
+      "passed": true,
+      "evidence": "No schedule talk; stays on the chunk."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "Regression check after the change to teach all points before the retests."
+}

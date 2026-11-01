@@ -34,6 +34,8 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 24 | teach route · whole subject | Learning path in prerequisite order; today's share marked; no mega-lecture |
 | 25 | teach route · missed check | Specific correction, a different angle, one new check; not scored |
 | 26 | routing · "quiz me" on unseen material | Explains first, says why in one line |
+| 27 | teach route · point taught | Goes on to the next point; no retest yet |
+| 28 | teach route · all points taught | Explanations closed; first retest on the point taught longest ago |
 
 ## Running
 

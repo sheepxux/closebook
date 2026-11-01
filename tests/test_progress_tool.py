@@ -199,12 +199,21 @@ class SchedulingTest(unittest.TestCase):
         self.assertNotIn("priority_flag", kp)
         self.assertEqual(kp["errors"], [])
 
-    def test_teach_check_never_schedules(self):
+    def test_teach_check_is_unscored(self):
         p = blank()
         kp = rec(p, "2026-10-27", phase="teach_check", result="incorrect", confidence=3, error_type="misconception")
-        self.assertEqual((kp["leitner_box"], kp["next_review"], kp["mastery"]), (0, None, "not_assessed"))
+        self.assertEqual((kp["leitner_box"], kp["mastery"]), (0, "not_assessed"))
         self.assertNotIn("priority_flag", kp)
         self.assertEqual(kp["errors"], [])
+
+    def test_taught_point_without_retest_is_due_next_day(self):
+        p = blank()
+        kp = rec(p, "2026-10-27T09:00", phase="teach_check")
+        self.assertEqual((kp["leitner_box"], kp["next_review"]), (0, "2026-10-28"))
+        self.assertEqual([r["kp_id"] for r in pt.due_items(p, dt.date(2026, 10, 28))], [kp["id"]])
+        self.assertFalse([i for i in pt.validate_progress(p) if "box 0" in i.message])
+        kp = rec(p, "2026-10-27T09:30", phase="retest")
+        self.assertEqual((kp["leitner_box"], kp["next_review"]), (1, "2026-10-28"))
 
     def test_planned_point_is_never_due_until_taught(self):
         p = blank()

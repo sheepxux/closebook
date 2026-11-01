@@ -321,8 +321,12 @@ def replay_kp(kp: Dict[str, Any], intervals: List[int], exam_date: Optional[dt.d
     if not any(outcome_of(a) for a in ordered):
         if not ordered:
             return
-        # Only diagnostics and teaching checks: nothing scheduled yet.
-        kp.update({"leitner_box": 0, "next_review": None, "mastery": "not_assessed"})
+        # Only diagnostics and teaching checks: no box yet. A point that was
+        # taught but not retested comes back the next day for its retest.
+        taught = [parse_date(a["at"]) for a in ordered if a["phase"] == "teach_check"]
+        retest_day = max(taught) + dt.timedelta(days=1) if taught else None
+        kp.update({"leitner_box": 0, "next_review": retest_day.isoformat() if retest_day else None,
+                   "mastery": "not_assessed"})
         kp.pop("last_reviewed", None)
         kp.pop("priority_flag", None)
         if kp.get("status") in ("skipped_known", "planned"):
@@ -479,7 +483,7 @@ def _semantic_issues(progress: Dict[str, Any]) -> List[Issue]:
         box, nxt = kp["leitner_box"], kp["next_review"]
         if box > 0 and nxt is None:
             out.append(Issue("error", base, "leitner_box %d needs a next_review date" % box, "semantic"))
-        if box == 0 and nxt is not None:
+        if box == 0 and nxt is not None and not any(a.get("phase") == "teach_check" for a in kp["attempts"]):
             out.append(Issue("warning", base, "box 0 (unscheduled) but next_review is set", "semantic"))
         if kp.get("status") == "skipped_known" and box == 0:
             out.append(Issue("warning", base, "skipped_known but never scheduled", "semantic"))

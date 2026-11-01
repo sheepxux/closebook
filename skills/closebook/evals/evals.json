@@ -358,6 +358,31 @@
         "Gives one short teaching chunk (one idea, a concrete code example before the rule) and then exactly one check question, without answering it",
         "Keeps scope to the 15 minutes: covers one point or plans at most two, without a long lecture"
       ]
+    },
+    {
+      "id": 27,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01. Earlier in this chat: the learner (zero background, 30 minutes) asked to learn Python list comprehensions. Your outline for today: 1) building a new list in one line, [n * n for n in nums]; 2) filtering with if, [n for n in nums if n % 2 == 0]; 3) nested loops in a comprehension. Point 1 had two chunks. Chunk 1 (the for-loop with append) and its check went fine. Chunk 2 showed that [n * n for n in nums] does the same as the loop, with the steps explained. Its check: rewrite `result = []; for w in words: result.append(w.upper())` as a comprehension.]\n\n[w.upper() for w in words]  信心 3",
+      "expected_output": "Confirms the check briefly and moves on to teaching point 2 (filtering): one chunk and one check. It does not run the scored closed-book retest for point 1 yet; retests come after all of today's points are taught.",
+      "files": [],
+      "expectations": [
+        "Confirms the answer is right, briefly",
+        "Does not give a scored closed-book retest on point 1 in this reply, and does not announce a box or review date for it",
+        "Teaches the first chunk of point 2 (filtering with if): one idea, concrete example before the rule",
+        "Ends with exactly one check question on point 2 using a case the chunk didn't show, and does not answer it"
+      ]
+    },
+    {
+      "id": 28,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01. Earlier in this chat: the learner (zero background, 30 minutes) asked to learn Python list comprehensions. Today's three points were taught in order, each in chunks with checks: 1) building a new list in one line, [n * n for n in nums]; 2) filtering with if; 3) nested loops in a comprehension. No retest has been given yet. Your last check, on point 3: what does [(a, b) for a in [1, 2] for b in 'xy'] produce?]\n\n[(1, 'x'), (1, 'y'), (2, 'x'), (2, 'y')]  信心 2",
+      "expected_output": "Confirms the check, says the explanations are now closed and the closed-book retests start, then asks one scored retest question on point 1 (the point taught longest ago), new and not answerable by scrolling to a shown example, with confidence 1-3.",
+      "files": [],
+      "expectations": [
+        "Confirms the answer to the point-3 check is right",
+        "Says that teaching is done and the closed-book retests start now (answer from memory, don't scroll back)",
+        "Asks exactly one retest question, and it tests point 1 (building a list with a comprehension), not point 3",
+        "The retest question uses a new case rather than repeating a check already given, asks for confidence 1-3, and is not answered in the reply",
+        "Does not re-teach any point before the retest"
+      ]
     }
   ]
 }

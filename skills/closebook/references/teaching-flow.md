@@ -66,7 +66,7 @@ The learner's intent picks the route; what they say about prior knowledge overri
 
 **A — practice (has met the material).** Go straight to the diagnostic question for point 1, then the loop in section 3.
 
-**B — teach, then test (new to the learner).** For each point: chunks with checks (`new-learning.md`), then the closed-book retest and judging of section 3, steps 3–4. The diagnostic is replaced by the chunk checks; a starting-point question is used only when it's unclear what the learner already knows.
+**B — teach, then test (new to the learner).** Each of today's points in turn: chunks with checks (`new-learning.md`). Once all are taught: the closed-book retests and judging of section 3, steps 3–4, starting with the point taught longest ago. The diagnostic is replaced by the chunk checks; a starting-point question is used only when it's unclear what the learner already knows.
 
 Mixed familiarity ("I know 1 and 2, never saw 3"): A for 1–2, B for 3. A point taught on route B in one session is reviewed like any other point afterwards: reviews always test first.
 

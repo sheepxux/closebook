@@ -1,0 +1,37 @@
+{
+  "eval_id": 28,
+  "expectations": [
+    {
+      "text": "Confirms the answer to the point-3 check is right",
+      "passed": true,
+      "evidence": "\"对，信心可以再高一点\" plus why the order is outer-first."
+    },
+    {
+      "text": "Says that teaching is done and the closed-book retests start now (answer from memory, don't scroll back)",
+      "passed": true,
+      "evidence": "\"三个点都讲完了。接下来是闭卷重测 … 请别往上翻\"."
+    },
+    {
+      "text": "Asks exactly one retest question, and it tests point 1 (building a list with a comprehension), not point 3",
+      "passed": true,
+      "evidence": "\"先从最早讲的第 1 点开始\": prices = [3, 5, 8], each plus 10."
+    },
+    {
+      "text": "The retest question uses a new case rather than repeating a check already given, asks for confidence 1-3, and is not answered in the reply",
+      "passed": true,
+      "evidence": "New data and transformation; \"代码 + 信心 1–3\"; no answer shown."
+    },
+    {
+      "text": "Does not re-teach any point before the retest",
+      "passed": true,
+      "evidence": "No explanation between the feedback and the retest."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "New eval: the retest round opens with the point taught longest ago."
+}

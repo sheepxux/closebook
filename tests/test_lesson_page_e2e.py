@@ -6,6 +6,7 @@ Skipped unless Playwright and its Chromium are installed:
 from __future__ import annotations
 
 import copy
+import datetime as dt
 import json
 import os
 import sys
@@ -697,20 +698,25 @@ class LessonPageE2E(unittest.TestCase):
         self.btn(page, "提交").click()
         self.assertIn("正确", page.locator(".result").inner_text())
         self.assertNotIn("换个讲法", body())
-        self.btn(page, "合上讲解，凭记忆作答").click()
-        self.assertNotIn("先建一个空列表", body())
-        self.assertIn("prices = [5, 12, 8]", body(), "the retest item follows the teaching")
+        self.btn(page, "继续讲下一个点").click()
         self.assertEqual(self.progress(page), "已作答 0 / 2 题", "checks are not retest items")
 
-        # point 2: analogy with its limit, numeric check, then the scored MCQ
-        page.locator("ol.stepper button").nth(1).click()
+        # point 2 is taught before any retest; point 1 waits
         self.assertIn("这个类比哪里不成立", body())
+        page.locator("ol.stepper button").nth(0).click()
+        self.assertIn("所有点都讲完后再统一做题", body())
+        self.assertNotIn("prices = [5, 12, 8]", body(), "retests wait until every point is taught")
+        self.btn(page, "继续讲下一个点").click()
         self.btn(page, "读完了，合上讲解做一题").click()
         page.get_by_placeholder("数字或算式，如 0.75、3/4、2*pi").fill("2")
         conf("2 · 比较确定")
         self.btn(page, "提交").click()
         self.assertIn("正确", page.locator(".result").inner_text())
-        self.btn(page, "合上讲解，凭记忆作答").click()
+        self.btn(page, "全部讲完了，合上讲解开始做题").click()
+        self.assertNotIn("这个类比哪里不成立", body())
+        self.assertIn("prices = [5, 12, 8]", body(), "questions start at the first point, the longest since its teaching")
+
+        page.locator("ol.stepper button").nth(1).click()
         page.locator("label.option").first.click()
         conf("2 · 比较确定")
         self.btn(page, "提交").click()
@@ -726,8 +732,9 @@ class LessonPageE2E(unittest.TestCase):
         progress = progress_tool.import_session(None, export)
         self.assertEqual([i for i in progress_tool.validate_progress(progress) if i.severity == "error"], [])
         kps = {kp["id"]: kp for kp in progress["knowledge_points"]}
-        self.assertEqual((kps["kp-build"]["leitner_box"], kps["kp-build"]["next_review"]), (0, None),
-                         "checks alone schedule nothing")
+        taught = progress_tool.parse_date(kps["kp-build"]["attempts"][-1]["at"])
+        self.assertEqual((kps["kp-build"]["leitner_box"], kps["kp-build"]["next_review"]),
+                         (0, (taught + dt.timedelta(days=1)).isoformat()), "taught but not retested: retest tomorrow")
         self.assertEqual(kps["kp-filter"]["leitner_box"], 1)
 
         # reload keeps the teaching position

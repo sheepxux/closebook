@@ -32,11 +32,14 @@ A knowledge point is taught in **1–3 chunks**; a chunk is **one idea**.
 2. **Explain the chunk** (section 3 for its shape, section 4 for the rules).
 3. **Check.** One question on this chunk only, answered without scrolling back. It must make the learner *use* the idea (apply it to a slightly different case, predict, pick the non-example, do one step), not copy the sentence they just read. Right-answer checks take confidence 1–3 in the same reply. Record as `phase: "teach_check"`: answers given seconds after reading overstate learning, so checks never touch the box, mastery or error list.
 4. **Adapt.**
-   - Right → next chunk. Right and confident on two checks in a row → compress: drop the remaining worked examples for this point and go to the retest.
+   - Right → next chunk. Right and confident on two checks in a row → compress: drop the remaining worked examples for this point and go on to the next point.
    - Wrong or "don't know" → say what's missing in one sentence, re-explain with a **different** example or angle (never the same words again), then a new check.
    - Wrong twice → smaller step: split the idea, or go back to the prerequisite. Still stuck → note the gap as a weak point, move on, and come back to it after the next point.
-   - The learner says "I already know this" → one check; right → skip to the retest.
-5. **Retest.** After the last chunk, the closed-book retest of `teaching-flow.md` section 3, steps 3–4: a new question on the whole point, scored, with confidence, error types and scheduling. This is the first scored answer for the point.
+   - The learner says "I already know this" → one check; right → go on to the next point (it still gets its retest in step 6).
+5. **Next point.** After a point's last chunk, teach the next of today's points the same way. Don't retest yet.
+6. **Retests, after all of today's points are taught.** Say that the explanations are now closed, then run the closed-book retests of `teaching-flow.md` section 3, steps 3–4: a new question on each whole point, scored, with confidence, error types and scheduling. Start with the point taught longest ago; when a point has more than one retest question, don't put them back to back. This is ordering for delay, not the interleaving method (`methods/05-interleaving.md` stays off in first-time learning). This is the first scored answer for each point.
+
+Why retests wait: an answer given right after the explanation mostly shows what is still in working memory. Answering after other material has come in between takes more effort and shows better what was retained, the same reason reviews are spaced (`methods/02-spaced-repetition.md`). The checks inside each point catch misunderstandings early, so later points aren't built on a wrong model. With a single point today (15 minutes), its retest follows its last chunk.
 
 ## 3. Chunk shape by knowledge type
 
@@ -79,15 +82,15 @@ Teaching from general knowledge is allowed, with honesty:
 
 | Time | New points | Notes |
 |---|---|---|
-| 15 min | 1 | 1–2 chunks with checks, one retest |
-| 30 min | 2–3 | Retest each; short free recall at the end |
-| 60 min | 3–4 | Retests; Feynman or free recall synthesis; suggest a break at ~30 min |
+| 15 min | 1 | 1–2 chunks with checks, then its retest |
+| 30 min | 2–3 | Teach all, then one retest each; short free recall at the end |
+| 60 min | 3–4 | Teach all, then the retests; Feynman or free recall synthesis; suggest a break at ~30 min, ideally between teaching and the retests |
 
 Then synthesis, the review list with absolute dates, and saving progress, as in `teaching-flow.md` section 4. The first review comes the next day: teaching once is not learning it.
 
 ## 8. In the chat
 
-One reply = feedback on the last answer (if any) + **one** chunk + its check question. Then stop. Never two chunks in one reply, never all points at once.
+One reply = feedback on the last answer (if any) + **one** chunk + its check question. Then stop. Never two chunks in one reply, never all points at once. After the last point's last check, the next reply gives feedback, says the explanations are closed now, and asks the first retest question.
 
 Example (zh, zero background, eigenvectors, first chunk):
 
@@ -103,12 +106,12 @@ The check uses a matrix the chunk didn't show, and the answer format uses placeh
 
 ## 9. On the practice page
 
-In lesson data, a point's `teach.chunks` holds the chunks; each has `explain`, optional `example`, `code`, `worked` steps (`do` + `why`), `analogy` with `analogy_limit`, an optional `reteach` for a missed check, and a required `check` (an `mcq`, `plain_qa` with `accept`, `cloze_passage` or `numeric` item). The page shows one chunk and its check at a time, hides each worked step's *why* until the learner has thought about it, shows `reteach` after a miss, and closes the explanation before the retest items. Rules: `html-lesson.md`.
+In lesson data, a point's `teach.chunks` holds the chunks; each has `explain`, optional `example`, `code`, `worked` steps (`do` + `why`), `analogy` with `analogy_limit`, an optional `reteach` for a missed check, and a required `check` (an `mcq`, `plain_qa` with `accept`, `cloze_passage` or `numeric` item). The page shows one chunk and its check at a time, hides each worked step's *why* until the learner has thought about it, shows `reteach` after a miss, goes on to the next point's chunks, and unlocks the retest items only when every point with chunks is taught, starting at the first point. Rules: `html-lesson.md`.
 
 ## 10. Records
 
 - Starting-point questions and guesses: `phase: "diagnostic"`.
-- Checks: `phase: "teach_check"`; they never change the box, mastery or error list.
+- Checks: `phase: "teach_check"`; they never change the box, mastery or error list. A point that was taught but not yet retested (the session ended early) is due the next day, so the next session opens with its retest; `progress_tool.py` sets this.
 - Retests: `phase: "retest"`, as usual.
 - Session: `entry_path: "B"`.
 - Points saved for later: `status: "planned"`.
