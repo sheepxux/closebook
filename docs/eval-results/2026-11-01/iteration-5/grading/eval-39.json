@@ -1,0 +1,39 @@
+{
+ "eval_id": 39,
+ "round": "2026-11-01 round 5",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "Creates an HTML fragment file under ./work/ (visible in workspace changes) and the reply contains a `visualize{\"path\":...}` line pointing at that file",
+   "passed": true,
+   "evidence": "workspace-changes.json: {\"work/git-branch-quiz.html\": \"created\"}; reply contains visualize{\"path\":\".../eval-39/workspace/work/git-branch-quiz.html\"}"
+  },
+  {
+   "text": "The fragment contains one git branching question with four distinct options, a confidence 1-3 control and a single submit control",
+   "passed": true,
+   "evidence": "Fragment: one stem (create feature/login from the current commit and switch to it) with radios A git branch feature/login, B git switch feature/login, C git switch -c feature/login, D git branch -m feature/login, plus 不知道; confidence radios 1/2/3; one submit button"
+  },
+  {
+   "text": "The submit calls window.openai.sendFollowUpMessage and its prompt carries the chosen option and the confidence; nothing is sent on load and the submit is guarded against double sends",
+   "passed": true,
+   "evidence": "Submit handler calls window.openai.sendFollowUpMessage({prompt: 'closebook answer · git-branch-create/q1 · ' + answer + ' · confidence ' + confidence, ...}); guarded by `let sent = false; ... if (sent) return; sent = true; submit.disabled = true`; nothing runs on load"
+  },
+  {
+   "text": "The fragment contains no answer key: no correct flag, no preselected option, no solution text; the reply does not reveal the answer either",
+   "passed": true,
+   "evidence": "No correct attribute, checked option or solution text in the fragment; the reply names no command"
+  },
+  {
+   "text": "The reply does not duplicate the question as lettered text options, does not fall back to text or MCP, and waits for the learner",
+   "passed": true,
+   "evidence": "Reply is two lines (an intro sentence and the visualize reference); no lettered options, no MCP, ends waiting"
+  },
+  {
+   "text": "Interface labels are in Chinese (the learner's language) while the git commands stay as written",
+   "passed": true,
+   "evidence": "Labels 把握程度 / 猜的 / 有点把握 / 很确定 / 提交答案 / 不知道 in Chinese; commands kept as code (git switch -c feature/login)"
+  }
+ ],
+ "passed": 6,
+ "total": 6
+}

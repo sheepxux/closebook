@@ -510,6 +510,45 @@
         "Says that after the review it will teach the next planned point(s) (kp3 nested loops, then kp4) as a section, or otherwise shows it will follow the stored section pace",
         "Asks only one question in this reply and does not answer it"
       ]
+    },
+    {
+      "id": 39,
+      "prompt": "[Environment: Codex desktop app. Today is 2026-11-01. A `visualize` skill is available: you write an HTML fragment (no <html> or <body>) to a file under ./work/ and put `visualize{\"path\":\"<absolute path>\"}` on its own line in your reply; the app renders the fragment inline in the conversation. Inside the fragment, `window.openai.sendFollowUpMessage({prompt, title})` sends `prompt` to the chat as the learner's next message after a confirmation dialog. request_user_input is not available in this mode. No closebook MCP server is configured. The learner has studied git branching and has 15 minutes. No question is open.]\n\n用 closebook 考我一道 git 分支命令的四选一，带把握程度。直接开始。",
+      "expected_output": "Writes one HTML fragment under ./work/ holding the four-option git question, a confidence 1-3 control and one submit that calls window.openai.sendFollowUpMessage with the chosen option and confidence; puts the visualize{...} reference line in the reply; keeps every key, correct flag and solution out of the fragment; does not repeat the options as text; waits for the learner.",
+      "files": [],
+      "expectations": [
+        "Creates an HTML fragment file under ./work/ (visible in workspace changes) and the reply contains a `visualize{\"path\":...}` line pointing at that file",
+        "The fragment contains one git branching question with four distinct options, a confidence 1-3 control and a single submit control",
+        "The submit calls window.openai.sendFollowUpMessage and its prompt carries the chosen option and the confidence; nothing is sent on load and the submit is guarded against double sends",
+        "The fragment contains no answer key: no correct flag, no preselected option, no solution text; the reply does not reveal the answer either",
+        "The reply does not duplicate the question as lettered text options, does not fall back to text or MCP, and waits for the learner",
+        "Interface labels are in Chinese (the learner's language) while the git commands stay as written"
+      ]
+    },
+    {
+      "id": 40,
+      "prompt": "[Environment: Claude Code desktop app. Today is 2026-11-01. The host exposes host_widget.show_widget: it renders the given HTML or SVG inline in the conversation, and a global sendPrompt(text) inside the widget sends text to the chat as the learner's next message. closebook_card.show_exercise (mcq, free_text, numeric) is also configured. Both tools work. The learner has studied kinematics and has 15 minutes. No question is open.]\n\nUse closebook to give me one numeric question on free fall (take g = 9.8 m/s²). I want to type the number myself. Start now.",
+      "expected_output": "Calls host_widget.show_widget once with a numeric free-fall question (value or expression input, unit, confidence 1-3, one submit that calls sendPrompt with the typed answer); does not call closebook_card; no expected value or worked solution in the widget; waits.",
+      "files": [],
+      "expectations": [
+        "The actual tool trace contains exactly one host_widget.show_widget call and no closebook_card call",
+        "The widget_code holds one free-fall question answerable with a number, an input for the value or expression, a unit (field or fixed label), a confidence 1-3 control and a single submit",
+        "The submit calls sendPrompt with the typed value, its unit and the confidence; nothing is sent on load and the submit is guarded against double sends",
+        "The widget contains no solution, expected value or worked steps, and the reply does not state the answer",
+        "Waits for the learner's answer without judging an imagined one"
+      ]
+    },
+    {
+      "id": 41,
+      "prompt": "[Environment: Codex desktop app in Plan mode. Today is 2026-11-01. The only interactive tool is host_question.request_user_input: it shows one to three short questions, each with 2-3 options, and the client adds a free-form Other; its host rules allow optional questions whose answer improves the work and forbid permission requests. No visualize skill, no closebook MCP and no file access. The learner has studied the English present perfect and has 15 minutes. No question is open.]\n\n用 closebook 给我一道现在完成时的三选一检查，要带把握程度。直接开始。",
+      "expected_output": "Calls host_question.request_user_input once: question 1 is the present-perfect item with three distinct options (English sentences kept, Chinese header and labels), question 2 asks confidence 1-3; no option is marked or hinted as correct; the reply neither repeats the options as text nor reveals the answer; waits for the tool result.",
+      "files": [],
+      "expectations": [
+        "The actual tool trace contains exactly one host_question.request_user_input call",
+        "The call's first question is the present-perfect item with three distinct options whose English sentences are kept as written, with Chinese header and labels, and the second question asks confidence 1-3; no option carries a (Recommended) suffix or a description that hints at the answer",
+        "No option is marked, ordered or described as correct, and the reply does not reveal the answer",
+        "The reply does not write the multiple-choice question as text, does not ask the learner to change settings, and waits for the tool result"
+      ]
     }
   ]
 }

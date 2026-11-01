@@ -2,7 +2,7 @@
 
 Every platform claim used by closebook, with how it was checked. **Verified** = read on an official documentation or help page on the date given. **Unverified** = reported by a model about itself, by user testing, or not found in official docs; treat as a hypothesis.
 
-Verification date for this round: **2026-10-31**. Pages change; re-check before each release.
+Verification date for this round: **2026-10-31**; host-widget rows added **2026-11-01**. Pages change; re-check before each release.
 
 ## Shared format
 
@@ -27,6 +27,8 @@ Verification date for this round: **2026-10-31**. Pages change; re-check before 
 | Artifacts can be single-page websites or small interactive tools, opened beside the chat; available on Free, Pro, Max, Ultra, Team, Enterprise and in Claude Code; viewable and editable on iOS/Android | Verified 2026-10-31 | [What are artifacts and how do I use them?](https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them) |
 | An artifact can be created from a file produced by a skill script (rather than typed out by the model) | **Unverified**: not described on the help page | — |
 | `localStorage` and file downloads work inside an HTML artifact | **Unverified**; the template degrades to copy/paste export if they don't | — |
+| The Claude Code desktop app lists a `show_widget` tool that renders HTML/SVG inline, with a global `sendPrompt(text)` that sends a message to the chat as the user, and a `read_me` guidance tool | Seen in a Claude Code desktop session on 2026-11-01 (tool list); not on a public help page, so **unverified** for other clients | — |
+| Claude Code's `AskUserQuestion` tool is reserved by its description for decisions the user must make | Seen 2026-11-01 (tool description) | — |
 
 ## ChatGPT and Codex (OpenAI)
 
@@ -42,6 +44,9 @@ Verification date for this round: **2026-10-31**. Pages change; re-check before 
 | Codex shortens descriptions when many skills are installed, so trigger words should be front-loaded | Verified 2026-10-31 | [Build skills](https://learn.chatgpt.com/docs/build-skills.md) |
 | Optional `agents/openai.yaml` for UI metadata and invocation policy | Verified 2026-10-31 | [Build skills](https://learn.chatgpt.com/docs/build-skills.md) |
 | ChatGPT renders native clickable options / quiz cards (Level 1) | **Unverified**: user testing reports varied rendering | — |
+| Visualizations: interactive charts, maps, diagrams and explainers rendered inside a ChatGPT conversation via `@Visualize`; Codex CLI and the IDE extension do not render them | Verified 2026-11-01 | [Visualizations](https://learn.chatgpt.com/docs/visualizations) |
+| The Codex desktop app bundles a `visualize` plugin (marketplace `openai-bundled`, version 1.0.66 on 2026-11-01). Its skill writes an HTML fragment, references it with `visualize{"path": …}` in the reply, and offers `window.openai.sendFollowUpMessage({prompt, title})` (sends a chat message after a confirmation dialog) and `window.openai.setWidgetState` | Verified 2026-11-01 from the installed plugin files (`~/.codex/plugins/cache/openai-bundled/visualize/1.0.66/`); no public page found | local `plugin.json` and `skills/visualize/SKILL.md` |
+| Codex `request_user_input`: 1–3 questions with 2–3 options each, "Other" added by the client; available in Plan mode by default, in Default mode only with `features.default_mode_request_user_input` (shown as "under development" by `codex features list`, Codex CLI 0.153.4) | Verified 2026-11-01 in the openai/codex source and the local CLI | [request_user_input spec](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/handlers/request_user_input_spec.rs), [default-mode template](https://github.com/openai/codex/blob/main/codex-rs/collaboration-mode-templates/templates/default.md) |
 | ChatGPT code blocks offer **Preview** for HTML pages (sandboxed; outside resources may need permission) | Verified 2026-10-31 | [Working with writing blocks and code blocks](https://help.openai.com/en/articles/20001246-working-with-writing-blocks-and-code-blocks-in-chatgpt) |
 | Canvas is no longer available in GPT-5.5 Instant / Thinking; writing and code moved into chat blocks; legacy models keep canvas for a limited time | Verified 2026-10-31 | [ChatGPT release notes](https://help.openai.com/en/articles/6825453-chatgpt-release-notes) |
 

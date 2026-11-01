@@ -1,0 +1,105 @@
+# Host widgets: the agent's own interactive components
+
+closebook ships no UI of its own that an agent must install. Many agent hosts already have one: a way to render an interactive widget inside the conversation and send the learner's click or typed answer back to the chat. Those come **first** in the renderer order (`interaction-fit.md` section 4), before the optional closebook MCP, the HTML page and plain text. This file says how to recognise them, how to build a closebook question with them, and what never to do.
+
+## Contents
+1. What counts as a host widget
+2. Known hosts and their signals
+3. Detection and the one-line notice
+4. Building a question widget (contract shared by every form)
+5. Recipes per interaction form
+6. Question tools with options
+7. Fallbacks and recording
+
+---
+
+## 1. What counts as a host widget
+
+**The test** (all three must hold; a product name, a plugin listing or "it can draw buttons" proves none of them):
+
+1. It shows the **real question**: the full stem, every option, every blank, in the learner's language.
+2. The learner **answers inside it**: a click, a typed value, an order, a filled blank.
+3. The **actual answer comes back to you**: as a new learner message, a tool result, or a stored state you can read. Rendering alone is not an answer, and a confirmation that the widget was displayed is not an answer either.
+
+Two families pass this test:
+
+| Family | How it works | Examples |
+|---|---|---|
+| **Inline widget facility** | You write HTML or SVG, the host renders it inline, and a callback sends a message to the chat as the learner | Codex app and ChatGPT: Visualize (`visualize{"path": …}` + `window.openai.sendFollowUpMessage`); Claude Code app: `show_widget` + `sendPrompt(text)` |
+| **Question tool with options** | A built-in tool shows 2–4 options (plus a free "Other") and returns the choice | Codex `request_user_input` (Plan mode by default); Claude Code `AskUserQuestion` (see section 6 for its limits) |
+
+A tool that only collects **approvals or permissions** is never a quiz. A tool whose own rules forbid quizzes stays off limits even if it could draw the options.
+
+## 2. Known hosts and their signals
+
+Facts checked on 2026-11-01; see `docs/platform-verification.md` for sources. Hosts change: trust what is actually listed in the session over this table.
+
+| Host | Signal that it exists | How a question goes out | How the answer comes back | Limits |
+|---|---|---|---|---|
+| **Codex desktop app** | A `visualize` skill or plugin is listed (`$visualize`) | Read that skill first and follow it: write an HTML **fragment** (no `<html>`/`<body>`) to a writable task directory, put `visualize{"path":"<absolute path>"}` on its own line in the reply | `window.openai.sendFollowUpMessage({ prompt, title })` sends `prompt` to the chat as the learner, after a confirmation dialog | Codex CLI and the IDE extension do not render it. Fragment ≤ 1 MB, no `fetch`; CDN allowlist only. State: `window.openai.setWidgetState` |
+| **Codex (any mode)** | `request_user_input` is in this turn's tool list | One call: 1–3 questions, each 2–3 options; the client adds "Other" | The tool result holds the choices | Plan mode by default; in Default mode only when the host enables it (`features.default_mode_request_user_input`, marked under development on 2026-11-01). Its host rules: optional questions that improve the work, never permissions. Three options at most, so a four-option item stays in another renderer |
+| **ChatGPT** | `@Visualize` is available in the composer or listed as a plugin | Same fragment model as the Codex app | Same `sendFollowUpMessage` | Verified in docs for ChatGPT; no closebook test yet |
+| **Claude Code desktop app** | A `show_widget` tool (often with a `read_me` companion) is listed | Call `read_me` once (module `interactive`), then `show_widget` with the HTML or SVG | The global `sendPrompt(text)` sends `text` to the chat as the learner | Seen in the Claude Code desktop app on 2026-11-01; availability in other Claude clients unverified. `AskUserQuestion` is reserved by its own rules for decisions the user must make, so it is **not** a quiz tool there |
+| **Gemini** | — | — | — | No inline widget or question tool verified; Canvas renders pages, not chat widgets. Next renderer in order |
+| **Any other host** | A listed tool or skill whose description says it renders HTML/SVG or widgets inline **and** names a way to send a message or return a value | Follow that tool's own instructions | As described by the tool | If only one of "renders" and "returns" is present, it fails the test |
+
+## 3. Detection and the one-line notice
+
+At the start of the session (`SKILL.md`, "Detect the environment once"):
+
+1. Scan the available tools, skills and plugins for the signals above. Read the matching skill or tool description before the first use; its rules bind you (Visualize's own guidance on style and files, `show_widget`'s `read_me`).
+2. Decide the renderer for this session: host widget → question tool → closebook MCP → HTML page → text. Keep it for the whole session unless it fails.
+3. Tell the learner in **one line** what the questions will look like here, in the opening message: "I'll show the questions as clickable cards here" / "这里我会用可点击的题卡出题" / "This chat has no interactive cards, so I'll ask in text; reply like `B 2`." Never ask the learner to debug the setup.
+4. After the **first** widget, if no answer arrives in the expected form, ask once ("Do you see a question card above?") and then downgrade for the rest of the session (`interaction-fit.md` section 5). Do not retry the same renderer in a loop.
+
+## 4. Building a question widget (contract shared by every form)
+
+- **One question per widget**, and never two open questions in the chat at once. The widget *is* the question; do not repeat it as lettered options in text (the host may ask you not to narrate the widget at all: Visualize does).
+- **No key inside the widget.** The DOM is inspectable. Never put `correct`, the solution, the flashcard back, the full diagram, the trace or any marker of the right answer in the fragment. Grade in chat when the answer comes back. The reference text of a `free_text` self-check also stays out until the answer has arrived.
+- **Controls:** native `button`, `input`, `select`, `textarea`, `range`; one submit; keyboard reachable; labels in the learner's communication language (zh-CN or en), independent of the subject text.
+- **Validate before sending:** an empty required field shows an inline error and does not send. Keep "I don't know" (不知道) as a legitimate choice on every question.
+- **Confidence in the same submit** for questions with a right answer: three pills `1 / 2 / 3`, required before the submit enables. Omit it for contested reasoning and unscored teach checks when it adds nothing.
+- **Send one line back** and disable the submit afterwards so a double click cannot send twice:
+
+  ```text
+  closebook answer · <kp_id>/<item_id> · <answer> · confidence <n>
+  ```
+
+  Codex/ChatGPT: `window.openai.sendFollowUpMessage({ prompt: line, title: "Submit answer" })` (the host shows a confirmation dialog; tell the learner once that a confirm click follows). Claude Code: `sendPrompt(line)`. `<answer>` is the option id, the typed value with unit, the order as ids, or the blanks as `1=…; 2=…`.
+- **Style:** follow the host's own widget guidance; closebook adds no theme. Keep it compact and transparent; the question text is content, not decoration.
+- **Teaching chunks:** on hosts with a widget facility a chunk may be shown as a card (explanation, example, one button "I've read it, ask me" that sends `closebook ready · <kp_id>`). The click is not mastery. On the `section` pace show the section's chunks together, then one check per point (`new-learning.md` section 3).
+- **Nothing is recorded on display.** An attempt exists only when the answer line has arrived in the chat. Grade it there and reply with feedback and the next question (another widget).
+
+## 5. Recipes per interaction form
+
+| Form | Widget | Comes back as | Then, in chat |
+|---|---|---|---|
+| `mcq` | Stem, 2–6 option buttons (single select, `aria-pressed`), confidence pills, submit | `B · confidence 3` | Feedback; why the distractor tempts |
+| `flashcard` | Front + a text field "Your answer" + submit; **no back in the widget** | the typed recall | Reveal the back, judge, next card |
+| `free_text` | Stem + `textarea` + submit; optional "I don't know" | the text | Judge against the hidden checklist |
+| `numeric` | Number or expression field, unit field when required, optional "working" textarea, confidence, submit | `12.5 m/s · confidence 2` | Check the number yourself, show the worked steps |
+| `cloze_passage` | Passage with inline `input`s at each blank; optional word bank as buttons | `1=accept; 2=reject` | Mark each blank |
+| `order_steps` | Items as buttons: tap to append to the "your order" list, ↑ ↓ ✕ to fix; distractors stay unselected; `monospace` for code | `C, A, D, B` | Compare with the key and the listed alternatives |
+| `diagram_fill` | SVG of the flow or structure with `?` boxes bound to inputs; the **complete** diagram comes in the next reply, not in this widget | `1=DNS; 2=TCP; 3=TLS` | Show the full diagram, name each miss |
+| `timeline_fill`, `compare_table_fill` | A table or line with input cells | the filled cells | Same |
+| `code_trace` | Code block + inputs for the predicted values or output; the step-through appears **after** the answer as a second widget or table | the predictions | Show the trace |
+| `graph`, `simulation` | **Predict first**: a question widget without the plot ("if L doubles, T becomes …"); unlock the slider widget only after the answer line arrives | the prediction | Show the plot/sliders, let them explore |
+| `terminal` | A single command input ("which command does X?") | the command | You accept valid variants the page could not |
+| teach check on the `step` pace | Same as the form above, `phase: "teach_check"`, no scoring | | |
+
+What a widget cannot do here: grade free text, run code, prove the learner did not look back. Say so when it matters; never present the widget as automatic grading.
+
+## 6. Question tools with options
+
+Use a host question tool only when **all** of these hold: it is listed in this turn's tools; its host rules allow optional questions that improve the work (not "approvals only", not "clarification only", not "decisions the user must make"); the item fits its limits (Codex: 2–3 options, at most 3 questions per call) without dropping an option. Then:
+
+- One call per item: question 1 = the stem with the options (`id` = option letter, `label` = text, no `(Recommended)` suffix, no description that hints), question 2 = confidence `1 / 2 / 3` when the item has a right answer. The host's "Other" field is the learner's free answer or "I don't know".
+- The result is the answer; grade it in the next reply. Never pre-select, never place the key first, never reveal it in the headers.
+- Never use the tool for free production tasks (Feynman, free recall, writing a command) and never shrink a four-option item to three to fit it: use the next renderer instead.
+- If the tool refuses (wrong mode, not enabled) once, say nothing about setup beyond one sentence and continue with the next renderer.
+
+## 7. Fallbacks and recording
+
+Renderer order (same as `interaction-fit.md`): explicit learner request → host widget facility → host question tool → closebook MCP card → HTML page when it clearly pays off → plain text. A missing or failed renderer moves to the next one with the **same question**; options are never dropped, open questions never become choices.
+
+Record per knowledge point (`interaction-fit.md` section 6): `interaction_selected` (the form) and, on a forced change, `interaction_downgraded_from: {from, reason}` with a reason such as `"no host widget; MCP absent; text"`. Attempts may carry `interaction`, so `progress_tool.py interaction-stats` keeps working.

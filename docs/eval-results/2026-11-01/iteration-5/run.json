@@ -1,0 +1,13 @@
+{
+  "ids": [
+    29,
+    31,
+    32,
+    39,
+    40,
+    41
+  ],
+  "model": null,
+  "reasoning": null,
+  "tool_mode": "instrumented adapters; not real native UI"
+}

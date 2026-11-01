@@ -12,13 +12,22 @@ from pathlib import Path
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--server', choices=['host_native', 'closebook_card', 'learning_progress'], required=True)
+    parser.add_argument('--server', choices=['host_native', 'closebook_card', 'learning_progress', 'host_widget', 'host_question'], required=True)
     parser.add_argument('--case', type=int, required=True)
     parser.add_argument('--log', type=Path, required=True)
     args = parser.parse_args()
     obj = {'type': 'object', 'additionalProperties': True}
     if args.server == 'learning_progress':
         definitions = [('record', 'Records an actual scored attempt and updates mastery and the review schedule.', obj)]
+    elif args.server == 'host_widget':
+        definitions = [('show_widget', 'Renders the given HTML or SVG inline in the conversation. A global sendPrompt(text) available inside the widget sends text to the chat as if the learner typed it. Rendering is not an answer.',
+                        {'type': 'object', 'properties': {'title': {'type': 'string'}, 'widget_code': {'type': 'string'}}, 'required': ['widget_code'], 'additionalProperties': False})]
+    elif args.server == 'host_question':
+        option = {'type': 'object', 'properties': {'label': {'type': 'string'}, 'description': {'type': 'string'}}, 'required': ['label', 'description'], 'additionalProperties': False}
+        question = {'type': 'object', 'properties': {'id': {'type': 'string'}, 'header': {'type': 'string'}, 'question': {'type': 'string'},
+                    'options': {'type': 'array', 'minItems': 2, 'maxItems': 3, 'items': option}}, 'required': ['id', 'header', 'question', 'options'], 'additionalProperties': False}
+        definitions = [('request_user_input', 'Request user input for one to three short questions and wait for the response. Each question offers 2-3 mutually exclusive options; the client adds a free-form Other. Use it only for optional questions whose answer materially improves the work; never for permission requests.',
+                        {'type': 'object', 'properties': {'questions': {'type': 'array', 'minItems': 1, 'maxItems': 3, 'items': question}}, 'required': ['questions'], 'additionalProperties': False})]
     elif args.server == 'host_native' and args.case == 31:
         definitions = [('ask_clarification', 'Host-native input for clarification, planning or approval only. Must not be used for quizzes.', obj)]
     else:

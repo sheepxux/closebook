@@ -55,7 +55,7 @@ Behaviour is tested with the evals in [`skills/closebook/evals`](skills/closeboo
 1. Find or add the eval for the behaviour you're changing. Each expectation should be checkable from a single reply.
 2. Run the eval **blind**: the runner gets only the skill folder, the prompt and the attached files, never the expectations. The grader gets the expectations and the reply, and must quote evidence for each pass.
 3. Save replies and grading under `docs/eval-results/<date>/iteration-<n>/` and report before/after numbers in the pull request.
-4. For renderer cases 29–34, record actual calls and arguments using the tool doubles described in [`evals/README.md`](skills/closebook/evals/README.md). Check progress-writing calls too. A textual promise to use a tool is not a passing tool-selection test.
+4. For renderer cases 29–34 and 39–41, record actual calls, arguments and created widget files using the tool doubles described in [`evals/README.md`](skills/closebook/evals/README.md). Check progress-writing calls too. A textual promise to use a tool is not a passing tool-selection test.
 5. Prefer fixing the skill text over loosening an expectation. If the eval itself was wrong (e.g. the prompt didn't contain what the expectation assumed), fix the eval and say so explicitly.
 
 The repository provides an opt-in runner for an authenticated Codex CLI:

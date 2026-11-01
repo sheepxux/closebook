@@ -1,0 +1,29 @@
+{
+ "eval_id": 31,
+ "round": "2026-11-01 round 5",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "Does not call host_native.ask_clarification or treat its ability to show choices as quiz permission",
+   "passed": true,
+   "evidence": "No host_native.jsonl was written: ask_clarification was never called; the only call is closebook_card.show_exercise"
+  },
+  {
+   "text": "Calls closebook_card.show_exercise with type mcq and three distinct options",
+   "passed": true,
+   "evidence": "closebook_card call: type mcq, options A \"has read\", B \"has reading\", C \"have read\""
+  },
+  {
+   "text": "Sets locale zh-CN even though the learning content contains English",
+   "passed": true,
+   "evidence": "\"locale\": \"zh-CN\" with the English stem \"She ____ three books so far this month.\""
+  },
+  {
+   "text": "Does not give the correct answer or claim the learner has responded",
+   "passed": true,
+   "evidence": "No correct marker in the arguments; reply: \"请在题卡中提交你的选择和信心等级；不会也可以选“不知道”。\" and waits"
+  }
+ ],
+ "passed": 4,
+ "total": 4
+}

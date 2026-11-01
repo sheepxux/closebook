@@ -1,0 +1,29 @@
+{
+ "eval_id": 29,
+ "round": "2026-11-01 round 5",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "The actual tool trace contains one host_native.show_exercise call and no closebook_card call",
+   "passed": true,
+   "evidence": "host_native.jsonl holds exactly one show_exercise call; no closebook_card.jsonl exists, so no MCP call was made"
+  },
+  {
+   "text": "The submitted question concerns Python list indexing and preserves four distinct options",
+   "passed": true,
+   "evidence": "Question: \"Given letters = ['a', 'b', 'c', 'd'], what is the value of letters[-1]?\" with options A 'a', B 'c', C 'd', D \"It raises an IndexError.\""
+  },
+  {
+   "text": "Collects confidence together with the answer without providing the key or preselecting a correct option",
+   "passed": true,
+   "evidence": "\"collectConfidence\": true; no correct field, no preselected option; the reply only says \"Choose an option in the card and submit it with your confidence.\""
+  },
+  {
+   "text": "Waits for learner submission; does not mark an answer or mastery before receiving it",
+   "passed": true,
+   "evidence": "Reply ends after asking for the submission; the stub returned \"none has been submitted\" and nothing was graded"
+  }
+ ],
+ "passed": 4,
+ "total": 4
+}

@@ -35,7 +35,7 @@ Google has said it plans to remove Gems and recreate them automatically as skill
 
 ## Optional MCP cards
 
-Use suitable built-in teaching tools first, following the [renderer rules](../skills/closebook/references/interaction-fit.md). The [closebook MCP companion](../mcp/README.md) is an optional fallback configured separately from the skill ZIP. Its cards and submission flow have **not been tested in these clients**. Check the actual client's MCP Apps support; connecting an MCP server does not establish that it can display cards. Plain-text teaching remains available.
+Use the agent's own components first ([host widgets](../skills/closebook/references/host-widgets.md)), following the [renderer rules](../skills/closebook/references/interaction-fit.md). The [closebook MCP companion](../mcp/README.md) is an optional fallback configured separately from the skill ZIP. Its cards and submission flow have **not been tested in these clients**. Check the actual client's MCP Apps support; connecting an MCP server does not establish that it can display cards. Plain-text teaching remains available.
 
 ## Quick check after installing
 

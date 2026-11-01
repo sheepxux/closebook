@@ -64,12 +64,12 @@ The same teaching flow can use different interfaces; the [interaction guide](ski
 
 | Interface | When it is used | How answers are checked |
 |---|---|---|
-| Built-in components, tools or plugins | First choice when the current agent can use them for the learning task | Depends on the tool; the assistant gives feedback on the learner's answer |
+| The agent's own components: inline widgets (Codex and ChatGPT Visualize, Claude Code `show_widget`) or a question tool with options | First choice wherever the agent has them: the question is drawn in the chat and the answer comes back as a message | The assistant grades the returned answer; the widget never holds the key |
 | Optional closebook MCP cards | Fallback in clients that support MCP Apps | Submission returns to chat; the assistant checks the answer |
 | Offline HTML practice page | When requested, or when a reusable page suits the task | The page checks supported answer types; written answers can be exported for assistant feedback |
 | Plain-text chat | Always available as a fallback | The assistant checks each reply in the conversation |
 
-A tool reserved for clarification, planning or approvals must not be repurposed as a quiz. An explicit request for a particular interface, such as an MCP preview or an offline page, takes priority.
+A tool reserved for approvals, or whose own rules forbid quizzes or reserve it for decisions, is never repurposed as a quiz. An explicit request for a particular interface, such as an MCP preview or an offline page, takes priority.
 
 ### Seven MCP components
 

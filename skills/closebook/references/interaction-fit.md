@@ -2,7 +2,7 @@
 
 Step 3 and 4 of the decision chain: knowledge type → method → **interaction form** → **platform capability**. Decide the form only after the method; the platform can only downgrade it.
 
-**The one test:** compared with plain text Q&A, does this form make learning more effective or save time? If you can't name the gain, use plain text. Plain text is always legal and often best for simple points.
+**The one test:** compared with plain text Q&A, does this form make the learner produce more (a typed number, a filled blank, an order, a prediction) or save time? When the host can render the form (`host-widgets.md`), most forms in the matrix pass by construction and are the default. Plain text is always legal and remains best for one-line points and for answers that are a sentence anyway.
 
 ## Contents
 1. Interaction ids
@@ -82,7 +82,7 @@ Shared with the HTML lesson template and the progress schema.
 1. **Cap:** at most 1–2 forms per knowledge point. If one plain text turn covers it, use no component.
 2. **Mobile / short sessions:** prefer tap-to-answer forms (`mcq`, `flashcard`) where they fit; avoid long typing and drag-and-drop.
 3. **Consistency:** in one session, the same kind of question uses the same form. Don't vary forms for variety.
-4. **No interaction inflation.** Before using any component, finish this sentence: "This saves the learner ___ or helps them remember ___ better than plain text." If you can't, use plain text.
+4. **Renderer available → form by default; no decoration.** With a host widget, question tool or MCP card available, every question that has a form in the matrix uses it. Plain text is for forms whose answer is a sentence typed in chat anyway (Feynman, free recall, contested reasoning) and for simple one-line points; without any renderer, use the Level 0 downgrade (section 5). A component must carry the question itself; never add one that only displays.
 5. **Not supported by the platform** → nearest available form (section 5) + one sentence: "I can't show clickable cards here, so I'll use lettered options; reply like `B 2`."
 6. **Not covered by the matrix** → `plain_qa`.
 7. **User asks for an unfit form** (e.g. MCQ for a contested question): one sentence of risk and an alternative ("Options would make one view look 'correct'; a short written answer keeps the trade-off. Still want options?"). If they still choose it after that explanation, honor it and record `interaction_override_by_user`. A previous suggestion of a format does not establish that its trade-off was explained. In chat-only mode, include a short visible session note now (for example, "Recorded as your chosen format"), then proceed; carry it into the next progress export. Do not repeat a warning already given.
@@ -92,11 +92,11 @@ Shared with the HTML lesson template and the progress schema.
 | Level | What it means | Examples of forms |
 |---|---|---|
 | 0 | Plain text only. Must always work. | `plain_qa`, lettered `mcq`, text flashcards, markdown tables if they render |
-| 1 | In-chat interaction, from a suitable native tool/plugin or optional MCP App | Native forms vary; closebook MCP supports lesson cards plus `mcq`, `free_text`, `numeric`, `cloze_passage`, `order_steps`, `flashcard` |
+| 1 | In-chat interaction: the host's own widget facility or question tool (`host-widgets.md`), or the optional closebook MCP App | A host widget renders any form you can draw in HTML/SVG and sends the answer back; a question tool shows 2–4 options; closebook MCP supports lesson cards plus `mcq`, `free_text`, `numeric`, `cloze_passage`, `order_steps`, `flashcard` |
 | 2 | You can produce a single self-contained HTML page or artifact the learner can open | `assets/lesson-template.html` with all forms |
 
 **Detection (once per session):**
-1. Look at what you can actually do in this environment: available tools, the ability to create files or artifacts, rendered UI elements you've been told about. Only concrete evidence counts.
+1. Look at what you can actually do in this environment: available tools, skills and plugins, the ability to create files or artifacts, rendered UI elements you've been told about. Concrete signals: a `visualize` skill or plugin, a `show_widget` tool, a `request_user_input` or similar question tool, closebook MCP tools, file write access (`host-widgets.md` section 2). Only concrete evidence counts, and the matching tool's own rules are read before its first use.
 2. When unsure, assume **Level 0**. Don't ask the learner to debug your UI; at most ask once "Do you see clickable options above?" if you tried a Level 1 element and got no confirmation.
 3. Keep the chosen form and select its renderer in the order below. Levels are capabilities, not a ranking: the ability to build HTML does not override a suitable native quiz tool.
 4. Never describe a form you can't render ("click the card below") on a Level 0 platform.
@@ -106,7 +106,7 @@ Shared with the HTML lesson template and the progress schema.
 Apply the same order on every agent platform, including future or unfamiliar hosts. Discover capabilities from actual available tools and their usage rules; never branch on a brand name or prefer closebook merely because its MCP server is installed.
 
 1. Honor an explicit renderer request, such as testing closebook MCP or producing an offline practice page.
-2. Otherwise prefer the current agent's available **built-in tool/plugin** if it can present the real question, preserve all options and return the learner's actual answer. Read its usage rules; a clarification/approval-only tool is not a quiz tool. A product name, plugin listing or ability to draw buttons does not prove this capability.
+2. Otherwise prefer the **agent's own components** (`host-widgets.md`): first an inline widget facility (Codex/ChatGPT Visualize, Claude Code `show_widget`) that renders the real question and sends the answer back to the chat; then a built-in question tool with options, when it is listed this turn and its own rules allow optional questions. Read the usage rules first: an approval/permission tool, or one whose rules forbid quizzes or reserve it for decisions, is not a quiz tool. A product name alone proves nothing; a listed tool whose description says it renders inline and can send a message back does.
 3. If native interaction is absent, cannot express this question, or fails, use the **optional closebook MCP** when available and suitable. Use `show_lesson` for a teaching chunk and `show_exercise` for supported forms; neither display nor reading acknowledgement counts as mastery. Read `mcp-cards.md` for the supported forms and limits; do not call an empty demo during a real lesson. Do not invoke both renderers for the same unanswered question.
 4. If the card is unavailable or unsuitable, use **HTML when it clearly pays off**, otherwise **plain text**. Preserve the question and its learning purpose. Never turn a production task or open explanation into MCQ just to use the fallback.
 
@@ -114,7 +114,7 @@ Choose interface language from the learner's communication language, independent
 
 Detect once, reassess after a failure or tool change. A successful tool call is not proof of visible UI or delivered answers. If a renderer fails, explain briefly and continue with the same question in the next suitable form; do not repeatedly retry, pretend a click happened, or ask the learner to debug setup. Host-controlled MCP process startup can happen before any tool call; this priority governs which renderer the coach uses, not when the host spawns processes.
 
-**When to use Level 2 (HTML page):** when requested, or when the in-chat choices cannot meet a useful interaction need. Typical cases: an offline or reusable practice page; a review deck of ≥ 8 MCQ/flashcard items; a form that text can't express well (`diagram_fill`, `simulation`, `graph`, `code_trace`'s step-through, `terminal`, `order_steps` by tapping). The page can't grade free text (see below), so the chat remains the main channel. How to build the page: `html-lesson.md`.
+**When to use Level 2 (HTML page):** when requested, or when the in-chat choices cannot meet a useful interaction need. Typical cases: an offline or reusable practice page; a review deck of ≥ 8 MCQ/flashcard items; a form that text can't express well (`diagram_fill`, `simulation`, `graph`, `code_trace`'s step-through, `terminal`, `order_steps` by tapping). The page can't grade free text (see below), so the chat remains the main channel. How to build the page: `html-lesson.md`. On a host with a widget facility, `diagram_fill`, `graph`, `code_trace` and `order_steps` render inline (`host-widgets.md` section 5), so the page is mainly for offline or reusable practice there.
 
 **Static page honesty:** a static HTML page can check answers that have a stored key (multiple choice, blanks, numbers, orders, commands, graph targets), but it can't grade free-text answers by itself, and its terminal only knows the commands you listed. For `free_text` and free recall it shows a reference checklist and asks the learner to self-assess, plus an "export my answers" button. Grading is a round trip through the chat: the learner pastes the answers, you grade them and reply with a grading block, and the page shows your results once they paste it back (`html-lesson.md`). Never present self-assessment, or this round trip, as automatic grading.
 
@@ -122,17 +122,17 @@ Detect once, reassess after a failure or tool change. A successful tool call is 
 
 | Wanted | Level 1 | Level 0 |
 |---|---|---|
-| `mcq` | Native quiz first; suitable closebook MCP card second | Lettered options in text; answer `B 2` (option + confidence) |
-| `flashcard` | Suitable native card, then MCP recall-before-flip card | Front in one reply; back after the learner answers |
-| `free_text`, `plain_qa` | Suitable native answer box, then MCP `free_text` when a card helps | Answer in chat |
-| `diagram_fill` | — | Numbered text outline or ordered list with blanks; ASCII arrows if helpful |
-| `simulation`, `graph` | — | Plain-text predict-verify with 2–3 concrete parameter values ("L = 1 m gives T ≈ 2.0 s; what does L = 4 m give?") |
-| `numeric` | Native numeric interaction, then MCP value/unit/working fields; assistant grades | `plain_qa`; check the number yourself and show the worked steps |
-| `order_steps` | Native ordering, then MCP select/reorder with optional distractors | Letter the items and ask for the order ("C A D B") |
-| `cloze_passage` | Native blanks, then MCP passage with input fields | The passage with numbered `___(1)` blanks; answer as a numbered list |
-| `code_trace` | — | Code block + prediction questions; after the answers, a short table of variable values per step |
-| `terminal` | — | Ask for each command in text and check it yourself; you can accept valid variants the page couldn't |
-| `timeline_fill`, `compare_table_fill` | Native table if available | Markdown table with `___`; plain bullet pairs if tables don't render |
+| `mcq` | Host widget or question tool first; closebook MCP card second | Lettered options in text; answer `B 2` (option + confidence) |
+| `flashcard` | Host widget (front + answer field; the back is revealed in chat), then MCP recall-before-flip card | Front in one reply; back after the learner answers |
+| `free_text`, `plain_qa` | Host widget answer box, then MCP `free_text` when a card helps | Answer in chat |
+| `diagram_fill` | Host widget: SVG with `?` inputs; full diagram after the answer | Numbered text outline or ordered list with blanks; ASCII arrows if helpful |
+| `simulation`, `graph` | Host widget: a prediction question first, sliders after the answer | Plain-text predict-verify with 2–3 concrete parameter values ("L = 1 m gives T ≈ 2.0 s; what does L = 4 m give?") |
+| `numeric` | Host widget value/unit fields, then MCP value/unit/working fields; assistant grades | `plain_qa`; check the number yourself and show the worked steps |
+| `order_steps` | Host widget tap-to-order, then MCP select/reorder with optional distractors | Letter the items and ask for the order ("C A D B") |
+| `cloze_passage` | Host widget passage with inputs, then MCP passage with input fields | The passage with numbered `___(1)` blanks; answer as a numbered list |
+| `code_trace` | Host widget: code + prediction inputs; the trace after the answer | Code block + prediction questions; after the answers, a short table of variable values per step |
+| `terminal` | Host widget: one command input | Ask for each command in text and check it yourself; you can accept valid variants the page couldn't |
+| `timeline_fill`, `compare_table_fill` | Host widget or native table with input cells | Markdown table with `___`; plain bullet pairs if tables don't render |
 | `checklist` | Native checklist | Plain list with dates |
 | `voice` | — | `free_text`; mention that pronunciation can't be checked here |
 
@@ -142,6 +142,6 @@ Some platforms limit the number of quick-reply options. If a native MCQ cannot s
 
 Per knowledge point (extension fields):
 - `interaction_selected`: the form actually used.
-- `interaction_downgraded_from`: `{from, reason}` when the platform forced a downgrade.
+- `interaction_downgraded_from`: `{from, reason}` when the platform forced a downgrade; the reason names the renderers tried (e.g. `no host widget; MCP absent`).
 - `interaction_override_by_user`: `{requested, recommended, risk_note, at}`.
 - Attempts may carry `interaction` and `duration_sec`, so `progress_tool.py interaction-stats` can compare forms by accuracy and time.

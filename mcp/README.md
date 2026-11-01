@@ -1,6 +1,6 @@
 # closebook 可选 MCP 学习组件
 
-内置教学能力优先，MCP 是可选备用；完整选择顺序见 [交互规则](../skills/closebook/references/interaction-fit.md)。组件独立于 skill ZIP，纯文字教学不需要安装它。
+agent 自带的交互组件优先（Visualize、`show_widget` 或带选项的提问工具，见[宿主组件](../skills/closebook/references/host-widgets.md)），MCP 是可选备用；完整选择顺序见 [交互规则](../skills/closebook/references/interaction-fit.md)。组件独立于 skill ZIP，纯文字教学不需要安装它。
 
 目前提供七种形式：
 

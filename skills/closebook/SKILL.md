@@ -30,7 +30,7 @@ Deciding all four at once produces flashy but mismatched lessons; deciding them 
 
 ## Start of every session
 
-1. **Detect the environment once.** Check actual tools and their permitted uses, file access and today's date. Use the capability and renderer rules in `references/interaction-fit.md`; a platform name is not evidence of a capability. If markdown does not render, drop formatting.
+1. **Detect the environment once.** Check the actual tools, skills and plugins and their permitted uses, file access and today's date. Look first for the agent's own interactive components, an inline widget facility such as Visualize or `show_widget`, or a question tool with options: `references/host-widgets.md`. Then apply the capability and renderer rules in `references/interaction-fit.md`; a platform name is not evidence of a capability, a listed tool is. If markdown does not render, drop formatting.
 2. **Route the request.**
    - Progress JSON pasted or a progress file present → **review flow**.
    - Wants to **learn** something ("teach me", "I want to learn X", "get me started with", 教我、我想学、入门、从零学) → **teach route (B)**: teach in small checked steps, then the closed-book loop. `references/new-learning.md`.
@@ -46,6 +46,7 @@ In a single message:
 - Split the material into **3–5 knowledge points**. For each, show the title, importance (core / important / minor), knowledge type (see `references/knowledge-types.md`) and the planned approach in a few words (e.g. "flashcards", "predict the output", "why-questions"), so mixed material visibly gets different methods.
 - Ask for available time (15 / 30 / 60 min) unless given. Ask for familiarity (new to it / seen it but shaky / fairly familiar) only when the request gave no signal; on the teach route, instead invite them to name any point they already know so you test it instead of teaching it, and, if no pace is stored yet, ask once whether they want it step by step or by section (below).
 - Invite adjustments to the outline.
+- Say in one line how questions will appear here (clickable cards in the chat, MCP cards, or text answers like `B 2`).
 - If you don't know today's date, ask for it in the same message. Always record absolute dates.
 
 If time and familiarity are already clear and the learner says "just start", skip the questions and start. Details and templates: `references/teaching-flow.md`.
@@ -68,9 +69,9 @@ After all points: **synthesis** (Feynman explanation if any point is conceptual 
 ## Choosing methods and interactions
 
 - Per knowledge point: baseline (retrieval practice, spaced repetition, error review when there are errors) **plus at most 2 optional methods**. Fewer is better. Rules and the full matrix: `references/method-fit.md`; each method's procedure: `references/methods/`.
-- Then choose at most 1–2 interaction forms per point, only if they beat plain text Q&A: `references/interaction-fit.md` (including subject starting points, e.g. code tracing for programming, numbers and graphs for maths). Plain text is always legal and often best.
-- **Native first on every agent platform; MCP is a fallback.** Apply the renderer order and exceptions in `references/interaction-fit.md`. When using closebook MCP, read `references/mcp-cards.md` for supported forms, language and submission rules.
-- Structure, flow or state change (architecture, pipelines, lifecycles) → a **predict-first diagram**, even in plain text: numbered steps or ASCII arrows with `?` blanks for the learner to fill; show the complete diagram only after they answer.
+- Then choose at most 1–2 interaction forms per point from `references/interaction-fit.md` (including subject starting points, e.g. code tracing for programming, numbers and graphs for maths). When the host can render a form, use it by default; plain text is always legal and stays best for one-line points and for answers that are a sentence anyway.
+- **The agent's own components first, on every platform.** Order: the host's inline widgets (Codex/ChatGPT Visualize, Claude Code `show_widget`) or question tool with options → optional closebook MCP → HTML page → text. Signals, per-form recipes and the answer line that comes back: `references/host-widgets.md`; order and exceptions: `references/interaction-fit.md`. When using closebook MCP, read `references/mcp-cards.md` for supported forms, language and submission rules.
+- Structure, flow or state change (architecture, pipelines, lifecycles), or any point with three or more related parts → a **predict-first diagram**: an SVG with `?` boxes in a host widget, or in plain text numbered steps or ASCII arrows with `?` blanks for the learner to fill; show the complete diagram only after they answer.
 - Say in one sentence which method you're using and why *now*. If you skip a standard step, say what and why. Never add a method just to look thorough.
 - The user can switch with one sentence ("only Feynman", "just quiz me today"). Comply and tell them which records that affects.
 
@@ -98,7 +99,8 @@ Schema: `schemas/progress.schema.json` (versioned, core + extension fields). Sto
 | Classifying a knowledge point | `references/knowledge-types.md` |
 | Choosing methods | `references/method-fit.md`, then the method file |
 | Choosing interaction forms, platform levels, downgrades | `references/interaction-fit.md` |
-| Native interaction unavailable/unsuitable; using the optional closebook MCP card | `references/mcp-cards.md` |
+| Using the agent's own widgets or question tools (Visualize, `show_widget`, `request_user_input`) | `references/host-widgets.md` |
+| No host widget or question tool; using the optional closebook MCP card | `references/mcp-cards.md` |
 | Writing questions and distractors | `references/question-design.md` |
 | Wording feedback | `references/feedback-style.md` |
 | Time budget, fatigue, trimming scope | `references/efficiency.md` |

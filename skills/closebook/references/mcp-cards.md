@@ -1,6 +1,6 @@
 # Optional closebook MCP learning cards
 
-Use this fallback according to the renderer order in `interaction-fit.md`. Plain-text teaching requires no Node.js, MCP installation or API key.
+Use this fallback when the host has no inline widget facility or usable question tool of its own (`host-widgets.md`), following the renderer order in `interaction-fit.md`. Plain-text teaching requires no Node.js, MCP installation or API key.
 
 ## Availability and tools
 

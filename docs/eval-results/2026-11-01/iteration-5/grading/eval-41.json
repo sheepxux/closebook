@@ -1,0 +1,29 @@
+{
+ "eval_id": 41,
+ "round": "2026-11-01 round 5",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "The actual tool trace contains exactly one host_question.request_user_input call",
+   "passed": true,
+   "evidence": "host_question.jsonl holds exactly one request_user_input call"
+  },
+  {
+   "text": "The call's first question is the present-perfect item with three distinct options whose English sentences are kept as written, with Chinese header and labels, and the second question asks confidence 1-3; no option carries a (Recommended) suffix or a description that hints at the answer",
+   "passed": true,
+   "evidence": "Question 1 (header 现在完成时): three options A \"I lived in London from 2020 to 2023.\", B \"I have lived in London since 2020.\", C \"I have lived in London for 2020.\" with Chinese stem; question 2 (header 把握程度) offers 1 · 猜的 / 2 · 比较确定 / 3 · 非常确定; no (Recommended) suffix; descriptions are neutral (\"选择句子 A。\")"
+  },
+  {
+   "text": "No option is marked, ordered or described as correct, and the reply does not reveal the answer",
+   "passed": true,
+   "evidence": "Options are in A/B/C order with the right one in the middle, none marked; reply: \"选好句子和把握程度后提交即可。\""
+  },
+  {
+   "text": "The reply does not write the multiple-choice question as text, does not ask the learner to change settings, and waits for the tool result",
+   "passed": true,
+   "evidence": "Reply contains no option text, no settings advice; waits for the tool result"
+  }
+ ],
+ "passed": 4,
+ "total": 4
+}

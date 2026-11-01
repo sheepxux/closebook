@@ -42,6 +42,8 @@ c) Any change to the list? ("drop 3", "merge 1 and 2")
 
 If you have no reliable date: add "d) What's today's date? (I use it to schedule reviews.)"
 
+Add one line on how questions will appear here (`host-widgets.md` section 3): "I'll show the questions as clickable cards in this chat" or "This chat has no cards, so reply like `B 2`." Decide it from the tools actually listed, never from the platform's name.
+
 Drop b) when the request already settled the route (section 2). On the teach route, replace it with: "b) Already know any of these? Tell me which and I'll test those instead of teaching them." Approach notes on the teach route say "explain → check → …" so the learner can see teaching comes first.
 
 On the teach route, when no `settings.teach_pace` is stored yet, add one more line (`new-learning.md` section 3): "d) Pace: step by step (a short explanation, then a question; good from zero) or by section (2–4 points at once, then the questions; good with some background)?" Once answered, the pace is saved and never asked again. If the learner skips it: `step` for "zero / never seen it", otherwise `section`; say which in one line.

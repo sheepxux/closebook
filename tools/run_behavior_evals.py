@@ -72,9 +72,10 @@ def main():
             command += ['-c', 'model=' + json.dumps(args.model)]
         if args.reasoning:
             command += ['-c', 'model_reasoning_effort=' + json.dumps(args.reasoning)]
-        servers = []
-        if case['id'] >= 29:
-            servers = ['closebook_card'] + (['learning_progress'] if case['id'] == 33 else ['host_native'])
+        tool_cases = {29: ['closebook_card', 'host_native'], 30: ['closebook_card', 'host_native'], 31: ['closebook_card', 'host_native'],
+                      32: ['closebook_card', 'host_native'], 33: ['closebook_card', 'learning_progress'], 34: ['closebook_card', 'host_native'],
+                      39: [], 40: ['closebook_card', 'host_widget'], 41: ['host_question']}
+        servers = tool_cases.get(case['id'], [])
         for server in servers:
             prefix = 'mcp_servers.' + server
             command += ['-c', prefix + '.command=' + json.dumps(sys.executable),
