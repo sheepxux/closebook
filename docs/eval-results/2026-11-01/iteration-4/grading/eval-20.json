@@ -1,0 +1,37 @@
+{
+  "eval_id": 20,
+  "expectations": [
+    {
+      "text": "Does not open with a diagnostic question about material the user has said is entirely new",
+      "passed": true,
+      "evidence": "Opens with the plan and the first chunk; no diagnostic question."
+    },
+    {
+      "text": "Teaches only the first chunk of the first point: one idea, with a concrete example before the general rule, roughly 200 words (or 400 Chinese characters) or fewer",
+      "passed": true,
+      "evidence": "One chunk on vectors and scaling (about 170 Chinese characters), concrete (2, 1) → (6, 3) before the rule."
+    },
+    {
+      "text": "Follows the chunk with exactly one check question that the learner must answer, and does not answer it",
+      "passed": true,
+      "evidence": "\"(3, 2) ——整根箭头放大到原来的 2 倍——> ?\"; unanswered."
+    },
+    {
+      "text": "The check applies the idea to a case the chunk didn't show (e.g. a different matrix or vector), rather than asking the learner to repeat a sentence from the chunk",
+      "passed": true,
+      "evidence": "(3, 2) was not shown in the chunk."
+    },
+    {
+      "text": "Does not teach all points at once or produce a long lecture",
+      "passed": true,
+      "evidence": "Only the first chunk is taught; later points are titles."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "Regression after the pace change: learner said 零基础 and 直接开始, so no pace question; the reply states the step pace in one line (\"一小步讲解 → 一道小题\")."
+}

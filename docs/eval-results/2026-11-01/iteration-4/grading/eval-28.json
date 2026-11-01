@@ -1,0 +1,37 @@
+{
+  "eval_id": 28,
+  "expectations": [
+    {
+      "text": "Confirms the answer to the point-3 check is right",
+      "passed": true,
+      "evidence": "\"答对了，四个组合及其顺序都正确。\""
+    },
+    {
+      "text": "Says that teaching is done and the closed-book retests start now (answer from memory, don't scroll back)",
+      "passed": true,
+      "evidence": "\"今天的三个点都已学完，现在开始闭卷复测\"; \"请不要翻看前面的讲解\"."
+    },
+    {
+      "text": "Asks exactly one retest question, and it tests point 1 (building a list with a comprehension), not point 3",
+      "passed": true,
+      "evidence": "Retest on 用一行生成新列表 (point 1)."
+    },
+    {
+      "text": "The retest question uses a new case rather than repeating a check already given, asks for confidence 1-3, and is not answered in the reply",
+      "passed": true,
+      "evidence": "New case nums = [2, 4, 6], add 3; confidence 1–3; unanswered."
+    },
+    {
+      "text": "Does not re-teach any point before the retest",
+      "passed": true,
+      "evidence": "No re-teaching."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "Regression; unchanged behaviour."
+}

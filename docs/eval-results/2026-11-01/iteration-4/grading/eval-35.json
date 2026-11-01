@@ -1,0 +1,42 @@
+{
+  "eval_id": 35,
+  "expectations": [
+    {
+      "text": "Proposes a short outline for today's 30 minutes whose approach notes make clear that each point is explained before it is checked",
+      "passed": true,
+      "evidence": "Three points, each with approach notes such as \"短例子讲解 → 补全值的生命周期 → 用自己的话解释\"; \"先讲再练，是因为你还没接触过 Rust\"."
+    },
+    {
+      "text": "Asks, inside the same opening message, whether the learner wants step by step (short explanation, then a question) or by section (2-4 points explained together, then the questions), describing each option in about one line",
+      "passed": true,
+      "evidence": "\"你想用哪种节奏？A. 一步一步：每次讲一小块，接一道题（推荐）。B. 按节讲：先连贯讲几个相关点，再逐题检查。\" in the same message."
+    },
+    {
+      "text": "Does not ask for the time budget again and does not ask a separate familiarity question (the learner already said they have never touched Rust)",
+      "passed": true,
+      "evidence": "No time or familiarity question; opens with \"30 分钟\" and \"你有 Python 经验\"."
+    },
+    {
+      "text": "Does not quiz the learner on ownership itself; at most one starting-point question on a prerequisite (e.g. what a Python variable refers to) is acceptable",
+      "passed": true,
+      "evidence": "No question about ownership; the only question is the pace choice."
+    },
+    {
+      "text": "Says in about one sentence that the outline or explanations come from general knowledge",
+      "passed": true,
+      "evidence": "\"我按通用知识安排，不依赖特定课程\"."
+    },
+    {
+      "text": "Writes in Chinese",
+      "passed": true,
+      "evidence": "Entire reply in Chinese."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "notes": "Pace asked once, with A (step) recommended for a learner new to Rust, matching the default rule."
+}

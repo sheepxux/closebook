@@ -1,0 +1,32 @@
+{
+  "eval_id": 27,
+  "expectations": [
+    {
+      "text": "Confirms the answer is right, briefly",
+      "passed": true,
+      "evidence": "\"对，转换操作 w.upper() 和遍历部分的位置都正确。\""
+    },
+    {
+      "text": "Does not give a scored closed-book retest on point 1 in this reply, and does not announce a box or review date for it",
+      "passed": true,
+      "evidence": "No retest, box or review date."
+    },
+    {
+      "text": "Teaches the first chunk of point 2 (filtering with if): one idea, concrete example before the rule",
+      "passed": true,
+      "evidence": "Example [n for n in nums if n % 2 == 0] with nums = [1, 2, 3, 4], then the rule about the trailing if."
+    },
+    {
+      "text": "Ends with exactly one check question on point 2 using a case the chunk didn't show, and does not answer it",
+      "passed": true,
+      "evidence": "One check with nums = [3, 6, 7, 10]; unanswered."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Regression; unchanged behaviour."
+}
