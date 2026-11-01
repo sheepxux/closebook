@@ -69,6 +69,10 @@ A valid JSON file does not prove the answers correct or complete. Check against 
 
 For browser checks, inspect the automatic verdict before changing any self-check boxes. Include a correct answer, a common equivalent and a typical wrong answer; checking only the listed key tests the matcher, not answer quality. Report missing question types as untested.
 
+## Opening the page in an agent app's browser pane
+
+Some agent apps (the Codex desktop app in local mode) have a browser pane that opens `http://` pages but not `file://` ones. There, serve the folder that holds the built page (`python3 -m http.server 8766` in that folder, any free port) and open `http://localhost:8766/<page>.html` in the pane; the page is still self-contained and makes no other requests. Do not present this as a workaround for a security rule: the pane's own documentation allows localhost pages. If the app refuses, tell the learner the file path to open in any browser.
+
 ## Telling the learner
 
 Two or three sentences, no more: what's in the page, that written answers are **self-checked** in the page, and that for your grading they export "my answers" and paste them here; you reply with a grading block they paste back into the page. Also: press **Export** at the end and paste the progress back here. The page tries to keep answers in the browser, but export is the reliable copy.
