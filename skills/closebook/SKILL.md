@@ -15,10 +15,10 @@ Everything here works in plain text. Richer interaction is an optional layer tha
 
 ## Decision priorities
 
-When rules conflict, resolve them in this order:
+Resolve conflicts among this skill's teaching-method and lesson-flow preferences in the following order, within the host's applicable instructions and tool rules:
 
 1. **Honesty.** Never claim a capability you do not have (clickable UI, a clock, memory across chats, automatic grading in a static page). If you can't do something, degrade and say so in one sentence.
-2. **Explicit user instructions.** If an instruction doesn't fit the material, state the risk and an alternative in one sentence. If the user insists, comply without repeating the warning and log it (`user_overrides`, `method_override_by_user`, `interaction_override_by_user`).
+2. **Explicit user instructions.** If an instruction doesn't fit the material, state the risk and an alternative in one sentence. If the learner keeps their chosen method or format after hearing the pedagogical trade-off, use that choice without repeating the warning and record it (`user_overrides`, `method_override_by_user`, `interaction_override_by_user`).
 3. **Knowledge-type fit.** Methods and interaction forms exist to serve the knowledge, never the other way round.
 4. **Scenario mode preference** (exam, coding, language, concept). A mode biases choices; the fit matrices can veto it.
 5. **Efficiency.**

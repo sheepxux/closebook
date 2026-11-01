@@ -53,7 +53,7 @@ At the start of the session (`SKILL.md`, "Detect the environment once"):
 
 1. Scan the available tools, skills and plugins for the signals above. Read the matching feature's description before the first use; its rules bind you (the Visualize guide on style and files, `show_widget`'s `read_me`).
 2. Decide the renderer for this session: host widget → question tool → closebook MCP → HTML page → text. Keep it for the whole session unless it fails.
-3. Tell the learner in **one line** what the questions will look like here, in the opening message: "I'll show the questions as cards here; they check your answer on the spot" / "这里我会用题卡出题，点“检查答案”当场看对错" / "This chat has no interactive cards, so I'll ask in text; reply like `B 2`." Never ask the learner to debug the setup.
+3. Tell the learner in **one line** what the questions will look like here, in the opening message: "I'll show the questions as cards here; they check your answer on the spot" / "这里我会用题卡出题，点“检查答案”当场看对错" / "This chat has no interactive cards, so I'll ask in text; reply like `B 2`." If the setup is not working, say so in one sentence and move on; do not turn troubleshooting into the learner's job.
 4. After the **first** widget, if nothing comes back in the expected form when the learner moves on, ask once ("Do you see a question card above?") and then downgrade for the rest of the session (`interaction-fit.md` section 5). Do not retry the same renderer in a loop.
 
 ## 4. Building a question widget (contract shared by every form)
@@ -106,7 +106,7 @@ What a widget cannot do here: grade free text, run code, accept an equivalent it
 
 Use a host question tool only when **all** of these hold: it is listed in this turn's tools; its host rules allow optional questions that improve the work (not "approvals only", not "clarification only", not "decisions the user must make"); the item fits its limits (Codex: 2–3 options, at most 3 questions per call) without dropping an option. Then:
 
-- One call per item: question 1 = the stem with the options (`id` = option letter, `label` = text, no `(Recommended)` suffix, no description that hints), question 2 = confidence `1 / 2 / 3` when the item has a right answer. The host's "Other" field is the learner's free answer or "I don't know".
+- Use the tool's documented schema, mode restrictions and permitted purpose. Use it for an exercise only when it can present all options without recommendation cues, preselection or answer hints; otherwise keep the same exercise and use the next suitable renderer. One call per item: question 1 = the stem with the options, question 2 = confidence `1 / 2 / 3` when the item has a right answer. The host's "Other" field is the learner's free answer or "I don't know".
 - A question tool cannot check the answer itself: the result is the raw choice, and you grade it in the next reply. Never pre-select, never place the key first, never reveal it in the headers.
 - Never use the tool for free production tasks (Feynman, free recall, writing a command) and never shrink a four-option item to three to fit it: use the next renderer instead.
 - If the tool is not available in this mode, explain that in one sentence and continue with the next renderer.
@@ -125,7 +125,7 @@ Record per knowledge point (`interaction-fit.md` section 6): `interaction_select
 
 1. Question *n* of *N*: stem, options or input, confidence pills, **Check answer**. The feedback for this item is not shown before the click.
 2. After Check: right or wrong, the explanation for the chosen answer, the item locks (no second scoring).
-3. **Next** switches to the next item **inside the widget**: no message, no new widget, no extra confirmation. Keep the answered items' answer, result and confidence in the widget's state.
+3. **Next** updates the question shown inside the existing widget and keeps the answered items' answer, result and confidence locally; it does not invoke the host's chat-reply action.
 4. After the last item: a **summary** in the same widget: score (right / N), the wrong items with their point names, weak points (any point missed, and any confident miss first), and one **Finish** button.
 5. Finish sends **one** line (same button rule as section 4: disabled only while sending, "Send again" afterwards, the same line in a read-only field as fallback):
 
@@ -133,7 +133,7 @@ Record per knowledge point (`interaction-fit.md` section 6): `interaction_select
    closebook section · <section_id> · <right>/<N> · <item_id> <answer> <result> c<n>; <item_id> <answer> <result> c<n>; …
    ```
 
-   On Codex and ChatGPT this is the only confirmation dialog of the whole section; on Claude Code there is none.
+   Finish invokes the host's documented reply action once for the section summary and follows that host's confirmation flow.
 
 **Stop early.** Mark each item with its point's importance. When a `core` item is answered wrong with confidence 3, show, next to Next, a button **Stop and explain this** (先讲这个); it sends the same summary line with ` · stopped_at <item_id>` for the items done so far. Otherwise the review runs to the end and the misconception is taught right after it.
 

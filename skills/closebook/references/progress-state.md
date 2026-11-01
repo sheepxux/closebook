@@ -46,7 +46,7 @@ Compact rules: drop extension fields; drop core fields that are empty or default
 
 | Event | Write |
 |---|---|
-| Opening confirmed | Create the file / state: topic, points with type and importance, `status` (`optional_extension` for trimmed points, `planned` for later points on a learning path), `created`, `settings` (on the teach route, `teach_pace` once the learner has chosen `step` or `section`; it is then never asked again) |
+| Opening confirmed | Create the file / state: topic, points with type and importance, `status` (`optional_extension` for trimmed points, `planned` for later points on a learning path), `created`, `settings` (on the teach route, `teach_pace` once the learner has chosen `step` or `section`; later sessions reuse the saved value instead of asking again) |
 | Check after a teaching chunk | attempt with `phase: "teach_check"`; no box, mastery or error update; until the point's first retest, it is due the next day |
 | Each answer | Append an attempt (`at`, `phase`, `result`, `hint_level`, `confidence` for right/wrong questions, `error_type` if wrong). Then update box, `next_review`, `mastery`, `priority_flag` |
 | Error | Append to `errors[]` with remedy |
