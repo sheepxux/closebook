@@ -223,6 +223,34 @@ class TeachChunks(unittest.TestCase):
         del self.lesson["knowledge_points"][1]["teach"]["chunks"][0]["analogy_limit"]
         self.assertIn("analogy_limit", str(errors(self.lesson)))
 
+    def test_sections_must_name_real_points_once(self):
+        self.lesson["teach_pace"] = "section"
+        self.lesson["sections"] = [{"title": "一节", "points": ["kp-build", "nope"]}, {"title": "二节", "points": ["kp-build"]}]
+        text = str(errors(self.lesson))
+        self.assertIn("unknown knowledge point id nope", text)
+        self.assertIn("kp-build appears in two sections", text)
+
+    def test_sections_warnings(self):
+        self.lesson["sections"] = [{"title": "一节", "points": ["kp-build"]}]
+        text = str(warnings(self.lesson))
+        self.assertIn("only with teach_pace section", text)
+        self.assertIn("form their own sections: kp-filter", text)
+        self.lesson["teach_pace"] = "section"
+        self.lesson["sections"] = [{"title": "一节", "points": ["kp-build", "kp-filter"]}]
+        for kp in self.lesson["knowledge_points"]:
+            chunks = kp["teach"]["chunks"]
+            chunks.extend(copy.deepcopy(chunks[0]) for _ in range(3))
+            for n, chunk in enumerate(chunks[-3:]):
+                chunk["check"]["id"] = "%s-extra-%d" % (kp["id"], n)
+        self.assertIn("section has 9 chunks", str(warnings(self.lesson)))
+
+    def test_section_pace_needs_chunks(self):
+        for kp in self.lesson["knowledge_points"]:
+            del kp["teach"]
+        self.lesson["teach_pace"] = "section"
+        self.assertIn("nothing to read as a section", str(warnings(self.lesson)))
+        self.assertEqual(errors(self.lesson), [])
+
     def test_length_reasons_count_and_mode_warn(self):
         self.chunks[0]["explain"] = "很长的讲解。" * 100
         self.chunks[1]["worked"][0].pop("why")

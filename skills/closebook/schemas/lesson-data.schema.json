@@ -14,6 +14,21 @@
     "created": { "$ref": "progress.schema.json#/$defs/date" },
     "mode": { "type": "string", "enum": ["learn", "review"], "description": "learn = teaching (if any) before questions; review = questions first, explanation only afterwards." },
     "intro": { "type": "string" },
+    "teach_pace": { "type": "string", "enum": ["step", "section"], "description": "Teach route only. step (default): one chunk is read, then its check. section: all chunks of a section's points are read together, then one check per point (the point's last chunk's check); a point missed twice drops to step. See references/new-learning.md section 3." },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Optional grouping for teach_pace section: 2-4 related points per section, by knowledge point id, in teaching order. Without it, consecutive points with chunks are grouped automatically, up to 4 per section.",
+      "items": {
+        "type": "object",
+        "required": ["title", "points"],
+        "additionalProperties": false,
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "points": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "type": "string" } }
+        }
+      }
+    },
     "knowledge_points": {
       "type": "array",
       "minItems": 1,

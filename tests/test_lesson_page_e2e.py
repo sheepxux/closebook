@@ -743,6 +743,67 @@ class LessonPageE2E(unittest.TestCase):
         page.locator("ol.stepper button").nth(0).click()
         self.assertIn("prices = [5, 12, 8]", body())
 
+    def test_section_pace_reads_the_section_then_checks_each_point(self):
+        lesson = progress_tool.load_json(NEW_LEARNER)
+        lesson["teach_pace"] = "section"
+        page = self.open(_build(lesson, self.tmp.name, "new-learner-section.html"))
+        body = lambda: page.locator("body").inner_text()  # noqa: E731
+        conf = lambda c: page.locator("label.chip", has_text=c).click()  # noqa: E731
+        answer = lambda text: (page.get_by_placeholder("你的答案").fill(text), conf("2 · 比较确定"), self.btn(page, "提交").click())  # noqa: E731
+
+        # both points' chunks are read together, with no question in sight
+        self.assertIn("第 1/1 节", body())
+        self.assertIn("先建一个空列表", body())
+        self.assertIn("在末尾加 if", body())
+        self.assertEqual(page.get_by_placeholder("你的答案").count(), 0)
+        self.btn(page, "读完了，合上这一节逐点检查").click()
+        self.assertNotIn("先建一个空列表", body(), "the section is hidden during the checks")
+        self.assertIn("第 1/2 题", body())
+        self.assertIn("讲解已合上", body())
+
+        # the first check is point 1's last chunk; one miss shows the reteach, a second offers to slow down
+        answer("[w for w in words]")
+        self.assertIn("不对", page.locator(".result").inner_text())
+        self.assertIn("换个讲法", body())
+        self.assertEqual(self.btn(page, "放慢：一段一题").count(), 0)
+        self.btn(page, "再试一次").last.click()  # the retry under the re-explanation
+        answer("words.upper()")
+        self.assertIn("错了两次", body())
+        self.btn(page, "放慢：一段一题").click()
+
+        # point 1 now goes one chunk at a time with every check; point 2 keeps the section pace
+        self.assertIn("第 1/2 段", body())
+        self.assertIn("先建一个空列表", body())
+        self.btn(page, "读完了，合上讲解做一题").click()
+        answer("[11, 12, 13]")
+        self.assertIn("正确", page.locator(".result").inner_text())
+        self.btn(page, "下一段").click()
+        self.assertIn("第 2/2 段", body())
+        self.btn(page, "读完了，合上讲解做一题").click()
+        answer("[w.upper() for w in words]")
+        self.assertIn("正确", page.locator(".result").inner_text())
+        self.btn(page, "继续讲下一个点").click()
+        self.assertIn("第 2/2 题", body())
+        self.assertNotIn("在末尾加 if", body(), "point 2's chunk stays hidden for its check")
+        page.get_by_placeholder("数字或算式，如 0.75、3/4、2*pi").fill("2")
+        conf("2 · 比较确定")
+        self.btn(page, "提交").click()
+        self.assertIn("正确", page.locator(".result").inner_text())
+        self.assertEqual(self.progress(page), "已作答 0 / 2 题", "checks are not retest items")
+        self.btn(page, "全部讲完了，合上讲解开始做题").click()
+        self.assertIn("prices = [5, 12, 8]", body(), "retests start once every point is taught")
+
+        export = self.export_json(page)
+        self.assertEqual(progress_tool.validate_export(export), [])
+        self.assertEqual([a["phase"] for a in export["attempts"]], ["teach_check"] * 5)
+        self.tab(page, "错题").click()
+        self.assertIn("还没有错题", body())
+
+        page.reload()
+        self.tab(page, "学习").click()
+        page.locator("ol.stepper button").nth(1).click()
+        self.assertNotIn("第 1/1 节", body(), "the section stays closed after a reload")
+
     def test_works_when_storage_is_blocked(self):
         context = self.browser.new_context()
         self.addCleanup(context.close)

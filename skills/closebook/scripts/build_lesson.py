@@ -427,6 +427,34 @@ def check_lesson(lesson: Any) -> List[Issue]:
             item_ids.add(check["id"])
             _check_item(chunk["check_type"], check, cpath + ".check", err, warn)
 
+    pace = lesson.get("teach_pace", "step")
+    chunk_count = {kp["id"]: len((kp.get("teach") or {}).get("chunks") or []) for kp in lesson["knowledge_points"]}
+    chunked_ids = [kp_id for kp_id, count in chunk_count.items() if count]
+    sections = lesson.get("sections") or []
+    if sections and pace != "section":
+        warn("$.sections", "sections are used only with teach_pace section")
+    if pace == "section" and not chunked_ids:
+        warn("$.teach_pace", "section pace needs points with teach.chunks; nothing to read as a section")
+    if pace == "section" and lesson.get("mode") == "review":
+        warn("$.teach_pace", "teaching chunks are shown only in learn mode")
+    placed = set()
+    for s, sec in enumerate(sections):
+        spath = "$.sections[%d]" % s
+        for kp_id in sec["points"]:
+            if kp_id not in chunk_count:
+                err(spath, "unknown knowledge point id %s" % kp_id)
+            elif kp_id in placed:
+                err(spath, "point %s appears in two sections" % kp_id)
+            elif not chunk_count[kp_id]:
+                warn(spath, "point %s has no teach.chunks, so the page has nothing to read for it in this section" % kp_id)
+            placed.add(kp_id)
+        total = sum(chunk_count.get(kp_id, 0) for kp_id in sec["points"])
+        if total > 8:
+            warn(spath, "section has %d chunks; keep a section to about 8 chunks (references/new-learning.md section 3)" % total)
+    left_out = [kp_id for kp_id in chunked_ids if kp_id not in placed]
+    if sections and left_out:
+        warn("$.sections", "points with chunks in no section form their own sections: %s" % ", ".join(left_out))
+
     for section in ("free_recall", "plain_talk"):
         if section not in lesson:
             continue

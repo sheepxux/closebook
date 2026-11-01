@@ -155,6 +155,7 @@ textarea:focus-visible, input[type="text"]:focus-visible { outline: none; }
 .teach details[open] summary { margin-bottom: 4px; }
 .card > .teach:first-child { margin-top: 0; }
 .chunk-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.section-kp { margin: 20px 0 0; font-size: 1rem; }
 .chunk-head h3 { margin: 0; }
 .checklist label { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; }
 .checklist input { margin-top: 6px; accent-color: var(--ink); }
@@ -403,6 +404,9 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       checkNote: 'Checks don\'t count toward your review schedule; they show whether this part landed.',
       chunkHidden: 'explanation hidden', workedTitle: 'Worked example', whyStep: 'Why this step? Think first, then open',
       reteachTitle: 'Another way to see it', nextChunk: 'Next part',
+      sectionOf: 'Section {n} of {total}', sectionPace: 'By section: read the whole section, then one check per point.',
+      sectionReadDone: 'Done reading: hide the section and check each point', sectionCheckOf: 'check {n} of {total}', nextCheck: 'Next check',
+      slowDown: 'Missed twice: this point now goes one part at a time, with a check after each part.', slowDownBtn: 'Slow down: one part at a time',
       closedBook: 'Answer from memory; looking it up turns this into reading practice.',
       confidence: 'How sure are you?', conf1: '1 · guessing', conf2: '2 · fairly sure', conf3: '3 · certain',
       check: 'Check', hint: 'Show a hint', hintLabel: 'Hint: ',
@@ -484,6 +488,9 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       checkNote: '小检查不计入复习安排，只看这一段讲明白没有。',
       chunkHidden: '讲解已合上', workedTitle: '例题拆解', whyStep: '为什么要这一步？先想一想再展开',
       reteachTitle: '换个讲法', nextChunk: '下一段',
+      sectionOf: '第 {n}/{total} 节', sectionPace: '按节学：先读完整节，再每个点各检查一题。',
+      sectionReadDone: '读完了，合上这一节逐点检查', sectionCheckOf: '第 {n}/{total} 题', nextCheck: '下一题',
+      slowDown: '这个点错了两次：改为一段一题，放慢讲。', slowDownBtn: '放慢：一段一题',
       closedBook: '请凭记忆作答；翻材料就变成了阅读练习。',
       confidence: '你有多确定？', conf1: '1 · 猜的', conf2: '2 · 比较确定', conf3: '3 · 很确定',
       check: '提交', hint: '给个提示', hintLabel: '提示：',
@@ -563,7 +570,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   var RESULTS = ['correct', 'partial', 'incorrect', 'dont_know', 'coherent', 'partly_coherent', 'incoherent'];
 
   var data, T, storeKey, uid = 0;
-  var state = { attempts: [], seq: 0, ui: {}, tab: 'learn', kp: 0, ptViewed: {}, teach: {}, recall: {}, pt: {}, storage: false };
+  var state = { attempts: [], seq: 0, ui: {}, tab: 'learn', kp: 0, ptViewed: {}, teach: {}, sec: {}, recall: {}, pt: {}, storage: false };
 
   // ---------- helpers ----------
   function h(tag, attrs) {
@@ -658,7 +665,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   function save() {
     try {
       window.localStorage.setItem(storeKey, JSON.stringify({ v: 1, attempts: state.attempts, seq: state.seq, ui: state.ui,
-        ptViewed: state.ptViewed, teach: state.teach, recall: state.recall, pt: state.pt }));
+        ptViewed: state.ptViewed, teach: state.teach, sec: state.sec, recall: state.recall, pt: state.pt }));
       state.storage = true;
     } catch (e) { state.storage = false; }
   }
@@ -669,7 +676,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       if (!raw) return;
       var saved = JSON.parse(raw);
       if (!saved || saved.v !== 1) return;
-      ['attempts', 'seq', 'ui', 'ptViewed', 'teach', 'recall', 'pt'].forEach(function (k) { if (saved[k] !== undefined) state[k] = saved[k]; });
+      ['attempts', 'seq', 'ui', 'ptViewed', 'teach', 'sec', 'recall', 'pt'].forEach(function (k) { if (saved[k] !== undefined) state[k] = saved[k]; });
     } catch (e) { state.storage = false; }
   }
   function themePref(value) {
@@ -1829,6 +1836,7 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
 
   function renderLearn(panel) {
     var kps = data.knowledge_points;
+    syncSection();
     var kp = kps[state.kp] || kps[0];
     panel.appendChild(h('nav', { 'aria-label': T.pointsNav }, h('ol', { class: 'stepper' }, kps.map(function (k, i) {
       var status = kpStatus(k), label = (i + 1) + '. ' + k.title + ' · ' + T.kpStatus[status];
@@ -1848,6 +1856,8 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
     var tstate = state.teach[kp.id] || (state.teach[kp.id] = { step: 0, closed: false });
     var review = data.mode === 'review';
     if (chunked(kp) && !tstate.closed) {
+      if (sectionPace() && !tstate.stepped && renderSection(panel, kp)) return;
+      if (tstate.stepped) panel.appendChild(h('p', { class: 'small muted' }, T.slowDown));
       renderChunks(panel, kp, teach.chunks, tstate);
       return;
     }
@@ -1950,6 +1960,131 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
       save(); render(true);
     } }, !last ? T.nextChunk : others.length ? T.teachNext : T.allTaught)));
     panel.appendChild(after);
+  }
+
+  // ---------- section pace: read a section of points, then one check per point ----------
+  function sectionPace() { return data.mode !== 'review' && data.teach_pace === 'section'; }
+
+  function sectionsOf() {
+    var kps = data.knowledge_points, out = [], used = {};
+    (data.sections || []).forEach(function (s) {
+      var idx = [];
+      (s.points || []).forEach(function (id) {
+        kps.forEach(function (k, i) { if (k.id === id && chunked(k) && !used[i]) { idx.push(i); used[i] = true; } });
+      });
+      if (idx.length) out.push({ title: s.title || '', idx: idx });
+    });
+    var rest = [];
+    kps.forEach(function (k, i) { if (chunked(k) && !used[i]) rest.push(i); });
+    while (rest.length) out.push({ title: '', idx: rest.splice(0, 4) });
+    out.sort(function (a, b) { return a.idx[0] - b.idx[0]; });
+    return out;
+  }
+
+  function sectionFor(i) {
+    var all = sectionsOf();
+    for (var n = 0; n < all.length; n++) if (all[n].idx.indexOf(i) >= 0) return { n: n, total: all.length, sec: all[n] };
+    return null;
+  }
+
+  function secState(sec) {
+    var key = data.knowledge_points[sec.idx[0]].id;
+    return state.sec[key] || (state.sec[key] = { checking: false });
+  }
+
+  function tstateOf(kp) { return state.teach[kp.id] || (state.teach[kp.id] = { step: 0, closed: false }); }
+
+  function openPoints(sec) {
+    return sec.idx.filter(function (i) { var t = state.teach[data.knowledge_points[i].id]; return !(t && t.closed); });
+  }
+
+  function firstCheckable(sec) {
+    return openPoints(sec).filter(function (i) { var t = state.teach[data.knowledge_points[i].id]; return !(t && t.stepped); })[0];
+  }
+
+  function syncSection() {
+    if (!sectionPace()) return;
+    var kp = data.knowledge_points[state.kp];
+    if (!kp || !chunked(kp)) return;
+    var t = state.teach[kp.id];
+    if (t && t.closed) return;
+    if (t && t.stepped) return;
+    var info = sectionFor(state.kp);
+    if (!info || !secState(info.sec).checking) return;
+    var target = firstCheckable(info.sec);
+    if (target !== undefined) state.kp = target;
+  }
+
+  function missesOf(kp, item) {
+    return state.attempts.filter(function (a) {
+      var p = String(a.id || '').split('~');
+      return p[1] === kp.id && p[2] === item.id && a.result !== 'correct';
+    }).length;
+  }
+
+  function renderSection(panel, kp) {
+    var kps = data.knowledge_points, info = sectionFor(state.kp);
+    if (!info) return false;
+    var sec = info.sec, S = secState(sec);
+    var headLine = fmt(T.sectionOf, { n: info.n + 1, total: info.total }) + (sec.title ? ' · ' + sec.title : '');
+    if (!S.checking) {
+      var card = h('section', { class: 'card' });
+      card.appendChild(h('p', { class: 'small muted' }, h('strong', null, headLine), h('br'), T.sectionPace));
+      sec.idx.forEach(function (i) {
+        var k = kps[i];
+        card.appendChild(h('h3', { class: 'section-kp' }, (i + 1) + '. ' + k.title));
+        k.teach.chunks.forEach(function (c, j) { card.appendChild(chunkBody(c, j + 1, k.teach.chunks.length)); });
+      });
+      card.setAttribute('tabindex', '-1');
+      card.setAttribute('data-focus', '1');
+      card.appendChild(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', onclick: function () {
+        S.checking = true; save(); render(true);
+      } }, T.sectionReadDone)));
+      panel.appendChild(card);
+      return true;
+    }
+    var target = firstCheckable(sec);
+    if (target === undefined || target !== state.kp) return false;
+    var tk = kps[target], chunks = tk.teach.chunks, chunk = chunks[chunks.length - 1];
+    var u = state.ui[keyOf(tk, chunk.check)];
+    var probe = Object.create(tk);
+    probe.interaction_type = chunk.check_type;
+    probe.teachCheck = true;
+    var check = renderItem(probe, chunk.check, function (focusItem) { render(focusItem); });
+    var where = [headLine, fmt(T.sectionCheckOf, { n: sec.idx.indexOf(target) + 1, total: sec.idx.length }), tk.title,
+      u && u.done ? '' : T.chunkHidden].filter(Boolean).join(' · ');
+    check.insertBefore(h('p', { class: 'small muted' }, h('strong', null, T.checkTitle), ' · ' + where, h('br'), T.checkNote), check.firstChild);
+    panel.appendChild(check);
+    if (!u || !u.done) return true;
+    var after = h('section', { class: 'card' });
+    if (u.result !== 'correct') {
+      if (missesOf(tk, chunk.check) >= 2) {
+        after.appendChild(h('p', null, T.slowDown));
+        after.appendChild(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', 'data-focus': '1', onclick: function () {
+          var t = tstateOf(tk);
+          t.stepped = true; t.chunk = 0; t.checking = false;
+          chunks.forEach(function (c) { delete state.ui[keyOf(tk, c.check)]; });
+          save(); render(true);
+        } }, T.slowDownBtn)));
+      } else {
+        after.appendChild(chunk.reteach ? h('div', { class: 'teach' }, h('h3', null, T.reteachTitle), h('p', null, rich(chunk.reteach)))
+          : chunkBody(chunk, chunks.length, chunks.length));
+        after.appendChild(h('div', { class: 'row' }, retryButton(u, function (focusItem) { render(focusItem); })));
+      }
+      panel.appendChild(after);
+      return true;
+    }
+    var left = untaught().filter(function (i) { return i !== target; });
+    var inSection = left.filter(function (i) { return sec.idx.indexOf(i) >= 0; });
+    after.appendChild(h('div', { class: 'row' }, h('button', { type: 'button', class: 'btn', 'data-focus': '1', onclick: function () {
+      tstateOf(tk).closed = true;
+      var rest = untaught();
+      if (rest.length) state.kp = rest[0];
+      else kps.some(function (k, i) { return chunked(k) && ((state.kp = i), true); });
+      save(); render(true);
+    } }, inSection.length ? T.nextCheck : left.length ? T.teachNext : T.allTaught)));
+    panel.appendChild(after);
+    return true;
   }
 
   function renderTeach(teach, tstate, gate) {
