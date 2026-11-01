@@ -11,7 +11,7 @@
 
 closebook 只有一个目标：让你学的东西真正记住、真正理解，而且花的时间最少。
 
-学习研究里效果最好的方法都有一个共同点：要你自己把答案"想出来"，而不是再读一遍。读 AI 写的总结感觉像在学习，其实多半只是"眼熟"。所以你让助手帮你学时，closebook 会先把材料拆成几个知识点，每个点先让你作答，再针对你的漏洞简短讲解，然后合上资料重测，并把下次复习时间写进一份由你保存的进度文件。不同知识用不同方法：术语用回忆卡片，概念用追问和费曼讲解，操作用先预测再验证，时间花在你还没掌握的地方。
+学习研究里效果最好的方法都有一个共同点：要你自己把答案"想出来"，而不是再读一遍。读 AI 写的总结感觉像在学习，其实多半只是"眼熟"。但完全没学过的东西也没法"想出来"，所以 closebook 按你的意图分两条路：说"教我 / 我想学"，它先分小段讲，每段讲完马上用一道小题检查，讲完再合上资料正式考；说"考考我 / 练习 / 复习"，它直接出题，先让你作答，再针对你的漏洞简短讲解，然后合上资料重测。两条路最后都会把下次复习时间写进一份由你保存的进度文件。不同知识用不同方法：术语用回忆卡片，概念用追问和费曼讲解，操作用先预测再验证，时间花在你还没掌握的地方。
 
 整个 skill 就是一个文件夹（[`skills/closebook`](skills/closebook)），可用于 Claude、ChatGPT / Codex、Gemini，以及任何能粘贴自定义指令的助手。教学流程只需要纯文本；脚本和 HTML 练习页都是可选的增强。
 
@@ -60,11 +60,21 @@ Use Simplified Chinese for all progress updates, questions, and the final respon
 > **closebook：** 你很确定，而这恰好是最常见的混淆，值得现在纠正。`no-cache` 其实**会**存下响应，只是每次复用前都要先问服务器；"完全不存"的是 `no-store`。例子：`index.html` 设成 `no-cache`，每次访问都会发一个条件请求，文件没变时服务器只回一个很小的 `304`。
 > 重测，继续合着笔记：某个响应带 `no-store`，用户刷新页面，浏览器能拿到 `304` 吗？为什么？请附上把握程度。
 
+从零开始学时，流程反过来，先讲后考，但每次只讲一小段：
+
+> **你：** 特征值和特征向量我完全没学过，30 分钟，直接开始。
+>
+> **closebook：** 那我先讲一小块，讲完马上考你一题。取矩阵 A = [[2, 0], [0, 3]]，它把 (1, 0) 变成 (2, 0)：方向没变，只是变长了 2 倍；而 (1, 1) 变成 (2, 3)，方向变了。被 A 作用后方向不变、只被放大或缩小的非零向量叫**特征向量**，放大的倍数叫**特征值**：A·v = λ·v。
+> 先别往上看：矩阵 B = [[3, 1], [0, 2]]，(1, 0) 是不是 B 的特征向量？如果是，特征值是多少？附上把握程度 1–3。
+
+答对就讲下一段，答错就换个例子重讲再查一次。这些小检查不计入复习安排；一个知识点讲完，才合上讲解做正式重测。想学一整门学科时，它先排出按先修顺序的学习路径，今天只讲时间够的部分，剩下的留到以后。
+
 结束时会有一段简短的综合（用自己的话把整个主题讲一遍，或列出你记得的内容），一份带真实日期的复习清单，例如 `2026-11-01：第 1 点（高信心错误优先）`，以及你的进度：要么是一个文件，要么是一段紧凑的 JSON，下次粘贴回来即可。
 
 ## 它做什么
 
-- **先输出。** 诊断，然后是最少的反馈（哪里对、缺了什么、一个例子加一句原理），再合上资料重测。你没答的题，它绝不提前给答案；每次只问一个开放问题。
+- **新东西分小段教。** 每段只讲一件事，先给具体例子再说规律；操作类给带理由的例题（练习页上先想再展开"为什么"），之后逐步减少提示。每段讲完立刻用一个讲解里没出现过的例子检查，答错换个讲法。只给主题时会说明讲解来自通用知识，会变的事实（版本、法规、剂量）提示你核对最新来源。
+- **学过的东西先输出。** 诊断，然后是最少的反馈（哪里对、缺了什么、一个例子加一句原理），再合上资料重测。你没答的题，它绝不提前给答案；每次只问一个开放问题。
 - **按知识点选方法。** 事实和术语表用回忆、闪卡和记忆技巧，不硬套类比。概念用"为什么"追问和费曼讲解。操作步骤用先预测再验证。架构先让你填图，再给完整图。有争议的内容用开放论证，按论证是否自洽来评，不设标准答案，也不出选择题。
 - **诚实的反馈。** 语气鼓励，但答错就是答错。高信心答错会被标记，复习时排在最前。
 - **间隔复习。** Leitner 盒子（1 → 3 → 7 → 14 → 30 天），由作答历史重放计算，支持交错练习和信心校准反馈。
@@ -96,7 +106,7 @@ python3 tools/package_skill.py   # 生成 dist/closebook.zip 和 dist/closebook-
 
 安装路径已在 2026-10-31 对照官方文档核实（[记录](docs/platform-verification.md)）。平台变化很快，所以每份说明都给每条结论标了"已核实（附来源）"或"未核实"。
 
-**试一试：**"考考我这份笔记""帮我准备周五的考试""Quiz me on these notes"，或者带着进度文件回来说"复习"。只想要总结的话，直接要总结，然后拒绝它的提议即可。
+**试一试：**"教我 Python 列表推导式，我零基础""考考我这份笔记""帮我准备周五的考试""Quiz me on these notes"，或者带着进度文件回来说"复习"。只想要总结的话，直接要总结，然后拒绝它的提议即可。
 
 ## 进度由你保存
 
@@ -115,7 +125,7 @@ python3 skills/closebook/scripts/progress_tool.py apply-grading closebook-progre
 
 <p align="center"><img src="docs/images/lesson-page.jpg" alt="closebook 练习页：请求流程中有一步空着，等你预测" width="720"></p>
 
-当环境能生成文件时，skill 写出课程数据，由 [`build_lesson.py`](skills/closebook/scripts/build_lesson.py) 嵌入[模板](skills/closebook/assets/lesson-template.html)，得到一个离线可用的单文件 HTML：不发任何网络请求，支持浅色/深色主题、键盘操作和手机布局。可以直接打开 [`examples/http-cache-lesson.html`](examples/http-cache-lesson.html) 试试。没有文件能力时，同样的题目以纯文本进行。
+当环境能生成文件时，skill 写出课程数据，由 [`build_lesson.py`](skills/closebook/scripts/build_lesson.py) 嵌入[模板](skills/closebook/assets/lesson-template.html)，得到一个离线可用的单文件 HTML：不发任何网络请求，支持浅色/深色主题、键盘操作和手机布局。可以直接打开 [`examples/http-cache-lesson.html`](examples/http-cache-lesson.html) 试试；零基础先讲后练的版本见 [`examples/new-learner-lesson.html`](examples/new-learner-lesson.html)。没有文件能力时，同样的题目以纯文本进行。
 
 有标准答案的题由页面自己判对错（选择、填空、数值、排序、命令、目标曲线）；闪卡和文字作答先由你自评。文字作答还可以交给教练批改：导出“我的作答”，粘贴到对话；再把教练回复的批改结果粘回页面。每题会显示教练的判定和点评，错题本和复习计划也随之更新。这是一次复制粘贴的来回，不是实时批改，所以页面仍然离线、不需要 API Key。
 
@@ -148,7 +158,7 @@ skills/closebook/        skill 本体（安装的就是这个文件夹）
   scripts/               progress_tool.py、build_lesson.py（Python 3.8+，仅标准库）
   assets/                lesson-template.html
   agents/openai.yaml     Codex 展示信息
-  evals/                 22 个行为评测（不打进 ZIP）
+  evals/                 26 个行为评测（不打进 ZIP）
 adapters/                各平台安装与能力说明
 docs/                    设计决策、平台核实记录、验证报告、评测结果
 examples/                生成好的练习页
@@ -168,7 +178,7 @@ python3 -m unittest discover -s tests
 pip install playwright && python3 -m playwright install chromium-headless-shell
 ```
 
-行为评测在 [`skills/closebook/evals`](skills/closebook/evals)，采用 skill-creator 格式，覆盖各场景模式、只要总结、带进度文件回来复习、术语表、争议材料、用户坚持不合适的方法、混合材料、架构图、纯文本环境、小白模式和聊天导出。最新结果以及未能核实的部分见[验证报告](docs/validation-report.md)。修改 skill 文本前请先看 [CONTRIBUTING.md](CONTRIBUTING.md)。
+行为评测在 [`skills/closebook/evals`](skills/closebook/evals)，采用 skill-creator 格式，覆盖各场景模式、新学与练习的分流、只要总结、带进度文件回来复习、术语表、争议材料、用户坚持不合适的方法、混合材料、架构图、纯文本环境、小白模式和聊天导出。最新结果以及未能核实的部分见[验证报告](docs/validation-report.md)。修改 skill 文本前请先看 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 许可证
 

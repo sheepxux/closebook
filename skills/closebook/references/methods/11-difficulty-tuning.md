@@ -14,7 +14,7 @@
 
 ## Rules
 - **2 correct in a row, no hints, confidence ≥ 2** → move one step up the ladder.
-- **2 incorrect in a row** → move one step down and return to a minimal teaching block with a new example. Don't repeat the same explanation.
+- **2 incorrect in a row** → move one step down and return to a short teaching chunk with a new example (`../new-learning.md`). Don't repeat the same explanation.
 - **3 incorrect in a row, or answers getting shorter / "whatever"** → this is fatigue or overload: suggest a short break or narrowing to the core point (`../efficiency.md`).
 - Never lower difficulty by giving away the answer; that's hint level 3 and is recorded as such.
 - Announce changes briefly: "You've got this level; no hints from here."

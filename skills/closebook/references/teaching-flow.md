@@ -4,7 +4,7 @@ This file expands the flow in `SKILL.md`. Everything here runs in plain text; in
 
 ## Contents
 1. Opening
-2. Entry paths A and B
+2. Routes: practice (A) and teach (B)
 3. The per-point loop
 4. Synthesis and wrap-up
 5. Review flow
@@ -42,24 +42,33 @@ c) Any change to the list? ("drop 3", "merge 1 and 2")
 
 If you have no reliable date: add "d) What's today's date? (I use it to schedule reviews.)"
 
+Drop b) when the request already settled the route (section 2). On the teach route, replace it with: "b) Already know any of these? Tell me which and I'll test those instead of teaching them." Approach notes on the teach route say "explain → check → …" so the learner can see teaching comes first.
+
 **Applying the answer**
 - 15 min → core points only; one retest each; no synthesis beyond 2–3 sentences.
 - 30 min → 3–4 points; synthesis.
 - 60 min → up to 5 points; synthesis; optional mini project or Plain Talk.
 - See `efficiency.md` for the full time budget.
 
-If the learner ignores the questions and just says "start", default to 30 minutes, path A, and the outline as proposed, and say so in one line.
+If the learner ignores the questions and just says "start", default to 30 minutes, the route from section 2, and the outline as proposed, and say so in one line.
 
-## 2. Entry paths
+## 2. Routes: practice (A) and teach (B)
 
-**A — has studied the material (default).** Go straight to the diagnostic question for point 1.
+The learner's intent picks the route; what they say about prior knowledge overrides the wording.
 
-**B — completely new.** For each point, before the diagnostic:
-- Minimal teaching block: ≤ ~150 words. One concrete example + one sentence of the underlying principle. No history, no caveats list, no "in summary".
-- Then go directly to a retest-style question (the diagnostic is skipped for path B because there's nothing to diagnose yet).
-- Why: retrieval needs something to retrieve. The block is a seed, not a summary of the material.
+| Signal | Route |
+|---|---|
+| "teach me", "I want to learn X", "get me started", "from scratch", 教我、我想学、入门、从零学、零基础 | **B — teach, then test** |
+| "quiz me", "test me", "practice", "review", "drill", "help me memorize", 考考我、练习、刷题、复习、背、测验、备考 | **A — practice** |
+| "learn X" + "I've studied it / it's shaky / I know the basics" | A |
+| "quiz me" + "never seen it" | B; say in one line that you'll explain first because there's nothing to retrieve yet |
+| Material supplied, "help me study this", no signal either way | Ask familiarity in the opening; if they just say "start", B for material they haven't read, A for their own notes |
 
-Mixed familiarity ("I know 1 and 2, never saw 3"): path A for 1–2, path B for 3.
+**A — practice (has met the material).** Go straight to the diagnostic question for point 1, then the loop in section 3.
+
+**B — teach, then test (new to the learner).** For each point: chunks with checks (`new-learning.md`), then the closed-book retest and judging of section 3, steps 3–4. The diagnostic is replaced by the chunk checks; a starting-point question is used only when it's unclear what the learner already knows.
+
+Mixed familiarity ("I know 1 and 2, never saw 3"): A for 1–2, B for 3. A point taught on route B in one session is reviewed like any other point afterwards: reviews always test first.
 
 ## 3. The per-point loop
 
@@ -143,10 +152,11 @@ One reply may contain feedback on the previous answer plus the next question. Th
 |---|---|
 | "Just tell me the answer" | Give it. Record `hint_level: 3`. One sentence: shown answers come back tomorrow. |
 | Learner wants to skip retest | Explain the cost in one sentence (no retest = no evidence it stuck). If they insist, skip and log in `user_overrides`. |
-| Three wrong in a row, or replies getting shorter | Lower difficulty, return to a minimal teaching block, or suggest a break / smaller scope (`efficiency.md`). |
+| Three wrong in a row, or replies getting shorter | Lower difficulty, return to a short teaching chunk with a new example (`new-learning.md`), or suggest a break / smaller scope (`efficiency.md`). |
+| Practice route, but the diagnostic shows the point is new to them | Switch that point to the teach route and say so in one line. |
 | Learner pastes the material back to answer | Gently note it's now open-book; record `hint_level: 3` for that answer. |
 | Material is wrong or outdated | Say so with the correction; don't test them on the wrong version. |
-| No material, only a topic | Build the outline from general knowledge; say the points are your proposal and may not match their course. |
-| Very long material | Pick 3–5 core points for today; list the rest as future sessions. |
+| No material, only a topic | Build the outline from general knowledge; say the points are your proposal and may not match their course. On the teach route follow the source rules in `new-learning.md`. |
+| Very long material or a whole subject | Pick what fits today; save the rest as `planned` points (`new-learning.md`, learning paths). |
 | Learner disputes your grading | Re-check. If they're right, correct the record and say so plainly. If not, explain once with evidence. |
 | Session interrupted | Save progress immediately with what exists; unfinished points keep `mastery: "not_assessed"`. |

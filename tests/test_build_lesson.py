@@ -20,6 +20,10 @@ EXAMPLE = os.path.join(ROOT, "skills", "closebook", "schemas", "examples", "less
 EXAMPLE_HTML = os.path.join(ROOT, "examples", "http-cache-lesson.html")
 SHOWCASE = os.path.join(ROOT, "tests", "fixtures", "showcase.lesson.json")
 SUBJECTS = os.path.join(ROOT, "skills", "closebook", "schemas", "examples", "lesson.subjects.json")
+NEW_LEARNER = os.path.join(ROOT, "skills", "closebook", "schemas", "examples", "lesson.new-learner.json")
+BUILT_EXAMPLES = [(EXAMPLE, EXAMPLE_HTML),
+                  (SUBJECTS, os.path.join(ROOT, "examples", "subject-widgets-lesson.html")),
+                  (NEW_LEARNER, os.path.join(ROOT, "examples", "new-learner-lesson.html"))]
 
 
 def errors(lesson):
@@ -43,17 +47,20 @@ class ExampleLessons(Fixtures):
         self.assertEqual(build_lesson.check_lesson(self.lesson), [])
         self.assertEqual(build_lesson.check_lesson(load_json(SHOWCASE)), [])
         self.assertEqual(build_lesson.check_lesson(load_json(SUBJECTS)), [])
+        self.assertEqual(build_lesson.check_lesson(load_json(NEW_LEARNER)), [])
 
     def test_template_demo_is_clean(self):
         with open(build_lesson.TEMPLATE, encoding="utf-8") as fh:
             demo = build_lesson.extract(fh.read())
         self.assertEqual(build_lesson.check_lesson(demo), [])
 
-    def test_built_example_matches_template(self):
+    def test_built_examples_match_template(self):
         with open(build_lesson.TEMPLATE, encoding="utf-8") as fh:
-            expected = build_lesson.embed(self.lesson, fh.read())
-        with open(EXAMPLE_HTML, encoding="utf-8") as fh:
-            self.assertEqual(fh.read(), expected, "rebuild examples/http-cache-lesson.html with build_lesson.py")
+            template = fh.read()
+        for source, built in BUILT_EXAMPLES:
+            with self.subTest(built=os.path.basename(built)), open(built, encoding="utf-8") as fh:
+                self.assertEqual(fh.read(), build_lesson.embed(load_json(source), template),
+                                 "rebuild %s with build_lesson.py" % os.path.relpath(built, ROOT))
 
     def test_template_is_self_contained(self):
         with open(build_lesson.TEMPLATE, encoding="utf-8") as fh:
@@ -181,6 +188,41 @@ class SchemaAndSemantics(Fixtures):
     def test_long_teaching_block_warns(self):
         self.kp("kp6")["teach"]["example"] = "很长的例子。" * 100
         self.assertIn("teaching block is long", str(warnings(self.lesson)))
+
+
+class TeachChunks(unittest.TestCase):
+    def setUp(self):
+        self.lesson = load_json(NEW_LEARNER)
+        self.chunks = self.lesson["knowledge_points"][0]["teach"]["chunks"]
+
+    def test_chunks_or_single_block_not_both(self):
+        self.lesson["knowledge_points"][0]["teach"]["example"] = "一个例子"
+        self.assertIn("either chunks or example", str(errors(self.lesson)))
+
+    def test_check_follows_its_type_rules(self):
+        self.chunks[0].update({"check_type": "mcq", "check": {"id": "c", "question": "?", "options": [
+            {"text": "a", "correct": True, "explanation": "x"}, {"text": "b", "correct": True, "explanation": "y"}]}})
+        self.assertIn("chunks[0].check", str(errors(self.lesson)))
+        self.assertIn("exactly one correct option", str(errors(self.lesson)))
+
+    def test_check_id_must_differ_from_items(self):
+        self.chunks[1]["check"]["id"] = "doubled"
+        self.assertIn("duplicate item id doubled", str(errors(self.lesson)))
+
+    def test_analogy_needs_its_limit(self):
+        del self.lesson["knowledge_points"][1]["teach"]["chunks"][0]["analogy_limit"]
+        self.assertIn("analogy_limit", str(errors(self.lesson)))
+
+    def test_length_reasons_count_and_mode_warn(self):
+        self.chunks[0]["explain"] = "很长的讲解。" * 100
+        self.chunks[1]["worked"][0].pop("why")
+        self.chunks.extend(copy.deepcopy(self.chunks[:2]))
+        for n, chunk in enumerate(self.chunks[2:]):
+            chunk["check"]["id"] = "extra-%d" % n
+        self.lesson["mode"] = "review"
+        text = str(warnings(self.lesson))
+        for expected in ("chunk is long", "worked steps without a why", "more than 3 chunks", "only in learn mode"):
+            self.assertIn(expected, text)
 
 
 class Expressions(unittest.TestCase):

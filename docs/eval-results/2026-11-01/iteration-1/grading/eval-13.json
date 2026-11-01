@@ -1,0 +1,37 @@
+{
+  "eval_id": 13,
+  "expectations": [
+    {
+      "text": "Outline has 3-5 points with at least three different knowledge types across them",
+      "passed": true,
+      "evidence": "Five points: 概念, 操作, 判断, 概念, 事实."
+    },
+    {
+      "text": "Default ports are treated as factual, commands as procedural, and volumes vs bind mounts as judgment (or equivalent reasoning)",
+      "passed": true,
+      "evidence": "\"[次要 · 事实] 常见默认端口\", \"[核心 · 操作] 常用命令\", \"[重要 · 判断] 命名卷 vs 绑定挂载\"."
+    },
+    {
+      "text": "States per-point method choices that differ by type (e.g. flashcards/retrieval for ports, predict or do-the-command for commands, why/trade-off questions for volumes)",
+      "passed": true,
+      "evidence": "预测 + 追问为什么 / 给场景写命令 / 选择并说理由 / 预测重跑 / 快问快答卡片."
+    },
+    {
+      "text": "Does not apply one identical method to every point",
+      "passed": true,
+      "evidence": "Methods differ per point."
+    },
+    {
+      "text": "Asks no more than the necessary opening questions (familiarity and time were given, so it should not re-ask them) and starts or offers to start immediately",
+      "passed": true,
+      "evidence": "Practice route (\"你学过一点，那我们就先考再讲\"); doesn't re-ask time or familiarity; ends with the first diagnostic."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "Regression check: practice route kept for 学过一点."
+}

@@ -4,6 +4,7 @@ Efficiency here means **fewer wasted actions and more time on weak spots**. It n
 
 ## 1. Diagnose before teaching
 - Teach only what the diagnosis shows is missing.
+- On the teach route the chunk checks do this job: two easy, confident checks in a row → skip the remaining worked examples for that point.
 - Known material gets exactly one confirming retest (`verify_known`), then you move on.
 
 ## 2. 80/20 trimming
@@ -20,6 +21,8 @@ Target 25–45 minutes of work per session. Rough plans:
 | 30 min | 3–4 | diagnose + feedback + 1–2 retests | Feynman or free recall | Plain Talk offer if ≥ 5 min left |
 | 60 min | up to 5 | full loop, optional methods | Feynman | mini project or Plain Talk; suggest a 5-min break at ~30 min |
 | Review | due items | retest first | none | calibration feedback if ≥ 5 rated answers |
+
+Teach route (new material) covers fewer points: 1 in 15 minutes, 2–3 in 30, 3–4 in 60 (`new-learning.md`).
 
 Review batch: default 8 questions (`settings.review_batch_size`), 4–5 for a 15-minute review.
 

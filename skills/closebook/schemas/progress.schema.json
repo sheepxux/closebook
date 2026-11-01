@@ -127,8 +127,8 @@
         "status": {
           "x-tier": "core",
           "type": "string",
-          "enum": ["active", "skipped_known", "optional_extension"],
-          "description": "Default active. optional_extension = trimmed by 80/20, not scheduled."
+          "enum": ["active", "skipped_known", "optional_extension", "planned"],
+          "description": "Default active. optional_extension = trimmed by 80/20, not scheduled. planned = later point on a learning path, not taught yet; becomes active with its first scored attempt."
         },
         "mastery": { "x-tier": "core", "type": "string", "enum": ["not_assessed", "weak", "fuzzy", "solid"] },
         "leitner_box": { "x-tier": "core", "type": "integer", "minimum": 0, "maximum": 5, "description": "0 = not scheduled yet." },
@@ -241,8 +241,8 @@
         "phase": {
           "x-tier": "core",
           "type": "string",
-          "enum": ["diagnostic", "verify_known", "retest", "review", "synthesis", "plain_talk_recall", "project"],
-          "description": "diagnostic never affects scheduling."
+          "enum": ["diagnostic", "teach_check", "verify_known", "retest", "review", "synthesis", "plain_talk_recall", "project"],
+          "description": "diagnostic and teach_check (the check after a teaching chunk) never affect scheduling."
         },
         "result": { "x-tier": "core", "$ref": "#/$defs/result" },
         "hint_level": { "x-tier": "core", "type": "integer", "minimum": 0, "maximum": 3, "description": "0 none, 1 keyword, 2 structure, 3 answer shown. Default 0." },
@@ -324,7 +324,7 @@
       "properties": {
         "date": { "$ref": "#/$defs/date" },
         "mode": { "type": "string", "enum": ["general", "exam", "coding", "language", "concept", "review"] },
-        "entry_path": { "type": "string", "enum": ["A", "B"] },
+        "entry_path": { "type": "string", "enum": ["A", "B"], "description": "A = practice route (test first), B = teach route (teach in chunks, then test)." },
         "minutes_planned": { "type": "integer", "minimum": 0 },
         "minutes_actual": { "type": "integer", "minimum": 0 },
         "platform_level": { "type": "integer", "minimum": 0, "maximum": 2 },

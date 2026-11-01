@@ -1,0 +1,37 @@
+{
+  "eval_id": 23,
+  "expectations": [
+    {
+      "text": "Treats the request as wanting to be taught: the outline or first message makes clear that it will explain first and check after each part",
+      "passed": true,
+      "evidence": "\"我按'先讲一小块，马上考一题'的方式带你学\"; each point's approach starts with 讲解 or 带讲解的完整例子."
+    },
+    {
+      "text": "Does not open by quizzing the learner on decorators themselves (a single starting-point question on a prerequisite such as functions is acceptable)",
+      "passed": true,
+      "evidence": "No content question; only setup questions."
+    },
+    {
+      "text": "Says, in about one sentence, that the outline or explanations come from general knowledge rather than the learner's course or material",
+      "passed": true,
+      "evidence": "\"讲解来自通用知识，不对应某门具体课程，示例按 Python 3 写\"."
+    },
+    {
+      "text": "Asks at most the necessary setup questions (e.g. time) in one message, or starts with one chunk and one check; never two open questions about the content",
+      "passed": true,
+      "evidence": "Three setup questions in one message (time, points already known, list changes), all from the teach-route opening; the \"can you run Python\" question from iteration 1 is gone."
+    },
+    {
+      "text": "Does not produce a long lecture covering several points",
+      "passed": true,
+      "evidence": "Outline only."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "Rerun after adding to modes/coding.md: \"Don't add 'can you run code?' to the opening questions; offer running it at the first predict item.\" Fresh subagent, same prompt. It adds closures as a prerequisite point, which is reasonable prerequisite ordering."
+}

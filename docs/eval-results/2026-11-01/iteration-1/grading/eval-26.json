@@ -1,0 +1,32 @@
+{
+  "eval_id": 26,
+  "expectations": [
+    {
+      "text": "Says in about one sentence that it will explain first because the learner hasn't met the material",
+      "passed": true,
+      "evidence": "\"你说完全没学过 Rust，现在还没有可以'考'的东西。所以我先讲一小块\"."
+    },
+    {
+      "text": "Does not ask a quiz or diagnostic question about ownership before explaining anything",
+      "passed": true,
+      "evidence": "The only question comes after the chunk."
+    },
+    {
+      "text": "Gives one short teaching chunk (one idea, a concrete code example before the rule) and then exactly one check question, without answering it",
+      "passed": true,
+      "evidence": "Chunk \"所有者与 move\" opens with the four-line String example, then the rule. Check: s1 → s2 → s3, then print s2, an unseen case; placeholder answer format."
+    },
+    {
+      "text": "Keeps scope to the 15 minutes: covers one point or plans at most two, without a long lecture",
+      "passed": true,
+      "evidence": "\"今天 15 分钟只做这一个\"; points 2–5 saved for later. The outline is long (5 lines) but only one chunk is taught."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Prior-knowledge statement overrode the verb 考考我, as intended."
+}

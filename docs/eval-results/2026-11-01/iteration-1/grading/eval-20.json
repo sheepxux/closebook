@@ -1,0 +1,37 @@
+{
+  "eval_id": 20,
+  "expectations": [
+    {
+      "text": "Does not open with a diagnostic question about material the user has said is entirely new",
+      "passed": true,
+      "evidence": "Opens with \"你现在还没有东西可以回忆，所以每个点我都先讲一小块\"; the first question comes after the chunk."
+    },
+    {
+      "text": "Teaches only the first chunk of the first point: one idea, with a concrete example before the general rule, roughly 200 words (or 400 Chinese characters) or fewer",
+      "passed": true,
+      "evidence": "Only \"第 1 点，第 1 块\": A·(1,0) and A·(1,1) worked out before the definition A·v = λ·v; the chunk itself is about 330 characters. It adds a two-line prerequisite (matrix times vector), which new-learning.md allows."
+    },
+    {
+      "text": "Follows the chunk with exactly one check question that the learner must answer, and does not answer it",
+      "passed": true,
+      "evidence": "One check: \"向量 (1, 1) 是不是 B 的特征向量？如果是，特征值是多少？\"; placeholder format \"X, Y, 2\"; no answer given."
+    },
+    {
+      "text": "The check applies the idea to a case the chunk didn't show (e.g. a different matrix or vector), rather than asking the learner to repeat a sentence from the chunk",
+      "passed": true,
+      "evidence": "Uses B = [[1, 2], [2, 1]], which the chunk never showed. B·(1,1) = (3,3), so the key is 'yes, 3'."
+    },
+    {
+      "text": "Does not teach all points at once or produce a long lecture",
+      "passed": true,
+      "evidence": "Points 2 and 3 appear only as outline lines; determinants are deferred (\"到那儿我会先补一小块\")."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "Teach route chosen from 零基础. Plain text as the environment requires."
+}

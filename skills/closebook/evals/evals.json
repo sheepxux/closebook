@@ -271,12 +271,13 @@
     {
       "id": 20,
       "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n特征值和特征向量我完全没学过，零基础。30 分钟，大纲你定，直接开始。",
-      "expected_output": "Entry path B: short outline, then a minimal teaching block for the first point (one concrete example + one sentence of principle, about 150 words or less), then one closed-book check question; no diagnostic quiz on unknown material first.",
+      "expected_output": "Teach route: short outline, then the first teaching chunk of the first point only (one idea, concrete example before the rule, roughly 200 words / 400 Chinese characters or fewer), then one check question on a case the chunk didn't show; no diagnostic quiz on unknown material first.",
       "files": [],
       "expectations": [
         "Does not open with a diagnostic question about material the user has said is entirely new",
-        "Gives a minimal teaching block for the first point only: one concrete example plus one sentence of principle, roughly 150 words (or 300 Chinese characters) or fewer",
-        "Follows the teaching with one closed-book question that the learner must answer, and does not answer it",
+        "Teaches only the first chunk of the first point: one idea, with a concrete example before the general rule, roughly 200 words (or 400 Chinese characters) or fewer",
+        "Follows the chunk with exactly one check question that the learner must answer, and does not answer it",
+        "The check applies the idea to a case the chunk didn't show (e.g. a different matrix or vector), rather than asking the learner to repeat a sentence from the chunk",
         "Does not teach all points at once or produce a long lecture"
       ]
     },
@@ -305,6 +306,57 @@
         "The diagnostic attempt has phase diagnostic and does not change the schedule",
         "Tells the user to save it and paste it back in a new chat, and gives the next review date(s) as absolute dates",
         "Does not claim it will remember the progress itself"
+      ]
+    },
+    {
+      "id": 23,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01.]\n\n教我 Python 的装饰器。",
+      "expected_output": "Teach route chosen from the wording: an outline whose approach notes show teaching comes first, a note that the explanations come from general knowledge (no material was supplied), the time question if needed, and an invitation to name points already known; or, if it starts right away, one teaching chunk plus one check. No diagnostic quiz on decorators themselves.",
+      "files": [],
+      "expectations": [
+        "Treats the request as wanting to be taught: the outline or first message makes clear that it will explain first and check after each part",
+        "Does not open by quizzing the learner on decorators themselves (a single starting-point question on a prerequisite such as functions is acceptable)",
+        "Says, in about one sentence, that the outline or explanations come from general knowledge rather than the learner's course or material",
+        "Asks at most the necessary setup questions (e.g. time) in one message, or starts with one chunk and one check; never two open questions about the content",
+        "Does not produce a long lecture covering several points"
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01.]\n\n我想从零开始学微积分，每天 30 分钟。",
+      "expected_output": "A learning path of roughly 6-12 points in prerequisite order (titles only), with today's 2-3 points marked; the rest kept for later sessions; then either a one-line confirmation request or the first chunk and its check. No attempt to teach calculus in one reply.",
+      "files": [],
+      "expectations": [
+        "Proposes a learning path of several points in prerequisite order (e.g. functions/slope before limits before derivatives), shown briefly as titles",
+        "Marks which points today's 30 minutes will cover (about 2-3 new points), and says the rest will come in later sessions",
+        "Does not try to teach the whole path or several points in this reply",
+        "If it starts teaching, it gives one short chunk and one check question, and does not answer the check",
+        "Does not ask whether the learner has studied calculus before as a separate question when they said 'from zero'"
+      ]
+    },
+    {
+      "id": 25,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01. Earlier in this chat: the learner (zero background) asked to learn eigenvalues and eigenvectors. You taught the first chunk: A = [[2, 0], [0, 3]] turns (1, 0) into (2, 0), same direction, scaled by 2, while (1, 1) becomes (2, 3); a nonzero vector whose direction A keeps is an eigenvector and the factor is its eigenvalue, A·v = λ·v. Your check: for B = [[3, 1], [0, 2]], is (1, 0) an eigenvector, and with which eigenvalue?]\n\n不是，因为 B 不是对角矩阵。信心 2",
+      "expected_output": "Says specifically what's wrong (B·(1,0) = (3,0) = 3·(1,0), so it is an eigenvector with eigenvalue 3; being diagonal is not required), re-explains with a different angle or example rather than repeating the chunk, then asks one new check on a case not shown before. The check is not scored and doesn't move on to the retest yet.",
+      "files": [],
+      "expectations": [
+        "States that the answer is wrong and why, showing or describing B·(1, 0) = (3, 0) = 3·(1, 0), so (1, 0) is an eigenvector with eigenvalue 3",
+        "Addresses the misconception that only diagonal matrices have eigenvectors",
+        "Re-explains with a different example or angle instead of repeating the first chunk's wording",
+        "Ends with exactly one new check question on a case not shown before, and does not answer it",
+        "Does not treat this check as a scored retest (no box or schedule change announced, no high-confidence-error flag) and does not move on to the next point yet"
+      ]
+    },
+    {
+      "id": 26,
+      "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01.]\n\n考考我 Rust 的所有权（ownership），不过我完全没学过 Rust。15 分钟。",
+      "expected_output": "Prior knowledge overrides the wording: says in one line that it will explain first because there is nothing to recall yet, then gives one short chunk on ownership and one check question. No quiz on unseen material.",
+      "files": [],
+      "expectations": [
+        "Says in about one sentence that it will explain first because the learner hasn't met the material",
+        "Does not ask a quiz or diagnostic question about ownership before explaining anything",
+        "Gives one short teaching chunk (one idea, a concrete code example before the rule) and then exactly one check question, without answering it",
+        "Keeps scope to the 15 minutes: covers one point or plans at most two, without a long lecture"
       ]
     }
   ]

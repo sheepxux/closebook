@@ -35,6 +35,7 @@ DEFAULT_INTERVALS = [1, 3, 7, 14, 30]
 DEFAULT_BATCH = 8
 
 SCORED_PHASES = {"verify_known", "retest", "review", "synthesis", "plain_talk_recall", "project"}
+UNSCHEDULED_STATUSES = {"optional_extension", "planned"}
 PASS_RESULTS = {"correct", "coherent"}
 FUZZY_RESULTS = {"partial", "partly_coherent"}
 FAIL_RESULTS = {"incorrect", "incoherent", "dont_know"}
@@ -320,11 +321,11 @@ def replay_kp(kp: Dict[str, Any], intervals: List[int], exam_date: Optional[dt.d
     if not any(outcome_of(a) for a in ordered):
         if not ordered:
             return
-        # Only diagnostics: nothing scheduled yet.
+        # Only diagnostics and teaching checks: nothing scheduled yet.
         kp.update({"leitner_box": 0, "next_review": None, "mastery": "not_assessed"})
         kp.pop("last_reviewed", None)
         kp.pop("priority_flag", None)
-        if kp.get("status") == "skipped_known":
+        if kp.get("status") in ("skipped_known", "planned"):
             kp["status"] = "active"
         return
 
@@ -334,7 +335,7 @@ def replay_kp(kp: Dict[str, Any], intervals: List[int], exam_date: Optional[dt.d
     last_day: Optional[dt.date] = None
     next_review: Optional[dt.date] = None
     status = kp.get("status", "active")
-    if status == "skipped_known":
+    if status in ("skipped_known", "planned"):
         status = "active"
     outcomes_by_day: Dict[dt.date, List[str]] = defaultdict(list)
     promoting_pass_days: List[dt.date] = []
@@ -813,7 +814,7 @@ def to_compact(progress: Dict[str, Any]) -> Dict[str, Any]:
 def due_items(progress: Dict[str, Any], day: dt.date, limit: Optional[int] = None) -> List[Dict[str, Any]]:
     rows = []
     for kp in progress["knowledge_points"]:
-        if kp.get("status") == "optional_extension" or not kp.get("next_review"):
+        if kp.get("status") in UNSCHEDULED_STATUSES or not kp.get("next_review"):
             continue
         nxt = parse_date(kp["next_review"])
         if nxt > day:
@@ -834,7 +835,7 @@ def schedule(progress: Dict[str, Any]) -> List[Dict[str, Any]]:
     rows = [{"kp_id": kp["id"], "title": kp["title"], "next_review": kp.get("next_review"),
              "leitner_box": kp["leitner_box"], "mastery": kp["mastery"],
              "priority_flag": bool(kp.get("priority_flag"))}
-            for kp in progress["knowledge_points"] if kp.get("status") != "optional_extension"]
+            for kp in progress["knowledge_points"] if kp.get("status") not in UNSCHEDULED_STATUSES]
     rows.sort(key=lambda r: (r["next_review"] is None, r["next_review"] or "", 0 if r["priority_flag"] else 1))
     return rows
 
@@ -1135,7 +1136,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = add("record", "record one attempt and update the schedule (writes the file)")
     p.add_argument("--kp", required=True)
-    p.add_argument("--phase", required=True, choices=["diagnostic", "verify_known", "retest", "review",
+    p.add_argument("--phase", required=True, choices=["diagnostic", "teach_check", "verify_known", "retest", "review",
                                                       "synthesis", "plain_talk_recall", "project"])
     p.add_argument("--result", required=True, choices=sorted(SCORE))
     p.add_argument("--hint", type=int, default=0, choices=[0, 1, 2, 3])

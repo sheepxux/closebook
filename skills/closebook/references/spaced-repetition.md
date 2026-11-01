@@ -18,6 +18,7 @@ Box `0` means "not scheduled yet" (new or only diagnosed); `next_review` is then
 | `phase` | Updates the schedule? |
 |---|---|
 | `diagnostic` | **No.** Diagnosis is low-stakes by design. |
+| `teach_check` | **No.** Answered seconds after reading the explanation, so it overstates learning. |
 | `verify_known` | Yes, special rule below |
 | `retest`, `review`, `synthesis`, `plain_talk_recall`, `project` | Yes |
 
@@ -54,7 +55,7 @@ Then `next_review = date of attempt + interval[box]`, and `last_reviewed = date 
 - Flagged items are reviewed first regardless of box.
 
 ## Due selection and order
-Due: `next_review <= today` and `status != "optional_extension"`.
+Due: `next_review <= today` and `status` is not `optional_extension` or `planned`.
 Order: `priority_flag` → `weak` → `fuzzy` → `solid`; ties by days overdue (more first), then importance (core → important → minor). Take up to `review_batch_size`.
 
 ## Worked example

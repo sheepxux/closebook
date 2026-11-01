@@ -27,9 +27,13 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 17 | 10 · one-line fact | No outline or components |
 | 18 | 11 · Plain Talk, conceptual | Analogy + its limit, jargon explained, recall question |
 | 19 | 11 · Plain Talk, precise definitions | Exact definitions, no forced analogy |
-| 20 | 12 · zero background (path B) | Minimal teaching block, then a closed-book check |
+| 20 | 12 · zero background (teach route) | First teaching chunk only, then one check on an unseen case |
 | 21 | 12 · "说人话" before learning | Plain Talk first, no quiz (at most one light recall) |
 | 22 | 13 · chat export | Compact core JSON that `progress_tool.py validate` accepts |
+| 23 | teach route · "教我", no material | Teach-first plan, general-knowledge note, no quiz on the topic itself |
+| 24 | teach route · whole subject | Learning path in prerequisite order; today's share marked; no mega-lecture |
+| 25 | teach route · missed check | Specific correction, a different angle, one new check; not scored |
+| 26 | routing · "quiz me" on unseen material | Explains first, says why in one line |
 
 ## Running
 

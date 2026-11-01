@@ -199,6 +199,21 @@ class SchedulingTest(unittest.TestCase):
         self.assertNotIn("priority_flag", kp)
         self.assertEqual(kp["errors"], [])
 
+    def test_teach_check_never_schedules(self):
+        p = blank()
+        kp = rec(p, "2026-10-27", phase="teach_check", result="incorrect", confidence=3, error_type="misconception")
+        self.assertEqual((kp["leitner_box"], kp["next_review"], kp["mastery"]), (0, None, "not_assessed"))
+        self.assertNotIn("priority_flag", kp)
+        self.assertEqual(kp["errors"], [])
+
+    def test_planned_point_is_never_due_until_taught(self):
+        p = blank()
+        p["knowledge_points"][0].update({"status": "planned", "next_review": "2026-10-01"})
+        self.assertEqual(pt.due_items(p, dt.date(2026, 10, 31)), [])
+        self.assertEqual(pt.schedule(p), [])
+        kp = rec(p, "2026-10-27")
+        self.assertEqual((kp["status"], kp["leitner_box"], kp["next_review"]), ("active", 1, "2026-10-28"))
+
     def test_verify_known_starts_at_box_two(self):
         p = blank()
         kp = rec(p, "2026-10-27", phase="verify_known")

@@ -7,7 +7,7 @@ Names: Chinese **小白模式**, English **Plain Talk Mode**, files and fields `
 |---|---|
 | End of session, after the review list, if time remains | Offer in one sentence: "Want a plain-language recap of the whole topic, then one quick recall question?" |
 | Learner says "说人话 / 简单点 / 小白模式 / plain talk / ELI5 / simpler" at any time | Switch to plain talk for the current scope |
-| Before any learning (e.g. first message is "先说人话讲一遍") | Treat as a **preview**: allowed. Cover only what was asked (1–3 points); no outline of later topics and no list of terms you don't explain. Say once that a preview doesn't count toward mastery, then offer in one sentence to continue into the normal flow (path B is usually right) |
+| Before any learning (e.g. first message is "先说人话讲一遍") | Treat as a **preview**: allowed. Cover only what was asked (1–3 points); no outline of later topics and no list of terms you don't explain. Say once that a preview doesn't count toward mastery, then offer in one sentence to continue into the normal flow (usually the teach route, `new-learning.md`) |
 | In the middle of answering a question | Give a short plain version of that point only, then **re-ask a retest** (not the same wording); the open question's attempt is recorded with `hint_level: 3` |
 
 ## Explanation rules

@@ -1,0 +1,32 @@
+{
+  "eval_id": 4,
+  "expectations": [
+    {
+      "text": "Does not start with a full explanation of the three-way handshake",
+      "passed": true,
+      "evidence": "No explanation yet; outline and a warm-up guess."
+    },
+    {
+      "text": "Asks a why / what-if or predict question (e.g. what happens with only two steps if a delayed old SYN arrives) that requires reasoning, not recall of the step names",
+      "passed": true,
+      "evidence": "\"设想规定 TCP 只握两次 … A 和 B 哪一方心里更没底？它缺的是哪条信息？\""
+    },
+    {
+      "text": "Asks at most one question and does not answer it",
+      "passed": true,
+      "evidence": "One unscored guess with a placeholder format."
+    },
+    {
+      "text": "Mentions or plans an explain-in-your-own-words (Feynman) step later, or the structure clearly leads to one (e.g. outline states synthesis by explanation)",
+      "passed": true,
+      "evidence": "\"最后请你用自己的话把整件事讲一遍\"."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Regression check: the learner knows the terms and wants to understand. The reply mixes routes (an unscored guess, then chunks); all expectations still hold."
+}

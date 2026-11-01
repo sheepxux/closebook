@@ -1,0 +1,37 @@
+{
+  "eval_id": 24,
+  "expectations": [
+    {
+      "text": "Proposes a learning path of several points in prerequisite order (e.g. functions/slope before limits before derivatives), shown briefly as titles",
+      "passed": true,
+      "evidence": "Ten one-line titles: 函数 → 斜率 → 平均变化率 → 极限直观 → 导数 → … → 微积分基本定理."
+    },
+    {
+      "text": "Marks which points today's 30 minutes will cover (about 2-3 new points), and says the rest will come in later sessions",
+      "passed": true,
+      "evidence": "\"学习路线（今天学 1–3）\" with ← 今天 markers; \"每天学 2–3 个点\"."
+    },
+    {
+      "text": "Does not try to teach the whole path or several points in this reply",
+      "passed": true,
+      "evidence": "No teaching content in the reply."
+    },
+    {
+      "text": "If it starts teaching, it gives one short chunk and one check question, and does not answer the check",
+      "passed": true,
+      "evidence": "It doesn't start teaching; it asks for confirmation or \"开始\". Not applicable, counted as pass."
+    },
+    {
+      "text": "Does not ask whether the learner has studied calculus before as a separate question when they said 'from zero'",
+      "passed": true,
+      "evidence": "Asks only \"这三个点里有你已经会的吗\", the teach-route invitation, not a familiarity question."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "Learning path with planned points; review-first next session announced."
+}

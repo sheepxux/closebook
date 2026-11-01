@@ -239,6 +239,134 @@ def _sentences(text: str) -> int:
     return len([s for s in re.split(r"[!?。！？]+|\.(?=\s|$)", text) if s.strip()])
 
 
+def _check_item(kind: str, item: Dict[str, Any], ipath: str,
+                err: Callable[[str, str], None], warn: Callable[[str, str], None]) -> None:
+    """Per-type rules for one item; also used for the check after a teaching chunk."""
+    if kind == "mcq":
+        opts = item.get("options") or []
+        if not item.get("question") or len(opts) < 2:
+            err(ipath, "mcq needs question and at least 2 options")
+        elif sum(1 for o in opts if o["correct"]) != 1:
+            err(ipath, "mcq needs exactly one correct option")
+        if len({o["text"] for o in opts}) != len(opts):
+            err(ipath, "duplicate option text")
+    elif kind == "flashcard":
+        if not item.get("front") or not item.get("back"):
+            err(ipath, "flashcard needs front and back")
+    elif kind == "free_text":
+        points = item.get("reference_points") or []
+        if not (item.get("prompt") or item.get("question")) or not points:
+            err(ipath, "free_text needs prompt and reference_points")
+        elif not any(p.get("required") for p in points):
+            warn(ipath, "no reference point is marked required; grading falls back to all points")
+    elif kind == "plain_qa":
+        if not item.get("question") or not item.get("answer"):
+            err(ipath, "plain_qa needs question and answer")
+    elif kind == "compare_table_fill":
+        cols, rows = item.get("columns") or [], item.get("rows") or []
+        if not item.get("prompt") or len(cols) < 2 or not rows:
+            err(ipath, "compare_table_fill needs prompt, >= 2 columns and rows")
+        for r, row in enumerate(rows):
+            if len(row["cells"]) != len(cols) - 1:
+                err("%s.rows[%d]" % (ipath, r), "needs %d cells (columns minus the label column)" % (len(cols) - 1))
+        if rows and not _blank_count(item, kind):
+            err(ipath, "no blank cells to fill")
+    elif kind == "timeline_fill":
+        if not item.get("prompt") or len(item.get("events") or []) < 2:
+            err(ipath, "timeline_fill needs prompt and >= 2 events")
+        elif not _blank_count(item, kind):
+            err(ipath, "no blanks to fill")
+    elif kind == "diagram_fill":
+        nodes = item.get("nodes") or []
+        ids = {n["id"] for n in nodes}
+        if not item.get("prompt") or len(nodes) < 2:
+            err(ipath, "diagram_fill needs prompt and >= 2 nodes")
+        elif not _blank_count(item, kind):
+            err(ipath, "no blank nodes to predict")
+        for e in item.get("edges") or []:
+            if e["from"] not in ids or e["to"] not in ids:
+                err(ipath, "edge %s -> %s refers to an unknown node" % (e["from"], e["to"]))
+    elif kind == "simulation":
+        if item.get("params"):
+            if not item.get("prompt"):
+                err(ipath, "a parameter-lab simulation needs a prompt")
+            names = _check_params(item, ipath, err)
+            if not item.get("outputs") and not item.get("plot"):
+                err(ipath, "simulation needs outputs (readouts) or a plot")
+            env = {p["name"]: p["value"] for p in item["params"]}
+            for k, o in enumerate(item.get("outputs") or []):
+                try:
+                    if not _finite_somewhere(compile_expr(o["expr"], names), env, [0.0]):
+                        warn("%s.outputs[%d]" % (ipath, k), "expression isn't a finite number at the starting values")
+                except ValueError as exc:
+                    err("%s.outputs[%d].expr" % (ipath, k), "bad expression: %s" % exc)
+            if item.get("plot"):
+                _check_curve(item["plot"], names, env, ipath + ".plot", err, warn)
+            if not item.get("predict"):
+                err(ipath, "simulation needs a predict question: the learner commits before the sliders unlock")
+            else:
+                _check_options(item["predict"]["options"], ipath + ".predict", err)
+        elif not item.get("fallback"):
+            err(ipath, "simulation needs params (a parameter lab) or a fallback plain question")
+    elif kind == "graph":
+        if not item.get("prompt"):
+            err(ipath, "graph needs a prompt")
+        names = _check_params(item, ipath, err)
+        env = {p["name"]: p["value"] for p in item.get("params") or []}
+        _check_curve(item, names, env, ipath, err, warn)
+        if bool(item.get("target")) == bool(item.get("predict")):
+            err(ipath, "graph needs exactly one task: target (match the curve) or predict (answer, then explore)")
+        if item.get("target"):
+            target = item["target"]
+            for p in item.get("params") or []:
+                v = target.get(p["name"])
+                if not isinstance(v, (int, float)) or isinstance(v, bool):
+                    err(ipath + ".target", "needs a number for %s" % p["name"])
+                elif not p["min"] <= v <= p["max"]:
+                    err(ipath + ".target", "%s = %s is outside the slider range" % (p["name"], v))
+            extra = set(target) - {p["name"] for p in item.get("params") or []}
+            if extra:
+                err(ipath + ".target", "unknown params: %s" % ", ".join(sorted(extra)))
+            if all(target.get(p["name"]) == p["value"] for p in item.get("params") or []):
+                err(ipath + ".target", "the sliders already start at the target")
+        if item.get("predict"):
+            _check_options(item["predict"]["options"], ipath + ".predict", err)
+    elif kind == "numeric":
+        if not item.get("question") or not isinstance(item.get("value"), (int, float)):
+            err(ipath, "numeric needs question and value (a number)")
+        if not item.get("solution") and not item.get("explanation"):
+            warn(ipath, "numeric without solution steps: the learner sees only the final number")
+    elif kind == "order_steps":
+        steps = item.get("steps") or []
+        if not item.get("prompt") or len(steps) < 3:
+            err(ipath, "order_steps needs prompt and >= 3 steps")
+        pool = steps + (item.get("distractors") or [])
+        if len(set(pool)) != len(pool):
+            err(ipath, "steps and distractors must all be different (identical items can't be told apart)")
+        for k, alt in enumerate(item.get("alternatives") or []):
+            if sorted(alt) != sorted(steps):
+                err("%s.alternatives[%d]" % (ipath, k), "must use exactly the same items as steps")
+    elif kind == "cloze_passage":
+        text = item.get("text") or ""
+        blanks = CLOZE_BLANK.findall(text)
+        if not blanks or not item.get("prompt"):
+            err(ipath, "cloze_passage needs a prompt and text with at least one [[answer]] blank")
+        for b in blanks:
+            if not [v for v in b.split("|") if v.strip()]:
+                err(ipath, "empty blank [[]] in text")
+    elif kind == "code_trace":
+        code = item.get("code") or ""
+        lines = len(code.split("\n"))
+        if not code or not item.get("prompt") or not item.get("trace") or not item.get("questions"):
+            err(ipath, "code_trace needs prompt, code, trace and questions")
+        for k, step in enumerate(item.get("trace") or []):
+            if step["line"] > lines:
+                err("%s.trace[%d]" % (ipath, k), "line %d is past the end of the code (%d lines)" % (step["line"], lines))
+    elif kind == "terminal":
+        if not item.get("prompt") or not item.get("commands"):
+            err(ipath, "terminal needs prompt and commands")
+
+
 def check_lesson(lesson: Any) -> List[Issue]:
     issues = SchemaValidator(LESSON_SCHEMA).validate(lesson)
     if any(i.severity == "error" for i in issues) or not isinstance(lesson, dict):
@@ -263,139 +391,41 @@ def check_lesson(lesson: Any) -> List[Issue]:
         if kp.get("method") == "predict_verify" and ktype == "contested":
             warn(base, "predict_verify is never used on contested points")
         teach = kp.get("teach") or {}
-        words = len(" ".join([teach.get("example", ""), teach.get("principle", "")] + teach.get("steps", [])).split())
-        chars = len("".join([teach.get("example", ""), teach.get("principle", "")] + teach.get("steps", [])))
-        if words > 180 or chars > 450:
-            warn(base + ".teach", "teaching block is long; keep it to about 150 words (one example + one principle)")
+        chunks = teach.get("chunks") or []
+        block = [teach.get("example", ""), teach.get("principle", "")] + teach.get("steps", [])
+        if chunks and any(block):
+            err(base + ".teach", "use either chunks or example/principle/steps, not both")
+        elif len(" ".join(block).split()) > 180 or len("".join(block)) > 450:
+            warn(base + ".teach", "teaching block is long; keep it to about 150 words (one example + one principle), "
+                                  "or split it into chunks with checks")
         item_ids = set()
         for j, item in enumerate(kp["items"]):
             ipath = "%s.items[%d]" % (base, j)
             if item["id"] in item_ids:
                 err(ipath + ".id", "duplicate item id %s" % item["id"])
             item_ids.add(item["id"])
-            if kind == "mcq":
-                opts = item.get("options") or []
-                if not item.get("question") or len(opts) < 2:
-                    err(ipath, "mcq needs question and at least 2 options")
-                elif sum(1 for o in opts if o["correct"]) != 1:
-                    err(ipath, "mcq needs exactly one correct option")
-                if len({o["text"] for o in opts}) != len(opts):
-                    err(ipath, "duplicate option text")
-            elif kind == "flashcard":
-                if not item.get("front") or not item.get("back"):
-                    err(ipath, "flashcard needs front and back")
-            elif kind == "free_text":
-                points = item.get("reference_points") or []
-                if not (item.get("prompt") or item.get("question")) or not points:
-                    err(ipath, "free_text needs prompt and reference_points")
-                elif not any(p.get("required") for p in points):
-                    warn(ipath, "no reference point is marked required; grading falls back to all points")
-            elif kind == "plain_qa":
-                if not item.get("question") or not item.get("answer"):
-                    err(ipath, "plain_qa needs question and answer")
-            elif kind == "compare_table_fill":
-                cols, rows = item.get("columns") or [], item.get("rows") or []
-                if not item.get("prompt") or len(cols) < 2 or not rows:
-                    err(ipath, "compare_table_fill needs prompt, >= 2 columns and rows")
-                for r, row in enumerate(rows):
-                    if len(row["cells"]) != len(cols) - 1:
-                        err("%s.rows[%d]" % (ipath, r), "needs %d cells (columns minus the label column)" % (len(cols) - 1))
-                if rows and not _blank_count(item, kind):
-                    err(ipath, "no blank cells to fill")
-            elif kind == "timeline_fill":
-                if not item.get("prompt") or len(item.get("events") or []) < 2:
-                    err(ipath, "timeline_fill needs prompt and >= 2 events")
-                elif not _blank_count(item, kind):
-                    err(ipath, "no blanks to fill")
-            elif kind == "diagram_fill":
-                nodes = item.get("nodes") or []
-                ids = {n["id"] for n in nodes}
-                if not item.get("prompt") or len(nodes) < 2:
-                    err(ipath, "diagram_fill needs prompt and >= 2 nodes")
-                elif not _blank_count(item, kind):
-                    err(ipath, "no blank nodes to predict")
-                for e in item.get("edges") or []:
-                    if e["from"] not in ids or e["to"] not in ids:
-                        err(ipath, "edge %s -> %s refers to an unknown node" % (e["from"], e["to"]))
-            elif kind == "simulation":
-                if item.get("params"):
-                    if not item.get("prompt"):
-                        err(ipath, "a parameter-lab simulation needs a prompt")
-                    names = _check_params(item, ipath, err)
-                    if not item.get("outputs") and not item.get("plot"):
-                        err(ipath, "simulation needs outputs (readouts) or a plot")
-                    env = {p["name"]: p["value"] for p in item["params"]}
-                    for k, o in enumerate(item.get("outputs") or []):
-                        try:
-                            if not _finite_somewhere(compile_expr(o["expr"], names), env, [0.0]):
-                                warn("%s.outputs[%d]" % (ipath, k), "expression isn't a finite number at the starting values")
-                        except ValueError as exc:
-                            err("%s.outputs[%d].expr" % (ipath, k), "bad expression: %s" % exc)
-                    if item.get("plot"):
-                        _check_curve(item["plot"], names, env, ipath + ".plot", err, warn)
-                    if not item.get("predict"):
-                        err(ipath, "simulation needs a predict question: the learner commits before the sliders unlock")
-                    else:
-                        _check_options(item["predict"]["options"], ipath + ".predict", err)
-                elif not item.get("fallback"):
-                    err(ipath, "simulation needs params (a parameter lab) or a fallback plain question")
-            elif kind == "graph":
-                if not item.get("prompt"):
-                    err(ipath, "graph needs a prompt")
-                names = _check_params(item, ipath, err)
-                env = {p["name"]: p["value"] for p in item.get("params") or []}
-                _check_curve(item, names, env, ipath, err, warn)
-                if bool(item.get("target")) == bool(item.get("predict")):
-                    err(ipath, "graph needs exactly one task: target (match the curve) or predict (answer, then explore)")
-                if item.get("target"):
-                    target = item["target"]
-                    for p in item.get("params") or []:
-                        v = target.get(p["name"])
-                        if not isinstance(v, (int, float)) or isinstance(v, bool):
-                            err(ipath + ".target", "needs a number for %s" % p["name"])
-                        elif not p["min"] <= v <= p["max"]:
-                            err(ipath + ".target", "%s = %s is outside the slider range" % (p["name"], v))
-                    extra = set(target) - {p["name"] for p in item.get("params") or []}
-                    if extra:
-                        err(ipath + ".target", "unknown params: %s" % ", ".join(sorted(extra)))
-                    if all(target.get(p["name"]) == p["value"] for p in item.get("params") or []):
-                        err(ipath + ".target", "the sliders already start at the target")
-                if item.get("predict"):
-                    _check_options(item["predict"]["options"], ipath + ".predict", err)
-            elif kind == "numeric":
-                if not item.get("question") or not isinstance(item.get("value"), (int, float)):
-                    err(ipath, "numeric needs question and value (a number)")
-                if not item.get("solution") and not item.get("explanation"):
-                    warn(ipath, "numeric without solution steps: the learner sees only the final number")
-            elif kind == "order_steps":
-                steps = item.get("steps") or []
-                if not item.get("prompt") or len(steps) < 3:
-                    err(ipath, "order_steps needs prompt and >= 3 steps")
-                pool = steps + (item.get("distractors") or [])
-                if len(set(pool)) != len(pool):
-                    err(ipath, "steps and distractors must all be different (identical items can't be told apart)")
-                for k, alt in enumerate(item.get("alternatives") or []):
-                    if sorted(alt) != sorted(steps):
-                        err("%s.alternatives[%d]" % (ipath, k), "must use exactly the same items as steps")
-            elif kind == "cloze_passage":
-                text = item.get("text") or ""
-                blanks = CLOZE_BLANK.findall(text)
-                if not blanks or not item.get("prompt"):
-                    err(ipath, "cloze_passage needs a prompt and text with at least one [[answer]] blank")
-                for b in blanks:
-                    if not [v for v in b.split("|") if v.strip()]:
-                        err(ipath, "empty blank [[]] in text")
-            elif kind == "code_trace":
-                code = item.get("code") or ""
-                lines = len(code.split("\n"))
-                if not code or not item.get("prompt") or not item.get("trace") or not item.get("questions"):
-                    err(ipath, "code_trace needs prompt, code, trace and questions")
-                for k, step in enumerate(item.get("trace") or []):
-                    if step["line"] > lines:
-                        err("%s.trace[%d]" % (ipath, k), "line %d is past the end of the code (%d lines)" % (step["line"], lines))
-            elif kind == "terminal":
-                if not item.get("prompt") or not item.get("commands"):
-                    err(ipath, "terminal needs prompt and commands")
+            _check_item(kind, item, ipath, err, warn)
+        if len(chunks) > 3:
+            warn(base + ".teach.chunks", "more than 3 chunks; split the point into two points")
+        if chunks and lesson.get("mode") == "review":
+            warn(base + ".teach.chunks", "teaching chunks are shown only in learn mode")
+        for c, chunk in enumerate(chunks):
+            cpath = "%s.teach.chunks[%d]" % (base, c)
+            text = [chunk["explain"], chunk.get("example", ""), chunk.get("analogy", ""), chunk.get("analogy_limit", "")]
+            text += [s["do"] + " " + s.get("why", "") for s in chunk.get("worked") or []]
+            if len(" ".join(text).split()) > 220 or len("".join(text)) > 500:
+                warn(cpath, "chunk is long; one idea in about 80-200 words (400 Chinese characters), or split it")
+            if chunk.get("analogy") and not chunk.get("analogy_limit"):
+                err(cpath, "every analogy needs analogy_limit (where the comparison breaks)")
+            if chunk.get("analogy") and ktype == "factual":
+                warn(cpath, "factual point with an analogy; exact wording matters more than a comparison")
+            if any(not s.get("why") for s in chunk.get("worked") or []):
+                warn(cpath + ".worked", "worked steps without a why are a recipe; give each step its reason")
+            check = chunk["check"]
+            if check["id"] in item_ids:
+                err(cpath + ".check.id", "duplicate item id %s (checks share ids with the point's items)" % check["id"])
+            item_ids.add(check["id"])
+            _check_item(chunk["check_type"], check, cpath + ".check", err, warn)
 
     for section in ("free_recall", "plain_talk"):
         if section not in lesson:

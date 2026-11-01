@@ -29,6 +29,7 @@ ZH_LESSON = os.path.join(SKILL, "schemas", "examples", "lesson.http-cache.json")
 SHOWCASE = os.path.join(ROOT, "tests", "fixtures", "showcase.lesson.json")
 PROGRESS = os.path.join(SKILL, "schemas", "examples", "progress.full.json")
 SUBJECTS = os.path.join(SKILL, "schemas", "examples", "lesson.subjects.json")
+NEW_LEARNER = os.path.join(SKILL, "schemas", "examples", "lesson.new-learner.json")
 
 
 def _build(lesson, directory, name):
@@ -660,6 +661,80 @@ class LessonPageE2E(unittest.TestCase):
                 self.assertEqual(page.locator(".result.correct").count(), int(expected))
                 self.assertEqual(page.locator(".term-log .err").count(), int(not expected))
                 page.context.close()
+
+    def test_teaching_chunks_with_checks(self):
+        url = _build(progress_tool.load_json(NEW_LEARNER), self.tmp.name, "new-learner.html")
+        page = self.open(url)
+        body = lambda: page.locator("body").inner_text()  # noqa: E731
+        conf = lambda c: page.locator("label.chip", has_text=c).click()  # noqa: E731
+        self.assertEqual(self.progress(page), "已作答 0 / 2 题")
+
+        # chunk 1: read, then the explanation hides while the check is answered
+        self.assertIn("第 1/2 段", body())
+        self.assertIn("先建一个空列表", body())
+        self.assertEqual(page.get_by_placeholder("你的答案").count(), 0, "no question while reading")
+        self.btn(page, "读完了，合上讲解做一题").click()
+        self.assertNotIn("先建一个空列表", body(), "explanation must be hidden during the check")
+        self.assertIn("讲解已合上", body())
+        self.assertIn("小检查", body())
+        page.get_by_placeholder("你的答案").fill("[1, 4, 9]")
+        conf("2 · 比较确定")
+        self.btn(page, "提交").click()
+        self.assertIn("不对", page.locator(".result").inner_text())
+        self.assertEqual(self.btn(page, "概念误解").count(), 0, "checks don't ask for an error type")
+        self.assertIn("先建一个空列表", body(), "a missed check shows the explanation again")
+        self.btn(page, "下一段").click()
+
+        # chunk 2: worked steps hide their why until opened; reteach only after a miss
+        self.assertIn("第 2/2 段", body())
+        why = page.locator(".teach details").first
+        self.assertFalse(why.evaluate("e => e.open"))
+        why.locator("summary").click()
+        self.assertTrue(why.evaluate("e => e.open"))
+        self.btn(page, "读完了，合上讲解做一题").click()
+        page.get_by_placeholder("你的答案").fill("[w.upper() for w in words]")
+        conf("3 · 很确定")
+        self.btn(page, "提交").click()
+        self.assertIn("正确", page.locator(".result").inner_text())
+        self.assertNotIn("换个讲法", body())
+        self.btn(page, "合上讲解，凭记忆作答").click()
+        self.assertNotIn("先建一个空列表", body())
+        self.assertIn("prices = [5, 12, 8]", body(), "the retest item follows the teaching")
+        self.assertEqual(self.progress(page), "已作答 0 / 2 题", "checks are not retest items")
+
+        # point 2: analogy with its limit, numeric check, then the scored MCQ
+        page.locator("ol.stepper button").nth(1).click()
+        self.assertIn("这个类比哪里不成立", body())
+        self.btn(page, "读完了，合上讲解做一题").click()
+        page.get_by_placeholder("数字或算式，如 0.75、3/4、2*pi").fill("2")
+        conf("2 · 比较确定")
+        self.btn(page, "提交").click()
+        self.assertIn("正确", page.locator(".result").inner_text())
+        self.btn(page, "合上讲解，凭记忆作答").click()
+        page.locator("label.option").first.click()
+        conf("2 · 比较确定")
+        self.btn(page, "提交").click()
+        self.assertEqual(self.progress(page), "已作答 1 / 2 题")
+
+        self.tab(page, "错题").click()
+        self.assertIn("还没有错题", body(), "missed checks are not mistakes")
+
+        export = self.export_json(page)
+        self.assertEqual(progress_tool.validate_export(export), [])
+        phases = [a["phase"] for a in export["attempts"]]
+        self.assertEqual(phases, ["teach_check", "teach_check", "teach_check", "retest"])
+        progress = progress_tool.import_session(None, export)
+        self.assertEqual([i for i in progress_tool.validate_progress(progress) if i.severity == "error"], [])
+        kps = {kp["id"]: kp for kp in progress["knowledge_points"]}
+        self.assertEqual((kps["kp-build"]["leitner_box"], kps["kp-build"]["next_review"]), (0, None),
+                         "checks alone schedule nothing")
+        self.assertEqual(kps["kp-filter"]["leitner_box"], 1)
+
+        # reload keeps the teaching position
+        page.reload()
+        self.tab(page, "学习").click()
+        page.locator("ol.stepper button").nth(0).click()
+        self.assertIn("prices = [5, 12, 8]", body())
 
     def test_works_when_storage_is_blocked(self):
         context = self.browser.new_context()

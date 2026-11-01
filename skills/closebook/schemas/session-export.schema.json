@@ -45,7 +45,7 @@
           "kp_id": { "type": "string" },
           "id": { "type": "string" },
           "at": { "$ref": "progress.schema.json#/$defs/datetime" },
-          "phase": { "type": "string", "enum": ["diagnostic", "verify_known", "retest", "review", "synthesis", "plain_talk_recall", "project"] },
+          "phase": { "type": "string", "enum": ["diagnostic", "teach_check", "verify_known", "retest", "review", "synthesis", "plain_talk_recall", "project"] },
           "result": { "$ref": "progress.schema.json#/$defs/result" },
           "hint_level": { "type": "integer", "minimum": 0, "maximum": 3 },
           "confidence": { "type": ["integer", "null"], "minimum": 1, "maximum": 3 },

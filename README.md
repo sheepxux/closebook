@@ -11,7 +11,7 @@ An Agent Skill that applies retrieval practice, spaced review, Feynman explanati
 
 closebook has one goal: get what you study into long-term memory and real understanding, in the least time.
 
-The most effective methods in learning research share one thing: you produce the answer yourself instead of reading it again. Reading an AI summary feels like learning, but it mostly builds familiarity. So when you ask your assistant to help you study, closebook splits the material into a few knowledge points and has you answer each one first. Then it explains briefly, aimed at your gaps, retests you with the notes closed, and schedules the next review in a progress file you own. Different knowledge gets different methods: recall cards for terms, why-questions and Feynman explanations for concepts, predict-then-verify for procedures. Your time goes to what you don't know yet.
+The most effective methods in learning research share one thing: you produce the answer yourself instead of reading it again. Reading an AI summary feels like learning, but it mostly builds familiarity. But you can't recall what you've never learned, so closebook takes one of two routes depending on what you ask. "Teach me" or "I want to learn X": it explains in small parts, checks each part with a quick question right away, and then tests you with the notes closed. "Quiz me", "practice" or "review": it splits the material into a few knowledge points and has you answer each one first, explains briefly where you have gaps, and retests you with the notes closed. Either way, the next review goes into a progress file you own. Different knowledge gets different methods: recall cards for terms, why-questions and Feynman explanations for concepts, predict-then-verify for procedures. Your time goes to what you don't know yet.
 
 It is one skill folder ([`skills/closebook`](skills/closebook)) that works on Claude, ChatGPT / Codex, Gemini and any assistant you can paste instructions into. The teaching flow needs nothing but plain text. Scripts and the HTML practice page are optional extras.
 
@@ -60,11 +60,21 @@ Agents with local skill installation access can perform these steps. Account-bas
 > **closebook:** You were certain, and this is the most common mix-up, so it's worth fixing now. `no-cache` *does* store the response; the browser just has to check with the server before every reuse. "Don't store at all" is `no-store`. Example: `index.html` with `no-cache` sends a conditional request on each visit, and if nothing changed the server answers with a tiny `304`.
 > Retest, notes still closed: a response has `no-store` and the user reloads the page. Can the browser get a `304`? Why or why not? Answer + confidence.
 
+Starting from zero, the order flips: teach first, then test, one small part at a time.
+
+> **You:** I've never studied eigenvalues or eigenvectors. 30 minutes, just start.
+>
+> **closebook:** Then I'll explain one small piece and check it straight away. Take A = [[2, 0], [0, 3]]. It turns (1, 0) into (2, 0): same direction, twice as long. It turns (1, 1) into (2, 3): the direction changes. A nonzero vector whose direction A doesn't change, only stretches or shrinks, is an **eigenvector** of A, and the stretch factor is its **eigenvalue**: A·v = λ·v.
+> Without scrolling up: for B = [[3, 1], [0, 2]], is (1, 0) an eigenvector of B? If so, with which eigenvalue? Add your confidence 1–3.
+
+A right answer moves on to the next part; a wrong one gets a different example and a new check. These checks don't count toward your review schedule; once a point is taught, the explanation closes and the real retest follows. Ask to learn a whole subject and it first lays out a path in prerequisite order, teaches what fits today and keeps the rest for later sessions.
+
 At the end you get a short synthesis (explain the topic in your own words, or list what you remember), a review list with real dates such as `2026-11-01: point 1 (high-confidence error first)`, and your progress, either as a file or as a compact JSON block to paste back next time.
 
 ## What it does
 
-- **Output first.** Diagnose, then give minimal feedback (what's right, what's missing, one example and one principle), then retest closed-book. It never shows the answer to a question you haven't answered, and asks one open question at a time.
+- **New material in small, checked parts.** One idea per part, concrete example before the rule; worked examples with the reason for each step (on the practice page you think first, then open the "why"), with support fading as you get it. Each part ends with a check on a case it didn't show; a miss gets a different explanation. When teaching from a topic alone it says so and flags facts that change (versions, law, doses) for checking against a current source.
+- **Output first on material you've met.** Diagnose, then give minimal feedback (what's right, what's missing, one example and one principle), then retest closed-book. It never shows the answer to a question you haven't answered, and asks one open question at a time.
 - **Picks the method per knowledge point.** Facts and glossaries get retrieval, flashcards and memory aids, with no forced analogies. Concepts get why-questions and Feynman explanations. Procedures get predict-then-verify. Architectures get a diagram you fill in before seeing it. Contested material gets open arguments judged on coherence, with no answer key and no multiple choice.
 - **Honest feedback.** Encouraging, but a wrong answer is called wrong. A confident wrong answer is flagged and reviewed first.
 - **Spaced review.** Leitner boxes (1 → 3 → 7 → 14 → 30 days), replayed from your answer history, with interleaving and calibration feedback.
@@ -96,7 +106,7 @@ python3 tools/package_skill.py   # writes dist/closebook.zip and dist/closebook-
 
 Install paths were checked against official docs on 2026-10-31 ([log](docs/platform-verification.md)). Platforms change quickly, so each guide marks every claim as verified (with a source) or unverified.
 
-**Try it:** "Quiz me on these notes", "Help me prepare for my exam on Friday", "考考我", or come back with your progress file and say "review". To get a summary without being quizzed, just ask for a summary and decline the offer.
+**Try it:** "Teach me Python list comprehensions, I'm a complete beginner", "Quiz me on these notes", "Help me prepare for my exam on Friday", "考考我", or come back with your progress file and say "review". To get a summary without being quizzed, just ask for a summary and decline the offer.
 
 ## Progress you own
 
@@ -115,7 +125,7 @@ In chat-only apps you get a compact JSON block at the end of each session. Paste
 
 <p align="center"><img src="docs/images/lesson-page.jpg" alt="closebook practice page: a request flow with a blank step to predict" width="720"></p>
 
-When the environment can produce a file, the skill writes the lesson data and [`build_lesson.py`](skills/closebook/scripts/build_lesson.py) embeds it into a [template](skills/closebook/assets/lesson-template.html). The result is a single offline HTML file with no network requests, light and dark themes, keyboard support and a mobile layout. Open [`examples/http-cache-lesson.html`](examples/http-cache-lesson.html) to try one. Without file support, the same questions run in plain text.
+When the environment can produce a file, the skill writes the lesson data and [`build_lesson.py`](skills/closebook/scripts/build_lesson.py) embeds it into a [template](skills/closebook/assets/lesson-template.html). The result is a single offline HTML file with no network requests, light and dark themes, keyboard support and a mobile layout. Open [`examples/http-cache-lesson.html`](examples/http-cache-lesson.html) to try one, or [`examples/new-learner-lesson.html`](examples/new-learner-lesson.html) for the teach-first version. Without file support, the same questions run in plain text.
 
 The page checks anything with an answer key itself (multiple choice, blanks, numbers, orders, commands, graph targets); flashcards and written answers start as self-checks. Written answers can go through the coach: export "my answers", paste them into the chat, and paste the grading block you get back into the page. Each answer then shows the coach's verdict and feedback, and the mistakes list and review schedule follow it. It's a copy-and-paste round trip rather than live grading, so the page stays offline and needs no API key.
 
@@ -148,7 +158,7 @@ skills/closebook/        the skill (this folder is what gets installed)
   scripts/               progress_tool.py, build_lesson.py (Python 3.8+, stdlib only)
   assets/                lesson-template.html
   agents/openai.yaml     Codex display metadata
-  evals/                 22 behaviour evals (not shipped in the ZIPs)
+  evals/                 26 behaviour evals (not shipped in the ZIPs)
 adapters/                per-platform install and capability notes
 docs/                    design decisions, platform verification log, validation report, eval results
 examples/                built practice pages
@@ -168,7 +178,7 @@ The browser tests drive the practice page in headless Chromium and are skipped i
 pip install playwright && python3 -m playwright install chromium-headless-shell
 ```
 
-Behaviour evals live in [`skills/closebook/evals`](skills/closebook/evals) in the skill-creator format. They cover each scenario mode, summary-only requests, returning with a progress file, glossaries, contested material, user overrides, mixed material, architecture diagrams, plain-text-only environments, Plain Talk and chat export. The latest results and what couldn't be verified are in the [validation report](docs/validation-report.md). See [CONTRIBUTING.md](CONTRIBUTING.md) before changing the skill text.
+Behaviour evals live in [`skills/closebook/evals`](skills/closebook/evals) in the skill-creator format. They cover each scenario mode, routing between teaching new material and practice, summary-only requests, returning with a progress file, glossaries, contested material, user overrides, mixed material, architecture diagrams, plain-text-only environments, Plain Talk and chat export. The latest results and what couldn't be verified are in the [validation report](docs/validation-report.md). See [CONTRIBUTING.md](CONTRIBUTING.md) before changing the skill text.
 
 ## License
 

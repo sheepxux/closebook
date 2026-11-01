@@ -1,0 +1,37 @@
+{
+  "eval_id": 23,
+  "expectations": [
+    {
+      "text": "Treats the request as wanting to be taught: the outline or first message makes clear that it will explain first and check after each part",
+      "passed": true,
+      "evidence": "\"我每次只讲一小块，讲完马上请你做一道小题\"; each outline line starts with 先讲 / 先看 … 再…"
+    },
+    {
+      "text": "Does not open by quizzing the learner on decorators themselves (a single starting-point question on a prerequisite such as functions is acceptable)",
+      "passed": true,
+      "evidence": "No content question at all; only setup questions."
+    },
+    {
+      "text": "Says, in about one sentence, that the outline or explanations come from general knowledge rather than the learner's course or material",
+      "passed": true,
+      "evidence": "\"下面的内容来自通用知识，以 Python 3 为准，不是照某本教材讲的。\""
+    },
+    {
+      "text": "Asks at most the necessary setup questions (e.g. time) in one message, or starts with one chunk and one check; never two open questions about the content",
+      "passed": false,
+      "evidence": "All setup questions are in one message and none is about the content, but it asks four (a–d). b) and c) follow the teach-route template; d) \"你手边能运行 Python 吗？\" is not necessary before starting. Strict reading: fail."
+    },
+    {
+      "text": "Does not produce a long lecture covering several points",
+      "passed": true,
+      "evidence": "No teaching yet; outline only."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 1,
+    "total": 5,
+    "pass_rate": 0.8
+  },
+  "notes": "Teach route chosen from the wording 教我 alone, which is the new routing rule."
+}

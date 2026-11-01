@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "list-comp-new-2026-11-01",
+  "topic": "Python 列表推导式",
+  "language": "zh-CN",
+  "created": "2026-11-01",
+  "mode": "learn",
+  "intro": "零基础先讲后练：每段讲解只讲一件事，读完合上做一道小检查；两段都过了，再凭记忆做正式题。",
+  "knowledge_points": [
+    {
+      "id": "kp-build",
+      "title": "用一行写出新列表",
+      "importance": "core",
+      "knowledge_type": "procedural",
+      "method": "self_explanation",
+      "interaction_type": "code_trace",
+      "interaction_reason": "先在脑子里跑一遍再看真实过程：能读懂推导式算出什么，才能放心地自己写。",
+      "teach": {
+        "chunks": [
+          {
+            "title": "先看普通的 for 循环",
+            "explain": "要把 [1, 2, 3] 里的每个数平方，常见写法是先建一个空列表，再用 for 循环一个个 append 进去。循环跑完，squares 就是 [1, 4, 9]。这一段只要看懂：循环每转一圈，就往新列表里放一个值。",
+            "code": "nums = [1, 2, 3]\nsquares = []\nfor n in nums:\n    squares.append(n * n)",
+            "check_type": "plain_qa",
+            "check": {
+              "id": "check-loop",
+              "question": "还是 nums = [1, 2, 3]，如果循环里的 `n * n` 换成 `n + 10`，循环跑完后 squares 是什么？",
+              "answer": "[11, 12, 13]",
+              "accept": ["[11, 12, 13]", "[11,12,13]", "11, 12, 13", "11,12,13"],
+              "explanation": "每转一圈放进去一个 n + 10：1 → 11，2 → 12，3 → 13。"
+            }
+          },
+          {
+            "title": "把循环压成一行",
+            "explain": "列表推导式把上一段那三行循环写成一行：`[n * n for n in nums]`。读法是\"对 nums 里的每个 n，放一个 n * n\"。不用先建空列表，也不用写 append。",
+            "worked": [
+              { "do": "把循环头 `for n in nums` 照抄过来", "why": "它决定一个个取出谁，和普通循环完全一样。" },
+              { "do": "把 append 括号里的 `n * n` 放到最前面", "why": "最前面写的就是每次放进新列表的值。" },
+              { "do": "外面套上方括号：`[n * n for n in nums]`", "why": "方括号表示结果是一个新列表。" }
+            ],
+            "reteach": "换个角度：从左往右把推导式读成一句话。`[n * n for n in nums]` 就是\"放 n * n，对 nums 里的每个 n\"。改写时先写 for 那半句，再把要放进去的值挪到最前面，最后加方括号。",
+            "check_type": "plain_qa",
+            "check": {
+              "id": "check-rewrite",
+              "question": "把这段循环改写成一行列表推导式（只写等号右边）：",
+              "code": "words = ['a', 'b']\nupper = []\nfor w in words:\n    upper.append(w.upper())",
+              "answer": "[w.upper() for w in words]",
+              "accept": ["[w.upper() for w in words]"],
+              "case_sensitive": true,
+              "explanation": "append 括号里的 `w.upper()` 放到最前面，循环头 `for w in words` 照抄。"
+            }
+          }
+        ]
+      },
+      "items": [
+        {
+          "id": "doubled",
+          "prompt": "不运行，读这段 Python 代码。",
+          "language": "Python",
+          "code": "prices = [5, 12, 8]\ndoubled = [p * 2 for p in prices]\nprint(doubled)",
+          "questions": [
+            { "question": "最后打印出什么？", "answer": "[10, 24, 16]", "comparison": "container" }
+          ],
+          "trace": [
+            { "line": 1, "vars": { "prices": [5, 12, 8] } },
+            { "line": 2, "vars": { "doubled": [10, 24, 16] }, "note": "推导式对 prices 里的每个 p 放一个 p * 2，顺序不变。" },
+            { "line": 3, "out": "[10, 24, 16]" }
+          ],
+          "explanation": "5、12、8 各乘 2；新列表保持原来的顺序。"
+        }
+      ]
+    },
+    {
+      "id": "kp-filter",
+      "title": "只留下满足条件的元素",
+      "importance": "core",
+      "knowledge_type": "procedural",
+      "method": "self_explanation",
+      "interaction_type": "mcq",
+      "interaction_reason": "几个错误选项各对应一种常见写错的位置，选错了就知道自己卡在哪。",
+      "teach": {
+        "chunks": [
+          {
+            "title": "在末尾加 if",
+            "explain": "在推导式最后加上 `if 条件`，就只保留让条件成立的元素：`[n for n in [3, 8, 5, 10] if n > 4]` 得到 [8, 5, 10]。if 写在 for 后面，像过一道筛子；原列表不会被改动。",
+            "analogy": "像用筛子筛一堆豆子，只留下合格的。",
+            "analogy_limit": "筛子只按大小筛，if 后面可以写任何条件；而且推导式不会动原列表，只是另做一个新列表。",
+            "check_type": "numeric",
+            "check": {
+              "id": "check-filter",
+              "question": "`[n for n in [4, 7, 10, 3] if n % 2 == 0]` 得到的新列表里有几个元素？",
+              "value": 2,
+              "solution": ["`n % 2 == 0` 表示 n 是偶数。", "4、7、10、3 里只有 4 和 10 是偶数。", "新列表是 [4, 10]，有 2 个元素。"]
+            }
+          }
+        ]
+      },
+      "items": [
+        {
+          "id": "even-squares",
+          "question": "nums 是一个整数列表。想得到其中所有偶数的平方，哪一种写法对？",
+          "options": [
+            { "text": "`[n * n for n in nums if n % 2 == 0]`", "correct": true, "explanation": "最前面放要的值（平方），if 放在 for 后面筛出偶数。" },
+            { "text": "`[n * n if n % 2 == 0 for n in nums]`", "correct": false, "explanation": "筛选用的 if 必须放在 for 后面；放在前面又没有 else，是语法错误。" },
+            { "text": "`[n % 2 == 0 for n in nums]`", "correct": false, "explanation": "把条件放在了最前面，结果是一串 True/False，而不是平方。" },
+            { "text": "`[n for n in nums if n * n % 2 == 0]`", "correct": false, "explanation": "筛选条件没问题，但最前面放的是 n 本身，得到的是偶数而不是它们的平方。" }
+          ]
+        }
+      ]
+    }
+  ],
+  "free_recall": {
+    "prompt": "合上页面，用你自己的话说说：列表推导式由哪几部分组成？各自写在哪里？",
+    "reference_points": [
+      { "kp_id": "kp-build", "text": "方括号里先写每次要放进新列表的值，再写 for 变量 in 列表", "required": true },
+      { "kp_id": "kp-filter", "text": "需要筛选时，在 for 后面加 if 条件", "required": true },
+      { "kp_id": "kp-filter", "text": "原列表不会被改动，结果是一个新列表" }
+    ]
+  }
+}

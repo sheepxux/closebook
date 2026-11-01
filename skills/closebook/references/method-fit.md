@@ -77,7 +77,7 @@ Run per knowledge point, not per material.
 3. **Mode bias** (`modes/`): reorder candidates; never add a ✗ method.
 4. **Learner signals:**
    - 15 minutes or tired → at most 1 optional method, often 0.
-   - Beginner (path B) → prefer `self_explanation` and `elaborative_interrogation` on the provided example before a free `feynman` explanation.
+   - Beginner (teach route, `new-learning.md`) → prefer `self_explanation` and `elaborative_interrogation` on the provided example before a free `feynman` explanation.
    - Stated preference → honour it if it fits; otherwise see section 5.
    - Importance `minor` → usually 0 optional methods.
 5. **Pick at most 2.** Fewer is better. Default picks when nothing else applies:

@@ -1,0 +1,37 @@
+{
+  "eval_id": 25,
+  "expectations": [
+    {
+      "text": "States that the answer is wrong and why, showing or describing B·(1, 0) = (3, 0) = 3·(1, 0), so (1, 0) is an eigenvector with eigenvalue 3",
+      "passed": true,
+      "evidence": "\"这里不对：(1, 0) 其实是 B 的特征向量，特征值是 3\" and the row-by-row computation \"B·v = (3, 0) = 3·(1, 0)\"."
+    },
+    {
+      "text": "Addresses the misconception that only diagonal matrices have eigenvectors",
+      "passed": true,
+      "evidence": "\"'对角矩阵'只是一眼就能看出来的特例，并不是有特征向量的前提条件\"."
+    },
+    {
+      "text": "Re-explains with a different example or angle instead of repeating the first chunk's wording",
+      "passed": true,
+      "evidence": "New angle: \"唯一的办法就是真的去算 B·v\", with the multiplication rule and why the off-diagonal 1 doesn't matter."
+    },
+    {
+      "text": "Ends with exactly one new check question on a case not shown before, and does not answer it",
+      "passed": true,
+      "evidence": "C = [[4, 1], [2, 3]], v = (1, 1); C·v = (5, 5) = 5·v, a valid unseen case. Placeholder format \"X, Y, 2\"."
+    },
+    {
+      "text": "Does not treat this check as a scored retest (no box or schedule change announced, no high-confidence-error flag) and does not move on to the next point yet",
+      "passed": true,
+      "evidence": "No schedule, box or error talk; stays on chunk 1."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "notes": "Missed check handled as formative: correction, different angle, new unseen check."
+}

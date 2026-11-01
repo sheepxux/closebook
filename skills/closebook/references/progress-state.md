@@ -46,7 +46,8 @@ Compact rules: drop extension fields; drop core fields that are empty or default
 
 | Event | Write |
 |---|---|
-| Opening confirmed | Create the file / state: topic, points with type and importance, `status` (`optional_extension` for trimmed points), `created`, `settings` |
+| Opening confirmed | Create the file / state: topic, points with type and importance, `status` (`optional_extension` for trimmed points, `planned` for later points on a learning path), `created`, `settings` |
+| Check after a teaching chunk | attempt with `phase: "teach_check"`; no box, mastery or error update |
 | Each answer | Append an attempt (`at`, `phase`, `result`, `hint_level`, `confidence` for right/wrong questions, `error_type` if wrong). Then update box, `next_review`, `mastery`, `priority_flag` |
 | Error | Append to `errors[]` with remedy |
 | Feynman scored | `feynman` object |

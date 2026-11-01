@@ -1,0 +1,32 @@
+{
+  "eval_id": 3,
+  "expectations": [
+    {
+      "text": "Treats the point as language production: the first task asks the learner to produce Spanish (translate a sentence, fill a blank with a conjugated form, or write a sentence), not only pick from options",
+      "passed": true,
+      "evidence": "\"把这句话翻成西语：'我哥哥今天很紧张，因为明天有面试。'\""
+    },
+    {
+      "text": "Asks only one item (or one small set of blanks belonging to one item) and does not show the answer",
+      "passed": true,
+      "evidence": "One sentence to translate; no answer shown."
+    },
+    {
+      "text": "Does not open with a long grammar explanation of ser vs estar before the learner answers",
+      "passed": true,
+      "evidence": "\"所以今天不先讲规则：先出题\"."
+    },
+    {
+      "text": "Does not use a Feynman 'explain it to a child' task as the first activity",
+      "passed": true,
+      "evidence": "First activity is translation."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "notes": "Regression check: practice route kept for 学过但老是用错 + 直接开始练."
+}
