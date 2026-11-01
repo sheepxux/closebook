@@ -1,0 +1,39 @@
+{
+ "eval_id": 39,
+ "round": "2026-11-01 round 6",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "Creates an HTML fragment file under ./work/ (visible in workspace changes) and the reply contains a `visualize{\"path\":...}` line pointing at that file",
+   "passed": true,
+   "evidence": "workspace-changes.json: {\"work/git-branch-quiz.html\": \"created\"}; the reply's second line is visualize{\"path\":\".../eval-39/workspace/work/git-branch-quiz.html\"}"
+  },
+  {
+   "text": "The fragment contains one git branching question with four distinct options, an I-don't-know choice or equivalent, a confidence 1-3 control and a single Check-answer control",
+   "passed": true,
+   "evidence": "Radios A git branch feature/login, B git switch feature/login, C git switch -c feature/login, D git branch -m feature/login, plus 不知道 (value dont_know); confidence radios 1/2/3; one button \"检查答案\" (type=submit, disabled until both are chosen)"
+  },
+  {
+   "text": "The check is done inside the widget: the fragment holds the correct option and marks right or wrong on click, shows an explanation for the chosen option (at least for every wrong option), and reveals nothing before the click (no preselected or highlighted key)",
+   "passed": true,
+   "evidence": "Script: result = answer==='C' ? 'correct' : 'incorrect'; verdict text and the explanation paragraph (A 只创建分支，不切换；B 切换到已有分支…；C 创建新分支并切换；D 重命名当前分支) live in #feedback, which is `hidden` until the submit handler sets hidden=false; no option is preselected or highlighted before the click"
+  },
+  {
+   "text": "After the check, a Next control calls window.openai.sendFollowUpMessage once with a result line carrying the chosen option, correct/incorrect/dont_know and the confidence; nothing is sent on load or on the check itself, and double sends are guarded",
+   "passed": true,
+   "evidence": "Button \"提交结果\" in #feedback calls window.openai.sendFollowUpMessage({prompt: resultLine, title: '提交本题结果'}) with resultLine = 'closebook result · git-branch-create-switch/q1 · ' + answer + ' · ' + result + ' · confidence ' + confidence; it is built on the check, sent only on this click, and send.disabled=true guards a second click; nothing runs on load"
+  },
+  {
+   "text": "The reply does not duplicate the question as lettered text options, does not reveal the answer, does not fall back to text or MCP, and waits for the learner",
+   "passed": true,
+   "evidence": "Reply: \"只考一道，用闭卷辨析检查易混命令。选答案和把握程度后，题卡会当场判定；提交结果时需再确认一次。\" plus the visualize line; no options in text, no answer, no MCP"
+  },
+  {
+   "text": "Interface labels are in Chinese (the learner's language) while the git commands stay as written",
+   "passed": true,
+   "evidence": "Labels 选择一个答案 / 把握程度 / 猜的 / 有些把握 / 很确定 / 检查答案 / 提交结果 in Chinese; commands kept as code"
+  }
+ ],
+ "passed": 6,
+ "total": 6
+}

@@ -46,8 +46,8 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 36 | teach route · section pace | One reply explains the whole section (2–4 points), no check in between, one check after |
 | 37 | teach route · second miss on section pace | Says it slows down; one small chunk and one check for that point only; still unscored |
 | 38 | teach route · stored pace | Progress file holds `teach_pace`; no pace question; retest first, then the next planned points |
-| 39 | host widget · Codex Visualize | Writes an HTML fragment with the question, confidence and a `sendFollowUpMessage` submit; `visualize{...}` line in the reply; no key inside |
-| 40 | host widget · `show_widget` + `sendPrompt` | One `show_widget` call with a numeric widget; no MCP duplicate; no solution inside |
+| 39 | host widget · Codex Visualize | Writes an HTML fragment that checks the four-option answer itself (key + per-option explanation inside), confidence first, `sendFollowUpMessage` result line only on Next; `visualize{...}` line in the reply |
+| 40 | host widget · `show_widget` + `sendPrompt` | One `show_widget` call with a numeric widget that checks the value within a tolerance and then shows the worked steps; `sendPrompt` result line on Next; no MCP duplicate |
 | 41 | host question tool · `request_user_input` | One call: three options plus a confidence question; no text duplicate; no hint at the key |
 
 ## Running

@@ -64,7 +64,7 @@ The same teaching flow can use different interfaces; the [interaction guide](ski
 
 | Interface | When it is used | How answers are checked |
 |---|---|---|
-| The agent's own components: inline widgets (Codex and ChatGPT Visualize, Claude Code `show_widget`) or a question tool with options | First choice wherever the agent has them: the question is drawn in the chat and the answer comes back as a message | The assistant grades the returned answer; the widget never holds the key |
+| The agent's own components: inline widgets (Codex and ChatGPT Visualize, Claude Code `show_widget`) or a question tool with options | First choice wherever the agent has them: the question is drawn in the chat and the answer comes back as a message | Keyed questions are checked inside the widget with instant feedback, and one result line returns to the chat when the learner moves on; written answers are graded by the assistant |
 | Optional closebook MCP cards | Fallback in clients that support MCP Apps | Submission returns to chat; the assistant checks the answer |
 | Offline HTML practice page | When requested, or when a reusable page suits the task | The page checks supported answer types; written answers can be exported for assistant feedback |
 | Plain-text chat | Always available as a fallback | The assistant checks each reply in the conversation |

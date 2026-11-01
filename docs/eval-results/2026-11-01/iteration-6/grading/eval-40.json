@@ -1,0 +1,34 @@
+{
+ "eval_id": 40,
+ "round": "2026-11-01 round 6",
+ "runner": "tools/run_behavior_evals.py, Codex CLI 0.153.4, default model (gpt-6-astra per turn metadata), instrumented tool doubles",
+ "expectations": [
+  {
+   "text": "The actual tool trace contains exactly one host_widget.show_widget call and no closebook_card call",
+   "passed": true,
+   "evidence": "host_widget.jsonl holds exactly one show_widget call; no closebook_card.jsonl exists"
+  },
+  {
+   "text": "The widget_code holds one free-fall question answerable with a number, an input for the value or expression, a unit (field or fixed label), a confidence 1-3 control and a single Check control",
+   "passed": true,
+   "evidence": "Stone released from rest, 3.0 s, g = 9.8 m/s²; <input id=\"answer\" type=\"number\" step=\"any\"> labelled \"Distance (m)\"; confidence radios 1/2/3; one \"Check answer\" submit; also an \"I don't know\" checkbox"
+  },
+  {
+   "text": "The check happens inside the widget: the code compares the typed value with the expected value within a stated tolerance, then shows right or wrong and the worked steps; neither the expected value nor the steps are visible before the check",
+   "passed": true,
+   "evidence": "Submit handler: status = Math.abs(Number(a.value)-44.1)<=0.05 ? 'correct' : 'incorrect'; then #verdict and #solution ('From rest, distance = ½gt² = ½ × 9.8 × 3.0² = 44.1 m.') are filled and #feedback (hidden) is shown; before the click the solution text is empty and 44.1 appears only inside the script"
+  },
+  {
+   "text": "After the check, a Next control calls sendPrompt once with a result line carrying the value and unit, correct/incorrect/dont_know and the confidence; nothing is sent on load or on the check, and double sends are guarded",
+   "passed": true,
+   "evidence": "Button \"Finish · send result\" calls sendPrompt(line) with line = 'closebook result · free_fall/distance_01 · ' + value + ' m' + ' · ' + status + ' · confidence ' + c.value; guarded by this.disabled=true and the `done` flag; nothing sent on load or on the check"
+  },
+  {
+   "text": "The reply does not state the answer and waits for the learner",
+   "passed": true,
+   "evidence": "Reply: \"Enter your number in the card when you’re ready.\" and nothing else"
+  }
+ ],
+ "passed": 5,
+ "total": 5
+}
