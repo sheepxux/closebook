@@ -6,7 +6,7 @@ Assume I have no technical background. Handle environment checks, downloads, ins
 Fetch and follow the installation workflow:
 https://raw.githubusercontent.com/sheepxux/closebook/main/INSTALL.md
 
-Identify your actual host and active profile. Download the latest stable release yourself, install the complete skill in the correct persistent location, enable it using the host's supported mechanism, and verify that the host can discover it. Use your tools to complete the work; do not stop at instructions or ask me to download files that you can download yourself.
+Identify your actual host and active profile. Download the latest stable release yourself, install the complete skill in the correct persistent location, enable it using the host's supported mechanism, and verify that the host can discover it. If the host loads skills from a local directory, install the full `skills/closebook` folder from the release's source archive (the upload ZIP leaves out the practice-page template and `agents/openai.yaml`); use the release's `closebook.zip` only for a chat app's skill upload. Use your tools to complete the work; do not stop at instructions or ask me to download files that you can download yourself.
 
 Preserve my existing settings, local skill modifications, and learning records. Involve me only for required permissions, unavoidable UI actions, or unresolved conflicts. If persistent installation is impossible, explain the specific limitation and the minimum remaining step; do not claim success or mistake a temporary sandbox for an installed skill.
 

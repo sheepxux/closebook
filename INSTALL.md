@@ -11,7 +11,7 @@ Assume I have no technical background. Handle environment checks, downloads, ins
 Fetch and follow the installation workflow:
 https://raw.githubusercontent.com/sheepxux/closebook/main/INSTALL.md
 
-Identify your actual host and active profile. Download the latest stable release yourself, install the complete skill in the correct persistent location, enable it using the host's supported mechanism, and verify that the host can discover it. Use your tools to complete the work; do not stop at instructions or ask me to download files that you can download yourself.
+Identify your actual host and active profile. Download the latest stable release yourself, install the complete skill in the correct persistent location, enable it using the host's supported mechanism, and verify that the host can discover it. If the host loads skills from a local directory, install the full `skills/closebook` folder from the release's source archive (the upload ZIP leaves out the practice-page template and `agents/openai.yaml`); use the release's `closebook.zip` only for a chat app's skill upload. Use your tools to complete the work; do not stop at instructions or ask me to download files that you can download yourself.
 
 Preserve my existing settings, local skill modifications, and learning records. Involve me only for required permissions, unavoidable UI actions, or unresolved conflicts. If persistent installation is impossible, explain the specific limitation and the minimum remaining step; do not claim success or mistake a temporary sandbox for an installed skill.
 
@@ -49,8 +49,11 @@ Use Simplified Chinese for all progress updates, questions, and the final respon
 ### 2. 下载并安装完整的正式版本
 
 1. 查询本仓库的[最新正式 Release](https://github.com/sheepxux/closebook/releases/latest)（也可读取 `https://api.github.com/repos/sheepxux/closebook/releases/latest`），记录确定的 tag；若用户指定版本则使用指定版本。后续下载都固定到这个 tag，不能把 `main` 的开发代码当作正式版本。
-2. 从该 Release 下载 `closebook.zip`。这是唯一的上传包，claude.ai、ChatGPT（含 macOS 上的 Codex 桌面端 app 的 ChatGPT 模式）和 Gemini Apps 都用它；它不含 `agents/openai.yaml`（Gemini 不收 yaml）和离线练习页模板（ChatGPT 的技能扫描拒绝任何含 JavaScript 的文件）。按目录安装的宿主（Codex CLI/IDE、Claude Code、Gemini CLI、Hermes）直接复制仓库的 `skills/closebook`，两者都在。公开下载无需向用户索取 API Key。若原生安装器从源码安装，指定同一 tag 下的 `skills/closebook` 子目录；不要只复制 `SKILL.md`。
-3. 在临时位置解压并检查。Release ZIP 的根目录已是 `closebook/`；最终应为 `<技能目录>/closebook/SKILL.md`，不是再套一层 `closebook/closebook/`。确认 `references/`、`schemas/`、`scripts/`、`assets/` 一起存在。若 Release 提供附件摘要，核对下载文件的摘要。
+2. 按宿主类型取文件，两条路不要混：
+   - **按目录安装的宿主**（Codex CLI/IDE、macOS 上 Codex 桌面端 app 的 Codex 模式、Claude Code、Gemini CLI、Hermes）：下载该 tag 的源码压缩包 `https://github.com/sheepxux/closebook/archive/refs/tags/<tag>.zip`（或 `git clone --branch <tag> --depth 1`），只取其中的 `skills/closebook/` 目录，它是完整的：含 `references/`、`schemas/`、`scripts/`、`assets/`（离线练习页模板）和 `agents/openai.yaml`。不要用下面的上传包装目录宿主，它缺这两样。若原生安装器从源码安装，指定同一 tag 下的 `skills/closebook` 子目录；不要只复制 `SKILL.md`。
+   - **按账号上传的宿主**（claude.ai、ChatGPT，含 Codex 桌面端 app 的 ChatGPT 模式、Gemini Apps）：下载 Release 附件 `closebook.zip`，这是唯一的上传包，根目录已是 `closebook/`。它故意不含 `agents/openai.yaml`（Gemini 不收 yaml）和 `assets/`（ChatGPT 的技能扫描拒绝任何含 JavaScript 的文件），这不是损坏。
+   公开下载无需向用户索取 API Key。
+3. 在临时位置解压并检查。最终应为 `<技能目录>/closebook/SKILL.md`，不是再套一层 `closebook/closebook/`。目录安装确认 `references/`、`schemas/`、`scripts/`、`assets/`、`agents/` 一起存在；上传包只有前三个目录。若 Release 提供附件摘要（`SHA256SUMS.txt`），核对下载文件的摘要。
 4. 安装前检查同名技能和符号链接。版本、文件均相同就复用；能确认是未修改的旧官方版本时，在宿主扫描范围之外备份旧版再更新。存在本地修改、来源不明或链接目标不清楚时保留原件，说明具体冲突后再决定。不要改动学习进度或其他技能，也不要把备份留在会被当成第二份技能发现的位置。
 5. 使用宿主支持的安装、扫描或启用机制。当前会话不能刷新时，标记“文件已安装，待重新加载”，给出该宿主需要的新对话或重启步骤；不要中断用户正在进行的会话。
 
