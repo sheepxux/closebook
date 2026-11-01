@@ -760,6 +760,40 @@ class LessonPageE2E(unittest.TestCase):
         self.assertIn("当前环境无法在本地保存", page.locator("body").inner_text())
         self.assertEqual(errors, [])
 
+    def test_html_comment_and_script_text_remain_answerable(self):
+        with open(build_lesson.TEMPLATE, encoding="utf-8") as fh:
+            lesson = build_lesson.extract(fh.read())
+        for index, script_tag in enumerate(("<script>", "<ScRiPt>")):
+            with self.subTest(script_tag=script_tag):
+                question = "What does <!-- start, and what does %s do?" % script_tag
+                lesson["intro"] = question
+                point = lesson["knowledge_points"][0]
+                point["teach"] = {
+                    "example": "<!-- begins a comment. A script element contains script or data.",
+                    "principle": "These markers have different roles in HTML.",
+                }
+                point["interaction_type"] = "plain_qa"
+                point["items"] = [{
+                    "id": "html-markers", "question": question,
+                    "answer": "A comment; a script element.",
+                    "accept": ["A comment; a script element."],
+                }]
+                page = self.open(_build(lesson, self.tmp.name, "html-markers-%d.html" % index))
+                self.assertEqual(page.locator("script").count(), 2)
+                self.assertEqual(json.loads(page.locator("#lesson-data").text_content()), lesson)
+                self.assertEqual(page.locator("#intro").inner_text(), question)
+                self.assertEqual(page.get_by_placeholder("Your answer").count(), 0)
+                self.btn(page, "Close the explanation and answer from memory").click()
+                self.assertIn(question, page.locator("#panel").inner_text())
+                page.get_by_placeholder("Your answer").fill("A comment; a script element.")
+                page.locator("label.chip", has_text="2 · fairly sure").click()
+                self.btn(page, "Check").click()
+                self.assertIn("Correct", page.locator(".result").inner_text())
+                attempts = self.export_json(page)["attempts"]
+                self.assertEqual(len(attempts), 1)
+                self.assertEqual(attempts[0]["question"], question)
+                self.assertEqual(attempts[0]["result"], "correct")
+
     def test_bad_lesson_data_shows_an_error(self):
         path = os.path.join(self.tmp.name, "broken.html")
         with open(build_lesson.TEMPLATE, encoding="utf-8") as fh:

@@ -164,7 +164,7 @@ tools/package_skill.py  发布 ZIP 构建工具
 在仓库根目录执行：
 
 ```sh
-npm ci --prefix mcp
+npm ci --prefix mcp --loglevel=error
 python3 tools/check.py
 ```
 
@@ -174,7 +174,7 @@ python3 tools/check.py
 
 ```sh
 cd mcp
-npm ci
+npm ci --loglevel=error
 npm run build
 npm test
 ```

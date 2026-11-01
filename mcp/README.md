@@ -45,7 +45,7 @@
 需要 Node.js 20+。从仓库根目录安装依赖：
 
 ```sh
-npm ci --prefix mcp
+npm ci --prefix mcp --loglevel=error
 ```
 
 直接启动 STDIO 服务：
@@ -54,7 +54,7 @@ npm ci --prefix mcp
 node mcp/server.mjs --stdio
 ```
 
-启动时会校验源码、依赖锁文件和构建产物的内容指纹；文件缺失、过期或损坏时先重新构建。失败时在 stderr 给出原因并停止，stdout 只用于 MCP 协议。也可进入 `mcp/` 后执行 `npm start`；本目录的 npm 配置关闭普通生命周期提示。注册客户端时推荐使用直接 Node 启动方式。
+启动时会校验源码、依赖锁文件和构建产物的内容指纹；文件缺失、过期或损坏时先重新构建。失败时在 stderr 给出原因并停止，stdout 只用于 MCP 协议。也可进入 `mcp/` 后执行 `npm start`；本目录的 npm 配置把日志级别设为 silent，以免 `npm start` 的横幅写入 stdout。该设置同时会隐藏安装错误，所以安装依赖时加上 `--loglevel=error`。注册客户端时推荐使用直接 Node 启动方式。
 
 预构建产物与当前源码匹配时，启动无需构建工具；只安装生产依赖的部署也必须保留源码、锁文件和构建报告。
 

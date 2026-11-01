@@ -166,7 +166,7 @@ tools/package_skill.py  Release ZIP builder
 From the repository root:
 
 ```sh
-npm ci --prefix mcp
+npm ci --prefix mcp --loglevel=error
 python3 tools/check.py
 ```
 
@@ -176,7 +176,7 @@ For the optional MCP companion:
 
 ```sh
 cd mcp
-npm ci
+npm ci --loglevel=error
 npm run build
 npm test
 ```

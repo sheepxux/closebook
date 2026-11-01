@@ -88,6 +88,16 @@ class Embedding(Fixtures):
         self.assertEqual(build_lesson.extract(html), self.lesson)
         self.assertEqual(html.count('<script type="application/json" id="lesson-data">'), 1)
 
+    def test_html_comment_before_script_tag_is_escaped(self):
+        # "<!--" ... "<script" inside the JSON would make the parser skip the real </script>.
+        self.lesson["intro"] = "What does <!-- start, and what does a <script> tag do?"
+        with open(build_lesson.TEMPLATE, encoding="utf-8") as fh:
+            html = build_lesson.embed(self.lesson, fh.read())
+        data_block = build_lesson.DATA_BLOCK.search(html).group(2)
+        self.assertNotIn("<!--", data_block)
+        self.assertEqual(build_lesson.extract(html), self.lesson)
+        self.assertEqual(html.count("</script>"), 2)
+
     def test_cli_builds_and_rejects(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = os.path.join(tmp, "nested", "lesson.html")

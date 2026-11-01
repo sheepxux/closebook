@@ -15,7 +15,7 @@ Pick the first route that works in this environment:
 1. **You can run Python:** write `lesson.json`, then
    `python3 scripts/build_lesson.py lesson.json --out <topic-slug>.html`
    It validates the data (schema + per-type rules + fit warnings) and injects it. Fix every error; read every warning. Python `code_trace` items are also executed and checked automatically before building, including with `--check`. `--run-code` remains accepted for older commands but is no longer required.
-2. **You can create files but not run code:** copy `assets/lesson-template.html` unchanged and replace only the contents of `<script type="application/json" id="lesson-data">…</script>`. Escape every `</` inside the JSON as `<\/`.
+2. **You can create files but not run code:** copy `assets/lesson-template.html` unchanged and replace only the contents of `<script type="application/json" id="lesson-data">…</script>`. Escape every `</` inside the JSON as `<\/`, and every `<!--` as `\u003c!--` (otherwise a later `<script` in the text makes the browser swallow the page script).
 3. **You can only type text into the chat:** don't build the page. The template is ~135 KB; retyping it costs a lot and one slip breaks it. Stay at Level 0/1.
 
 Never edit, shorten or "improve" the page logic. Never add external scripts, fonts or images.

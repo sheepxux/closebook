@@ -758,7 +758,10 @@ def check_code(lesson: Dict[str, Any], timeout: float = 5.0) -> List[Issue]:
 
 
 def embed(lesson: Dict[str, Any], template_text: str) -> str:
-    payload = json.dumps(lesson, ensure_ascii=False, indent=2).replace("</", "<\\/")
+    # "</" would close the data block early. "<!--" followed later by "<script"
+    # puts the HTML parser into a state where the real </script> is ignored and
+    # the page script is swallowed, so escape its "<" as a JSON unicode escape.
+    payload = json.dumps(lesson, ensure_ascii=False, indent=2).replace("</", "<\\/").replace("<!--", "\\u003c!--")
     if not DATA_BLOCK.search(template_text):
         raise ToolError("template has no <script type=\"application/json\" id=\"lesson-data\"> block")
     return DATA_BLOCK.sub(lambda m: m.group(1) + "\n" + payload + "\n" + m.group(3), template_text, count=1)

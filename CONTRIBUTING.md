@@ -15,7 +15,7 @@ Thanks for helping. closebook is a teaching skill, so most changes are changes t
 Install Node.js 20+, the MCP dependencies and the browser test dependencies once:
 
 ```sh
-npm ci --prefix mcp
+npm ci --prefix mcp --loglevel=error
 python3 -m pip install playwright
 python3 -m playwright install chromium-headless-shell
 ```

@@ -37,7 +37,7 @@ def main(argv=None):
     os.chdir(str(ROOT))
     npm = shutil.which("npm")
     if npm is None or not (ROOT / "mcp/node_modules").is_dir():
-        parser.error("MCP dependencies are missing. Install Node.js 20+ and run npm ci in mcp/ first.")
+        parser.error("MCP dependencies are missing. Install Node.js 20+ and run npm ci --prefix mcp --loglevel=error first.")
     suite = unittest.TestSuite()
     loader = unittest.TestLoader()
     tests = ROOT / "tests"

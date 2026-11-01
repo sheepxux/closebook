@@ -23,7 +23,7 @@ jobs:
           cache: npm
           cache-dependency-path: mcp/package-lock.json
       - name: Install MCP dependencies
-        run: npm ci --prefix mcp
+        run: npm ci --prefix mcp --loglevel=error
       - name: Install browser test dependencies
         run: |
           python -m pip install playwright
