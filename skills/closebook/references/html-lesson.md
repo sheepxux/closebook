@@ -10,7 +10,7 @@ A **closed-book assessment** of several learned points (today's points, one or s
 
 ## How to produce the page
 
-Pick the first route that works in this environment. If `assets/lesson-template.html` is not present in this installation (the upload ZIP for chat apps ships without it, because ChatGPT's skill scan refuses files that contain JavaScript; directory installs have it), the page renderer is unavailable here: say so in one sentence and use the next renderer in `interaction-fit.md`; never retype the page from memory.
+Pick the first route that works in this environment. If `assets/lesson-template.html` is not present in this installation (the upload ZIP for chat apps ships without it, because ChatGPT's skill scan refuses files that contain JavaScript; directory installs have it), never retype the template from memory. Instead, when the host can show an HTML output file (ChatGPT opens one in its side pane; Claude shows an artifact), write a **compact page** by hand for the assessment, following "Compact page without the template" below; when it cannot, say so in one sentence and use the next renderer in `interaction-fit.md`.
 
 1. **You can run Python:** write `lesson.json`, then
    `python3 scripts/build_lesson.py lesson.json --out <topic-slug>.html`
@@ -56,6 +56,16 @@ Use `"mode": "exam"` when the learner wants to be tested on a set of learned poi
 - **What the learner sees.** The tab is called Exam; the header shows the scope, the countdown and a **Hand in** button. Each answered question locks and shows only "answered" with their answer: no verdict, no explanation, no retry. The Mistakes tab is hidden. Hand in (with a confirm when questions are still open) or the countdown ending grades everything: a report with the score, per-point results (weak points marked: under half right or any confident miss), the wrong and unanswered questions with Open buttons, then every question with its explanation as in training mode.
 - **Honesty.** The page compares with the keys you wrote; it cannot grade free text or prove nobody looked at the source, where the keys are readable. Say "closed-book means you don't look" once if asked. Training mode (`review`) and exam mode are different pages; tell the learner which one they have.
 - **Export.** The export carries `assessment` (`mode`, `submitted`, times, scope) and attempts with `phase: "review"`, `source: "html"`. Import as usual (`import-session`): the schedule updates, confident misses get `priority_flag`, each point gets its `section`. Then teach the weakest points from the report, starting with confident misses, with a different example than the exam used.
+
+## Compact page without the template
+
+For an assessment on a host that renders HTML output but has no template and no network (ChatGPT's sandbox has neither). Write one self-contained `.html` file (no external scripts, fonts or requests; plain JavaScript, no framework), smaller than the template but with the same contract so the export imports unchanged:
+
+- **Data:** a `<script type="application/json" id="lesson-data">` block with `lesson_id`, `topic`, `language`, `mode: "exam"`, optional `exam.time_limit_min` and `exam.scope`, and `knowledge_points` (`id`, `title`, `importance`, `knowledge_type`, `items`). Use only keyed item types you can check in a few lines: `mcq` (options with one `correct`, each with an `explanation`), `numeric` (`answer`, `tolerance`, `unit`), `plain_qa` (`answer`, `accept` variants), `cloze_passage` with simple blanks. Reuse the progress file's ids and topic.
+- **Behaviour:** closed-book. Each item: the question, its controls, confidence pills `1 / 2 / 3`, one lock button; after it the item shows only "answered" with the learner's answer, no verdict, no explanation. A **Hand in** button (confirm when items are unanswered) and the optional countdown grade everything at once, then show a report: score, per point right/total with weak points marked (under half right or a confident miss), every item with its verdict and explanation, and the unanswered ones.
+- **Export:** after hand-in, a read-only textarea with the `closebook-session-export` JSON: `format: "closebook-session-export"`, `schema_version: "1.0"`, `source: "html"`, `lesson_id`, `topic`, `language`, `exported_at`, `knowledge_points` (id, title, importance, knowledge_type), `attempts` (`kp_id`, `id` as `<lesson_id>~<kp_id>~<item_id>~<n>`, `at`, `phase: "review"`, `result`, `confidence`, `hint_level: 0`, `question`, `interaction`, `source: "html"`), and `assessment` (`mode: "exam"`, `submitted: true`, times, scope). Tell the learner to paste it back; `import-session` reads it like a template export.
+- **Labels** in the learner's language; nothing stored in the browser is required (a reload may lose answers: say so).
+- **Honesty:** it is a plain version of the practice page, with none of the template's diagrams, traces, terminals or graphs; say so in one line. Keep the key out of the visible page until hand-in (it is still in the source, as with the template). Re-read the script once for syntax before delivering; keep it under about two hundred lines.
 
 ## Check the answer key before delivery
 

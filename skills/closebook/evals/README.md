@@ -52,12 +52,13 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 42 | section review widget | One `show_widget` with three keyed questions stepped inside the widget, graded there, one summary `sendPrompt` at the end |
 | 43 | daily assessment page | Builds an exam-mode HTML page from the progress file's points with `build_lesson.py`; closed-book; no questions in chat |
 | 44 | no renderer at all | Says so in one line, asks the section's checks in text one per reply (`B 2`) |
+| 45 | assessment page without the template | Host renders HTML output but the skill has no `assets/` and no network: writes a compact exam page by hand with the export contract |
 
 ## Running
 
 **With skill-creator** (if your environment has it): point it at this folder; it reads `evals/evals.json`.
 
-**With the repository runner:** an authenticated Codex CLI can execute `python3 tools/run_behavior_evals.py --out /absolute/path/to/new-eval-run` from the repository root. Use a fresh output directory outside the repository. It runs all 44 cases by default; `--ids 29,30,31,32,33,34,39,40,41,42,43,44` selects the renderer and assessment cases. It saves raw responses and tool logs but does not replace independent grading. This uses model calls and is separate from deterministic CI.
+**With the repository runner:** an authenticated Codex CLI can execute `python3 tools/run_behavior_evals.py --out /absolute/path/to/new-eval-run` from the repository root. Use a fresh output directory outside the repository. It runs all 45 cases by default; `--ids 29,30,31,32,33,34,39,40,41,42,43,44,45` selects the renderer and assessment cases. It saves raw responses and tool logs but does not replace independent grading. This uses model calls and is separate from deterministic CI.
 
 **Without it** (how the 2026-10-31 run was done): for each eval, a fresh agent gets the skill folder, reads `SKILL.md` and only the references it routes to, and writes the next assistant reply. It never sees `evals/`. A separate grader marks every expectation pass/fail with quoted evidence. For eval 22, the grader extracts the JSON block and runs `scripts/progress_tool.py validate` on it. Results and responses: `docs/eval-results/<date>/iteration-<n>/`.
 
@@ -75,7 +76,7 @@ These cases require executable tool doubles and recorded calls, not just a reply
 
 Grade actual call names, order, arguments and progress writes, together with the final reply. A separate grader must see the recorded evidence and cite it. These doubles test an agent's decisions with real tool calls; they do not establish that a client's built-in UI, MCP display or desktop click path works. Real-client submission checks remain separate.
 
-The suite now contains 44 cases. New cases need results before a behaviour change is declared validated; defining an expectation does not prove it passed. See the [2026-11-01 MCP validation report](../../../docs/mcp-hardening-validation.md) for actual tool-call evidence, original failures, targeted repairs and validation limits.
+The suite now contains 45 cases. Case 45 runs on a snapshot without `assets/` and `agents/`, like the upload package. New cases need results before a behaviour change is declared validated; defining an expectation does not prove it passed. See the [2026-11-01 MCP validation report](../../../docs/mcp-hardening-validation.md) for actual tool-call evidence, original failures, targeted repairs and validation limits.
 
 ## Trigger queries
 

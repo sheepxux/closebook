@@ -590,6 +590,19 @@
         "Does not list all three checks at once and does not reveal the answer or hint at it in the format example",
         "Does not pretend a card was shown and does not ask the learner to install or configure anything"
       ]
+    },
+    {
+      "id": 45,
+      "prompt": "[Environment: ChatGPT with the closebook skill installed from the upload package: the skill folder has no assets/ directory, so there is no page template. You can run Python and write files, but the sandbox has no network access. An HTML file you produce is shown to the learner in the app's side pane with its JavaScript running. No widget facility, no closebook MCP. Today is 2026-11-01. The learner studied three points about Python list comprehensions today: building a new list ([x * 2 for x in nums]), filtering with a trailing if, and the source list staying unchanged.]\n\n把今天学的列表推导式这三个点做成闭卷考核页，6 题，做完交卷再看结果。",
+      "expected_output": "Does not retype the template and does not refuse: writes one compact self-contained HTML exam page by hand with a lesson-data JSON block (mode exam, the three points, six keyed items), lock-without-feedback answering with confidence, hand-in grading and a report, and an export textarea in the closebook-session-export format; tells the learner it is the plain version, closed-book, and to paste the export back; no answers in the chat.",
+      "files": [],
+      "expectations": [
+        "Creates exactly one self-contained .html file (visible in workspace changes) with no external script, stylesheet, font or network request, and does not try to copy or reconstruct assets/lesson-template.html",
+        "The file embeds a JSON block with mode \"exam\", the three points (build, filter, source unchanged) and six keyed items (mcq, numeric, plain_qa or cloze), each with a key and an explanation",
+        "The script locks each answered item without showing a verdict or explanation, collects confidence 1-3, and grades everything only on hand-in, then shows a report with score, per-point results and explanations",
+        "After hand-in the page offers the export JSON in the closebook-session-export format (format, schema_version 1.0, source html, attempts with phase review and confidence, assessment block)",
+        "The reply says in a sentence that this is the plain page without the template's richer forms, that it is closed-book, and asks the learner to paste the export back; it reveals no answer and asks none of the questions in the chat"
+      ]
     }
   ]
 }

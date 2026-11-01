@@ -16,7 +16,7 @@ Symlinks work too. Invoke with `$closebook` or `/skills`, or just ask to be quiz
 `~/.codex/skills` appears on an older use-case page but not in the main docs: **unverified**, prefer `~/.agents/skills`.
 
 **ChatGPT** (verified for eligible **Business, Enterprise, Healthcare, Edu** users)
-1. `python3 tools/package_skill.py` → `dist/closebook.zip` (the one upload package; it has no `assets/lesson-template.html`, because ChatGPT's skill scan refuses any file containing JavaScript, checked 2026-11-01, and no `agents/openai.yaml`; the offline practice page is therefore not available in ChatGPT, everything else is).
+1. `python3 tools/package_skill.py` → `dist/closebook.zip` (the one upload package; it has no `assets/lesson-template.html`, because ChatGPT's skill scan refuses any file containing JavaScript, checked 2026-11-01, and no `agents/openai.yaml`; in ChatGPT the skill writes a compact assessment page by hand instead, which the app shows in its side pane with its JavaScript running, verified 2026-11-01; everything else is unchanged).
 2. Plugins → Skills → Create → Upload. Uploads are scanned before use.
 3. Mention it with `@closebook`, or let ChatGPT pick it from the description.
 

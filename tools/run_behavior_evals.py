@@ -20,6 +20,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / 'skills' / 'closebook'
 
 
+UPLOAD_PACKAGE_CASES = {45}  # the chat-app upload package has no assets/ and no agents/
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, required=True, help='New output directory for private raw logs and isolated workspaces')
@@ -55,6 +58,9 @@ def main():
         workspace = case_dir / 'workspace'
         workspace.mkdir(parents=True)
         shutil.copytree(snapshot, workspace / 'closebook')
+        if case['id'] in UPLOAD_PACKAGE_CASES:
+            for folder in ('assets', 'agents'):
+                shutil.rmtree(workspace / 'closebook' / folder, ignore_errors=True)
         attached = []
         for item in case['files']:
             target = workspace / 'attachments' / Path(item).name
