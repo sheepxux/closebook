@@ -38,7 +38,7 @@ Use Simplified Chinese for all progress updates, questions, and the final respon
 
 The agent needs a supported installation mechanism and permission to use it. Some apps still require a click, an upload or a restart. If persistent installation is unavailable, it should say so and offer a clearly labelled session-only option. See the [installation workflow](INSTALL.md).
 
-**Release scope:** the prompt installs the latest stable release, [v0.4.0](https://github.com/sheepxux/closebook/releases/tag/v0.4.0), which includes the three-level teaching and assessment flow (checks per point, section review cards, exam-mode pages), the agent's-own-components-first renderer order and the single upload ZIP described here. The optional Chinese/English MCP companion is available in this release's source under `mcp/`; it is configured separately and is not included in the skill ZIP.
+**Release scope:** the prompt installs the latest stable release, [v0.4.1](https://github.com/sheepxux/closebook/releases/tag/v0.4.1), which includes the three-level teaching and assessment flow (checks per point, section review cards, exam-mode pages), the agent's-own-components-first renderer order and the single upload ZIP described here. The optional Chinese/English MCP companion is available in this release's source under `mcp/`; it is configured separately and is not included in the skill ZIP.
 
 ## Start learning
 
@@ -181,7 +181,7 @@ npm run build
 npm test
 ```
 
-See the [MCP guide](mcp/README.md) for server startup and client configuration. In this release the skill is `0.4.0` and the MCP package stays `0.3.0` (unchanged); their versions are independent, and UI resource revisions are tracked separately too.
+See the [MCP guide](mcp/README.md) for server startup and client configuration. In this release the skill is `0.4.1` and the MCP package stays `0.3.0` (unchanged); their versions are independent, and UI resource revisions are tracked separately too.
 
 </details>
 
