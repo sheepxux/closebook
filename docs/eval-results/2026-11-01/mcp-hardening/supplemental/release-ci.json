@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-01",
+  "run_url": "https://github.com/sheepxux/closebook/actions/runs/41266442700",
+  "run_id": 41266442700,
+  "job_id": 124730128574,
+  "head_sha": "445d330e9e73cceac1f18e732881a01a7200d22c",
+  "conclusion": "success",
+  "environment": {
+    "os": "Ubuntu 26.04.1",
+    "python": "3.11.17",
+    "node": "22.23.4"
+  },
+  "command": "python tools/check.py",
+  "python": {
+    "passed": 135,
+    "failed": 0,
+    "skipped": 0,
+    "browser_tests_included": 11
+  },
+  "packaging": "passed",
+  "mcp": {
+    "passed": 41,
+    "failed": 0,
+    "skipped": 0
+  },
+  "log_excerpt": [
+    "2026-11-01T02:45:22.5914975Z Full check: browser tests must run; any skipped test fails this command.",
+    "2026-11-01T02:45:37.7985384Z Ran 135 tests in 15.206s",
+    "2026-11-01T02:45:37.7985846Z OK",
+    "2026-11-01T02:45:42.4967606Z # tests 41",
+    "2026-11-01T02:45:42.4968397Z # pass 41",
+    "2026-11-01T02:45:42.4968840Z # fail 0",
+    "2026-11-01T02:45:42.4969697Z # skipped 0",
+    "2026-11-01T02:45:42.5250744Z All checks passed."
+  ],
+  "scope": "Full deterministic checks on GitHub Actions; separate from model behavior trials and actual desktop submissions."
+}

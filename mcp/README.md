@@ -114,7 +114,7 @@ codex features enable enable_mcp_apps
 | 回忆卡翻面 | 原始作答返回同一聊天；用户确认参考答案提交前不可见、提交后才出现 |
 | 排序移动操作 | 最后两项补检要求把 1 上移到 2 前，实际回传 one → two（数字 1 → 数字 2），符合要求。此前未能核实画面和用户误点的两次记录保留；点击过程未被独立观察，不代表全部控件及异常分支都已实测。DOM 定向检查另行通过 |
 | 新主题与双语界面 | 中英文回传已观察，整体样式与全部界面标签仍未独立目视复核 |
-| 本轮浏览器与 CI | 没有重跑 HTML 浏览器测试；新 CI 工作流尚未远程执行 |
+| 浏览器与远程 CI | 本地审计当时未运行 HTML 浏览器测试；提交 `445d330` 的 [Ubuntu CI](https://github.com/sheepxux/closebook/actions/runs/41266442700) 已完整执行 `python3 tools/check.py`，135 项 Python（含 11 项浏览器）、打包检查及 41 项 MCP 全部通过，0 跳过 |
 | Claude、Hermes、Gemini 等客户端 | 尚未实机验证这套组件 |
 
 新规则另有 [agent 行为评测](../skills/closebook/evals/README.md)，检查实际工具选择及学习状态处理。本轮提交记录与待完成项见 [MCP 改进验证](../docs/mcp-hardening-validation.md)。工具替身证明的是决策，不证明某平台已具备对应界面。发布前应分别记录自动化、行为和真实客户端验收结果。

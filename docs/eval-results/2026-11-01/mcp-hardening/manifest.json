@@ -1,5 +1,5 @@
 {
-  "README.md": "cb061f4165abbb97853278c37122d48528cbbe57ea64b8e7b285a5313da35c39",
+  "README.md": "f9b6c40ff24c56536391e819a9300149e8845a396e695e2ed394728b5749eee0",
   "evals-snapshot.json": "4a0a3e3e2a3e5de62ef22578f4224289f5e56ccce27915bde0b6449df757dee8",
   "followup/grading/eval-07.json": "1f63db0a273ef1f0d1ecbc617125e5ccf6c33c57ad8561cd4c7297e98275294d",
   "followup/grading/eval-08.json": "59c1c243797a5748186f6a358747accd3c1868ed07c33de41a9304eae4d70ec8",
@@ -193,6 +193,7 @@
   "supplemental/followup-eval22-validation.json": "1f649f84d69ff046e85c3e21fb366d882a34a4d9b4e788c07b9d324a83d72973",
   "supplemental/mcp-source-hashes.json": "4294190465e4d9f9c967d86e7220f53b2cdb68a18c05dc23a9af67e05a74effa",
   "supplemental/ordering-dom-recheck.json": "469291bb5896e464951050a30e468e9eb3cd7d5bcfa3da0d7fb85f9b75cc3186",
+  "supplemental/release-ci.json": "6a985532414f6eddfd5ba51ad1427cd6c14ed5e42fc18b7ca8cdaed77d3f0f25",
   "teaching-recheck/grading/eval-23.json": "59be868e077d3da04ab464f265f064ca3f9f8885881491d01bb72e98624d4e57",
   "teaching-recheck/grading/eval-24.json": "fde068aee7077833f4eb3b4f3a7afb19bbbdc789d5fb38d84c688cb43cab0a13",
   "teaching-recheck/grading/eval-26.json": "65c31c92adb8a0c604e6323342a0097540ba773fae476a90dff6471d7b88cef1",

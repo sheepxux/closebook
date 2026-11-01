@@ -2,7 +2,7 @@
 
 日期：2026-11-01。范围：MCP `0.3.0`、skill 文档与评测。行为审计时，skill 元数据版本为 `0.2.0`；发布 [v0.3.0](https://github.com/sheepxux/closebook/releases/tag/v0.3.0) 时仅将版本元数据升为 `0.3.0`，未再改动受测教学规则或 MCP 实现。各轮受测快照及其摘要保持原样。skill 与 MCP 仍独立编号；历史 v0.2.0 与本次 v0.3.0 的 skill ZIP 均不包含单独配置的 MCP 服务。
 
-本报告与此前的[练习页验证报告](validation-report.md)分开记录。本轮没有重跑真实浏览器，也没有把旧版本的桌面点击算作新版验收。
+本报告与此前的[练习页验证报告](validation-report.md)分开记录。本地审计期间没有重跑 HTML 浏览器测试，也没有把旧版本的桌面点击算作新版验收；随后发布验证在 GitHub Actions 上运行了完整套件，结果见下文。
 
 ## 已实现的改进
 
@@ -17,7 +17,7 @@
 
 ## 自动检查
 
-实际运行：`python3 tools/check.py --skip-browser`。
+本地审计实际运行：`python3 tools/check.py --skip-browser`。发布前另在 GitHub Actions 上运行完整的 `python tools/check.py`，135 项 Python（含 11 项浏览器）、41 项 MCP 和打包检查全部通过，0 跳过。受测提交为 `445d330e9e73cceac1f18e732881a01a7200d22c`，见 [CI 运行](https://github.com/sheepxux/closebook/actions/runs/41266442700) 与[结构化证据](eval-results/2026-11-01/mcp-hardening/supplemental/release-ci.json)。
 
 | 范围 | 本轮结果 |
 |---|---|
@@ -27,8 +27,8 @@
 | 新克隆、更新后启动及协议回归 | 包含于上述 MCP 检查；修复构建新鲜度后另由独立评审重跑，7/7 通过 |
 | skill 结构检查 | `quick_validate.py` 通过 |
 | 文档 | 收尾复核的 20 份 Markdown、110 个本地路径与锚点有效，围栏完整；外部网址未逐个联网验证 |
-| 真实 HTML 浏览器测试 | 本轮明确排除；当前环境已有浏览器操作限制，未绕过 |
-| GitHub Actions | 工作流已添加，尚未远程运行 |
+| 真实 HTML 浏览器测试 | 本地审计明确排除；发布前 GitHub Actions 实际执行 11 项，全部通过 |
+| GitHub Actions | 完整检查通过：135 项 Python、41 项 MCP、打包检查，0 跳过 |
 | 新版桌面提交 | 用户刷新服务后，七种卡片共收到 9 条真实回传；回忆卡翻面时序由用户确认，排序两项补检返回要求的最终顺序 |
 
 MCP 自动检查涉及真实 STDIO/回环 HTTP、官方 SDK 的 `App`/`AppBridge` 测试宿主、DOM 控件、原文提交、失败恢复、重复通知、迟到确认和语言切换。自动检查本身不替代真实桌面验收；后续用户操作的证据另列于本文末节。
@@ -99,4 +99,4 @@ MCP 自动检查涉及真实 STDIO/回环 HTTP、官方 SDK 的 `App`/`AppBridge
 
 相同数据的 [DOM 定向核查](eval-results/2026-11-01/mcp-hardening/supplemental/ordering-dom-recheck.json) 已执行：选择 A→C→B，点击 B 上移一次，界面状态和提交消息均变为 A→B→C。该检查没有操作真实浏览器或 Codex 应用，不替代桌面补检。
 
-本次没有独立观察屏幕，因此不宣称完成新版主题、所有双语标签和布局的视觉审查；下移、移回、不会、失败恢复等其他分支仍主要由自动测试覆盖。Claude、Hermes、Gemini 等客户端尚未实测。本轮 HTML 浏览器测试和远程 CI 也未运行。
+本次没有独立观察屏幕，因此不宣称完成新版主题、所有双语标签和布局的视觉审查；下移、移回、不会、失败恢复等其他分支仍主要由自动测试覆盖。Claude、Hermes、Gemini 等客户端尚未实测。HTML 浏览器测试已在后续发布前 CI 中通过，不能据此推断其他客户端的 MCP 界面已验证。
