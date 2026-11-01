@@ -16,11 +16,11 @@ Symlinks work too. Invoke with `$closebook` or `/skills`, or just ask to be quiz
 `~/.codex/skills` appears on an older use-case page but not in the main docs: **unverified**, prefer `~/.agents/skills`.
 
 **ChatGPT** (verified for eligible **Business, Enterprise, Healthcare, Edu** users)
-1. `python3 tools/package_skill.py` → `dist/closebook-chatgpt.zip` (the ChatGPT build: identical to `closebook.zip` minus `assets/lesson-template.html`, because ChatGPT's skill scan refuses any file containing JavaScript, checked 2026-11-01; the offline practice page is therefore not available in ChatGPT, everything else is).
+1. `python3 tools/package_skill.py` → `dist/closebook.zip` (the one upload package; it has no `assets/lesson-template.html`, because ChatGPT's skill scan refuses any file containing JavaScript, checked 2026-11-01, and no `agents/openai.yaml`; the offline practice page is therefore not available in ChatGPT, everything else is).
 2. Plugins → Skills → Create → Upload. Uploads are scanned before use.
 3. Mention it with `@closebook`, or let ChatGPT pick it from the description.
 
-On macOS the Codex desktop app and the ChatGPT desktop app are the same bundle (`com.openai.codex`): skills are installed inside it (Customize → Skills, or by attaching the ZIP in a Skill Creator chat), not from `~/.agents/skills`, and its chat runs in a sandbox without access to the Mac's files. Uploads pass a safety scan that refuses any JavaScript (an HTML `<script>` or a `.js` file), which is why the ChatGPT build drops the page template (see `docs/platform-verification.md`). Standalone skills run in the ChatGPT desktop app; skills bundled in a **plugin** also work on web and mobile (verified). Availability on Free, Plus and Pro plans is **unverified** (not stated on the help page). Without skills, use the paste-in in [`generic.md`](generic.md).
+On macOS the Codex desktop app and the ChatGPT desktop app are the same bundle (`com.openai.codex`): skills are installed inside it (Customize → Skills, or by attaching the ZIP in a Skill Creator chat), not from `~/.agents/skills`, and its chat runs in a sandbox without access to the Mac's files. Uploads pass a safety scan that refuses any JavaScript (an HTML `<script>` or a `.js` file), which is why the upload ZIP drops the page template (see `docs/platform-verification.md`). Standalone skills run in the ChatGPT desktop app; skills bundled in a **plugin** also work on web and mobile (verified). Availability on Free, Plus and Pro plans is **unverified** (not stated on the help page). Without skills, use the paste-in in [`generic.md`](generic.md).
 
 ## Compatibility notes
 

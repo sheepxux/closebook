@@ -125,7 +125,7 @@ closebook 记录知识点、作答、错误和下次复习日期。间隔复习�
 | Gemini CLI、Gemini Apps | [Gemini 适配](adapters/gemini.md) |
 | 其他 agent，或仅本次会话使用 | [通用适配](adapters/generic.md) |
 
-想手动安装，可以下载[标准 skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook.zip)、[Gemini skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook-gemini.zip) 或 [ChatGPT skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook-chatgpt.zip)（不含离线练习页模板，因为 ChatGPT 的技能扫描拒绝 JavaScript），按对应平台说明安装。安装包包含 skill，不包含 MCP 服务。平台能力的依据和核实日期见[平台核实记录](docs/platform-verification.md)。
+想手动安装，可以下载 [skill ZIP](https://github.com/sheepxux/closebook/releases/latest/download/closebook.zip)，claude.ai、ChatGPT、Gemini Apps 都用这一个包（它不含离线练习页模板和 `agents/openai.yaml`，这两样上传会被拒）；Codex CLI、Claude Code 等按目录安装的宿主直接复制 `skills/closebook` 文件夹，内容完整，按对应平台说明安装。安装包包含 skill，不包含 MCP 服务。平台能力的依据和核实日期见[平台核实记录](docs/platform-verification.md)。
 
 ## 已经验证到哪一步
 

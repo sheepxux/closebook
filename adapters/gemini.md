@@ -6,7 +6,7 @@
 ## Install
 
 **Gemini Apps: skill upload (primary path)**. Works on gemini.google.com, the mobile app and the Mac app; no Google AI subscription needed (verified).
-1. `python3 tools/package_skill.py` → `dist/closebook-gemini.zip`. This build leaves out `agents/openai.yaml`, because `.yaml` isn't on Gemini's list of supported upload types (**unverified** whether it would be rejected), and it never contains `.DS_Store` or `.pyc` files, which can make uploads fail (verified).
+1. `python3 tools/package_skill.py` → `dist/closebook.zip` (the one upload package). It leaves out `agents/openai.yaml`, because `.yaml` isn't on Gemini's list of supported upload types, and the HTML page template (ChatGPT's scan refuses JavaScript; Gemini CLI directory installs keep it) (**unverified** whether it would be rejected), and it never contains `.DS_Store` or `.pyc` files, which can make uploads fail (verified).
 2. Upload the ZIP (or the `closebook/` folder) where Gemini lets you create skills.
 
 Notes (verified): the name must be lowercase with hyphens (it is); uploads are limited to 100 MB; scripts can't reach the internet. Whether Gemini Apps actually **runs** the bundled Python scripts is **unverified**, which is fine because the teaching flow never depends on them.

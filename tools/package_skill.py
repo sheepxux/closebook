@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-"""Package skills/closebook into upload-ready ZIPs (Python 3.8+, standard library only).
+"""Package skills/closebook into the one upload-ready ZIP (Python 3.8+, standard library only).
 
-    python3 tools/package_skill.py            # writes dist/closebook.zip, dist/closebook-gemini.zip and dist/closebook-chatgpt.zip
+    python3 tools/package_skill.py            # writes dist/closebook.zip
     python3 tools/package_skill.py --check    # list what would be packaged, write nothing
 
-The ZIP root is the `closebook/` folder (required by claude.ai). Development-only
-files (evals, caches, macOS metadata) are left out. The Gemini build also drops
-`agents/` because `.yaml` isn't on Gemini's documented list of upload types. The
-ChatGPT build drops `assets/` (the HTML page template) because ChatGPT's skill
-scan refuses any file containing JavaScript (checked 2026-11-01); that package
-teaches in chat and with the host's widgets, without the offline practice page.
-Timestamps are fixed so the same sources always produce the same bytes.
+The ZIP is the upload package for chat apps (claude.ai, ChatGPT, Gemini Apps). Its
+root is the `closebook/` folder (required by claude.ai). It leaves out development
+files (evals, caches, macOS metadata) and two things some chat apps refuse:
+`agents/openai.yaml` (`.yaml` isn't on Gemini's upload list) and `assets/` (the
+HTML page template: ChatGPT's skill scan refuses any file containing JavaScript,
+checked 2026-11-01). Installs that copy the `skills/closebook` directory (Codex
+CLI/IDE, Claude Code, Gemini CLI, Hermes) keep both. Timestamps are fixed so the
+same sources always produce the same bytes.
 """
 from __future__ import annotations
 
@@ -26,6 +27,7 @@ SKILL_DIR = os.path.join(ROOT, "skills", "closebook")
 DIST = os.path.join(ROOT, "dist")
 NAME = "closebook"
 EXCLUDED_DIRS = {"evals", "__pycache__", ".git"}
+UPLOAD_SKIPS = {"agents", "assets"}
 JUNK = re.compile(r"(^\._|^\.DS_Store$|\.pyc$|^Thumbs\.db$|~$)")
 FIXED_TIME = (2026, 1, 1, 0, 0, 0)
 ALLOWED_KEYS = {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
@@ -79,8 +81,7 @@ def main(argv=None) -> int:
     parser.add_argument("--out", default=DIST, help="output directory (default: dist/)")
     args = parser.parse_args(argv)
     check_frontmatter()
-    builds = [("closebook.zip", collect()), ("closebook-gemini.zip", collect(skip_dirs={"agents"})),
-              ("closebook-chatgpt.zip", collect(skip_dirs={"assets"}))]
+    builds = [("closebook.zip", collect(skip_dirs=UPLOAD_SKIPS))]
     for filename, files in builds:
         if args.check:
             print("%s (%d files)" % (filename, len(files)))

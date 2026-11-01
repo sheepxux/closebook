@@ -7,7 +7,7 @@
 
 **claude.ai / Claude Desktop** (Free, Pro, Max, Ultra, Team, Enterprise; verified)
 1. Turn on code execution ("Code execution and file creation"); skills need it.
-2. Build the ZIP: `python3 tools/package_skill.py` → `dist/closebook.zip` (its root is the `closebook/` folder, as required).
+2. Build the ZIP: `python3 tools/package_skill.py` → `dist/closebook.zip` (its root is the `closebook/` folder, as required). This upload package has no offline page template and no `agents/openai.yaml` (other chat apps refuse them); the Claude Code directory install below keeps both.
 3. Customize → Skills → upload the ZIP, then enable it.
 
 Skills enabled on claude.ai sync into Claude Code when you sign in with the same account (Claude Code v2.1.273+; verified).
