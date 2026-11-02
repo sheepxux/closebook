@@ -9,7 +9,7 @@ An agent skill for guided lessons, recall practice and spaced review.</p>
 
 closebook gives your AI assistant a teaching flow. Bring a topic, your notes or a progress file, and tell it what you want to learn.
 
-- **For new material**, it explains one small part, shows an example (with a diagram, step-through or explainer where the agent can draw one) and checks your understanding. If you prefer, it explains a whole section of 2–4 points first and then runs the checks as one card with 3–5 questions graded on the spot. After all of today's points are taught, it tests them again with the notes closed, and a day's or several days' points become a closed-book exam page.
+- **For new material**, the agent arranges teaching units from the content, course workload, prerequisites and your responses. It may explain a complete example, several connected points or a full section, and use smaller steps where needed. Checks at useful boundaries guide correction, followed by closed-book retests; coverage and assessment remain tracked per knowledge point. You can request smaller steps or fuller explanations at any time.
 - **For practice and review**, it starts with a question, explains the gap in your answer and gives you a new question to check it.
 
 **On every agent platform, suitable built-in components, tools and plugins come first.** Optional MCP cards, HTML and text follow the same [renderer rules](skills/closebook/references/interaction-fit.md).
@@ -57,6 +57,8 @@ After installation, fill in the brackets and send. You can use your own language
 Filled in, the first one reads: "Use closebook to teach me the present perfect. I'm a complete beginner and have 20 minutes."
 
 Your stated background takes priority: saying "quiz me" while explaining that you have never studied the topic still calls for teaching first. For a large subject, closebook proposes a path in prerequisite order and saves the unfinished points for later.
+
+The development version adds a [source-driven course workflow](skills/closebook/references/source-driven-course.md), not yet included in the published v0.4.1 package. With slides, PDFs, official documents or a syllabus, it inventories every page or item with source locators, then retains the v0.4.1 teaching and retrieval methods while arranging teaching units from content and workload and tracking each point’s coverage. Source sections require reconciliation against that inventory; each Module ends with a comprehensive closed-book assessment and targeted re-teaching/retests. Parsed, taught, assessed and passed are tracked separately. Time limits defer requirements rather than deleting them. A syllabus supports syllabus-level claims only; unreadable visuals and missing pages remain explicit gaps.
 
 During practice, you answer before seeing the reference answer. "I don't know" is allowed, and questions with a correct answer can ask how confident you are. Feedback names the gap and gives another chance to retrieve the idea. Reading a card or clicking "continue" never counts as mastery.
 
@@ -139,7 +141,7 @@ The [validation report](docs/validation-report.md) records skill behaviour, prog
 
 For the MCP companion, as of 2026-11-01:
 
-- Automated checks cover protocol, message return, DOM interaction, interface language and startup. The suite is separate from the 34 agent behaviour cases; neither proves that every desktop client works. The local audit excluded HTML browser tests. The subsequent [Ubuntu CI run](https://github.com/sheepxux/closebook/actions/runs/41266442700) for commit `445d330` passed the full `python3 tools/check.py`: 135 Python tests (including 11 browser tests), packaging checks and 41 MCP tests, with no skipped tests.
+- Automated checks cover protocol, message return, DOM interaction, interface language and startup. The suite is separate from the agent behaviour cases; neither proves that every desktop client works. The local audit excluded HTML browser tests. The subsequent [Ubuntu CI run](https://github.com/sheepxux/closebook/actions/runs/41266442700) for commit `445d330` passed the full `python3 tools/check.py`: 135 Python tests (including 11 browser tests), packaging checks and 41 MCP tests, with no skipped tests.
 - After reloading the MCP service in Codex desktop, all seven card forms produced nine real submissions in the same chat, including three ordering attempts. Samples preserved the selected option and confidence, multiline Chinese/English text, a fraction and unit, and blank IDs with a curly apostrophe. The user also confirmed that the recall-card reference appeared only after submission; reading acknowledgement and preview answers did not count toward learning progress.
 - The final two-item ordering check returned the requested order, 1 → 2, after instructions to move 1 above 2. The earlier inconclusive attempt and user-reported misclick remain in the record. The click sequence was not independently observed, and this check does not cover every control or failure path. A targeted DOM check passed separately.
 - The current cyan theme and all interface labels have not been independently reviewed visually. Chinese and English return messages were observed; Claude, Hermes and other clients have not been tested hands-on with this companion.
@@ -158,7 +160,7 @@ skills/closebook/        Installable skill: core instructions, references and op
   schemas/              Progress, lesson, export and grading formats
   scripts/              Progress management and HTML builder (Python 3.8+, standard library)
   assets/               Offline HTML template
-  evals/                34 behaviour cases, excluded from release ZIPs
+  evals/                53 behaviour cases, excluded from release ZIPs
 mcp/                    Optional MCP Apps companion (Node.js 20+)
 adapters/               Platform installation guides
 docs/                   Validation reports and design decisions
@@ -174,7 +176,7 @@ npm ci --prefix mcp --loglevel=error
 python3 tools/check.py
 ```
 
-The full check includes Python, packaging, browser and MCP tests, and fails on skipped tests. Install the browser dependencies as described in [CONTRIBUTING.md](CONTRIBUTING.md). In environments that cannot run browser tests, use `--skip-browser` and report a partial check. GitHub Actions runs the full deterministic command; the 34 [agent behaviour cases](skills/closebook/evals) are run separately.
+The full check includes Python, packaging, browser and MCP tests, and fails on skipped tests. Install the browser dependencies as described in [CONTRIBUTING.md](CONTRIBUTING.md). In environments that cannot run browser tests, use `--skip-browser` and report a partial check. GitHub Actions runs the full deterministic command; the 53 [agent behaviour cases](skills/closebook/evals) are run separately.
 
 For the optional MCP companion:
 

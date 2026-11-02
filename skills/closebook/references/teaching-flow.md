@@ -18,7 +18,8 @@ This file expands the flow in `SKILL.md`. Everything here runs in plain text; in
 Goal: one message from you, one reply from the learner, and the session is set up.
 
 **Splitting material into knowledge points**
-- 3–5 points. A point is something you can test with one or two questions. If the material is bigger, take the 3–5 most important points and list the rest under "optional extension" (tell the learner what you trimmed).
+- **Course sources supplied:** first follow `source-driven-course.md`. Inventory all source requirements with locators; the opening shows today's subset, and the remaining required points stay `planned`. Never turn required course details into optional extensions to fit the opening.
+- **Without course sources:** propose a concise outline sized to the topic. A point is something you can test with one or two questions. If the material is bigger, choose what fits today and list the rest under "optional extension" (tell the learner what you trimmed).
 - Importance: `core` (the material makes no sense without it), `important` (commonly tested or used), `minor` (detail, edge case).
 - Knowledge type: primary type plus optional secondary type (see `knowledge-types.md`). Record it now; reviews reuse it instead of re-judging.
 - Mixed material is classified **per point**, never as a whole, and each point shows its planned approach in a few words (from `method-fit.md`).
@@ -46,12 +47,10 @@ Add one line on how questions will appear here (`host-widgets.md` section 3): "I
 
 Drop b) when the request already settled the route (section 2). On the teach route, replace it with: "b) Already know any of these? Tell me which and I'll test those instead of teaching them." Approach notes on the teach route say "explain → check → …" so the learner can see teaching comes first.
 
-On the teach route, when no `settings.teach_pace` is stored yet, add one more line (`new-learning.md` section 3): "d) Pace: step by step (a short explanation, then a question; good from zero) or by section (2–4 points at once, then the questions; good with some background)?" Once answered, the pace is saved; later sessions reuse the saved value instead of repeating the question. If the learner skips it: `step` for "zero / never seen it", otherwise `section`; say which in one line.
+The agent arranges teaching units from content, workload, prerequisites and learner responses (`new-learning.md` section 3). Do not add a mandatory pace-selection question. Respect any stored or stated preference; otherwise choose an appropriate unit yourself.
 
 **Applying the answer**
-- 15 min → core points only; one retest each; no synthesis beyond 2–3 sentences.
-- 30 min → 3–4 points; synthesis.
-- 60 min → up to 5 points; synthesis; optional mini project or Plain Talk.
+- Fit the actual content to the available time, leaving room for checks, retests and synthesis. Point counts vary with difficulty and course workload; unfinished source requirements remain planned.
 - See `efficiency.md` for the full time budget.
 
 If the learner ignores the questions and just says "start", default to 30 minutes, the route from section 2, and the outline as proposed, and say so in one line.
@@ -62,15 +61,7 @@ The learner's intent picks the route; what they say about prior knowledge overri
 
 | Signal | Route |
 |---|---|
-| "teach me", "I want to learn X", "get me started", "from scratch", 教我、我想学、入门、从零学、零基础 | **B — teach, then test** |
-| "quiz me", "test me", "practice", "review", "drill", "help me memorize", 考考我、练习、刷题、复习、背、测验、备考 | **A — practice** |
-| "learn X" + "I've studied it / it's shaky / I know the basics" | A |
-| "quiz me" + "never seen it" | B; say in one line that you'll explain first because there's nothing to retrieve yet |
-| Material supplied, "help me study this", no signal either way | Ask familiarity in the opening; if they just say "start", B for material they haven't read, A for their own notes |
-
-**A — practice (has met the material).** Go straight to the diagnostic question for point 1, then the loop in section 3.
-
-**B — teach, then test (new to the learner).** Each of today's points in turn: chunks with checks (`new-learning.md`), one chunk and one check per reply on the `step` pace, or a section of 2–4 points and then one check per point on the `section` pace (`new-learning.md` section 3; `settings.teach_pace`). Once all are taught: the closed-book retests and judging of section 3, steps 3–4, starting with the point taught longest ago. The diagnostic is replaced by the chunk checks; a starting-point question is used only when it's unclear what the learner already knows.
+| "teach me", "I want to learn X", "get me started", "from scratch", 教我、我想学、入门、从零学、零基础 | **B — teach, then test (new to the learner).** Arrange coherent teaching units from the actual content, workload, background and responses (`new-learning.md`). A unit may explain one idea or several connected points before checks. Keep point-level mappings and assess every objective even when taught together. After the teaching block, run the closed-book retests and judging of section 3, steps 3–4, starting with the point taught longest ago; source-section gates still apply. A starting-point question is used only when prerequisite knowledge is unclear.
 
 Mixed familiarity ("I know 1 and 2, never saw 3"): A for 1–2, B for 3. A point taught on route B in one session is reviewed like any other point afterwards: reviews always test first.
 
@@ -126,7 +117,7 @@ One reply may contain feedback on the previous answer plus the next question. Th
 
 ## 5. Review flow
 
-**Assessment requests first.** "Test me on everything from today", "review yesterday / this week", "a module exam", 把今天学的都考一遍、复习这几天的、阶段测试: when you can write files, build the HTML page in **exam mode** (`html-lesson.md`): the points whose attempts fall in the asked dates, keyed items, closed-book until hand-in, a report at the end; tell the learner to paste the export back, then record it and teach the weakest points. Without file access, run the capped review batch below and say why. Never invent learning history: the covered points and dates come from the progress file.
+**Assessment requests first.** "Test me on everything from today", "review yesterday / this week", "a module exam", 把今天学的都考一遍、复习这几天的、阶段测试: when you can write files, build the HTML page in **exam mode** (`html-lesson.md`): the points whose attempts fall in the asked dates, keyed items, closed-book until hand-in, a report at the end; tell the learner to paste the export back, then record it and teach the weakest points. For a source-defined Module exam, scope comes from **every required Module point in the course ledger**, not attempt dates or due status; apply the gates and exam conditions in `source-driven-course.md`. With no files, that exam runs in chat with feedback withheld until hand-in, across sittings if needed. For ordinary reviews without file access, use the capped batch below. Never invent learning history or call a sampled review a complete Module assessment.
 
 1. **Load.** Read the file, or ask the user to paste the JSON. Validate it (tool or by eye); if broken, repair what's obvious and say what you changed.
 2. **Get today's date** (environment, or ask).
@@ -159,13 +150,13 @@ One reply may contain feedback on the previous answer plus the next question. Th
 | "Just tell me the answer" | Give it. Record `hint_level: 3`. One sentence: shown answers come back tomorrow. |
 | Learner wants to skip retest | Explain the cost in one sentence (no retest = no evidence it stuck). If they insist, skip and log in `user_overrides`. |
 | Three wrong in a row, or replies getting shorter | Lower difficulty, return to a short teaching chunk with a new example (`new-learning.md`), or suggest a break / smaller scope (`efficiency.md`). |
-| "Slow down" / "bigger chunks" / 慢一点 / 一次多讲点 on the teach route | Change `settings.teach_pace` (`step` ↔ `section`), log it in `user_overrides` (`scope: "flow"`), apply from the next chunk or section. A point missed twice on `section` drops to `step` by itself (`new-learning.md` section 3). |
+| "Slow down" / "bigger chunks" / 慢一点 / 一次多讲点 on the teach route | Respect the requested teaching size, save `step` or `section` when applicable, and log the explicit preference in `user_overrides` (`scope: "flow"`). If the learner delegates pacing back to the agent, clear the setting; adapt future units from the material and responses (`new-learning.md` section 3). |
 | Practice route, but the diagnostic shows the point is new to them | Switch that point to the teach route and say so in one line. |
 | Learner pastes the material back to answer | Gently note it's now open-book; record `hint_level: 3` for that answer. |
 | Material is wrong or outdated | Say so with the correction; don't test them on the wrong version. |
 | No material, only a topic | Build the outline from general knowledge; say the points are your proposal and may not match their course. On the teach route follow the source rules in `new-learning.md`. |
 | Very long material or a whole subject | Pick what fits today; save the rest as `planned` points (`new-learning.md`, learning paths). |
-| "Test me on everything from today / this week", a module or stage exam | Exam-mode HTML page from the progress file's points (section 5, `html-lesson.md`); in chat only, the capped review batch. |
+| "Test me on everything from today / this week", a module or stage exam | Exam-mode HTML page (section 5, `html-lesson.md`); a source-defined Module uses every required ledger point, with chat exam fallback in `source-driven-course.md`. Ordinary chat reviews may use the capped batch. |
 | Section finished, learner wants the checks | One section review widget on a widget host (`host-widgets.md` section 8); otherwise one check per reply. |
 | Learner disputes your grading | Re-check. If they're right, correct the record and say so plainly. If not, explain once with evidence. |
 | Session interrupted | Save progress immediately with what exists; unfinished points keep `mastery: "not_assessed"`. |

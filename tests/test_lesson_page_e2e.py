@@ -744,6 +744,33 @@ class LessonPageE2E(unittest.TestCase):
         page.locator("ol.stepper button").nth(0).click()
         self.assertIn("prices = [5, 12, 8]", body())
 
+    def test_explicit_connected_unit_is_not_split_at_four_points(self):
+        lesson = progress_tool.load_json(NEW_LEARNER)
+        template = lesson["knowledge_points"][0]
+        points = []
+        for n in range(5):
+            kp = copy.deepcopy(template)
+            kp["id"] = "connected-%d" % n
+            kp["title"] = "关联知识点 %d" % n
+            kp["teach"]["chunks"][0]["explain"] = "同一推导中的第 %d 个关联环节" % n
+            points.append(kp)
+        lesson["knowledge_points"] = points
+        lesson.pop("free_recall", None)
+        lesson.pop("plain_talk", None)
+        lesson["teach_pace"] = "section"
+        lesson["sections"] = [{"title": "完整关联推导", "points": [kp["id"] for kp in points]}]
+        self.assertEqual([i for i in build_lesson.check_lesson(lesson) if i.severity == "error"], [])
+        page = self.open(_build(lesson, self.tmp.name, "connected-unit.html"))
+        body = page.locator("body").inner_text()
+        self.assertIn("第 1/1 节", body)
+        for n in range(5):
+            self.assertIn("同一推导中的第 %d 个关联环节" % n, body)
+        self.assertEqual(page.get_by_placeholder("你的答案").count(), 0)
+        self.btn(page, "读完了，合上这一节逐点检查").click()
+        body = page.locator("body").inner_text()
+        self.assertIn("第 1/5 题", body)
+        self.assertNotIn("同一推导中的第 4 个关联环节", body)
+
     def test_section_pace_reads_the_section_then_checks_each_point(self):
         lesson = progress_tool.load_json(NEW_LEARNER)
         lesson["teach_pace"] = "section"

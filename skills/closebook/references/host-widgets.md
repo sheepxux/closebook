@@ -80,7 +80,7 @@ At the start of the session (`SKILL.md`, "Detect the environment once"):
   `<answer>` is the option id, the typed value with unit, the order as ids, or the blanks as `1=…; 2=…`. On Codex and ChatGPT the host shows a confirmation dialog first; tell the learner once that a confirm click follows. This line is what lets you record the attempt, classify the error with the confidence, and choose the next question; without it the result exists only on the learner's screen.
 - **The send button never locks for good.** Disable it only while the send is in progress; when the call settles, re-enable it with the label "Send again" (再发一次), because a cancelled host dialog may return just like a sent one and the learner must be able to retry. Keep the same line in a read-only field under the button, so the learner can copy and paste it if the host does not deliver it. Duplicates are harmless: you treat a second result line for the same `<kp_id>/<item_id>` as a repeat, not a new attempt.
 - **Style:** follow the host's own widget guidance; closebook adds no theme. Keep it compact and transparent; the question text is content, not decoration.
-- **Teaching chunks:** on hosts with a widget facility a chunk may be shown as a card (explanation, example, one button "I've read it, ask me" that sends `closebook ready · <kp_id>`). The click is not mastery. On the `section` pace show the section's chunks together, then one check per point (`new-learning.md` section 3).
+- **Teaching chunks:** on hosts with a widget facility a chunk may be shown as a card (explanation, example, one button "I've read it, ask me" that sends `closebook ready · <kp_id>`). The click is not mastery. For connected units, show the explanations together and check at the planned boundary (`new-learning.md` section 3). A card-sized fragment is optional, not a required teaching size.
 - **Nothing is recorded on display.** An attempt exists only when the result line or the written answer has arrived in the chat. A repeated line for the same `<kp_id>/<item_id>` (a retry after a cancelled dialog) is the same attempt: record it once, answer it once. Record it, give any feedback the widget could not (the cause of the error, what to practise), and send the next question (another widget).
 
 ## 5. Recipes per interaction form
@@ -119,7 +119,7 @@ Record per knowledge point (`interaction-fit.md` section 6): `interaction_select
 
 ## 8. Section review widget: 3–5 questions in one widget
 
-**When.** The learner has just finished a section of 2–4 related points on the `section` pace (`new-learning.md` section 3), or asks for a quick check on 3–5 points learned in one sitting, and the host has an inline widget facility. The task decides this, not the question count (`interaction-fit.md` section 3): a single point's check stays a single widget; a day's or several days' points go to the HTML assessment page (`html-lesson.md`, exam mode).
+**When.** The learner has just finished an agent-arranged unit of related points (`new-learning.md` section 3), or asks for a quick check on 3–5 points learned in one sitting, and the host has an inline widget facility. The task decides this, not the question count (`interaction-fit.md` section 3): a single point's check stays a single widget; a day's or several days' points go to the HTML assessment page (`html-lesson.md`, exam mode).
 
 **One widget, stepped inside.** Build one card that holds all the items (3–5, one per point, each on a case the explanation did not show) with their keys and explanations, and shows **one at a time**:
 

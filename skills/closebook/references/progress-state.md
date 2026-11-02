@@ -5,6 +5,7 @@ The progress file lets learning continue across sessions and platforms. No platf
 - Schema: `schemas/progress.schema.json` (`schema_version` "1.0"). Fields are tagged `x-tier: core` or `x-tier: extension`.
 - Examples: `schemas/examples/progress.full.json`, `schemas/examples/progress.core.json` (compact), `schemas/examples/session-export.example.json`.
 - Tool: `scripts/progress_tool.py` (Python 3.8+, standard library only).
+- Course sources also require the companion `closebook-progress/<topic-slug>.course.md` ledger from `source-driven-course.md`. Load, save and export it alongside progress (including in chat-only sessions). It retains source locators, complete scope and gate/assessment evidence without changing progress schema 1.0; compact progress JSON alone cannot preserve or prove course coverage.
 
 ## 1. Three storage tiers
 
@@ -46,7 +47,7 @@ Compact rules: drop extension fields; drop core fields that are empty or default
 
 | Event | Write |
 |---|---|
-| Opening confirmed | Create the file / state: topic, points with type and importance, `status` (`optional_extension` for trimmed points, `planned` for later points on a learning path), `created`, `settings` (on the teach route, `teach_pace` once the learner has chosen `step` or `section`; later sessions reuse the saved value instead of asking again) |
+| Opening confirmed | Create the file / state: topic, points with type and importance, `status` (`optional_extension` for trimmed points, `planned` for later points on a learning path), `created`, `settings` (`teach_pace` only for a learner preference of `step` or `section`; absent means the agent arranges units from content and workload) |
 | Check after a teaching chunk | attempt with `phase: "teach_check"`; no box, mastery or error update; until the point's first retest, it is due the next day |
 | Each answer | Append an attempt (`at`, `phase`, `result`, `hint_level`, `confidence` for right/wrong questions, `error_type` if wrong). Then update box, `next_review`, `mastery`, `priority_flag` |
 | Error | Append to `errors[]` with remedy |
@@ -54,7 +55,7 @@ Compact rules: drop extension fields; drop core fields that are empty or default
 | Plain Talk recall | attempt with `phase: "plain_talk_recall"`, `plain_talk_used`, `plain_talk_recall_result` |
 | Method / interaction decisions | extension fields (section 2) |
 | User overrides | the point's `*_override_by_user` and an entry in `user_overrides` |
-| Pace changed mid-session ("slow down", "bigger chunks") | `settings.teach_pace` and a `user_overrides` entry with `scope: "flow"` |
+| Pace changed mid-session ("slow down", "bigger chunks") | `settings.teach_pace` and a `user_overrides` entry with `scope: "flow"`; clear the setting when the learner delegates pacing to the agent again |
 | A result line arrives twice for the same item (retry after a cancelled host dialog) | Nothing new: the attempt already exists; reply once |
 | Section review widget summary comes back (`host-widgets.md` section 8) | One attempt per item from the summary line: `phase: "teach_check"` (section checks) or `"review"` (review batch), `source: "widget"`, `result`, `confidence`, `interaction`; teach checks change no schedule |
 | Exam page export comes back (`html-lesson.md`, exam mode) | `import-session` (or merge by hand): attempts `phase: "review"`, `source: "html"`; confident misses set `priority_flag`; each point gets `section` from the export; then `weak_points` from the report |

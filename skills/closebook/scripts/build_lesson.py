@@ -395,9 +395,6 @@ def check_lesson(lesson: Any) -> List[Issue]:
         block = [teach.get("example", ""), teach.get("principle", "")] + teach.get("steps", [])
         if chunks and any(block):
             err(base + ".teach", "use either chunks or example/principle/steps, not both")
-        elif len(" ".join(block).split()) > 180 or len("".join(block)) > 450:
-            warn(base + ".teach", "teaching block is long; keep it to about 150 words (one example + one principle), "
-                                  "or split it into chunks with checks")
         item_ids = set()
         for j, item in enumerate(kp["items"]):
             ipath = "%s.items[%d]" % (base, j)
@@ -405,8 +402,6 @@ def check_lesson(lesson: Any) -> List[Issue]:
                 err(ipath + ".id", "duplicate item id %s" % item["id"])
             item_ids.add(item["id"])
             _check_item(kind, item, ipath, err, warn)
-        if len(chunks) > 3:
-            warn(base + ".teach.chunks", "more than 3 chunks; split the point into two points")
         if chunks and lesson.get("mode") in ("review", "exam"):
             warn(base + ".teach.chunks", "teaching chunks are shown only in learn mode")
         if lesson.get("mode") == "exam" and kind in ("flashcard", "free_text"):
@@ -415,10 +410,6 @@ def check_lesson(lesson: Any) -> List[Issue]:
             warn(base + ".items", "exam mode: a plain_qa item without an answer key is self-graded")
         for c, chunk in enumerate(chunks):
             cpath = "%s.teach.chunks[%d]" % (base, c)
-            text = [chunk["explain"], chunk.get("example", ""), chunk.get("analogy", ""), chunk.get("analogy_limit", "")]
-            text += [s["do"] + " " + s.get("why", "") for s in chunk.get("worked") or []]
-            if len(" ".join(text).split()) > 220 or len("".join(text)) > 500:
-                warn(cpath, "chunk is long; one idea in about 80-200 words (400 Chinese characters), or split it")
             if chunk.get("analogy") and not chunk.get("analogy_limit"):
                 err(cpath, "every analogy needs analogy_limit (where the comparison breaks)")
             if chunk.get("analogy") and ktype == "factual":
@@ -456,9 +447,6 @@ def check_lesson(lesson: Any) -> List[Issue]:
             elif not chunk_count[kp_id] and lesson.get("mode") != "exam":
                 warn(spath, "point %s has no teach.chunks, so the page has nothing to read for it in this section" % kp_id)
             placed.add(kp_id)
-        total = sum(chunk_count.get(kp_id, 0) for kp_id in sec["points"])
-        if total > 8:
-            warn(spath, "section has %d chunks; keep a section to about 8 chunks (references/new-learning.md section 3)" % total)
     left_out = [kp_id for kp_id in chunked_ids if kp_id not in placed]
     if sections and left_out:
         warn("$.sections", "points with chunks in no section form their own sections: %s" % ", ".join(left_out))

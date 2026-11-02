@@ -4,12 +4,12 @@
     {
       "id": 1,
       "prompt": "[Environment: chat-only web app, plain text, no file tools. Today is 2026-10-31.]\n\n下周五（2026-11-06）考计算机网络期末，范围就是附件这份笔记。我每天能抽 30 分钟，帮我备考。",
-      "expected_output": "Exam-prep opening in one message: 3-5 knowledge points with importance and knowledge type, familiarity question, exam date noted with reviews planned before 2026-11-06; no summary of the notes and no question answered for the learner.",
+      "expected_output": "Exam-prep opening driven by the complete source inventory: today’s subset with importance and knowledge type, familiarity question, exam date noted and reviews before 2026-11-06; source requirements retained for later, no invented generic syllabus or answers revealed.",
       "files": [
         "evals/files/network-exam-notes.md"
       ],
       "expectations": [
-        "Splits the material into 3-5 knowledge points, each labelled with importance (core/important/minor or 核心/重要/次要) and a knowledge type",
+        "Uses the supplied course scope as the baseline and shows today’s subset with importance and knowledge type; retains remaining required points as planned rather than silently trimming them into optional extensions",
         "Labels the congestion-window calculation topic as procedural (程序技能) or equivalent, not factual",
         "Asks about familiarity (e.g. new / seen but shaky / fairly familiar) and does not re-ask for the time budget, which was already given",
         "Mentions the exam date and that reviews will be scheduled before 2026-11-06 (no review dated on or after the exam day)",
@@ -271,14 +271,14 @@
     {
       "id": 20,
       "prompt": "[Environment: chat-only, plain text. Today is 2026-10-31.]\n\n特征值和特征向量我完全没学过，零基础。30 分钟，大纲你定，直接开始。",
-      "expected_output": "Teach route: short outline, then the first teaching chunk of the first point only (one idea, concrete example before the rule, roughly 200 words / 400 Chinese characters or fewer), then one check question on a case the chunk didn't show; no diagnostic quiz on unknown material first.",
+      "expected_output": "Teach before testing unknown material, using a coherent agent-arranged explanation and concrete example, then an unanswered check. Unit size follows the content rather than a fixed word or chunk cap.",
       "files": [],
       "expectations": [
         "Does not open with a diagnostic question about material the user has said is entirely new",
-        "Teaches only the first chunk of the first point: one idea, with a concrete example before the general rule, roughly 200 words (or 400 Chinese characters) or fewer",
+        "Explains a coherent introductory unit with a concrete matrix/vector example before the rule; chooses the amount of explanation from the learner’s background and content rather than a fixed chunk or word cap",
         "Follows the chunk with exactly one check question that the learner must answer, and does not answer it",
         "The check applies the idea to a case the chunk didn't show (e.g. a different matrix or vector), rather than asking the learner to repeat a sentence from the chunk",
-        "Does not teach all points at once or produce a long lecture"
+        "Keeps the plan appropriate to 30 minutes, with active checking rather than an unbroken course-wide lecture"
       ]
     },
     {
@@ -328,9 +328,9 @@
       "files": [],
       "expectations": [
         "Proposes a learning path of several points in prerequisite order (e.g. functions/slope before limits before derivatives), shown briefly as titles",
-        "Marks which points today's 30 minutes will cover (about 2-3 new points), and says the rest will come in later sessions",
-        "Does not try to teach the whole path or several points in this reply",
-        "If it starts teaching, it gives one short chunk and one check question, and does not answer the check",
+        "Marks today's workload according to prerequisites, difficulty and the 30-minute budget, and saves the remaining path for later rather than imposing a universal point count",
+        "Does not attempt the whole subject in this reply; may explain connected points together if appropriate to the stated workload",
+        "If it starts teaching, gives a coherent concrete explanation followed by one unanswered check, without a fixed word or chunk cap",
         "Does not ask whether the learner has studied calculus before as a separate question when they said 'from zero'"
       ]
     },
@@ -459,11 +459,11 @@
     {
       "id": 35,
       "prompt": "[Environment: chat-only, plain text. Today is 2026-11-02.]\n\n我想学 Rust 的所有权（ownership）。写过两年 Python，Rust 完全没碰过。30 分钟。",
-      "expected_output": "Teach-route opening in one message: a short outline of today's points (approach notes show explain → check), a note that the explanations come from general knowledge, an invitation to name points already known, and the pace question (step by step vs by section) asked once with a one-line description of each option; no time question (given), no separate familiarity question, no quiz on ownership itself.",
+      "expected_output": "Teach-route opening: proposes units from content, background and workload without a mandatory pace-selection question, indicates general-knowledge sources, and respects the given 30 minutes and prior Python experience.",
       "files": [],
       "expectations": [
         "Proposes a short outline for today's 30 minutes whose approach notes make clear that each point is explained before it is checked",
-        "Asks, inside the same opening message, whether the learner wants step by step (short explanation, then a question) or by section (2-4 points explained together, then the questions), describing each option in about one line",
+        "Arranges a coherent learning plan from ownership prerequisites, Rust novelty, Python experience and the 30-minute workload; does not require the learner to choose step versus section pace",
         "Does not ask for the time budget again and does not ask a separate familiarity question (the learner already said they have never touched Rust)",
         "Does not quiz the learner on ownership itself; at most one starting-point question on a prerequisite (e.g. what a Python variable refers to) is acceptable",
         "Says in about one sentence that the outline or explanations come from general knowledge",
@@ -473,12 +473,12 @@
     {
       "id": 36,
       "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01. Earlier in this chat: the learner (has used Python for a few months, never used list comprehensions, 30 minutes) asked to learn Python list comprehensions. The learner chose the section pace (settings.teach_pace = \"section\"). Your outline for today, one section: 1) building a new list in one line, [n * n for n in nums]; 2) filtering with if, [n for n in nums if n % 2 == 0]; 3) nested loops in a comprehension. Nothing has been taught yet.]\n\n开始。",
-      "expected_output": "One reply that explains the whole section: all three points in order, each with a minimal real code example before the rule, no check question between the points, each point in 1-3 chunks of about 80-200 words (400 Chinese characters) with nothing extra; then a sentence that the explanation is closed and exactly one check question on point 1 using a case not shown, unanswered. No scored retest, no box or review date.",
+      "expected_output": "Honours the learner’s chosen section pace: explains all three connected points with actual code before the checks. No fixed word/chunk count; one unanswered check after the explanation.",
       "files": [],
       "expectations": [
         "Explains all three points of the section in this one reply, in order, each with a minimal actual code example before the general rule",
         "Puts no check question between the points; the only question comes after the whole section",
-        "Keeps each point to 1-3 short chunks (about 80-200 words or 400 Chinese characters each), without history, caveat lists, a summary or a preview of later points",
+        "Keeps the three points connected and relevant to their objectives, without forcing each into a fixed word count or 1–3 fragments",
         "Says the explanation is now closed and asks exactly one check question, on point 1 (building a list), using a case the explanation didn't show, and does not answer it",
         "Does not announce a scored retest, a Leitner box or a review date for any point"
       ]
@@ -602,6 +602,111 @@
         "The script locks each answered item without showing a verdict or explanation, collects confidence 1-3, and grades everything only on hand-in, then shows a report with score, per-point results and explanations",
         "After hand-in the page offers the export JSON in the closebook-session-export format (format, schema_version 1.0, source html, attempts with phase review and confidence, assessment block)",
         "The reply says in a sentence that this is the plain page without the template's richer forms, that it is closed-book, and asks the learner to paste the export back; it reveals no answer and asks none of the questions in the chat"
+      ]
+    },
+    {
+      "id": 46,
+      "prompt": "[Environment: file tools available; plain text teaching. Today is 2026-11-02. The attachment is the complete page-by-page text transcript; no original PPT is available.]\n\n用 closebook 按这份官方课件教我，我完全没学过。每天 15 分钟，逐步讲，先把课程解析清单建好，今天还不开始教学。",
+      "expected_output": "Creates a persistent complete source inventory, not a generic 3–5-point course, and distinguishes today’s workload from the full scope.",
+      "files": [
+        "evals/files/statistics-course-slides.md"
+      ],
+      "expectations": [
+        "Actually writes a companion course ledger and progress file (inspect tool calls/files), recording the source revision, all eight slide locators and source Module/section hierarchy",
+        "Retains the distinct requirements from slides 2–7, including even-count median, range limitations, n>1 for sample variance, units and negative multiplier absolute value; these cannot be silently dropped as minor details",
+        "Records reasoned non-instructional exclusions for slides 1 and 8 and retains the slide 7 exercise/objective in a point mapping",
+        "Leaves all untaught required points planned and unassessed; does not cap the course at 3–5 or 6–12 points or claim any teaching/assessment completion",
+        "States that scope is based on the supplied transcript; does not claim inspection of the missing PPT, hidden notes or animations",
+        "Does not start teaching or ask a knowledge check in this turn"
+      ]
+    },
+    {
+      "id": 47,
+      "prompt": "[Environment: chat only. Today is 2026-11-02. Only the attached incomplete transcript is available; no original slide images, original PPT or image tools are available.]\n\n请先核对这门课是否已经完整解析，不开始上课。",
+      "expected_output": "Marks slide 6 as blocked and keeps whole-source completeness unverified; does not fill the gap from general knowledge.",
+      "files": [
+        "evals/files/statistics-course-blocked.md"
+      ],
+      "expectations": [
+        "Identifies slide 6 and its unseen visual as a blocked extraction gap",
+        "Does not claim all 8 pages are fully parsed or invent the diagram’s contents",
+        "May inventory the available pages but labels the scope partial and keeps the unresolved page in the register",
+        "Does not begin teaching before the requested extraction audit"
+      ]
+    },
+    {
+      "id": 48,
+      "prompt": "[Environment: chat only; Today is 2026-11-02. The supplied course ledger records Module 1 / Section 1 as 5 required objectives: mean calculation, mean sensitivity to extreme values, odd-count median, even-count median, and comparison of median/mean sensitivity. All were taught. The first four have graded correct hint-free retests. The last has only a correct immediate teach_check. All source units for this section were inspected. No other attempts exist.]\n\n这一节都讲完了，验收一下，能进极差那节了吗？",
+      "expected_output": "Separates teaching from assessed/passed coverage and tests the missing objective instead of advancing.",
+      "files": [
+        "evals/files/statistics-course-slides.md"
+      ],
+      "expectations": [
+        "Reports 5/5 taught or verified, 4/5 assessed closed-book and 4/5 passed, or equivalent explicit counts",
+        "Identifies the comparison objective as lacking a closed-book retest; the teach_check does not satisfy the gate",
+        "Asks one fresh closed-book question on that objective, with confidence in the same answer step",
+        "Does not teach the next source section or claim Section 1 complete"
+      ]
+    },
+    {
+      "id": 49,
+      "prompt": "[Environment: chat only; Today is 2026-11-02. Module 1 has exactly these 10 required ledger IDs: a1 mean calculation, a2 mean sensitivity, a3 odd median, a4 even median, a5 median sensitivity comparison, b1 range calculation, b2 endpoint dependence, b3 same range/different shapes, b4 combined mean/median application, b5 range interpretation application. All have passed section gates, with next_review after today. review_batch_size is 8. The learner asks to see the exam plan before starting, so do not ask a question yet.]\n\nModule 1 学完了，安排闭卷综合考核。先给考试覆盖计划。",
+      "expected_output": "Uses all ten Module requirements, not due or last-day items or an eight-item review cap; plans delayed feedback and gap repair.",
+      "files": [],
+      "expectations": [
+        "Maps all ten IDs to the proposed exam blueprint; may combine questions only with separate per-point criteria",
+        "Includes at least one combined application question and explains that the due-review cap does not limit the Module exam",
+        "Plans one question per chat reply and withholds correctness, answers and feedback until hand-in",
+        "Distinguishes aggregate score from required-point gaps and plans targeted re-teaching and fresh closed-book retests",
+        "Does not claim the exam is already passed or that the learner’s closed-book behaviour can be physically verified"
+      ]
+    },
+    {
+      "id": 50,
+      "prompt": "[Environment: chat only, plain text. Today is 2026-11-02. Only the syllabus below exists; there are no slides, textbook, notes or prior progress.]\n\n按官方大纲教我：Module A：测量误差；Module B：不确定度传播。我零基础，每天 30 分钟。先说明你会怎么保证不漏。",
+      "expected_output": "Uses the two syllabus items as the scope baseline, labels supplemental detail and limits coverage claims to the supplied outline.",
+      "files": [],
+      "expectations": [
+        "Preserves both original Module headings as the required source baseline instead of substituting a generic subject outline",
+        "Labels any coach-generated subpoints or prerequisite material as supplemental rather than purported official course contents",
+        "States that a syllabus alone cannot verify slide/textbook-level coverage",
+        "Describes persistent or exported tracking of source scope, teaching, assessment and passes, with section gates and Module exams"
+      ]
+    },
+    {
+      "id": 51,
+      "prompt": "[Environment: chat only. Today is 2026-11-02. A source ledger has three required points p1/p2/p3 in Section 1. p1 and p2 passed; p3 was taught but has never been tested. The coach already explained once that skipping p3’s test leaves no closed-book evidence. Section 2 begins with range calculation.]\n\n我知道，今天就是不考 p3 了，先讲第二节。",
+      "expected_output": "Honours the explicit flow override while preserving p3 as an open coverage gap.",
+      "files": [],
+      "expectations": [
+        "Continues with a coherent teaching unit for Section 2 and an unanswered check rather than repeating the warning or refusing; unit size may follow the content",
+        "Records or explicitly carries forward the flow override and p3’s unassessed gap in the ledger/progress state",
+        "Does not mark Section 1 fully passed, manufacture a p3 attempt or remove p3 from the original required denominator"
+      ]
+    },
+    {
+      "id": 52,
+      "prompt": "[Environment: chat only. Today is 2026-11-02. A progress JSON says kp1 (sample variance) is solid. The companion course ledger says it was taught and passed for revision 2026-09-01, whose objective only asked for a formula. The supplied updated official syllabus revision 2026-11-01 explicitly adds n>1 and squared units to that objective. There are no teaching or answer records for these additions. No questions are due today.]\n\n接着上次，先核对新版进度，今天不开始教。",
+      "expected_output": "Reconciles source revisions and reopens coverage for changed objectives without erasing old learning history.",
+      "files": [],
+      "expectations": [
+        "Identifies the revision change and the two newly required details as lacking teaching and assessment evidence",
+        "Preserves the old attempt history labelled against its original scope rather than automatically crediting it to the expanded objective",
+        "Keeps the updated gate pending despite solid mastery and no due reviews",
+        "Does not start a lesson or assessment in this turn"
+      ]
+    },
+    {
+      "id": 53,
+      "prompt": "[Environment: chat only, plain text. Today is 2026-11-02. The official Section 1 inventory is complete: p1 scalar multiplication, p2 linear combinations, p3 matrix-vector multiplication, p4 linear transformations, p5 geometric interpretation, p6 worked application. All are planned and untaught. The source permits these connected ideas to be presented together; no source-section boundary lies between them.]\n\n用 closebook 教我这一节，我有高中数学基础，60 分钟。你根据内容和课程量自己编排，不用问我节奏，也不用每讲一小块就停。先给今天的讲解安排，不要开始出题。",
+      "expected_output": "Agent-arranged coherent teaching units sized to the content and workload, retaining all six objectives and section/Module gates, without artificial chunk/word/point caps.",
+      "files": [],
+      "expectations": [
+        "Proposes a connected teaching arrangement tied to the six supplied objectives, prerequisites, learner background and 60-minute workload",
+        "May combine related points or teach a whole source section, without imposing a four-point, three-chunk or fixed word limit",
+        "Does not require step-versus-section selection or force a stop after every small fragment",
+        "Retains per-point coverage and answer evidence, understanding checks at meaningful boundaries and closed-book retests before the next source-section gate",
+        "Does not ask an exercise question yet, because the learner requested the plan only"
       ]
     }
   ]

@@ -197,9 +197,10 @@ class SchemaAndSemantics(Fixtures):
                 self.assertEqual(build_lesson.main([path, "--check"]), 0)
                 self.assertEqual(build_lesson.main([path, "--check", "--strict"]), 1)
 
-    def test_long_teaching_block_warns(self):
+    def test_connected_teaching_block_has_no_fixed_word_limit(self):
         self.kp("kp6")["teach"]["example"] = "很长的例子。" * 100
-        self.assertIn("teaching block is long", str(warnings(self.lesson)))
+        self.assertEqual(errors(self.lesson), [])
+        self.assertNotIn("teaching block is long", str(warnings(self.lesson)))
 
 
 class TeachChunks(unittest.TestCase):
@@ -244,7 +245,8 @@ class TeachChunks(unittest.TestCase):
             chunks.extend(copy.deepcopy(chunks[0]) for _ in range(3))
             for n, chunk in enumerate(chunks[-3:]):
                 chunk["check"]["id"] = "%s-extra-%d" % (kp["id"], n)
-        self.assertIn("section has 9 chunks", str(warnings(self.lesson)))
+        self.assertEqual(errors(self.lesson), [])
+        self.assertNotIn("section has 9 chunks", str(warnings(self.lesson)))
 
     def test_section_pace_needs_chunks(self):
         for kp in self.lesson["knowledge_points"]:
@@ -253,7 +255,7 @@ class TeachChunks(unittest.TestCase):
         self.assertIn("nothing to read as a section", str(warnings(self.lesson)))
         self.assertEqual(errors(self.lesson), [])
 
-    def test_length_reasons_count_and_mode_warn(self):
+    def test_content_checks_remain_without_fixed_length_or_count_warnings(self):
         self.chunks[0]["explain"] = "很长的讲解。" * 100
         self.chunks[1]["worked"][0].pop("why")
         self.chunks.extend(copy.deepcopy(self.chunks[:2]))
@@ -261,8 +263,28 @@ class TeachChunks(unittest.TestCase):
             chunk["check"]["id"] = "extra-%d" % n
         self.lesson["mode"] = "review"
         text = str(warnings(self.lesson))
-        for expected in ("chunk is long", "worked steps without a why", "more than 3 chunks", "only in learn mode"):
+        for expected in ("worked steps without a why", "only in learn mode"):
             self.assertIn(expected, text)
+        for removed in ("chunk is long", "more than 3 chunks"):
+            self.assertNotIn(removed, text)
+
+    def test_agent_arranged_unit_can_exceed_old_point_and_chunk_limits(self):
+        template = copy.deepcopy(self.lesson["knowledge_points"][0])
+        points = []
+        for n in range(5):
+            kp = copy.deepcopy(template)
+            kp["id"] = "unit-point-%d" % n
+            kp["teach"]["chunks"] = [copy.deepcopy(template["teach"]["chunks"][0]) for _ in range(7)]
+            for i, chunk in enumerate(kp["teach"]["chunks"]):
+                chunk["check"]["id"] = "check-%d" % i
+            points.append(kp)
+        self.lesson["knowledge_points"] = points
+        self.lesson.pop("free_recall", None)
+        self.lesson.pop("plain_talk", None)
+        self.lesson["teach_pace"] = "section"
+        self.lesson["sections"] = [{"title": "完整推导", "points": [kp["id"] for kp in points]}]
+        self.assertEqual(errors(self.lesson), [])
+        self.assertEqual(warnings(self.lesson), [])
 
 
 class Expressions(unittest.TestCase):

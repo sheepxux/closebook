@@ -42,7 +42,7 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 32 | open explanation | Preserves written production when native supports only choices |
 | 33 | lesson acknowledgement | Gives a fresh guided check; no scored attempt, mastery or schedule change |
 | 34 | failed native display | Attempts native once, then preserves the question in the MCP fallback |
-| 35 | teach route · pace asked once | Opening asks step-by-step vs by-section in the same message; no repeated setup questions |
+| 35 | teach route · agent planning | Arranges units from content and workload without a mandatory pace question |
 | 36 | teach route · section pace | One reply explains the whole section (2–4 points), no check in between, one check after |
 | 37 | teach route · second miss on section pace | Says it slows down; one small chunk and one check for that point only; still unscored |
 | 38 | teach route · stored pace | Progress file holds `teach_pace`; no pace question; retest first, then the next planned points |
@@ -53,12 +53,20 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 43 | daily assessment page | Builds an exam-mode HTML page from the progress file's points with `build_lesson.py`; closed-book; no questions in chat |
 | 44 | no renderer at all | Says so in one line, asks the section's checks in text one per reply (`B 2`) |
 | 45 | assessment page without the template | Host renders HTML output but the skill has no `assets/` and no network: writes a compact exam page by hand with the export contract |
+| 46 | complete course transcript | Writes the full source inventory and progress; no small-outline cap or invented access to the PPT |
+| 47 | unreadable slide visual | Retains a blocked page and limits completeness claims instead of inventing its contents |
+| 48 | source-section gate | Immediate checks cannot substitute for a closed-book retest before the next section |
+| 49 | chat-only Module exam plan | Covers all required IDs, including non-due points; no eight-item cap or feedback before hand-in |
+| 50 | syllabus only | Preserves official scope and labels additions; no slide-level coverage claim |
+| 51 | explicit gate override | Proceeds as requested while retaining the skipped point and open gate |
+| 52 | revised source on resume | Reopens changed objectives without erasing prior attempts or treating mastery as coverage |
+| 53 | agent-arranged teaching units | Connected source objectives can be taught together; no fixed word/chunk/point caps or mandatory pace question |
 
 ## Running
 
 **With skill-creator** (if your environment has it): point it at this folder; it reads `evals/evals.json`.
 
-**With the repository runner:** an authenticated Codex CLI can execute `python3 tools/run_behavior_evals.py --out /absolute/path/to/new-eval-run` from the repository root. Use a fresh output directory outside the repository. It runs all 45 cases by default; `--ids 29,30,31,32,33,34,39,40,41,42,43,44,45` selects the renderer and assessment cases. It saves raw responses and tool logs but does not replace independent grading. This uses model calls and is separate from deterministic CI.
+**With the repository runner:** an authenticated Codex CLI can execute `python3 tools/run_behavior_evals.py --out /absolute/path/to/new-eval-run` from the repository root. Use a fresh output directory outside the repository. It runs all 53 cases by default; `--ids 46,47,48,49,50,51,52,53` selects the source-driven course cases, and `--ids 29,30,31,32,33,34,39,40,41,42,43,44,45` selects the renderer and assessment cases. It saves raw responses and tool logs but does not replace independent grading. This uses model calls and is separate from deterministic CI.
 
 **Without it** (how the 2026-10-31 run was done): for each eval, a fresh agent gets the skill folder, reads `SKILL.md` and only the references it routes to, and writes the next assistant reply. It never sees `evals/`. A separate grader marks every expectation pass/fail with quoted evidence. For eval 22, the grader extracts the JSON block and runs `scripts/progress_tool.py validate` on it. Results and responses: `docs/eval-results/<date>/iteration-<n>/`.
 
@@ -76,7 +84,7 @@ These cases require executable tool doubles and recorded calls, not just a reply
 
 Grade actual call names, order, arguments and progress writes, together with the final reply. A separate grader must see the recorded evidence and cite it. These doubles test an agent's decisions with real tool calls; they do not establish that a client's built-in UI, MCP display or desktop click path works. Real-client submission checks remain separate.
 
-The suite now contains 45 cases. Case 45 runs on a snapshot without `assets/` and `agents/`, like the upload package. New cases need results before a behaviour change is declared validated; defining an expectation does not prove it passed. See the [2026-11-01 MCP validation report](../../../docs/mcp-hardening-validation.md) for actual tool-call evidence, original failures, targeted repairs and validation limits.
+The suite now contains 53 cases. Case 45 runs on a snapshot without `assets/` and `agents/`, like the upload package. Cases 46–53 cover the source-driven workflow; case 46 must be graded against actual written files, not promises, and case 47 supplies a separate transcript with slide 6's visual missing. These eight new cases have not yet been run or independently graded. New cases need results before a behaviour change is declared validated; defining an expectation does not prove it passed. See the [2026-11-01 MCP validation report](../../../docs/mcp-hardening-validation.md) for actual tool-call evidence, original failures, targeted repairs and validation limits.
 
 ## Trigger queries
 

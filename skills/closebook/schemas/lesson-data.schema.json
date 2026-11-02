@@ -27,14 +27,14 @@
     "sections": {
       "type": "array",
       "minItems": 1,
-      "description": "Optional grouping of points into named sections by knowledge point id, in order. teach_pace section reads a section's chunks together (2-4 points; without it, consecutive points with chunks are grouped automatically, up to 4). Exam mode shows the section title in the report and exports it as each point's section.",
+      "description": "Optional grouping of points into named sections by knowledge point id, in order. teach_pace section reads a section's chunks together; explicit sections have no fixed point count (without them, the legacy renderer groups up to 4 automatically). Exam mode shows the section title in the report and exports it as each point's section.",
       "items": {
         "type": "object",
         "required": ["title", "points"],
         "additionalProperties": false,
         "properties": {
           "title": { "type": "string", "minLength": 1 },
-          "points": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "type": "string" } }
+          "points": { "type": "array", "minItems": 1, "items": { "type": "string" } }
         }
       }
     },
@@ -73,9 +73,9 @@
     "teach": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Teaching before the questions (teach route). Either chunks (one idea each, every chunk followed by a check; see references/new-learning.md) or a single minimal block: one example + one sentence of principle, optionally split into steps shown one at a time.",
+      "description": "Teaching before the questions (teach route). Either teaching blocks sized to a coherent explanation, with checks (see references/new-learning.md), or a single example/principle block, optionally with steps. Block count and length are chosen from the content and workload.",
       "properties": {
-        "chunks": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/teach_chunk" } },
+        "chunks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/teach_chunk" } },
         "steps": { "type": "array", "items": { "type": "string" } },
         "example": { "type": "string" },
         "principle": { "type": "string" }
