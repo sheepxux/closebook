@@ -53,7 +53,7 @@ export async function createServer() {
   };
   registerAppTool(server, 'show_lesson', {
     title: 'Teach one idea',
-    description: 'Use this when the learner needs a short teaching chunk and no suitable native teaching card is available, or they explicitly request closebook MCP. Provide one idea, a concrete worked example and optional takeaway. The learner can continue to practice or request another explanation. Neither action is a scored answer or evidence of mastery. Do not include an unanswered test and its solution together.',
+    description: 'Use this for a coherent teaching unit when no suitable native teaching card is available, or the learner explicitly requests closebook MCP. Arrange the explanation from course content, workload and learner responses; it may connect several points or present a complete worked example, within the field limits. Use chat if a card would fragment the explanation. The learner can continue or request another explanation. Neither action is a scored answer or evidence of mastery. Do not include an unanswered test and its solution together.',
     inputSchema: z.strictObject({ lesson: lessonSchema }), annotations, _meta: uiMeta,
   }, async ({ lesson }) => lessonResult(lesson));
   registerAppTool(server, 'show_exercise', {

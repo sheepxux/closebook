@@ -117,11 +117,11 @@ Renderer order (same as `interaction-fit.md`): explicit learner request → host
 
 Record per knowledge point (`interaction-fit.md` section 6): `interaction_selected` (the form) and, on a forced change, `interaction_downgraded_from: {from, reason}` with a reason such as `"no host widget; MCP absent; text"`. Attempts may carry `interaction`, so `progress_tool.py interaction-stats` keeps working.
 
-## 8. Section review widget: 3–5 questions in one widget
+## 8. Section review widget: checks for a planned teaching unit
 
 **When.** The learner has just finished an agent-arranged unit of related points (`new-learning.md` section 3), or asks for a quick check on 3–5 points learned in one sitting, and the host has an inline widget facility. The task decides this, not the question count (`interaction-fit.md` section 3): a single point's check stays a single widget; a day's or several days' points go to the HTML assessment page (`html-lesson.md`, exam mode).
 
-**One widget, stepped inside.** Build one card that holds all the items (3–5, one per point, each on a case the explanation did not show) with their keys and explanations, and shows **one at a time**:
+**One widget, stepped inside.** Build one card that holds the unit's checks (one per point, each on a new case; 3–5 is a useful batch size, not a coverage limit) with their keys and explanations, and shows **one at a time**:
 
 1. Question *n* of *N*: stem, options or input, confidence pills, **Check answer**. The feedback for this item is not shown before the click.
 2. After Check: right or wrong, the explanation for the chosen answer, the item locks (no second scoring).
@@ -139,7 +139,7 @@ Record per knowledge point (`interaction-fit.md` section 6): `interaction_select
 
 **Do not:** send a message per question; create a new widget to simulate switching; post a chat message to simulate updating the widget; show a key before Check; re-score an answered item; drop a question to keep a fixed count when the learner is clearly lost.
 
-**What the agent does with the summary.** Record one attempt per item (`phase: "teach_check"` for a section's checks, `review` for a review batch; `source: "widget"`; confidence and result as sent; `interaction` as the form). Then teach the weakest point first with a *different* example, starting with any confident miss, before going on; the section's scored retests still come only after all of today's points are taught. Say in one line what the summary showed; do not repeat the questions.
+**What the agent does with the summary.** Record one attempt per item (`phase: "teach_check"` for a section's checks, `review` for a review batch; `source: "widget"`; confidence and result as sent; `interaction` as the form). Then teach the weakest point first with a *different* example, starting with any confident miss, before going on; scored retests follow the teaching block, and source-section gates must pass before the next source section, even within one day. For large units use successive widget batches and carry unfinished point IDs forward; never drop them to fit a widget. Say in one line what the summary showed; do not repeat the questions.
 
 **Without a widget facility:** one check per reply as before (`new-learning.md` section 3), or the closebook MCP cards one at a time; do not describe a stepped widget that is not there.
 

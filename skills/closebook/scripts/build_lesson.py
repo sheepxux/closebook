@@ -422,10 +422,11 @@ def check_lesson(lesson: Any) -> List[Issue]:
             item_ids.add(check["id"])
             _check_item(chunk["check_type"], check, cpath + ".check", err, warn)
 
-    pace = lesson.get("teach_pace", "step")
+    sections = lesson.get("sections") or []
+    default_pace = "section" if sections and lesson.get("mode", "learn") == "learn" else "step"
+    pace = lesson.get("teach_pace", default_pace)
     chunk_count = {kp["id"]: len((kp.get("teach") or {}).get("chunks") or []) for kp in lesson["knowledge_points"]}
     chunked_ids = [kp_id for kp_id, count in chunk_count.items() if count]
-    sections = lesson.get("sections") or []
     if sections and pace != "section" and lesson.get("mode") != "exam":
         warn("$.sections", "sections are used only with teach_pace section (or in exam mode, for the report)")
     if lesson.get("exam") and lesson.get("mode") != "exam":

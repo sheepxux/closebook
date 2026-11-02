@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "profile": "core",
+  "topic": "Agent-arranged course",
+  "updated": "2026-11-02",
+  "settings": {
+    "teach_pace": null
+  },
+  "knowledge_points": [
+    {
+      "id": "kp1",
+      "title": "A connected learning objective",
+      "importance": "core",
+      "knowledge_type": "conceptual",
+      "status": "planned",
+      "mastery": "not_assessed",
+      "leitner_box": 0,
+      "next_review": null,
+      "attempts": []
+    }
+  ],
+  "weak_points": []
+}

@@ -150,7 +150,7 @@ One reply may contain feedback on the previous answer plus the next question. Th
 | "Just tell me the answer" | Give it. Record `hint_level: 3`. One sentence: shown answers come back tomorrow. |
 | Learner wants to skip retest | Explain the cost in one sentence (no retest = no evidence it stuck). If they insist, skip and log in `user_overrides`. |
 | Three wrong in a row, or replies getting shorter | Lower difficulty, return to a short teaching chunk with a new example (`new-learning.md`), or suggest a break / smaller scope (`efficiency.md`). |
-| "Slow down" / "bigger chunks" / 慢一点 / 一次多讲点 on the teach route | Respect the requested teaching size, save `step` or `section` when applicable, and log the explicit preference in `user_overrides` (`scope: "flow"`). If the learner delegates pacing back to the agent, clear the setting; adapt future units from the material and responses (`new-learning.md` section 3). |
+| "Slow down" / "bigger chunks" / 慢一点 / 一次多讲点 on the teach route | Respect the requested teaching size, save `step` or `section` when applicable, and log the explicit preference in `user_overrides` (`scope: "flow"`). If the learner delegates pacing back to the agent, set `settings.teach_pace: null` to preserve the reset through export/merge; adapt future units from the material and responses (`new-learning.md` section 3). |
 | Practice route, but the diagnostic shows the point is new to them | Switch that point to the teach route and say so in one line. |
 | Learner pastes the material back to answer | Gently note it's now open-book; record `hint_level: 3` for that answer. |
 | Material is wrong or outdated | Say so with the correction; don't test them on the wrong version. |

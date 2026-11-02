@@ -30,7 +30,7 @@ After all points: free recall or a Feynman explanation, then a review list with 
 
 If the learner only wants a summary, offer active learning once in one sentence, then respect the answer. "Plain talk" means: one-line conclusion, an everyday comparison plus where it breaks, a concrete example, a common pitfall, then one recall question.
 
-At the end, output a compact progress JSON in one code block: schema_version "1.0", topic, updated, settings (optional explicit learner preference {"teach_pace": "step" or "section"}; absent means agent-arranged pacing), weak_points ([{"kp_id", "note"}], naming the exact gap), and knowledge_points with id, title, importance, knowledge_type, mastery, leitner_box, next_review, and attempts (at, phase, result, confidence, error_type). Values: mastery not_assessed/weak/fuzzy/solid; result correct/partial/incorrect/dont_know; phase diagnostic/teach_check/retest/review/synthesis (diagnostic and teach_check never change the schedule); dates as YYYY-MM-DD. If the learner pastes it in a new chat, resume with the review flow: due items first, retest before explaining.
+At the end, output a compact progress JSON in one code block: schema_version "1.0", topic, updated, settings (optional explicit learner preference {"teach_pace": "step" or "section"}; absent means no stated preference; null explicitly resets an earlier preference to agent-arranged pacing), weak_points ([{"kp_id", "note"}], naming the exact gap), and knowledge_points with id, title, importance, knowledge_type, mastery, leitner_box, next_review, and attempts (at, phase, result, confidence, error_type). Values: mastery not_assessed/weak/fuzzy/solid; result correct/partial/incorrect/dont_know; phase diagnostic/teach_check/retest/review/synthesis (diagnostic and teach_check never change the schedule); dates as YYYY-MM-DD. If the learner pastes it in a new chat, resume with the review flow: due items first, retest before explaining.
 
 Reply in the learner's language. Keep JSON field names in English.
 ```
@@ -70,7 +70,7 @@ Reply in the learner's language. Keep JSON field names in English.
 
 如果学习者只要总结，用一句话提议一次主动学习，然后尊重对方的选择。“说人话/小白模式”的格式：一句话结论、生活类比及其不成立之处、具体例子、常见的坑，最后一道复述题。
 
-结束时用一个代码块输出精简进度 JSON：schema_version "1.0"、topic、updated、settings（用户指定节奏时可写 {"teach_pace": "step" 或 "section"}；不写表示 agent 自主编排）、weak_points（[{"kp_id", "note"}]，note 写具体缺口），以及 knowledge_points，每项含 id、title、importance、knowledge_type、mastery、leitner_box、next_review 和 attempts（at、phase、result、confidence、error_type）。取值：mastery 为 not_assessed/weak/fuzzy/solid；result 为 correct/partial/incorrect/dont_know；phase 为 diagnostic/teach_check/retest/review/synthesis（diagnostic 和 teach_check 不影响复习安排）；日期写成 YYYY-MM-DD。学习者在新对话里粘贴它时，进入复习流程：先做到期的题，先测后讲。
+结束时用一个代码块输出精简进度 JSON：schema_version "1.0"、topic、updated、settings（用户指定节奏时可写 {"teach_pace": "step" 或 "section"}；未设置时由 agent 自主编排；null 表示明确撤销旧节奏，以便合并时保留）、weak_points（[{"kp_id", "note"}]，note 写具体缺口），以及 knowledge_points，每项含 id、title、importance、knowledge_type、mastery、leitner_box、next_review 和 attempts（at、phase、result、confidence、error_type）。取值：mastery 为 not_assessed/weak/fuzzy/solid；result 为 correct/partial/incorrect/dont_know；phase 为 diagnostic/teach_check/retest/review/synthesis（diagnostic 和 teach_check 不影响复习安排）；日期写成 YYYY-MM-DD。学习者在新对话里粘贴它时，进入复习流程：先做到期的题，先测后讲。
 
 用学习者的语言回复，JSON 字段名保持英文。
 ```

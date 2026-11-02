@@ -689,7 +689,13 @@ def merge_progress(base: Dict[str, Any], other: Dict[str, Any]) -> Dict[str, Any
     for key in ("sessions", "user_overrides"):
         if other.get(key):
             merged[key] = _union_list(merged.get(key), copy.deepcopy(other[key]))
-    for key in ("settings", "exam", "language", "created"):
+    if "settings" in other:
+        settings = merged.setdefault("settings", {})
+        incoming_is_current = other.get("updated", "") >= base.get("updated", "")
+        for key, value in other["settings"].items():
+            if key not in settings or incoming_is_current:
+                settings[key] = copy.deepcopy(value)
+    for key in ("exam", "language", "created"):
         if key not in merged and key in other:
             merged[key] = copy.deepcopy(other[key])
     if other.get("created") and merged.get("created") and other["created"] < merged["created"]:

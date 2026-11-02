@@ -234,6 +234,7 @@ class TeachChunks(unittest.TestCase):
         self.assertIn("kp-build appears in two sections", text)
 
     def test_sections_warnings(self):
+        self.lesson["teach_pace"] = "step"
         self.lesson["sections"] = [{"title": "一节", "points": ["kp-build"]}]
         text = str(warnings(self.lesson))
         self.assertIn("only with teach_pace section", text)
@@ -247,6 +248,12 @@ class TeachChunks(unittest.TestCase):
                 chunk["check"]["id"] = "%s-extra-%d" % (kp["id"], n)
         self.assertEqual(errors(self.lesson), [])
         self.assertNotIn("section has 9 chunks", str(warnings(self.lesson)))
+
+    def test_sections_choose_connected_delivery_when_pace_is_not_set(self):
+        self.lesson.pop("teach_pace", None)
+        self.lesson["sections"] = [{"title": "关联单元", "points": [kp["id"] for kp in self.lesson["knowledge_points"]]}]
+        self.assertEqual(errors(self.lesson), [])
+        self.assertEqual(warnings(self.lesson), [])
 
     def test_section_pace_needs_chunks(self):
         for kp in self.lesson["knowledge_points"]:

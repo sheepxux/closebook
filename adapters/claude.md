@@ -42,4 +42,4 @@ Use the agent's own components first ([host widgets](../skills/closebook/referen
 
 ## Quick check after installing
 
-Say: "考考我：［主题］" (or "Quiz me on [topic]"), with a topic of your own. Expected: an outline of 3–5 points with types, plus one question about time and familiarity, and no summary of the material.
+Say: "考考我：［主题］" (or "Quiz me on [topic]"), with a topic of your own. Expected: a concise typed outline for a topic, or the complete source inventory with today's subset for course material, plus any necessary time/familiarity questions, and no summary of the material.

@@ -42,7 +42,8 @@ class PackageTest(unittest.TestCase):
         for rel in ("scripts/progress_tool.py", "scripts/build_lesson.py",
                     "schemas/progress.schema.json", "schemas/lesson-data.schema.json",
                     "schemas/session-export.schema.json", "schemas/grading.schema.json",
-                    "references/teaching-flow.md", "references/host-widgets.md", "references/html-lesson.md"):
+                    "references/teaching-flow.md", "references/host-widgets.md", "references/html-lesson.md",
+                    "references/source-driven-course.md"):
             self.assertIn("closebook/" + rel, self.names)
 
     def test_upload_zip_leaves_out_yaml_and_javascript(self):

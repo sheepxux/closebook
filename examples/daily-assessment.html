@@ -2214,7 +2214,10 @@ footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--rule);
   }
 
   // ---------- section pace: read a section of points, then one check per point ----------
-  function sectionPace() { return data.mode === 'learn' && data.teach_pace === 'section'; }
+  function sectionPace() {
+    var pace = data.teach_pace || (data.sections && data.sections.length ? 'section' : 'step');
+    return data.mode === 'learn' && pace === 'section';
+  }
 
   function sectionsOf() {
     var kps = data.knowledge_points, out = [], used = {};

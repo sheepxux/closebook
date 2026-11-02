@@ -56,7 +56,7 @@ def rec(progress, at, phase="retest", result="correct", hint=0, confidence=2, er
 
 class SchemaAndExamplesTest(unittest.TestCase):
     def test_examples_are_valid_without_warnings(self):
-        for path in (FULL, CORE):
+        for path in (FULL, CORE, os.path.join(EXAMPLES, "progress.agent-arranged.json")):
             issues = pt.validate_progress(load(path))
             self.assertEqual(issues, [], "%s: %r" % (path, issues))
         self.assertEqual(pt.validate_export(load(EXPORT)), [])
@@ -333,6 +333,36 @@ class QueriesTest(unittest.TestCase):
 
 
 class MergeAndImportTest(unittest.TestCase):
+    def test_newer_compact_pace_preference_updates_without_losing_local_settings(self):
+        full = load(FULL)
+        full["settings"]["teach_pace"] = "step"
+        chat = pt.to_compact(full)
+        chat["updated"] = "2026-11-02"
+        chat["settings"] = {"teach_pace": "section"}
+        merged = pt.merge_progress(full, chat)
+        self.assertEqual(merged["settings"], dict(full["settings"], teach_pace="section"))
+        self.assertEqual(errors(pt.validate_progress(merged)), [])
+
+    def test_explicit_reset_survives_compact_roundtrip_and_same_day_merge(self):
+        full = load(FULL)
+        full["settings"]["teach_pace"] = "step"
+        chat = copy.deepcopy(full)
+        chat["settings"]["teach_pace"] = None
+        compact = json.loads(pt.dump_json(pt.to_compact(chat), compact=True))
+        self.assertIn("teach_pace", compact["settings"])
+        self.assertIsNone(compact["settings"]["teach_pace"])
+        merged = pt.merge_progress(full, compact)
+        self.assertIsNone(merged["settings"]["teach_pace"])
+        self.assertEqual(errors(pt.validate_progress(merged)), [])
+
+    def test_older_preference_cannot_restore_a_cleared_pace(self):
+        full = load(FULL)
+        older = pt.to_compact(full)
+        older["settings"]["teach_pace"] = "step"
+        full["updated"] = "2026-11-02"
+        full["settings"]["teach_pace"] = None
+        self.assertIsNone(pt.merge_progress(full, older)["settings"]["teach_pace"])
+
     def test_merging_compact_copy_into_full_changes_nothing(self):
         full = load(FULL)
         merged = pt.merge_progress(full, pt.to_compact(full))

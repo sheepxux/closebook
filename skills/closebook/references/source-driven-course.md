@@ -54,7 +54,7 @@ Progress: <topic-slug>.json
 
 Give assessment attempts stable IDs in progress. Record the question, criterion, learner response (or a saved response locator) and per-point judgment in the assessment record/artifact, so a later reviewer can check what was actually assessed. Titles, aggregate scores and lists of point tags alone are insufficient evidence. Do not expose an unanswered question's key in the learner's opening inventory or the exam view; retain grading details after hand-in. Static local files are not a secure exam system.
 
-Keep supplemental points outside the required denominator, labelled as additions. Required points deferred by time limits remain `planned`; the 3–5-point opening, 6–12-point general path, teaching-unit sizes and 80/20 trimming never cap or delete this inventory. Do not mark source details `optional_extension` solely because they are minor. If the learner explicitly narrows scope, record the original scope and exclusions; report completion only of the chosen subset.
+Keep supplemental points outside the required denominator, labelled as additions. Required points deferred by time limits remain `planned`; opening-outline size, topic-only learning paths, teaching-unit sizes and 80/20 trimming never cap or delete this inventory. Do not mark source details `optional_extension` solely because they are minor. If the learner explicitly narrows scope, record the original scope and exclusions; report completion only of the chosen subset.
 
 ## 3. Teach point by point
 

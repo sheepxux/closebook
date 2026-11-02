@@ -23,7 +23,7 @@
       }
     },
     "intro": { "type": "string" },
-    "teach_pace": { "type": "string", "enum": ["step", "section"], "description": "Teach route only. step (default): one chunk is read, then its check. section: all chunks of a section's points are read together, then one check per point (the point's last chunk's check); a point missed twice drops to step. See references/new-learning.md section 3." },
+    "teach_pace": { "type": "string", "enum": ["step", "section"], "description": "HTML rendering choice on the teach route. step: one block then its check; section: the planned unit's explanations together then one check per point. If omitted, supplied sections select section mode; otherwise legacy step mode is used. After two misses the page offers smaller steps. Choose from the agent's teaching plan, respecting any explicit learner preference; do not copy a null progress preference into this field." },
     "sections": {
       "type": "array",
       "minItems": 1,
@@ -87,7 +87,7 @@
       "additionalProperties": false,
       "properties": {
         "title": { "type": "string" },
-        "explain": { "type": "string", "minLength": 1, "description": "The idea, concrete case first: about 80-200 words (400 Chinese characters)." },
+        "explain": { "type": "string", "minLength": 1, "description": "A coherent explanation, concrete case first, with enough detail for the learning objective. The agent chooses length from content, workload and learner responses; no fixed word limit." },
         "example": { "type": "string" },
         "code": { "type": "string", "description": "Optional code shown under the explanation (about 12 lines at most)." },
         "worked": {

@@ -27,7 +27,7 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 17 | 10 · one-line fact | No outline or components |
 | 18 | 11 · Plain Talk, conceptual | Analogy + its limit, jargon explained, recall question |
 | 19 | 11 · Plain Talk, precise definitions | Exact definitions, no forced analogy |
-| 20 | 12 · zero background (teach route) | First teaching chunk only, then one check on an unseen case |
+| 20 | 12 · zero background (teach route) | Coherent agent-arranged teaching before a check on an unseen case |
 | 21 | 12 · "说人话" before learning | Plain Talk first, no quiz (at most one light recall) |
 | 22 | 13 · chat export | Compact core JSON that `progress_tool.py validate` accepts |
 | 23 | teach route · "教我", no material | Teach-first plan, general-knowledge note, no quiz on the topic itself |
@@ -43,7 +43,7 @@ The suite checks both directions: that a method or form is **used where it fits*
 | 33 | lesson acknowledgement | Gives a fresh guided check; no scored attempt, mastery or schedule change |
 | 34 | failed native display | Attempts native once, then preserves the question in the MCP fallback |
 | 35 | teach route · agent planning | Arranges units from content and workload without a mandatory pace question |
-| 36 | teach route · section pace | One reply explains the whole section (2–4 points), no check in between, one check after |
+| 36 | teach route · section pace | Honours a chosen whole-section explanation, with checks afterwards and no fixed point cap |
 | 37 | teach route · second miss on section pace | Says it slows down; one small chunk and one check for that point only; still unscored |
 | 38 | teach route · stored pace | Progress file holds `teach_pace`; no pace question; retest first, then the next planned points |
 | 39 | host widget · Codex Visualize | Writes an HTML fragment that checks the four-option answer itself (key + per-option explanation inside), confidence first, `sendFollowUpMessage` result line only on Next; `visualize{...}` line in the reply |

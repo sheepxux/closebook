@@ -90,7 +90,7 @@
         },
         "review_batch_size": { "type": "integer", "minimum": 1, "maximum": 50, "description": "Default 8." },
         "interleaving": { "type": "string", "enum": ["auto", "on", "off"], "description": "Default auto." },
-        "teach_pace": { "type": "string", "enum": ["step", "section"], "description": "Optional learner preference on the teach route. step: smaller units and frequent checks; section: connected explanations before checks. Absent means the agent arranges units from content, workload and responses; no mandatory pace question. See references/new-learning.md section 3." }
+        "teach_pace": { "type": ["string", "null"], "enum": ["step", "section", null], "description": "Optional learner preference on the teach route. step: smaller units and frequent checks; section: connected explanations before checks. Absent or null means the agent arranges units from content, workload and responses. Use null to explicitly reset an earlier preference so compact export and merge preserve the reset; no mandatory pace question. See references/new-learning.md section 3." }
       }
     },
     "exam": {

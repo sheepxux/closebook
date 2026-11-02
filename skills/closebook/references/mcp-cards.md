@@ -20,7 +20,7 @@ Pass `locale` on lessons, exercises and legacy quizzes: `zh-CN` for Simplified C
 
 ## Teach before testing new material
 
-`show_lesson` takes `id`, `title`, `explanation`, optional `example: {title, text}`, and optional `takeaway`. Keep one short chunk per card, shaped by knowledge type. Use the example to demonstrate reasoning, not just list facts. On the `step` pace, `continue` leads to a fresh guided check; on `explain_again`, use a different example or smaller step. On the `section` pace (`new-learning.md` section 3), `continue` opens the next chunk's card instead, and the checks follow the whole section, one per point and one per reply. Do not record either click as mastery. Ordinary chat explanation is equally valid when a card offers no benefit.
+`show_lesson` takes `id`, `title`, `explanation`, optional `example: {title, text}`, and optional `takeaway`. Size the explanation to the agent's coherent teaching unit and knowledge type. A card is a display container, not a required small teaching fragment. Keep a full example or connected explanation together when appropriate; use chat when a card would fragment it or exceed the tool's field limits. The agent chooses where to check from the content, workload and learner responses, respecting explicit pace preferences (`new-learning.md` section 3). A `continue` click acknowledges reading and leads to the next planned explanation or a fresh check; `explain_again` calls for a different example or more support. Neither click establishes mastery. Keep per-point teaching and answer evidence even when several points are explained together.
 
 ## Exercise types
 

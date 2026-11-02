@@ -30,7 +30,7 @@ agent 自带的交互组件优先（Visualize、`show_widget` 或带选项的提
 
 ## 工具与数据
 
-- `show_lesson({lesson})`：一个知识小段。字段为 `id`、`title`、`explanation`，可选 `locale`、`example: {title, text}` 和 `takeaway`。
+- `show_lesson({lesson})`：一个连贯的讲解单元，可包含完整例题或关联知识点，由 agent 根据内容和课程量编排。字段为 `id`、`title`、`explanation`，可选 `locale`、`example: {title, text}` 和 `takeaway`；卡片字段容不下完整讲解时用聊天，不为卡片强行拆碎。
 - `show_exercise({exercise})`：一个练习。共有 `id`、`title`、`type`、`question`，可选 `locale` 和 `collectConfidence`（默认 true）。支持 `mcq`、`free_text`、`numeric`、`cloze_passage`、`order_steps`、`flashcard`。
 - `show_quiz({quiz})`：兼容原来的单选题接口；支持 `locale`。空参数仅显示固定 Python 连通性演示，真实课程应传实际题目。
 

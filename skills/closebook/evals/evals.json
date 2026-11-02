@@ -311,20 +311,20 @@
     {
       "id": 23,
       "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01.]\n\n教我 Python 的装饰器。",
-      "expected_output": "Teach route chosen from the wording: an outline whose approach notes show teaching comes first, a note that the explanations come from general knowledge (no material was supplied), the time question if needed, and an invitation to name points already known; or, if it starts right away, one teaching chunk plus one check. No diagnostic quiz on decorators themselves.",
+      "expected_output": "Teach-route opening or coherent first teaching unit: makes teaching precede checks, labels general-knowledge sources, asks only necessary setup questions. The agent may group connected points according to the material and workload.",
       "files": [],
       "expectations": [
-        "Treats the request as wanting to be taught: the outline or first message makes clear that it will explain first and check after each part",
+        "Treats the request as wanting to be taught: explains before testing and places checks at meaningful boundaries",
         "Does not open by quizzing the learner on decorators themselves (a single starting-point question on a prerequisite such as functions is acceptable)",
         "Says, in about one sentence, that the outline or explanations come from general knowledge rather than the learner's course or material",
-        "Asks at most the necessary setup questions (e.g. time) in one message, or starts with one chunk and one check; never two open questions about the content",
-        "Does not produce a long lecture covering several points"
+        "Asks only necessary setup questions in one message or starts a coherent teaching unit with one unanswered check; no mandatory pace selection",
+        "Keeps the explanation connected and relevant without imposing a one-point or fixed word/chunk cap"
       ]
     },
     {
       "id": 24,
       "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01.]\n\n我想从零开始学微积分，每天 30 分钟。",
-      "expected_output": "A learning path of roughly 6-12 points in prerequisite order (titles only), with today's 2-3 points marked; the rest kept for later sessions; then either a one-line confirmation request or the first chunk and its check. No attempt to teach calculus in one reply.",
+      "expected_output": "Proposes a prerequisite path sized to the subject and learner goal, marks a realistic workload for today and saves the rest. May teach connected points together, followed by one check; does not attempt the whole subject in one reply.",
       "files": [],
       "expectations": [
         "Proposes a learning path of several points in prerequisite order (e.g. functions/slope before limits before derivatives), shown briefly as titles",
@@ -350,13 +350,13 @@
     {
       "id": 26,
       "prompt": "[Environment: chat-only, plain text. Today is 2026-11-01.]\n\n考考我 Rust 的所有权（ownership），不过我完全没学过 Rust。15 分钟。",
-      "expected_output": "Prior knowledge overrides the wording: says in one line that it will explain first because there is nothing to recall yet, then gives one short chunk on ownership and one check question. No quiz on unseen material.",
+      "expected_output": "Prior knowledge overrides quiz wording: explain first using actual code, then one new unanswered check. Choose a coherent unit fitting the 15-minute budget rather than a fixed point or chunk count.",
       "files": [],
       "expectations": [
         "Says in about one sentence that it will explain first because the learner hasn't met the material",
         "Does not ask a quiz or diagnostic question about ownership before explaining anything",
-        "Gives one short teaching chunk (one idea, a concrete code example before the rule) and then exactly one check question, without answering it",
-        "Keeps scope to the 15 minutes: covers one point or plans at most two, without a long lecture"
+        "Gives a concrete code example and explains the necessary reasoning before one unanswered check on a new case",
+        "Fits the 15-minute workload and leaves time for checking/retrieval, without imposing a universal one/two-point cap"
       ]
     },
     {
